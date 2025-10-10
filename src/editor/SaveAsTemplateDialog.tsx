@@ -3,6 +3,7 @@
  */
 
 import React, { useState } from 'react'
+import { notification } from '@/utils/notification'
 
 interface SaveAsTemplateDialogProps {
   onSave: (name: string, description: string, category: string) => void
@@ -27,7 +28,7 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
 
   const handleSave = () => {
     if (!name.trim()) {
-      alert('请输入模板名称')
+      notification.warning('请输入模板名称')
       return
     }
     onSave(name, description, category)

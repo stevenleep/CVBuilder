@@ -8,6 +8,7 @@ import { useEffect, useCallback } from 'react'
 import { useEditorStore } from '@store/editorStore'
 import { useMaterialRegistry } from '@/core'
 import { findNode } from '@utils/schema'
+import { notification } from '@/utils/notification'
 
 export interface KeyboardShortcut {
   key: string
@@ -96,7 +97,7 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         saveToStorage()
 
         // 显示保存提示
-        showToast('已保存')
+        notification.info('已保存', 1500)
         return
       }
 
@@ -122,7 +123,7 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       if (cmdKey && key.toLowerCase() === 'c' && selectedNodeIds.length === 1) {
         event.preventDefault()
         copyNode(selectedNodeIds[0])
-        showToast('已复制')
+        notification.info('已复制', 1500)
         return
       }
 
@@ -130,7 +131,7 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       if (cmdKey && key.toLowerCase() === 'x' && selectedNodeIds.length === 1) {
         event.preventDefault()
         cutNode(selectedNodeIds[0])
-        showToast('已剪切')
+        notification.info('已剪切', 1500)
         return
       }
 
@@ -139,7 +140,7 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         event.preventDefault()
         const targetId = selectedNodeIds.length === 1 ? selectedNodeIds[0] : undefined
         pasteNode(targetId)
-        showToast('已粘贴')
+        notification.info('已粘贴', 1500)
         return
       }
 
@@ -244,55 +245,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [handleKeyDown])
-}
-
-/**
- * 显示提示消息
- */
-function showToast(message: string) {
-  // 创建提示元素
-  const toast = document.createElement('div')
-  toast.textContent = message
-  toast.style.cssText = `
-    position: fixed;
-    top: 72px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    z-index: 100000;
-    pointer-events: none;
-    animation: fadeInOut 1.5s ease-in-out;
-  `
-
-  // 添加动画
-  const style = document.createElement('style')
-  style.textContent = `
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-    }
-  `
-
-  if (!document.getElementById('toast-styles')) {
-    style.id = 'toast-styles'
-    document.head.appendChild(style)
-  }
-
-  document.body.appendChild(toast)
-
-  // 1.5秒后移除
-  setTimeout(() => {
-    if (toast.parentNode) {
-      toast.parentNode.removeChild(toast)
-    }
-  }, 1500)
 }
 
 /**

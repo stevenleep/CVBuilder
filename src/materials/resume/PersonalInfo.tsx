@@ -6,6 +6,7 @@ import React from 'react'
 import { IMaterialDefinition, IMaterialAction } from '@/core'
 import { useThemeConfig, useStyleConfig } from '@/core/context/ThemeContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
+import { notification } from '@/utils/notification'
 
 interface PersonalInfoProps {
   style?: React.CSSProperties
@@ -20,39 +21,39 @@ interface PersonalInfoProps {
   nationality?: string
   politicalStatus?: string
   maritalStatus?: string
-  
+
   // 求职信息
   expectedPosition?: string
   expectedSalary?: string
   workYears?: string
   currentStatus?: string
   arrivalTime?: string
-  
+
   // 联系方式
   phone?: string
   email?: string
   wechat?: string
   qq?: string
-  
+
   // 地址信息
   currentLocation?: string
   hometown?: string
-  
+
   // 社交媒体
   github?: string
   linkedin?: string
   website?: string
   blog?: string
-  
+
   // 教育背景
   education?: string
-  
+
   // 其他
   summary?: string
   align?: 'left' | 'center' | 'right'
 }
 
-const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
+const PersonalInfo: React.FC<PersonalInfoProps> = props => {
   const {
     style,
     name = '张三',
@@ -84,10 +85,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     summary = '',
     align = 'center',
   } = props
-  
+
   const theme = useThemeConfig()
   const styleConfig = useStyleConfig()
-  
+
   // 基本信息行
   const basicInfo = [
     age && `${age}岁`,
@@ -99,7 +100,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     workYears && `${workYears}年经验`,
     education,
   ].filter(Boolean)
-  
+
   // 求职意向
   const jobExpectation = [
     expectedPosition && `期望：${expectedPosition}`,
@@ -107,13 +108,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     currentStatus,
     arrivalTime,
   ].filter(Boolean)
-  
+
   return (
     <div
       style={{
         paddingBottom: `${theme.spacing.paragraph * 1.5}px`,
-        borderBottom: styleConfig.showPersonalInfoDivider 
-          ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}` 
+        borderBottom: styleConfig.showPersonalInfoDivider
+          ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
           : 'none',
         marginBottom: `${theme.spacing.section}px`,
         display: showAvatar && avatar ? 'flex' : 'block',
@@ -124,16 +125,18 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     >
       {/* 头像 */}
       {showAvatar && avatar && (
-        <div style={{
-          width: '80px',
-          height: '80px',
-          borderRadius: `${styleConfig.borderRadius}px`,
-          overflow: 'hidden',
-          flexShrink: 0,
-          border: `2px solid ${theme.color.border.light}`,
-        }}>
-          <img 
-            src={avatar} 
+        <div
+          style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: `${styleConfig.borderRadius}px`,
+            overflow: 'hidden',
+            flexShrink: 0,
+            border: `2px solid ${theme.color.border.light}`,
+          }}
+        >
+          <img
+            src={avatar}
             alt={name}
             style={{
               width: '100%',
@@ -143,111 +146,198 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
           />
         </div>
       )}
-      
+
       <div style={{ flex: 1, textAlign: showAvatar && avatar ? 'left' : align }}>
         {/* 姓名 */}
-        <h1 style={{ 
-          fontSize: `${theme.font.titleSize.h1}px`, 
-          fontWeight: theme.font.weight.bold, 
-          margin: `0 0 ${theme.spacing.line - 2}px 0`,
-          color: theme.color.text.primary,
-          letterSpacing: '-0.03em',
-        }}>
+        <h1
+          style={{
+            fontSize: `${theme.font.titleSize.h1}px`,
+            fontWeight: theme.font.weight.bold,
+            margin: `0 0 ${theme.spacing.line - 2}px 0`,
+            color: theme.color.text.primary,
+            letterSpacing: '-0.03em',
+          }}
+        >
           {name}
         </h1>
-        
+
         {/* 职位/目标 */}
         {title && (
-          <div style={{ 
-            fontSize: `${theme.font.bodySize.large}px`, 
-            color: theme.color.text.secondary,
-            marginBottom: `${theme.spacing.line}px`,
-            fontWeight: theme.font.weight.normal,
-          }}>
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.large}px`,
+              color: theme.color.text.secondary,
+              marginBottom: `${theme.spacing.line}px`,
+              fontWeight: theme.font.weight.normal,
+            }}
+          >
             {title}
           </div>
         )}
-        
+
         {/* 基本信息 */}
         {basicInfo.length > 0 && (
-          <div style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            color: theme.color.text.tertiary,
-            marginBottom: `${theme.spacing.line}px`,
-          }}>
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              marginBottom: `${theme.spacing.line}px`,
+            }}
+          >
             {basicInfo.join(' · ')}
           </div>
         )}
-        
+
         {/* 求职意向 */}
         {jobExpectation.length > 0 && (
-          <div style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            color: theme.color.text.secondary,
-            marginBottom: `${theme.spacing.paragraph}px`,
-            fontWeight: theme.font.weight.medium,
-          }}>
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.secondary,
+              marginBottom: `${theme.spacing.paragraph}px`,
+              fontWeight: theme.font.weight.medium,
+            }}
+          >
             {jobExpectation.join(' | ')}
           </div>
         )}
-        
+
         {/* 联系方式 */}
-        <div style={{ 
-          display: 'flex', 
-          gap: `${theme.spacing.paragraph}px`,
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          flexWrap: 'wrap',
-          justifyContent: (showAvatar && avatar) ? 'flex-start' : (align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start'),
-        }}>
-          {phone && <span>{styleConfig.useEmojiIcons ? '📱 ' : '电话: '}{phone}</span>}
-          {email && <span>{styleConfig.useEmojiIcons ? '✉️ ' : '邮箱: '}{email}</span>}
-          {wechat && <span>{styleConfig.useEmojiIcons ? '💬 ' : '微信: '}{wechat}</span>}
-          {qq && <span>{styleConfig.useEmojiIcons ? 'QQ: ' : 'QQ: '}{qq}</span>}
+        <div
+          style={{
+            display: 'flex',
+            gap: `${theme.spacing.paragraph}px`,
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            flexWrap: 'wrap',
+            justifyContent:
+              showAvatar && avatar
+                ? 'flex-start'
+                : align === 'center'
+                  ? 'center'
+                  : align === 'right'
+                    ? 'flex-end'
+                    : 'flex-start',
+          }}
+        >
+          {phone && (
+            <span>
+              {styleConfig.useEmojiIcons ? '📱 ' : '电话: '}
+              {phone}
+            </span>
+          )}
+          {email && (
+            <span>
+              {styleConfig.useEmojiIcons ? '✉️ ' : '邮箱: '}
+              {email}
+            </span>
+          )}
+          {wechat && (
+            <span>
+              {styleConfig.useEmojiIcons ? '💬 ' : '微信: '}
+              {wechat}
+            </span>
+          )}
+          {qq && (
+            <span>
+              {styleConfig.useEmojiIcons ? 'QQ: ' : 'QQ: '}
+              {qq}
+            </span>
+          )}
         </div>
-        
+
         {/* 地址 */}
         {(currentLocation || hometown) && (
-          <div style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            color: theme.color.text.tertiary,
-            marginTop: `${theme.spacing.line - 2}px`,
-            display: 'flex',
-            gap: `${theme.spacing.paragraph}px`,
-            flexWrap: 'wrap',
-            justifyContent: (showAvatar && avatar) ? 'flex-start' : (align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start'),
-          }}>
-            {currentLocation && <span>{styleConfig.useEmojiIcons ? '📍 ' : '现居: '}{currentLocation}</span>}
-            {hometown && <span>{styleConfig.useEmojiIcons ? '🏠 ' : '户籍: '}{hometown}</span>}
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              marginTop: `${theme.spacing.line - 2}px`,
+              display: 'flex',
+              gap: `${theme.spacing.paragraph}px`,
+              flexWrap: 'wrap',
+              justifyContent:
+                showAvatar && avatar
+                  ? 'flex-start'
+                  : align === 'center'
+                    ? 'center'
+                    : align === 'right'
+                      ? 'flex-end'
+                      : 'flex-start',
+            }}
+          >
+            {currentLocation && (
+              <span>
+                {styleConfig.useEmojiIcons ? '📍 ' : '现居: '}
+                {currentLocation}
+              </span>
+            )}
+            {hometown && (
+              <span>
+                {styleConfig.useEmojiIcons ? '🏠 ' : '户籍: '}
+                {hometown}
+              </span>
+            )}
           </div>
         )}
-        
+
         {/* 社交媒体 */}
         {(github || linkedin || website || blog) && (
-          <div style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            color: theme.color.text.tertiary,
-            marginTop: `${theme.spacing.line - 2}px`,
-            display: 'flex',
-            gap: `${theme.spacing.paragraph}px`,
-            flexWrap: 'wrap',
-            justifyContent: (showAvatar && avatar) ? 'flex-start' : (align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start'),
-          }}>
-            {github && <span>{styleConfig.useEmojiIcons ? '💻 ' : 'GitHub: '}{github}</span>}
-            {linkedin && <span>{styleConfig.useEmojiIcons ? '💼 ' : 'LinkedIn: '}{linkedin}</span>}
-            {website && <span>{styleConfig.useEmojiIcons ? '🌐 ' : '网站: '}{website}</span>}
-            {blog && <span>{styleConfig.useEmojiIcons ? '📝 ' : '博客: '}{blog}</span>}
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              marginTop: `${theme.spacing.line - 2}px`,
+              display: 'flex',
+              gap: `${theme.spacing.paragraph}px`,
+              flexWrap: 'wrap',
+              justifyContent:
+                showAvatar && avatar
+                  ? 'flex-start'
+                  : align === 'center'
+                    ? 'center'
+                    : align === 'right'
+                      ? 'flex-end'
+                      : 'flex-start',
+            }}
+          >
+            {github && (
+              <span>
+                {styleConfig.useEmojiIcons ? '💻 ' : 'GitHub: '}
+                {github}
+              </span>
+            )}
+            {linkedin && (
+              <span>
+                {styleConfig.useEmojiIcons ? '💼 ' : 'LinkedIn: '}
+                {linkedin}
+              </span>
+            )}
+            {website && (
+              <span>
+                {styleConfig.useEmojiIcons ? '🌐 ' : '网站: '}
+                {website}
+              </span>
+            )}
+            {blog && (
+              <span>
+                {styleConfig.useEmojiIcons ? '📝 ' : '博客: '}
+                {blog}
+              </span>
+            )}
           </div>
         )}
       </div>
-      
+
       {/* 个人简介 */}
       {summary && (
-        <div style={{ 
-          marginTop: `${theme.spacing.paragraph + 4}px`,
-          textAlign: 'left',
-          width: '100%',
-        }}>
+        <div
+          style={{
+            marginTop: `${theme.spacing.paragraph + 4}px`,
+            textAlign: 'left',
+            width: '100%',
+          }}
+        >
           <RichTextDisplay
             html={summary}
             style={{
@@ -267,8 +357,12 @@ const personalInfoActions: IMaterialAction[] = [
     id: 'edit-name',
     label: '快速编辑姓名',
     icon: '✏️',
-    execute: async (context) => {
-      const newName = prompt('请输入姓名', context.props.name)
+    execute: async context => {
+      const newName = await notification.prompt({
+        title: '编辑姓名',
+        message: '请输入姓名',
+        defaultValue: context.props.name as string,
+      })
       if (newName) {
         const api = context.getEditorAPI()
         api.updateNodeProps(context.nodeId, { name: newName })
@@ -289,33 +383,21 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
   },
   component: PersonalInfo,
   propsSchema: [
-    // 基本信息
+    // 核心信息（最常用）
     {
       name: 'name',
       label: '姓名',
       type: 'string',
       defaultValue: '张三',
       required: true,
-      group: '基本信息',
+      group: '核心信息',
     },
     {
       name: 'title',
       label: '职位/目标岗位',
       type: 'string',
       defaultValue: '前端工程师',
-      group: '基本信息',
-    },
-    {
-      name: 'gender',
-      label: '性别',
-      type: 'select',
-      defaultValue: '',
-      options: [
-        { label: '不填写', value: '' },
-        { label: '男', value: '男' },
-        { label: '女', value: '女' },
-      ],
-      group: '基本信息',
+      group: '核心信息',
     },
     {
       name: 'age',
@@ -323,48 +405,15 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：28',
-      group: '基本信息',
+      group: '核心信息',
     },
     {
-      name: 'birthDate',
-      label: '出生日期',
+      name: 'workYears',
+      label: '工作年限',
       type: 'string',
       defaultValue: '',
-      description: '如：1995.06',
-      group: '基本信息',
-    },
-    {
-      name: 'nationality',
-      label: '民族',
-      type: 'string',
-      defaultValue: '',
-      description: '默认不显示',
-      group: '基本信息',
-    },
-    {
-      name: 'politicalStatus',
-      label: '政治面貌',
-      type: 'select',
-      defaultValue: '',
-      options: [
-        { label: '不填写', value: '' },
-        { label: '中共党员', value: '中共党员' },
-        { label: '共青团员', value: '共青团员' },
-        { label: '群众', value: '群众' },
-      ],
-      group: '基本信息',
-    },
-    {
-      name: 'maritalStatus',
-      label: '婚姻状况',
-      type: 'select',
-      defaultValue: '',
-      options: [
-        { label: '不填写', value: '' },
-        { label: '未婚', value: '未婚' },
-        { label: '已婚', value: '已婚' },
-      ],
-      group: '基本信息',
+      description: '如：5年',
+      group: '核心信息',
     },
     {
       name: 'education',
@@ -378,24 +427,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '硕士', value: '硕士' },
         { label: '博士', value: '博士' },
       ],
-      group: '基本信息',
-    },
-    {
-      name: 'workYears',
-      label: '工作年限',
-      type: 'string',
-      defaultValue: '',
-      description: '如：5',
-      group: '基本信息',
-    },
-    
-    // 求职信息
-    {
-      name: 'expectedPosition',
-      label: '期望职位',
-      type: 'string',
-      defaultValue: '',
-      group: '求职信息',
+      group: '核心信息',
     },
     {
       name: 'expectedSalary',
@@ -403,7 +435,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：15K-25K',
-      group: '求职信息',
+      group: '核心信息',
     },
     {
       name: 'currentStatus',
@@ -416,7 +448,36 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '在职-月内到岗', value: '在职-月内到岗' },
         { label: '离职-随时到岗', value: '离职-随时到岗' },
       ],
-      group: '求职信息',
+      group: '核心信息',
+    },
+
+    // 补充信息
+    {
+      name: 'gender',
+      label: '性别',
+      type: 'select',
+      defaultValue: '',
+      options: [
+        { label: '不填写', value: '' },
+        { label: '男', value: '男' },
+        { label: '女', value: '女' },
+      ],
+      group: '补充信息',
+    },
+    {
+      name: 'birthDate',
+      label: '出生日期',
+      type: 'string',
+      defaultValue: '',
+      description: '如：1995.06',
+      group: '补充信息',
+    },
+    {
+      name: 'expectedPosition',
+      label: '期望职位',
+      type: 'string',
+      defaultValue: '',
+      group: '补充信息',
     },
     {
       name: 'arrivalTime',
@@ -430,9 +491,51 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '两周内', value: '两周内' },
         { label: '一个月内', value: '一个月内' },
       ],
-      group: '求职信息',
+      group: '补充信息',
     },
-    
+    {
+      name: 'maritalStatus',
+      label: '婚姻状况',
+      type: 'select',
+      defaultValue: '',
+      options: [
+        { label: '不填写', value: '' },
+        { label: '未婚', value: '未婚' },
+        { label: '已婚', value: '已婚' },
+      ],
+      group: '补充信息',
+    },
+    {
+      name: 'politicalStatus',
+      label: '政治面貌',
+      type: 'select',
+      defaultValue: '',
+      options: [
+        { label: '不填写', value: '' },
+        { label: '中共党员', value: '中共党员' },
+        { label: '共青团员', value: '共青团员' },
+        { label: '群众', value: '群众' },
+      ],
+      group: '补充信息',
+    },
+    {
+      name: 'nationality',
+      label: '民族',
+      type: 'string',
+      defaultValue: '',
+      description: '默认不显示',
+      group: '补充信息',
+    },
+    {
+      name: 'summary',
+      label: '个人简介',
+      type: 'richtext',
+      defaultValue: '',
+      description: '一句话介绍',
+      group: '补充信息',
+      minHeight: 60,
+    },
+
     // 联系方式
     {
       name: 'phone',
@@ -449,8 +552,22 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       group: '联系方式',
     },
     {
+      name: 'currentLocation',
+      label: '现居地',
+      type: 'string',
+      defaultValue: '北京',
+      group: '联系方式',
+    },
+    {
       name: 'wechat',
       label: '微信',
+      type: 'string',
+      defaultValue: '',
+      group: '联系方式',
+    },
+    {
+      name: 'hometown',
+      label: '户籍地',
       type: 'string',
       defaultValue: '',
       group: '联系方式',
@@ -462,78 +579,54 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '',
       group: '联系方式',
     },
-    
-    // 地址信息
-    {
-      name: 'currentLocation',
-      label: '现居地',
-      type: 'string',
-      defaultValue: '北京',
-      group: '地址',
-    },
-    {
-      name: 'hometown',
-      label: '户籍地',
-      type: 'string',
-      defaultValue: '',
-      group: '地址',
-    },
-    
-    // 社交媒体
+
+    // 在线链接
     {
       name: 'github',
       label: 'GitHub',
       type: 'string',
       defaultValue: '',
       description: '如：github.com/username',
-      group: '社交媒体',
-    },
-    {
-      name: 'linkedin',
-      label: 'LinkedIn',
-      type: 'string',
-      defaultValue: '',
-      group: '社交媒体',
-    },
-    {
-      name: 'website',
-      label: '个人网站',
-      type: 'string',
-      defaultValue: '',
-      group: '社交媒体',
+      group: '在线链接',
     },
     {
       name: 'blog',
       label: '技术博客',
       type: 'string',
       defaultValue: '',
-      group: '社交媒体',
+      group: '在线链接',
     },
-    
-    // 其他
+    {
+      name: 'linkedin',
+      label: 'LinkedIn',
+      type: 'string',
+      defaultValue: '',
+      group: '在线链接',
+    },
+    {
+      name: 'website',
+      label: '个人网站',
+      type: 'string',
+      defaultValue: '',
+      group: '在线链接',
+    },
+
+    // 外观设置
+    {
+      name: 'showAvatar',
+      label: '显示头像',
+      type: 'boolean',
+      defaultValue: false,
+      group: '外观',
+    },
     {
       name: 'avatar',
       label: '头像URL',
       type: 'string',
       defaultValue: '',
       description: '图片链接',
-      group: '头像',
-    },
-    {
-      name: 'showAvatar',
-      label: '显示头像',
-      type: 'boolean',
-      defaultValue: false,
-      group: '头像',
-    },
-    {
-      name: 'summary',
-      label: '个人简介',
-      type: 'richtext',
-      defaultValue: '',
-      description: '一句话介绍',
-      group: '补充信息',
-      minHeight: 60,
+      group: '外观',
+      visibleWhen: props => props.showAvatar,
     },
     {
       name: 'align',
@@ -545,8 +638,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '居中', value: 'center' },
         { label: '右对齐', value: 'right' },
       ],
-      group: '布局',
-      visibleWhen: (props) => !props.showAvatar || !props.avatar,
+      group: '外观',
     },
   ],
   defaultProps: {
@@ -586,8 +678,12 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
   actions: personalInfoActions,
-  onDoubleClick: (context) => {
-    const newName = prompt('请输入姓名', context.props.name)
+  onDoubleClick: async context => {
+    const newName = await notification.prompt({
+      title: '编辑姓名',
+      message: '请输入姓名',
+      defaultValue: context.props.name as string,
+    })
     if (newName) {
       const api = context.getEditorAPI()
       api.updateNodeProps(context.nodeId, { name: newName })

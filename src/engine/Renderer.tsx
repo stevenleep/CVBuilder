@@ -16,6 +16,7 @@ import { SaveAsTemplateDialog } from '@/editor/SaveAsTemplateDialog'
 import { useEditorStore } from '@store/editorStore'
 import { findNode } from '@utils/schema'
 import { templateManager } from '@/core/services/TemplateManager'
+import { notification } from '@/utils/notification'
 
 export interface RendererProps {
   /** 节点Schema */
@@ -176,7 +177,7 @@ export const Renderer: React.FC<RendererProps> = ({
       const node = findNode(pageSchema.root, id)
       if (node) {
         templateManager.saveAsTemplate(node, name, description, category)
-        alert('模板保存成功！')
+        notification.success('模板保存成功！')
       }
     },
     [id, pageSchema]

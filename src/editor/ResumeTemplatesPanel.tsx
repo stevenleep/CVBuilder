@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react'
 import { resumeTemplateManager, ResumeTemplate } from '@/core/services/ResumeTemplateManager'
 import { useEditorStore } from '@store/editorStore'
 import { Trash2, FileText, Edit2 } from 'lucide-react'
+import { notification } from '@/utils/notification'
 
 export const ResumeTemplatesPanel: React.FC<{
   onClose: () => void
@@ -19,16 +20,25 @@ export const ResumeTemplatesPanel: React.FC<{
     setTemplates(resumeTemplateManager.getAllTemplates())
   }, [])
 
-  const handleUseTemplate = (template: ResumeTemplate) => {
-    if (confirm(`确定使用模板"${template.name}"吗？当前内容将被替换。`)) {
+  const handleUseTemplate = async (template: ResumeTemplate) => {
+    const confirmed = await notification.confirm({
+      title: '使用模板',
+      message: `确定使用模板"${template.name}"吗？当前内容将被替换。`,
+      type: 'warning',
+    })
+    if (confirmed) {
       setPageSchema(template.schema)
       onClose()
     }
   }
 
-  const handleEditTemplate = (template: ResumeTemplate, e: React.MouseEvent) => {
+  const handleEditTemplate = async (template: ResumeTemplate, e: React.MouseEvent) => {
     e.stopPropagation()
-    const newName = prompt('修改模板名称', template.name)
+    const newName = await notification.prompt({
+      title: '修改模板名称',
+      message: '请输入新的模板名称',
+      defaultValue: template.name,
+    })
     if (newName && newName.trim()) {
       resumeTemplateManager.updateTemplate(template.id, {
         name: newName.trim(),
@@ -37,9 +47,14 @@ export const ResumeTemplatesPanel: React.FC<{
     }
   }
 
-  const handleDeleteTemplate = (id: string, e: React.MouseEvent) => {
+  const handleDeleteTemplate = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation()
-    if (confirm('确定删除这个简历模板吗？')) {
+    const confirmed = await notification.confirm({
+      title: '确认删除',
+      message: '确定删除这个简历模板吗？',
+      type: 'error',
+    })
+    if (confirmed) {
       resumeTemplateManager.deleteTemplate(id)
       setTemplates(resumeTemplateManager.getAllTemplates())
     }

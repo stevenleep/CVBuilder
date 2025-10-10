@@ -5,6 +5,7 @@
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
+import { notification } from '@/utils/notification'
 
 interface HeadingProps {
   style?: React.CSSProperties
@@ -96,8 +97,12 @@ export const HeadingMaterial: IMaterialDefinition = {
     moveable: true,
     canBeChild: true,
   },
-  onDoubleClick: (context) => {
-    const newText = prompt('编辑标题', context.props.text)
+  onDoubleClick: async (context) => {
+    const newText = await notification.prompt({
+      title: '编辑标题',
+      message: '请输入标题文本',
+      defaultValue: context.props.text as string,
+    })
     if (newText !== null) {
       const api = context.getEditorAPI()
       api.updateNodeProps(context.nodeId, { text: newText })

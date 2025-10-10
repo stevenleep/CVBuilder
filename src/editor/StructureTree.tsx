@@ -11,6 +11,7 @@ import { useMaterial } from '@/core'
 import { ChevronRight, ChevronDown, Eye, EyeOff, GripVertical, Copy, Trash2 } from 'lucide-react'
 import { useDrag, useDrop } from 'react-dnd'
 import { DragItemTypes } from './DndProvider'
+import { notification } from '@/utils/notification'
 
 interface StructureTreeProps {
   schema: NodeSchema
@@ -96,9 +97,14 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
     duplicateNode(schema.id)
   }
 
-  const handleDelete = (e: React.MouseEvent) => {
+  const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (confirm(`确定删除"${materialDef?.meta.title || schema.type}"吗？`)) {
+    const confirmed = await notification.confirm({
+      title: '确认删除',
+      message: `确定删除"${materialDef?.meta.title || schema.type}"吗？`,
+      type: 'warning',
+    })
+    if (confirmed) {
       deleteNode(schema.id)
     }
   }

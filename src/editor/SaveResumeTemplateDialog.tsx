@@ -3,6 +3,7 @@
  */
 
 import React, { useState } from 'react'
+import { notification } from '@/utils/notification'
 
 interface SaveResumeTemplateDialogProps {
   onSave: (name: string, description: string) => void
@@ -18,7 +19,7 @@ export const SaveResumeTemplateDialog: React.FC<SaveResumeTemplateDialogProps> =
 
   const handleSave = () => {
     if (!name.trim()) {
-      alert('请输入模板名称')
+      notification.warning('请输入模板名称')
       return
     }
     onSave(name, description)

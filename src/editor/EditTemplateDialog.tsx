@@ -1,6 +1,6 @@
 /**
  * 编辑模板对话框（完整版）
- * 
+ *
  * 支持编辑模板信息和内容
  */
 
@@ -10,8 +10,9 @@ import { Renderer } from '@/engine/Renderer'
 import { findNode, updateNodeProps } from '@utils/schema'
 import { useMaterial, IPropSchema } from '@/core'
 import { PropValue } from '@/types/material'
-import { Trash2, Copy, ChevronDown } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { RichTextEditor } from '@/components/RichTextEditor'
+import { notification } from '@/utils/notification'
 
 interface EditTemplateDialogProps {
   template: CustomTemplate
@@ -46,11 +47,17 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
       const rect = dialogRef.current.getBoundingClientRect()
       const centerX = window.innerWidth / 2
       const centerY = window.innerHeight / 2
-      
+
       // 计算新尺寸（从中心扩展）
-      const newWidth = Math.max(600, Math.min(1200, (e.clientX - centerX) * 2 + dialogSize.width / 2))
-      const newHeight = Math.max(500, Math.min(900, (e.clientY - centerY) * 2 + dialogSize.height / 2))
-      
+      const newWidth = Math.max(
+        600,
+        Math.min(1200, (e.clientX - centerX) * 2 + dialogSize.width / 2)
+      )
+      const newHeight = Math.max(
+        500,
+        Math.min(900, (e.clientY - centerY) * 2 + dialogSize.height / 2)
+      )
+
       setDialogSize({ width: newWidth, height: newHeight })
     }
 
@@ -77,7 +84,7 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
 
   const handleSave = () => {
     if (!name.trim()) {
-      alert('请输入模板名称')
+      notification.warning('请输入模板名称')
       return
     }
     // 保存模板信息
@@ -95,15 +102,15 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
     const newSchema = updateNodeProps(templateSchema, nodeId, props)
     setTemplateSchema(newSchema)
   }
-  
+
   const handleDeleteNode = (nodeId: string) => {
     // 简化版：不允许在模板编辑中删除
-    alert('请在主界面编辑完整内容后重新保存模板')
+    notification.info('请在主界面编辑完整内容后重新保存模板')
   }
-  
+
   const handleDuplicateNode = (nodeId: string) => {
     // 简化版：不允许在模板编辑中复制
-    alert('请在主界面编辑完整内容后重新保存模板')
+    notification.info('请在主界面编辑完整内容后重新保存模板')
   }
 
   return (
@@ -133,28 +140,34 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
           flexDirection: 'column',
           position: 'relative',
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         {/* 标题栏 */}
-        <div style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid #f1f1f1',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <h3 style={{
-            fontSize: '16px',
-            fontWeight: '600',
-            color: '#000',
-          }}>
+        <div
+          style={{
+            padding: '20px 24px',
+            borderBottom: '1px solid #f1f1f1',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <h3
+            style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#000',
+            }}
+          >
             编辑模板
           </h3>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <div style={{
-              fontSize: '11px',
-              color: '#999',
-            }}>
+            <div
+              style={{
+                fontSize: '11px',
+                color: '#999',
+              }}
+            >
               {dialogSize.width} × {dialogSize.height}
             </div>
             <button
@@ -176,13 +189,15 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
         </div>
 
         {/* Tab切换 */}
-        <div style={{
-          display: 'flex',
-          gap: '4px',
-          padding: '12px 24px',
-          borderBottom: '1px solid #f1f1f1',
-          backgroundColor: '#fafafa',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: '4px',
+            padding: '12px 24px',
+            borderBottom: '1px solid #f1f1f1',
+            backgroundColor: '#fafafa',
+          }}
+        >
           {[
             { id: 'info', label: '模板信息' },
             { id: 'content', label: '编辑内容' },
@@ -213,19 +228,21 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
             // 模板信息编辑
             <div style={{ flex: 1, padding: '24px', overflow: 'auto' }}>
               <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  marginBottom: '6px',
-                  color: '#666',
-                }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    marginBottom: '6px',
+                    color: '#666',
+                  }}
+                >
                   模板名称 *
                 </label>
                 <input
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={e => setName(e.target.value)}
                   style={{
                     width: '100%',
                     height: '32px',
@@ -239,18 +256,20 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
               </div>
 
               <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  marginBottom: '6px',
-                  color: '#666',
-                }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    marginBottom: '6px',
+                    color: '#666',
+                  }}
+                >
                   描述
                 </label>
                 <textarea
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={e => setDescription(e.target.value)}
                   placeholder="模板说明..."
                   rows={4}
                   style={{
@@ -267,18 +286,20 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
               </div>
 
               <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  marginBottom: '6px',
-                  color: '#666',
-                }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    marginBottom: '6px',
+                    color: '#666',
+                  }}
+                >
                   分类
                 </label>
                 <select
                   value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={e => setCategory(e.target.value)}
                   style={{
                     width: '100%',
                     height: '32px',
@@ -297,35 +318,39 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
                 </select>
               </div>
 
-              <div style={{
-                padding: '12px',
-                backgroundColor: '#f8f8f8',
-                borderRadius: '4px',
-              }}>
+              <div
+                style={{
+                  padding: '12px',
+                  backgroundColor: '#f8f8f8',
+                  borderRadius: '4px',
+                }}
+              >
                 <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>
                   创建时间：{new Date(template.createTime).toLocaleString('zh-CN')}
                 </div>
-                <div style={{ fontSize: '11px', color: '#666' }}>
-                  模板ID：{template.id}
-                </div>
+                <div style={{ fontSize: '11px', color: '#666' }}>模板ID：{template.id}</div>
               </div>
             </div>
           ) : (
             // 模板内容编辑
             <>
               {/* 预览区 */}
-              <div style={{
-                flex: 1,
-                padding: '24px',
-                overflow: 'auto',
-                backgroundColor: '#fafafa',
-              }}>
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '20px',
-                  borderRadius: '4px',
-                  border: '1px solid #f1f1f1',
-                }}>
+              <div
+                style={{
+                  flex: 1,
+                  padding: '24px',
+                  overflow: 'auto',
+                  backgroundColor: '#fafafa',
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: 'white',
+                    padding: '20px',
+                    borderRadius: '4px',
+                    border: '1px solid #f1f1f1',
+                  }}
+                >
                   <Renderer
                     schema={templateSchema}
                     isEditMode={true}
@@ -340,25 +365,29 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
                 <TemplatePropertyPanel
                   node={selectedNode}
                   materialDef={materialDef}
-                  onUpdateProps={(props) => handleUpdateNodeProps(selectedNodeId!, props)}
+                  onUpdateProps={props => handleUpdateNodeProps(selectedNodeId!, props)}
                   onDelete={() => handleDeleteNode(selectedNodeId!)}
                   onDuplicate={() => handleDuplicateNode(selectedNodeId!)}
                 />
               )}
-              
+
               {!selectedNode && (
-                <div style={{
-                  width: '280px',
-                  borderLeft: '1px solid #f1f1f1',
-                  padding: '40px 24px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#ccc',
-                  fontSize: '12px',
-                  textAlign: 'center',
-                }}>
-                  点击左侧组件<br/>编辑内容
+                <div
+                  style={{
+                    width: '280px',
+                    borderLeft: '1px solid #f1f1f1',
+                    padding: '40px 24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ccc',
+                    fontSize: '12px',
+                    textAlign: 'center',
+                  }}
+                >
+                  点击左侧组件
+                  <br />
+                  编辑内容
                 </div>
               )}
             </>
@@ -366,14 +395,16 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
         </div>
 
         {/* 底部按钮 */}
-        <div style={{
-          padding: '16px 24px',
-          borderTop: '1px solid #f1f1f1',
-          display: 'flex',
-          gap: '8px',
-          justifyContent: 'flex-end',
-          backgroundColor: '#fafafa',
-        }}>
+        <div
+          style={{
+            padding: '16px 24px',
+            borderTop: '1px solid #f1f1f1',
+            display: 'flex',
+            gap: '8px',
+            justifyContent: 'flex-end',
+            backgroundColor: '#fafafa',
+          }}
+        >
           <button
             onClick={onClose}
             style={{
@@ -407,7 +438,7 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
             保存
           </button>
         </div>
-        
+
         {/* 调整大小手柄 */}
         <div
           onMouseDown={handleResizeStart}
@@ -421,15 +452,17 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
             zIndex: 10,
           }}
         >
-          <div style={{
-            position: 'absolute',
-            right: '4px',
-            bottom: '4px',
-            width: '12px',
-            height: '12px',
-            borderRight: '2px solid #d0d0d0',
-            borderBottom: '2px solid #d0d0d0',
-          }} />
+          <div
+            style={{
+              position: 'absolute',
+              right: '4px',
+              bottom: '4px',
+              width: '12px',
+              height: '12px',
+              borderRight: '2px solid #d0d0d0',
+              borderBottom: '2px solid #d0d0d0',
+            }}
+          />
         </div>
       </div>
     </div>
@@ -443,16 +476,12 @@ const TemplatePropertyPanel: React.FC<{
   onUpdateProps: (props: Record<string, PropValue>) => void
   onDelete: () => void
   onDuplicate: () => void
-}> = ({ node, materialDef, onUpdateProps, onDelete, onDuplicate }) => {
-  const capabilities = materialDef.capabilities || {}
-  const canDelete = capabilities.deletable !== false
-  const canCopy = capabilities.copyable !== false
-
+}> = ({ node, materialDef, onUpdateProps }) => {
   const groupedProps: Record<string, IPropSchema[]> = {}
   materialDef.propsSchema.forEach((prop: IPropSchema) => {
     if (prop.hidden) return
     if (prop.visibleWhen && !prop.visibleWhen(node.props || {})) return
-    
+
     const group = prop.group || '属性'
     if (!groupedProps[group]) {
       groupedProps[group] = []
@@ -461,40 +490,50 @@ const TemplatePropertyPanel: React.FC<{
   })
 
   return (
-    <div style={{
-      width: '320px',
-      borderLeft: '1px solid #f1f1f1',
-      backgroundColor: '#fff',
-      display: 'flex',
-      flexDirection: 'column',
-    }}>
+    <div
+      style={{
+        width: '320px',
+        borderLeft: '1px solid #f1f1f1',
+        backgroundColor: '#fff',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {/* 标题 */}
-      <div style={{ 
-        padding: '16px',
-        borderBottom: '1px solid #f1f1f1',
-      }}>
-        <div style={{ 
-          fontSize: '12px',
-          fontWeight: '600',
-          color: '#000',
-          marginBottom: '2px',
-        }}>
+      <div
+        style={{
+          padding: '16px',
+          borderBottom: '1px solid #f1f1f1',
+        }}
+      >
+        <div
+          style={{
+            fontSize: '12px',
+            fontWeight: '600',
+            color: '#000',
+            marginBottom: '2px',
+          }}
+        >
           {materialDef.meta.title}
         </div>
-        <div style={{ 
-          fontSize: '11px',
-          color: '#999',
-        }}>
+        <div
+          style={{
+            fontSize: '11px',
+            color: '#999',
+          }}
+        >
           {materialDef.meta.description}
         </div>
       </div>
 
       {/* 属性 */}
-      <div style={{ 
-        flex: 1,
-        overflow: 'auto',
-        padding: '16px',
-      }}>
+      <div
+        style={{
+          flex: 1,
+          overflow: 'auto',
+          padding: '16px',
+        }}
+      >
         {Object.entries(groupedProps).map(([group, props]) => (
           <PropertyGroup
             key={group}
@@ -517,7 +556,7 @@ const PropertyGroup: React.FC<{
   onChange: (props: Record<string, PropValue>) => void
 }> = ({ title, props, nodeProps, onChange }) => {
   const [collapsed, setCollapsed] = React.useState(false)
-  
+
   return (
     <div style={{ marginBottom: '16px' }}>
       <div
@@ -531,25 +570,27 @@ const PropertyGroup: React.FC<{
           padding: '4px 0',
         }}
       >
-        <div style={{ 
-          fontSize: '11px',
-          fontWeight: '600',
-          color: '#000',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-        }}>
+        <div
+          style={{
+            fontSize: '11px',
+            fontWeight: '600',
+            color: '#000',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+          }}
+        >
           {title}
         </div>
-        <ChevronDown 
-          size={14} 
-          style={{ 
+        <ChevronDown
+          size={14}
+          style={{
             color: '#999',
             transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
             transition: 'transform 0.15s',
-          }} 
+          }}
         />
       </div>
-      
+
       {!collapsed && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {props.map(propSchema => (
@@ -557,7 +598,7 @@ const PropertyGroup: React.FC<{
               key={propSchema.name}
               schema={propSchema}
               value={nodeProps[propSchema.name] ?? propSchema.defaultValue}
-              onChange={(value) => onChange({ [propSchema.name]: value })}
+              onChange={value => onChange({ [propSchema.name]: value })}
             />
           ))}
         </div>
@@ -602,42 +643,44 @@ const PropertyInput: React.FC<{
           <input
             type="text"
             value={String(value || '')}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             placeholder={schema.description}
             style={baseStyle}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
         )
-      
+
       case 'number':
         return (
           <input
             type="number"
             value={Number(value || 0)}
-            onChange={(e) => onChange(Number(e.target.value))}
+            onChange={e => onChange(Number(e.target.value))}
             style={baseStyle}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
         )
-      
+
       case 'boolean':
         return (
-          <label style={{ 
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            cursor: 'pointer',
-            height: '30px',
-          }}>
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              height: '30px',
+            }}
+          >
             <input
               type="checkbox"
               checked={Boolean(value)}
-              onChange={(e) => onChange(e.target.checked)}
-              style={{ 
-                width: '14px', 
-                height: '14px', 
+              onChange={e => onChange(e.target.checked)}
+              style={{
+                width: '14px',
+                height: '14px',
                 cursor: 'pointer',
                 accentColor: '#000',
               }}
@@ -645,15 +688,15 @@ const PropertyInput: React.FC<{
             <span style={{ fontSize: '12px', color: '#666' }}>启用</span>
           </label>
         )
-      
+
       case 'color':
         return (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <input
               type="color"
               value={String(value || '#000000')}
-              onChange={(e) => onChange(e.target.value)}
-              style={{ 
+              onChange={e => onChange(e.target.value)}
+              style={{
                 width: '30px',
                 height: '30px',
                 border: '1px solid #f1f1f1',
@@ -665,24 +708,25 @@ const PropertyInput: React.FC<{
             <input
               type="text"
               value={String(value || '#000000')}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={e => onChange(e.target.value)}
               style={{ ...baseStyle, flex: 1 }}
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
           </div>
         )
-      
+
       case 'select':
         return (
           <select
             value={String(value || '')}
-            onChange={(e) => onChange(e.target.value)}
-            style={{ 
-              ...baseStyle, 
+            onChange={e => onChange(e.target.value)}
+            style={{
+              ...baseStyle,
               cursor: 'pointer',
               paddingRight: '30px',
-              backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'10\' height=\'6\' viewBox=\'0 0 10 6\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M1 1L5 5L9 1\' stroke=\'%23999\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/%3E%3C/svg%3E")',
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 10px center',
               appearance: 'none',
@@ -697,12 +741,12 @@ const PropertyInput: React.FC<{
             ))}
           </select>
         )
-      
+
       case 'textarea':
         return (
           <textarea
             value={String(value || '')}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             placeholder={schema.description}
             rows={4}
             style={{
@@ -717,23 +761,23 @@ const PropertyInput: React.FC<{
             onBlur={handleBlur}
           />
         )
-      
+
       case 'richtext':
         return (
           <RichTextEditor
             value={String(value || '')}
-            onChange={(val) => onChange(val)}
+            onChange={val => onChange(val)}
             placeholder={schema.description}
             minHeight={schema.minHeight || 100}
           />
         )
-      
+
       default:
         return (
           <input
             type="text"
             value={String(value || '')}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             style={baseStyle}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -744,26 +788,33 @@ const PropertyInput: React.FC<{
 
   return (
     <div>
-      <label style={{
-        display: 'block',
-        fontSize: '11px',
-        fontWeight: '500',
-        marginBottom: '6px',
-        color: '#666',
-      }}>
+      <label
+        style={{
+          display: 'block',
+          fontSize: '11px',
+          fontWeight: '500',
+          marginBottom: '6px',
+          color: '#666',
+        }}
+      >
         {schema.label}
         {schema.required && <span style={{ color: '#f00' }}> *</span>}
       </label>
       {renderInput()}
-      {schema.description && schema.type !== 'string' && schema.type !== 'textarea' && schema.type !== 'richtext' && (
-        <div style={{
-          fontSize: '10px',
-          color: '#999',
-          marginTop: '4px',
-        }}>
-          {schema.description}
-        </div>
-      )}
+      {schema.description &&
+        schema.type !== 'string' &&
+        schema.type !== 'textarea' &&
+        schema.type !== 'richtext' && (
+          <div
+            style={{
+              fontSize: '10px',
+              color: '#999',
+              marginTop: '4px',
+            }}
+          >
+            {schema.description}
+          </div>
+        )}
     </div>
   )
 }

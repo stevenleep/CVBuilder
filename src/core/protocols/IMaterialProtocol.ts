@@ -11,8 +11,6 @@ import { z } from 'zod'
  * 物料元数据
  */
 export interface IMaterialMeta {
-  defaultStyle: {}
-  defaultProps: {}
   /** 物料唯一标识 */
   type: string
   /** 物料名称 */
@@ -31,6 +29,10 @@ export interface IMaterialMeta {
   tags?: string[]
   /** 版本 */
   version?: string
+  /** 默认样式（可选） */
+  defaultStyle?: {}
+  /** 默认属性（可选） */
+  defaultProps?: {}
 }
 
 /**

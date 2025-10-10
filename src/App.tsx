@@ -10,6 +10,7 @@ import { bootstrapEditor } from './core'
 import { EditorProvider } from './core/context/EditorContext'
 import { ThemeProvider } from './core/context/ThemeContext'
 import { DndProvider } from './editor/DndProvider'
+import { NotificationProvider } from './components/NotificationProvider'
 
 function App() {
   const [isInitialized, setIsInitialized] = useState(false)
@@ -61,13 +62,15 @@ function App() {
   }
 
   return (
-    <EditorProvider value={editorContext}>
-      <ThemeProvider>
-        <DndProvider>
-          <EditorLayout />
-        </DndProvider>
-      </ThemeProvider>
-    </EditorProvider>
+    <NotificationProvider>
+      <EditorProvider value={editorContext}>
+        <ThemeProvider>
+          <DndProvider>
+            <EditorLayout />
+          </DndProvider>
+        </ThemeProvider>
+      </EditorProvider>
+    </NotificationProvider>
   )
 }
 

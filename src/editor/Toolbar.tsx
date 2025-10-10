@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react'
 import { useEditorStore } from '@store/editorStore'
+import { notification } from '@/utils/notification'
 import { 
   Undo, 
   Redo, 
@@ -64,7 +65,7 @@ export const Toolbar: React.FC = () => {
   
   const handleSaveResumeTemplate = (name: string, description: string) => {
     resumeTemplateManager.saveAsTemplate(pageSchema, name, description)
-    alert('简历模板保存成功！')
+    notification.success('简历模板保存成功！')
   }
 
   return (

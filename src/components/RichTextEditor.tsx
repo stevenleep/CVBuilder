@@ -6,6 +6,7 @@
 
 import React, { useRef, useEffect, useState } from 'react'
 import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Tag, ChevronDown } from 'lucide-react'
+import { notification } from '@/utils/notification'
 
 interface RichTextEditorProps {
   value: string
@@ -65,9 +66,13 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     handleInput()
   }
 
-  const insertLink = (e: React.MouseEvent) => {
+  const insertLink = async (e: React.MouseEvent) => {
     e.preventDefault()
-    const url = prompt('请输入链接地址:')
+    const url = await notification.prompt({
+      title: '插入链接',
+      message: '请输入链接地址',
+      placeholder: 'https://example.com',
+    })
     if (url) {
       document.execCommand('createLink', false, url)
       handleInput()
@@ -83,7 +88,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       document.execCommand('insertHTML', false, badge)
       handleInput()
     } else {
-      alert('请先选中文字')
+      notification.warning('请先选中文字')
     }
   }
 

@@ -5,6 +5,7 @@
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
+import { notification } from '@/utils/notification'
 
 interface TextBlockProps {
   style?: React.CSSProperties
@@ -80,8 +81,12 @@ export const TextBlockMaterial: IMaterialDefinition = {
     moveable: true,
     canBeChild: true,
   },
-  onDoubleClick: (context) => {
-    const newContent = prompt('编辑文本内容', context.props.content)
+  onDoubleClick: async (context) => {
+    const newContent = await notification.prompt({
+      title: '编辑文本',
+      message: '请输入文本内容',
+      defaultValue: context.props.content as string,
+    })
     if (newContent !== null) {
       const api = context.getEditorAPI()
       api.updateNodeProps(context.nodeId, { content: newContent })
