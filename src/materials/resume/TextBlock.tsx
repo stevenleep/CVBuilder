@@ -13,13 +13,13 @@ interface TextBlockProps {
   align?: 'left' | 'center' | 'right' | 'justify'
 }
 
-const TextBlock: React.FC<TextBlockProps> = ({ 
+const TextBlock: React.FC<TextBlockProps> = ({
   style,
   content = '在此输入文本内容...',
   align = 'left',
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
     <div
       style={{
@@ -44,6 +44,7 @@ export const TextBlockMaterial: IMaterialDefinition = {
     title: '文本块',
     description: '自由文本内容区域',
     category: 'resume',
+    subcategory: 'content',
     tags: ['简历', '文本', '内容'],
     version: '1.0.0',
   },
@@ -81,7 +82,7 @@ export const TextBlockMaterial: IMaterialDefinition = {
     moveable: true,
     canBeChild: true,
   },
-  onDoubleClick: async (context) => {
+  onDoubleClick: async context => {
     const newContent = await notification.prompt({
       title: '编辑文本',
       message: '请输入文本内容',

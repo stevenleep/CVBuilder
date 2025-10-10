@@ -97,10 +97,9 @@ export const Renderer: React.FC<RendererProps> = ({
   const handleMouseEnter = useCallback(
     (e: React.MouseEvent) => {
       if (isEditMode && onNodeHover) {
-        // 阻止事件冒泡，确保只有最内层的组件显示工具栏
+        // 阻止事件冒泡，确保只有最内层的组件显示hover状态
         e.stopPropagation()
         onNodeHover(id)
-        setShowToolbar(true)
       }
     },
     [isEditMode, onNodeHover, id]
@@ -110,19 +109,24 @@ export const Renderer: React.FC<RendererProps> = ({
     (e: React.MouseEvent) => {
       if (isEditMode && onNodeHover) {
         e.stopPropagation()
-        // 使用延迟隐藏，给用户时间移动到工具栏上
-        setTimeout(() => {
-          // 检查鼠标是否在工具栏上，如果不在才隐藏
-          const toolbarElement = document.querySelector(`[data-toolbar-id="${id}"]`)
-          if (!toolbarElement || !toolbarElement.matches(':hover')) {
-            onNodeHover(null)
-            setShowToolbar(false)
-          }
-        }, 200)
+        onNodeHover(null)
       }
     },
     [isEditMode, onNodeHover, id]
   )
+
+  // 判断是否选中或悬停（需要在 useEffect 之前定义）
+  const isSelected = selectedNodeIds.includes(id)
+  const isHovered = hoveredNodeId === id && !isSelected
+
+  // 选中时显示工具栏，而不是hover时
+  useEffect(() => {
+    if (isSelected) {
+      setShowToolbar(true)
+    } else {
+      setShowToolbar(false)
+    }
+  }, [isSelected])
 
   // 拖拽支持
   const [{ isDragging }, drag] = useDrag<NodeDragItem, void, { isDragging: boolean }>(
@@ -257,26 +261,20 @@ export const Renderer: React.FC<RendererProps> = ({
     })
   }
 
-  // 判断是否选中或悬停
-  const isSelected = selectedNodeIds.includes(id)
-  const isHovered = hoveredNodeId === id && !isSelected
-
   // 编辑模式包装器样式
   const wrapperStyle: React.CSSProperties = {
     position: 'relative',
     opacity: isDragging ? 0.3 : hidden ? 0.3 : 1,
     ...(isEditMode && isSelected
       ? {
-          outline: '1.5px solid #3b82f6',
-          outlineOffset: '0px',
-          borderRadius: '3px',
+          boxShadow: '0 0 0 2px #666',
+          borderRadius: '2px',
         }
       : {}),
     ...(isEditMode && isHovered
       ? {
-          outline: '1px solid #d0d0d0',
-          outlineOffset: '0px',
-          borderRadius: '3px',
+          boxShadow: '0 0 0 1px #e0e0e0',
+          borderRadius: '2px',
           backgroundColor: 'rgba(0, 0, 0, 0.01)',
         }
       : {}),
@@ -287,19 +285,20 @@ export const Renderer: React.FC<RendererProps> = ({
       : {}),
     transition: 'all 0.12s ease',
     cursor: isEditMode ? (isDragging ? 'grabbing' : 'pointer') : 'default',
-    // 增加点击区域
-    minHeight: isEditMode ? '20px' : 'auto',
   }
 
   const wrapperProps = isEditMode
     ? {
         'data-node-id': id,
         'data-node-type': type,
+        'data-material-type': type,
         onClick: handleClick,
         onMouseEnter: handleMouseEnter,
         onMouseLeave: handleMouseLeave,
       }
-    : {}
+    : {
+        'data-material-type': type,
+      }
 
   const content = (
     <div
@@ -308,31 +307,31 @@ export const Renderer: React.FC<RendererProps> = ({
       onDoubleClick={handleDoubleClick}
       style={wrapperStyle}
     >
-      {/* 选中指示器 - 只在工具栏hover时显示 */}
-      {isEditMode && isSelected && !isDragging && showToolbar && (
+      {/* 选中指示器 - 选中时显示物料名称 */}
+      {isEditMode && isSelected && !isDragging && (
         <div
           style={{
             position: 'absolute',
             top: '-2px',
             left: '-2px',
             fontSize: '10px',
-            backgroundColor: '#3b82f6',
+            backgroundColor: '#2d2d2d',
             color: 'white',
             padding: '2px 8px',
             borderRadius: '3px',
             fontWeight: '500',
             zIndex: 1000,
             pointerEvents: 'none',
-            opacity: 0.95,
-            boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)',
+            border: '1px solid #666',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
           }}
         >
           {materialDef.meta.title}
         </div>
       )}
 
-      {/* 浮动工具栏 - 只在当前hover的组件上显示 */}
-      {isEditMode && hoveredNodeId === id && showToolbar && !isDragging && (
+      {/* 浮动工具栏 - 单选时显示，多选时不显示（使用底部工具栏） */}
+      {isEditMode && isSelected && showToolbar && !isDragging && selectedNodeIds.length === 1 && (
         <div
           style={{
             position: 'absolute',
@@ -349,19 +348,6 @@ export const Renderer: React.FC<RendererProps> = ({
             style={{
               position: 'relative',
               pointerEvents: 'auto',
-            }}
-            onMouseEnter={e => {
-              e.stopPropagation()
-              setShowToolbar(true)
-              onNodeHover?.(id)
-            }}
-            onMouseLeave={e => {
-              e.stopPropagation()
-              // 延迟隐藏，给用户时间
-              setTimeout(() => {
-                setShowToolbar(false)
-                onNodeHover?.(null)
-              }, 150)
             }}
           >
             <NodeToolbar

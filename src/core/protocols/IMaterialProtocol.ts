@@ -19,6 +19,8 @@ export interface IMaterialMeta {
   description?: string
   /** 物料分类 */
   category: string
+  /** 物料子分类（可选，用于更细粒度的分组） */
+  subcategory?: string
   /** 物料图标 */
   icon?: string
   /** 缩略图 */

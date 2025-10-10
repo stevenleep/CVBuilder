@@ -12,12 +12,12 @@ interface InterestsHobbiesProps {
   content?: string
 }
 
-const InterestsHobbies: React.FC<InterestsHobbiesProps> = ({ 
+const InterestsHobbies: React.FC<InterestsHobbiesProps> = ({
   style,
   content = '📚 阅读 · 🏃 跑步 · 📷 摄影 · 🎵 音乐',
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
     <RichTextDisplay
       html={content}
@@ -37,6 +37,7 @@ export const InterestsHobbiesMaterial: IMaterialDefinition = {
     title: '兴趣爱好',
     description: '个人兴趣和爱好',
     category: 'resume',
+    subcategory: 'content',
     tags: ['简历', '兴趣', '爱好'],
     version: '2.0.0',
   },
@@ -63,4 +64,3 @@ export const InterestsHobbiesMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

@@ -14,7 +14,7 @@ interface AwardItemProps {
   description?: string
 }
 
-const AwardItem: React.FC<AwardItemProps> = ({ 
+const AwardItem: React.FC<AwardItemProps> = ({
   style,
   title = '奖项名称',
   issuer = '颁发机构',
@@ -22,51 +22,63 @@ const AwardItem: React.FC<AwardItemProps> = ({
   description = '',
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
-    <div style={{ 
-      marginBottom: `${theme.spacing.item - 2}px`,
-      ...style 
-    }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'baseline',
-        gap: '16px',
-        marginBottom: description ? `${theme.spacing.line - 2}px` : '0',
-      }}>
+    <div
+      style={{
+        marginBottom: `${theme.spacing.item - 2}px`,
+        ...style,
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          gap: '16px',
+          marginBottom: description ? `${theme.spacing.line - 2}px` : '0',
+        }}
+      >
         <div style={{ flex: 1 }}>
-          <span style={{ 
-            fontSize: `${theme.font.titleSize.h3}px`,
-            fontWeight: theme.font.weight.semibold,
-            color: theme.color.text.primary,
-          }}>
+          <span
+            style={{
+              fontSize: `${theme.font.titleSize.h3}px`,
+              fontWeight: theme.font.weight.semibold,
+              color: theme.color.text.primary,
+            }}
+          >
             {title}
           </span>
-          <span style={{
-            fontSize: `${theme.font.bodySize.normal}px`,
-            color: theme.color.text.secondary,
-            marginLeft: `${theme.spacing.line + 4}px`,
-          }}>
+          <span
+            style={{
+              fontSize: `${theme.font.bodySize.normal}px`,
+              color: theme.color.text.secondary,
+              marginLeft: `${theme.spacing.line + 4}px`,
+            }}
+          >
             · {issuer}
           </span>
         </div>
-        
-        <span style={{ 
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          whiteSpace: 'nowrap',
-        }}>
+
+        <span
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            whiteSpace: 'nowrap',
+          }}
+        >
           {date}
         </span>
       </div>
-      
+
       {description && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.normal}px`,
-          color: theme.color.text.secondary,
-          lineHeight: theme.layout.lineHeight,
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.normal}px`,
+            color: theme.color.text.secondary,
+            lineHeight: theme.layout.lineHeight,
+          }}
+        >
           {description}
         </div>
       )}
@@ -80,6 +92,7 @@ export const AwardItemMaterial: IMaterialDefinition = {
     title: '获奖荣誉',
     description: '奖项和荣誉展示',
     category: 'resume',
+    subcategory: 'items',
     tags: ['简历', '奖项', '荣誉'],
     version: '1.0.0',
   },
@@ -129,4 +142,3 @@ export const AwardItemMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

@@ -125,7 +125,18 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
 
       <div
         ref={combineRefs}
-        onClick={() => onSelectNode?.(schema.id)}
+        onClick={e => {
+          const isMultiSelect = e.metaKey || e.ctrlKey
+          if (onSelectNode) {
+            if (isMultiSelect) {
+              // 多选模式：使用 store 的 selectNode 方法
+              const { selectNode } = useEditorStore.getState()
+              selectNode(schema.id, true)
+            } else {
+              onSelectNode(schema.id)
+            }
+          }
+        }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{
@@ -376,10 +387,10 @@ export const StructurePanel: React.FC = () => {
           borderTop: '1px solid #f1f1f1',
           fontSize: '10px',
           color: '#999',
-          lineHeight: '1.4',
+          lineHeight: '1.5',
         }}
       >
-        💡 拖拽调整顺序 · 点击选中 · Hover快捷操作
+        💡 Ctrl+点击多选 · Ctrl+A全选 · 拖拽调整顺序
       </div>
     </div>
   )

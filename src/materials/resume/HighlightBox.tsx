@@ -1,6 +1,6 @@
 /**
  * 亮点/成就高亮框
- * 
+ *
  * 用于突出显示核心成就和亮点
  */
 
@@ -17,7 +17,7 @@ interface HighlightBoxProps {
   variant?: 'default' | 'bordered' | 'filled'
 }
 
-const HighlightBox: React.FC<HighlightBoxProps> = ({ 
+const HighlightBox: React.FC<HighlightBoxProps> = ({
   style,
   title = '核心亮点',
   content = '<ul><li>完成业绩目标150%</li><li>获得年度最佳员工奖</li></ul>',
@@ -25,7 +25,7 @@ const HighlightBox: React.FC<HighlightBoxProps> = ({
   variant = 'default',
 }) => {
   const theme = useThemeConfig()
-  
+
   const variantStyles = {
     default: {
       backgroundColor: 'transparent',
@@ -45,28 +45,32 @@ const HighlightBox: React.FC<HighlightBoxProps> = ({
       borderRadius: '4px',
     },
   }
-  
+
   return (
-    <div style={{ 
-      marginBottom: `${theme.spacing.item}px`,
-      ...variantStyles[variant],
-      ...style,
-    }}>
+    <div
+      style={{
+        marginBottom: `${theme.spacing.item}px`,
+        ...variantStyles[variant],
+        ...style,
+      }}
+    >
       {title && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.normal}px`,
-          fontWeight: theme.font.weight.semibold,
-          color: theme.color.text.primary,
-          marginBottom: `${theme.spacing.line}px`,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.normal}px`,
+            fontWeight: theme.font.weight.semibold,
+            color: theme.color.text.primary,
+            marginBottom: `${theme.spacing.line}px`,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
           {icon && <span>{icon}</span>}
           {title}
         </div>
       )}
-      
+
       <RichTextDisplay
         html={content}
         style={{
@@ -85,6 +89,7 @@ export const HighlightBoxMaterial: IMaterialDefinition = {
     title: '亮点/成就',
     description: '突出显示核心成就',
     category: 'resume',
+    subcategory: 'highlight',
     tags: ['简历', '亮点', '成就'],
     version: '1.0.0',
   },
@@ -140,4 +145,3 @@ export const HighlightBoxMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

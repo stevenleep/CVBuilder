@@ -145,42 +145,75 @@ export const Toolbar: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 300))
       }
 
-      // 获取画布元素
-      const canvasElement = document.querySelector('[data-canvas]') as HTMLElement
-      if (!canvasElement) {
-        notification.error('未找到画布元素')
+      // 获取所有页面元素
+      const pageElements = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
+      if (pageElements.length === 0) {
+        notification.error('未找到页面元素')
         return
       }
 
-      notification.info('正在生成高清图片，请稍候...')
+      notification.info(`正在生成 ${pageElements.length} 张高清图片，请稍候...`)
 
-      // 生成高清截图
-      const canvas = await html2canvas(canvasElement, {
-        scale: 4, // 4倍分辨率，超高清
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: canvasElement.scrollWidth,
-        windowHeight: canvasElement.scrollHeight,
-      })
+      // 如果只有一页，直接导出PNG
+      if (pageElements.length === 1) {
+        const canvas = await html2canvas(pageElements[0], {
+          scale: 4,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: '#ffffff',
+          logging: false,
+        })
 
-      // 转换为图片并下载
-      canvas.toBlob(
-        blob => {
+        canvas.toBlob(
+          blob => {
+            if (blob) {
+              const url = URL.createObjectURL(blob)
+              const link = document.createElement('a')
+              link.href = url
+              link.download = `resume-${Date.now()}.png`
+              link.click()
+              URL.revokeObjectURL(url)
+              notification.success('图片导出成功！')
+            }
+          },
+          'image/png',
+          1.0
+        )
+      } else {
+        // 多页：打包为zip
+        const JSZip = (await import('jszip')).default
+        const zip = new JSZip()
+
+        // 逐页截图并添加到zip
+        for (let i = 0; i < pageElements.length; i++) {
+          const canvas = await html2canvas(pageElements[i], {
+            scale: 4,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: '#ffffff',
+            logging: false,
+          })
+
+          const blob = await new Promise<Blob | null>(resolve => {
+            canvas.toBlob(resolve, 'image/png', 1.0)
+          })
+
           if (blob) {
-            const url = URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.href = url
-            link.download = `resume-${Date.now()}.png`
-            link.click()
-            URL.revokeObjectURL(url)
-            notification.success('图片导出成功！')
+            zip.file(`resume-page-${i + 1}.png`, blob)
           }
-        },
-        'image/png',
-        1.0
-      )
+        }
+
+        // 生成并下载zip
+        const zipBlob = await zip.generateAsync({ type: 'blob' })
+        const url = URL.createObjectURL(zipBlob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `resume-${Date.now()}.zip`
+        link.click()
+        URL.revokeObjectURL(url)
+
+        notification.success(`已导出 ${pageElements.length} 张图片（ZIP格式）！`)
+      }
 
       // 恢复原始模式和缩放
       if (originalMode !== mode) {
@@ -214,33 +247,14 @@ export const Toolbar: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 300))
       }
 
-      // 获取画布元素
-      const canvasElement = document.querySelector('[data-canvas]') as HTMLElement
-      if (!canvasElement) {
-        notification.error('未找到画布元素')
+      // 获取所有页面元素
+      const pageElements = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
+      if (pageElements.length === 0) {
+        notification.error('未找到页面元素')
         return
       }
 
-      notification.info('正在生成 PDF，请稍候...')
-
-      // 生成高清截图
-      const canvas = await html2canvas(canvasElement, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: canvasElement.scrollWidth,
-        windowHeight: canvasElement.scrollHeight,
-      })
-
-      // A4 尺寸 (mm)
-      const a4Width = 210
-      const a4Height = 297
-
-      // 计算图片尺寸（不额外添加边距，使用页面自带的padding）
-      const imgWidth = a4Width
-      const imgHeight = (canvas.height * imgWidth) / canvas.width
+      notification.info(`正在生成 ${pageElements.length} 页 PDF，请稍候...`)
 
       // 创建 PDF
       const pdf = new jsPDF({
@@ -250,27 +264,41 @@ export const Toolbar: React.FC = () => {
         compress: true,
       })
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.95)
+      // A4 尺寸
+      const a4Width = 210
+      const a4Height = 297
 
-      // 如果内容高度超过一页，需要分页
-      if (imgHeight > a4Height) {
-        let heightLeft = imgHeight
-        let position = 0
+      // 逐页截图并添加到PDF
+      for (let i = 0; i < pageElements.length; i++) {
+        const pageElement = pageElements[i]
 
-        // 添加第一页
-        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight)
-        heightLeft -= a4Height
+        // 截图当前页面
+        const canvas = await html2canvas(pageElement, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: '#ffffff',
+          logging: false,
+        })
 
-        // 添加后续页
-        while (heightLeft > 0) {
-          position = heightLeft - imgHeight
+        const imgData = canvas.toDataURL('image/jpeg', 0.95)
+
+        // 如果不是第一页，添加新页
+        if (i > 0) {
           pdf.addPage()
-          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight)
-          heightLeft -= a4Height
         }
-      } else {
-        // 单页直接添加
-        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight)
+
+        // 添加图片到当前页，保持原始比例
+        const imgWidth = a4Width
+        const imgHeight = (canvas.height * imgWidth) / canvas.width
+
+        // 如果图片高度超过A4，按比例缩小
+        if (imgHeight > a4Height) {
+          const scale = a4Height / imgHeight
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth * scale, a4Height)
+        } else {
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight)
+        }
       }
 
       // 保存 PDF
@@ -285,38 +313,38 @@ export const Toolbar: React.FC = () => {
       }
 
       setShowExportMenu(false)
-      notification.success('PDF 导出成功！')
+      notification.success(`PDF 导出成功！共 ${pageElements.length} 页`)
     } catch (error) {
       notification.error('PDF 导出失败')
       console.error('PDF export error:', error)
     }
   }
 
-  const handlePrintPDF = () => {
-    const originalMode = mode
+  // const handlePrintPDF = () => {
+  //   const originalMode = mode
 
-    // 切换到预览模式
-    if (mode !== 'preview') {
-      setMode('preview')
-    }
+  //   // 切换到预览模式
+  //   if (mode !== 'preview') {
+  //     setMode('preview')
+  //   }
 
-    setShowExportMenu(false)
+  //   setShowExportMenu(false)
 
-    // 延迟一下让模式切换完成
-    setTimeout(() => {
-      // 使用浏览器打印功能（最高质量的PDF导出）
-      window.print()
+  //   // 延迟一下让模式切换完成
+  //   setTimeout(() => {
+  //     // 使用浏览器打印功能（最高质量的PDF导出）
+  //     window.print()
 
-      // 打印对话框关闭后恢复模式
-      setTimeout(() => {
-        if (originalMode !== mode) {
-          setMode(originalMode)
-        }
-      }, 100)
-    }, 200)
+  //     // 打印对话框关闭后恢复模式
+  //     setTimeout(() => {
+  //       if (originalMode !== mode) {
+  //         setMode(originalMode)
+  //       }
+  //     }, 100)
+  //   }, 200)
 
-    notification.info('请在打印对话框中选择"另存为PDF"')
-  }
+  //   notification.info('请在打印对话框中选择"另存为PDF"')
+  // }
 
   const handleSaveResumeTemplate = (name: string, description: string) => {
     resumeTemplateManager.saveAsTemplate(pageSchema, name, description)
@@ -435,7 +463,7 @@ export const Toolbar: React.FC = () => {
           >
             <MenuButton onClick={handleExportPNG}>导出高清图片</MenuButton>
             <MenuButton onClick={handleExportPDF}>导出 PDF</MenuButton>
-            <MenuButton onClick={handlePrintPDF}>浏览器打印</MenuButton>
+            {/* <MenuButton onClick={handlePrintPDF}>浏览器打印</MenuButton> */}
             <div
               style={{
                 height: '1px',

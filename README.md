@@ -1,7 +1,8 @@
-# CVBuilder
+# CV
 
 <p align="center">
-  <img src="./images/tool.png" alt="CVBuilder" width="800">
+  <img src="./images/1.png" alt="CVBuilder" width="800">
+  <img src="./images/2.png" alt="CVBuilder" width="800">
 </p>
 
 <p align="center">

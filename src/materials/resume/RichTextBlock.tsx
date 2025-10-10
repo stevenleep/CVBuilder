@@ -1,6 +1,6 @@
 /**
  * 富文本块物料
- * 
+ *
  * 支持富文本编辑的通用内容块
  */
 
@@ -15,13 +15,13 @@ interface RichTextBlockProps {
   align?: 'left' | 'center' | 'right' | 'justify'
 }
 
-const RichTextBlock: React.FC<RichTextBlockProps> = ({ 
+const RichTextBlock: React.FC<RichTextBlockProps> = ({
   style,
   content = '在此输入富文本内容...',
   align = 'left',
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
     <RichTextDisplay
       html={content}
@@ -42,6 +42,7 @@ export const RichTextBlockMaterial: IMaterialDefinition = {
     title: '富文本块',
     description: '支持格式化的文本内容',
     category: 'resume',
+    subcategory: 'content',
     tags: ['简历', '富文本', '内容'],
     version: '1.0.0',
   },
@@ -51,7 +52,8 @@ export const RichTextBlockMaterial: IMaterialDefinition = {
       name: 'content',
       label: '内容',
       type: 'richtext',
-      defaultValue: '在此输入富文本内容...<br><br><strong>支持加粗</strong>、<em>斜体</em>、列表等格式。',
+      defaultValue:
+        '在此输入富文本内容...<br><br><strong>支持加粗</strong>、<em>斜体</em>、列表等格式。',
       required: true,
       group: '内容',
       minHeight: 150,
@@ -81,4 +83,3 @@ export const RichTextBlockMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

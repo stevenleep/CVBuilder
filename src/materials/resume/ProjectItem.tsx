@@ -13,39 +13,39 @@ interface ProjectItemProps {
   projectName?: string
   projectType?: string
   company?: string
-  
+
   // 角色与职责
   role?: string
   responsibility?: string
-  
+
   // 时间
   startDate?: string
   endDate?: string
-  
+
   // 规模信息
   teamSize?: string
   userScale?: string
   dataScale?: string
-  
+
   // 技术信息
   techStack?: string
   architecture?: string
-  
+
   // 链接信息
   projectUrl?: string
   githubUrl?: string
   demoUrl?: string
-  
+
   // 项目状态
   projectStatus?: string
-  
+
   // 内容
   description?: string
   achievements?: string
   contribution?: string
 }
 
-const ProjectItem: React.FC<ProjectItemProps> = (props) => {
+const ProjectItem: React.FC<ProjectItemProps> = props => {
   const {
     style,
     projectName = '项目名称',
@@ -68,126 +68,165 @@ const ProjectItem: React.FC<ProjectItemProps> = (props) => {
     achievements = '',
     contribution = '',
   } = props
-  
+
   const theme = useThemeConfig()
-  
+
   // 项目元信息
-  const projectMeta = [
-    projectType,
-    company,
-    projectStatus,
-  ].filter(Boolean)
-  
+  const projectMeta = [projectType, company, projectStatus].filter(Boolean)
+
   // 规模信息
   const scaleInfo = [
     teamSize && `${teamSize}人团队`,
     userScale && `${userScale}用户`,
     dataScale && `${dataScale}数据量`,
   ].filter(Boolean)
-  
+
   return (
-    <div style={{ 
-      marginBottom: `${theme.spacing.item}px`,
-      ...style 
-    }}>
+    <div
+      style={{
+        marginBottom: `${theme.spacing.item}px`,
+        ...style,
+      }}
+    >
       {/* 标题行 */}
       <div style={{ marginBottom: `${theme.spacing.line}px` }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
-          gap: '16px',
-          marginBottom: '2px',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            gap: '16px',
+            marginBottom: '2px',
+          }}
+        >
           <div style={{ flex: 1 }}>
-            <span style={{ 
-              fontSize: `${theme.font.titleSize.h3}px`,
-              fontWeight: theme.font.weight.semibold,
-              color: theme.color.text.primary,
-            }}>
+            <span
+              style={{
+                fontSize: `${theme.font.titleSize.h3}px`,
+                fontWeight: theme.font.weight.semibold,
+                color: theme.color.text.primary,
+              }}
+            >
               {projectName}
             </span>
             {projectMeta.length > 0 && (
-              <span style={{
-                fontSize: `${theme.font.bodySize.small}px`,
-                color: theme.color.text.tertiary,
-                marginLeft: `${theme.spacing.line + 4}px`,
-              }}>
+              <span
+                style={{
+                  fontSize: `${theme.font.bodySize.small}px`,
+                  color: theme.color.text.tertiary,
+                  marginLeft: `${theme.spacing.line + 4}px`,
+                }}
+              >
                 · {projectMeta.join(' · ')}
               </span>
             )}
           </div>
-          
-          <span style={{ 
-            fontSize: `${theme.font.bodySize.small}px`,
-            color: theme.color.text.tertiary,
-            whiteSpace: 'nowrap',
-          }}>
+
+          <span
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              whiteSpace: 'nowrap',
+            }}
+          >
             {startDate} - {endDate}
           </span>
         </div>
-        
+
         {/* 角色与职责 */}
-        <div style={{
-          fontSize: `${theme.font.bodySize.normal}px`,
-          color: theme.color.text.secondary,
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.normal}px`,
+            color: theme.color.text.secondary,
+          }}
+        >
           {role}
-          {responsibility && <span style={{ color: theme.color.text.tertiary }}> · {responsibility}</span>}
+          {responsibility && (
+            <span style={{ color: theme.color.text.tertiary }}> · {responsibility}</span>
+          )}
         </div>
       </div>
-      
+
       {/* 规模信息 */}
       {scaleInfo.length > 0 && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          marginBottom: `${theme.spacing.line}px`,
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            marginBottom: `${theme.spacing.line}px`,
+          }}
+        >
           项目规模：{scaleInfo.join(' · ')}
         </div>
       )}
-      
+
       {/* 技术栈 */}
       {techStack && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          marginBottom: `${theme.spacing.line}px`,
-          fontStyle: 'italic',
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            marginBottom: `${theme.spacing.line}px`,
+            fontStyle: 'italic',
+          }}
+        >
           技术栈：{techStack}
         </div>
       )}
-      
+
       {/* 架构 */}
       {architecture && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          marginBottom: `${theme.spacing.line}px`,
-          fontStyle: 'italic',
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            marginBottom: `${theme.spacing.line}px`,
+            fontStyle: 'italic',
+          }}
+        >
           架构：{architecture}
         </div>
       )}
-      
+
       {/* 项目链接 */}
       {(projectUrl || githubUrl || demoUrl) && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          marginBottom: `${theme.spacing.line}px`,
-          display: 'flex',
-          gap: `${theme.spacing.paragraph}px`,
-          flexWrap: 'wrap',
-        }}>
-          {projectUrl && <span>🔗 <a href={projectUrl} style={{ color: 'inherit', textDecoration: 'underline' }}>项目地址</a></span>}
-          {githubUrl && <span>💻 <a href={githubUrl} style={{ color: 'inherit', textDecoration: 'underline' }}>GitHub</a></span>}
-          {demoUrl && <span>🎬 <a href={demoUrl} style={{ color: 'inherit', textDecoration: 'underline' }}>在线Demo</a></span>}
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            marginBottom: `${theme.spacing.line}px`,
+            display: 'flex',
+            gap: `${theme.spacing.paragraph}px`,
+            flexWrap: 'wrap',
+          }}
+        >
+          {projectUrl && (
+            <span>
+              🔗{' '}
+              <a href={projectUrl} style={{ color: 'inherit', textDecoration: 'underline' }}>
+                项目地址
+              </a>
+            </span>
+          )}
+          {githubUrl && (
+            <span>
+              💻{' '}
+              <a href={githubUrl} style={{ color: 'inherit', textDecoration: 'underline' }}>
+                GitHub
+              </a>
+            </span>
+          )}
+          {demoUrl && (
+            <span>
+              🎬{' '}
+              <a href={demoUrl} style={{ color: 'inherit', textDecoration: 'underline' }}>
+                在线Demo
+              </a>
+            </span>
+          )}
         </div>
       )}
-      
+
       {/* 项目描述 */}
       {description && (
         <RichTextDisplay
@@ -196,24 +235,28 @@ const ProjectItem: React.FC<ProjectItemProps> = (props) => {
             fontSize: `${theme.font.bodySize.normal}px`,
             color: theme.color.text.secondary,
             lineHeight: theme.layout.lineHeight,
-            marginBottom: (achievements || contribution) ? `${theme.spacing.line}px` : '0',
+            marginBottom: achievements || contribution ? `${theme.spacing.line}px` : '0',
           }}
         />
       )}
-      
+
       {/* 个人贡献 */}
       {contribution && (
-        <div style={{
-          paddingLeft: `${theme.spacing.paragraph}px`,
-          borderLeft: `2px solid ${theme.color.border.light}`,
-          marginBottom: achievements ? `${theme.spacing.line}px` : '0',
-        }}>
-          <div style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            fontWeight: theme.font.weight.semibold,
-            color: theme.color.text.primary,
-            marginBottom: `${theme.spacing.line - 2}px`,
-          }}>
+        <div
+          style={{
+            paddingLeft: `${theme.spacing.paragraph}px`,
+            borderLeft: `2px solid ${theme.color.border.light}`,
+            marginBottom: achievements ? `${theme.spacing.line}px` : '0',
+          }}
+        >
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              fontWeight: theme.font.weight.semibold,
+              color: theme.color.text.primary,
+              marginBottom: `${theme.spacing.line - 2}px`,
+            }}
+          >
             个人贡献
           </div>
           <RichTextDisplay
@@ -226,19 +269,23 @@ const ProjectItem: React.FC<ProjectItemProps> = (props) => {
           />
         </div>
       )}
-      
+
       {/* 项目成果 */}
       {achievements && (
-        <div style={{
-          paddingLeft: `${theme.spacing.paragraph}px`,
-          borderLeft: `3px solid ${theme.color.border.normal}`,
-        }}>
-          <div style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            fontWeight: theme.font.weight.semibold,
-            color: theme.color.text.primary,
-            marginBottom: `${theme.spacing.line - 2}px`,
-          }}>
+        <div
+          style={{
+            paddingLeft: `${theme.spacing.paragraph}px`,
+            borderLeft: `3px solid ${theme.color.border.normal}`,
+          }}
+        >
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              fontWeight: theme.font.weight.semibold,
+              color: theme.color.text.primary,
+              marginBottom: `${theme.spacing.line - 2}px`,
+            }}
+          >
             项目成果
           </div>
           <RichTextDisplay
@@ -261,6 +308,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
     title: '项目经历',
     description: '完整的项目经验信息',
     category: 'resume',
+    subcategory: 'items',
     tags: ['简历', '项目'],
     version: '2.0.0',
   },
@@ -313,7 +361,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       ],
       group: '项目信息',
     },
-    
+
     // 角色与职责
     {
       name: 'role',
@@ -331,7 +379,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       description: '如：前端负责人',
       group: '角色',
     },
-    
+
     // 时间
     {
       name: 'startDate',
@@ -347,7 +395,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '2023.12',
       group: '时间',
     },
-    
+
     // 规模信息
     {
       name: 'teamSize',
@@ -373,7 +421,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       description: '如：日均PV 1000万',
       group: '规模',
     },
-    
+
     // 技术信息
     {
       name: 'techStack',
@@ -391,7 +439,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       description: '如：微服务、前后端分离',
       group: '技术',
     },
-    
+
     // 链接
     {
       name: 'projectUrl',
@@ -415,7 +463,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       group: '链接',
     },
-    
+
     // 内容
     {
       name: 'description',

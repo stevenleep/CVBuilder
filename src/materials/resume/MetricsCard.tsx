@@ -1,6 +1,6 @@
 /**
  * 数据/指标卡片
- * 
+ *
  * 展示可量化的成就数据
  */
 
@@ -14,23 +14,27 @@ interface MetricsCardProps {
   layout?: 'horizontal' | 'vertical'
 }
 
-const MetricsCard: React.FC<MetricsCardProps> = ({ 
+const MetricsCard: React.FC<MetricsCardProps> = ({
   style,
   metrics = '150%,业绩增长|50+,项目交付|10人,团队规模',
   layout = 'horizontal',
 }) => {
   const theme = useThemeConfig()
-  const metricArray = metrics.split('|').map(m => {
-    const [value, label] = m.split(',').map(s => s.trim())
-    return { value, label }
-  }).filter(m => m.value && m.label)
-  
+  const metricArray = metrics
+    .split('|')
+    .map(m => {
+      const [value, label] = m.split(',').map(s => s.trim())
+      return { value, label }
+    })
+    .filter(m => m.value && m.label)
+
   return (
     <div
       style={{
         display: layout === 'horizontal' ? 'flex' : 'grid',
         gap: `${theme.spacing.paragraph}px`,
-        gridTemplateColumns: layout === 'vertical' ? 'repeat(auto-fit, minmax(120px, 1fr))' : undefined,
+        gridTemplateColumns:
+          layout === 'vertical' ? 'repeat(auto-fit, minmax(120px, 1fr))' : undefined,
         marginBottom: `${theme.spacing.item}px`,
         ...style,
       }}
@@ -46,18 +50,22 @@ const MetricsCard: React.FC<MetricsCardProps> = ({
             textAlign: 'center',
           }}
         >
-          <div style={{
-            fontSize: `${theme.font.titleSize.h3}px`,
-            fontWeight: theme.font.weight.bold,
-            color: theme.color.text.primary,
-            marginBottom: '2px',
-          }}>
+          <div
+            style={{
+              fontSize: `${theme.font.titleSize.h3}px`,
+              fontWeight: theme.font.weight.bold,
+              color: theme.color.text.primary,
+              marginBottom: '2px',
+            }}
+          >
             {metric.value}
           </div>
-          <div style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            color: theme.color.text.tertiary,
-          }}>
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+            }}
+          >
             {metric.label}
           </div>
         </div>
@@ -72,6 +80,7 @@ export const MetricsCardMaterial: IMaterialDefinition = {
     title: '数据指标',
     description: '展示可量化的成就',
     category: 'resume',
+    subcategory: 'highlight',
     tags: ['简历', '数据', '成就'],
     version: '1.0.0',
   },
@@ -109,4 +118,3 @@ export const MetricsCardMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

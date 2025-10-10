@@ -13,41 +13,41 @@ interface ExperienceItemProps {
   company?: string
   industry?: string
   companySize?: string
-  
+
   // 职位信息
   position?: string
   department?: string
   level?: string
-  
+
   // 时间地点
   startDate?: string
   endDate?: string
   location?: string
-  
+
   // 工作性质
   employmentType?: string
   workMode?: string
-  
+
   // 岗位类型
   jobType?: 'tech' | 'business' | 'product' | 'design' | 'other'
   techStack?: string
-  
+
   // 团队信息
   teamSize?: string
   reportTo?: string
   subordinates?: string
-  
+
   // 薪资信息
   startSalary?: string
   endSalary?: string
-  
+
   // 内容
   description?: string
   achievements?: string
   leaveReason?: string
 }
 
-const ExperienceItem: React.FC<ExperienceItemProps> = (props) => {
+const ExperienceItem: React.FC<ExperienceItemProps> = props => {
   const {
     style,
     company = '公司名称',
@@ -72,15 +72,12 @@ const ExperienceItem: React.FC<ExperienceItemProps> = (props) => {
     achievements = '',
     leaveReason = '',
   } = props
-  
+
   const theme = useThemeConfig()
-  
+
   // 公司信息
-  const companyInfo = [
-    industry,
-    companySize,
-  ].filter(Boolean)
-  
+  const companyInfo = [industry, companySize].filter(Boolean)
+
   // 职位详情
   const positionDetails = [
     department,
@@ -91,99 +88,118 @@ const ExperienceItem: React.FC<ExperienceItemProps> = (props) => {
     teamSize && `团队${teamSize}人`,
     subordinates && `下属${subordinates}人`,
   ].filter(Boolean)
-  
+
   return (
-    <div style={{ 
-      marginBottom: `${theme.spacing.item}px`,
-      ...style 
-    }}>
+    <div
+      style={{
+        marginBottom: `${theme.spacing.item}px`,
+        ...style,
+      }}
+    >
       {/* 标题行 */}
       <div style={{ marginBottom: `${theme.spacing.line}px` }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
-          gap: '16px',
-          marginBottom: '2px',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            gap: '16px',
+            marginBottom: '2px',
+          }}
+        >
           <div style={{ flex: 1 }}>
-            <span style={{ 
-              fontSize: `${theme.font.titleSize.h3}px`,
-              fontWeight: theme.font.weight.semibold,
-              color: theme.color.text.primary,
-            }}>
+            <span
+              style={{
+                fontSize: `${theme.font.titleSize.h3}px`,
+                fontWeight: theme.font.weight.semibold,
+                color: theme.color.text.primary,
+              }}
+            >
               {company}
             </span>
             {companyInfo.length > 0 && (
-              <span style={{
-                fontSize: `${theme.font.bodySize.small}px`,
-                color: theme.color.text.tertiary,
-                marginLeft: `${theme.spacing.line + 4}px`,
-              }}>
+              <span
+                style={{
+                  fontSize: `${theme.font.bodySize.small}px`,
+                  color: theme.color.text.tertiary,
+                  marginLeft: `${theme.spacing.line + 4}px`,
+                }}
+              >
                 · {companyInfo.join(' · ')}
               </span>
             )}
           </div>
-          
-          <span style={{ 
-            fontSize: `${theme.font.bodySize.small}px`,
-            color: theme.color.text.tertiary,
-            whiteSpace: 'nowrap',
-          }}>
+
+          <span
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              whiteSpace: 'nowrap',
+            }}
+          >
             {startDate} - {endDate === 'present' ? '至今' : endDate}
           </span>
         </div>
-        
+
         {/* 职位信息 */}
-        <div style={{
-          fontSize: `${theme.font.bodySize.normal}px`,
-          color: theme.color.text.secondary,
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.normal}px`,
+            color: theme.color.text.secondary,
+          }}
+        >
           {position}
           {positionDetails.length > 0 && (
             <span style={{ color: theme.color.text.tertiary }}>
-              {' · '}{positionDetails.join(' · ')}
+              {' · '}
+              {positionDetails.join(' · ')}
             </span>
           )}
         </div>
       </div>
-      
+
       {/* 汇报关系 */}
       {reportTo && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          marginBottom: `${theme.spacing.line}px`,
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            marginBottom: `${theme.spacing.line}px`,
+          }}
+        >
           汇报对象：{reportTo}
         </div>
       )}
-      
+
       {/* 技术栈 - 仅技术岗位 */}
       {jobType === 'tech' && techStack && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          marginBottom: `${theme.spacing.line}px`,
-          fontStyle: 'italic',
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            marginBottom: `${theme.spacing.line}px`,
+            fontStyle: 'italic',
+          }}
+        >
           技术栈：{techStack}
         </div>
       )}
-      
+
       {/* 薪资信息 */}
       {(startSalary || endSalary) && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          marginBottom: `${theme.spacing.line}px`,
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            marginBottom: `${theme.spacing.line}px`,
+          }}
+        >
           {startSalary && `入职薪资：${startSalary}`}
           {startSalary && endSalary && ' | '}
           {endSalary && `离职薪资：${endSalary}`}
         </div>
       )}
-      
+
       {/* 工作内容 */}
       {description && (
         <RichTextDisplay
@@ -196,19 +212,23 @@ const ExperienceItem: React.FC<ExperienceItemProps> = (props) => {
           }}
         />
       )}
-      
+
       {/* 核心成就 */}
       {achievements && (
-        <div style={{
-          paddingLeft: `${theme.spacing.paragraph}px`,
-          borderLeft: `3px solid ${theme.color.border.normal}`,
-        }}>
-          <div style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            fontWeight: theme.font.weight.semibold,
-            color: theme.color.text.primary,
-            marginBottom: `${theme.spacing.line - 2}px`,
-          }}>
+        <div
+          style={{
+            paddingLeft: `${theme.spacing.paragraph}px`,
+            borderLeft: `3px solid ${theme.color.border.normal}`,
+          }}
+        >
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              fontWeight: theme.font.weight.semibold,
+              color: theme.color.text.primary,
+              marginBottom: `${theme.spacing.line - 2}px`,
+            }}
+          >
             核心成就
           </div>
           <RichTextDisplay
@@ -221,15 +241,17 @@ const ExperienceItem: React.FC<ExperienceItemProps> = (props) => {
           />
         </div>
       )}
-      
+
       {/* 离职原因 */}
       {leaveReason && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.small}px`,
-          color: theme.color.text.tertiary,
-          marginTop: `${theme.spacing.line}px`,
-          fontStyle: 'italic',
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.tertiary,
+            marginTop: `${theme.spacing.line}px`,
+            fontStyle: 'italic',
+          }}
+        >
           离职原因：{leaveReason}
         </div>
       )}
@@ -243,6 +265,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
     title: '工作经历',
     description: '完整的工作经历信息',
     category: 'resume',
+    subcategory: 'items',
     tags: ['简历', '工作经历'],
     version: '2.0.0',
   },
@@ -281,7 +304,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       ],
       group: '公司信息',
     },
-    
+
     // 职位信息
     {
       name: 'position',
@@ -320,7 +343,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       ],
       group: '职位信息',
     },
-    
+
     // 时间地点
     {
       name: 'startDate',
@@ -344,7 +367,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '北京',
       group: '时间',
     },
-    
+
     // 工作性质
     {
       name: 'employmentType',
@@ -373,7 +396,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       ],
       group: '工作性质',
     },
-    
+
     // 技术信息
     {
       name: 'techStack',
@@ -382,9 +405,9 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: 'React, TypeScript, Node.js',
       description: '仅技术岗显示',
       group: '技术信息',
-      visibleWhen: (props) => props.jobType === 'tech',
+      visibleWhen: props => props.jobType === 'tech',
     },
-    
+
     // 团队信息
     {
       name: 'teamSize',
@@ -409,7 +432,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       group: '团队信息',
     },
-    
+
     // 薪资信息
     {
       name: 'startSalary',
@@ -427,13 +450,14 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       description: '如：25K',
       group: '薪资',
     },
-    
+
     // 工作内容
     {
       name: 'description',
       label: '工作内容',
       type: 'richtext',
-      defaultValue: '<ul><li>负责前端架构设计和核心功能开发</li><li>优化系统性能，提升用户体验</li><li>带领团队完成多个重要项目交付</li></ul>',
+      defaultValue:
+        '<ul><li>负责前端架构设计和核心功能开发</li><li>优化系统性能，提升用户体验</li><li>带领团队完成多个重要项目交付</li></ul>',
       description: '日常工作职责',
       group: '内容',
       minHeight: 120,
@@ -475,7 +499,8 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
     subordinates: '',
     startSalary: '',
     endSalary: '',
-    description: '<ul><li>负责前端架构设计和核心功能开发</li><li>优化系统性能，提升用户体验</li><li>带领团队完成多个重要项目交付</li></ul>',
+    description:
+      '<ul><li>负责前端架构设计和核心功能开发</li><li>优化系统性能，提升用户体验</li><li>带领团队完成多个重要项目交付</li></ul>',
     achievements: '',
     leaveReason: '',
   },

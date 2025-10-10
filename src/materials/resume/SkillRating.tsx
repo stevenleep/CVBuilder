@@ -1,6 +1,6 @@
 /**
  * 技能评级物料
- * 
+ *
  * 带熟练度评级的技能展示
  */
 
@@ -15,18 +15,21 @@ interface SkillRatingProps {
   showDots?: boolean
 }
 
-const SkillRating: React.FC<SkillRatingProps> = ({ 
+const SkillRating: React.FC<SkillRatingProps> = ({
   style,
   skills = 'React,5|TypeScript,4|Node.js,4|Python,3',
   maxLevel = 5,
   showDots = true,
 }) => {
   const theme = useThemeConfig()
-  const skillArray = skills.split('|').map(s => {
-    const [name, level] = s.split(',').map(v => v.trim())
-    return { name, level: parseInt(level) || 0 }
-  }).filter(s => s.name)
-  
+  const skillArray = skills
+    .split('|')
+    .map(s => {
+      const [name, level] = s.split(',').map(v => v.trim())
+      return { name, level: parseInt(level) || 0 }
+    })
+    .filter(s => s.name)
+
   return (
     <div style={{ marginBottom: `${theme.spacing.item}px`, ...style }}>
       {skillArray.map((skill, index) => (
@@ -40,14 +43,16 @@ const SkillRating: React.FC<SkillRatingProps> = ({
             gap: '12px',
           }}
         >
-          <span style={{
-            fontSize: `${theme.font.bodySize.normal}px`,
-            color: theme.color.text.primary,
-            fontWeight: theme.font.weight.medium,
-          }}>
+          <span
+            style={{
+              fontSize: `${theme.font.bodySize.normal}px`,
+              color: theme.color.text.primary,
+              fontWeight: theme.font.weight.medium,
+            }}
+          >
             {skill.name}
           </span>
-          
+
           {showDots && (
             <div style={{ display: 'flex', gap: '4px' }}>
               {Array.from({ length: maxLevel }).map((_, i) => (
@@ -57,7 +62,8 @@ const SkillRating: React.FC<SkillRatingProps> = ({
                     width: '6px',
                     height: '6px',
                     borderRadius: '50%',
-                    backgroundColor: i < skill.level ? theme.color.text.primary : theme.color.border.normal,
+                    backgroundColor:
+                      i < skill.level ? theme.color.text.primary : theme.color.border.normal,
                   }}
                 />
               ))}
@@ -75,6 +81,7 @@ export const SkillRatingMaterial: IMaterialDefinition = {
     title: '技能评级',
     description: '带熟练度的技能展示',
     category: 'resume',
+    subcategory: 'skills',
     tags: ['简历', '技能', '评级'],
     version: '1.0.0',
   },
@@ -116,4 +123,3 @@ export const SkillRatingMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

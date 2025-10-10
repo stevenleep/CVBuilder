@@ -9,6 +9,7 @@ import { useEditorStore } from '@store/editorStore'
 import { useMaterialRegistry } from '@/core'
 import { findNode } from '@utils/schema'
 import { notification } from '@/utils/notification'
+import type { NodeSchema } from '@/types/material'
 
 export interface KeyboardShortcut {
   key: string
@@ -43,9 +44,14 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
     copyNode,
     cutNode,
     pasteNode,
+    pasteMultiNodes,
     clipboard,
     selectNode,
+    selectAll,
     pageSchema,
+    copyNodes,
+    deleteNodes,
+    duplicateNodes,
   } = useEditorStore()
 
   const materialRegistry = useMaterialRegistry()
@@ -103,51 +109,78 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
 
       if (!isEditMode) return
 
-      // Delete/Backspace: 删除选中的节点
+      // Delete/Backspace: 删除选中的节点（支持多选）
       if ((key === 'Delete' || key === 'Backspace') && selectedNodeIds.length > 0) {
         event.preventDefault()
-        selectedNodeIds.forEach(nodeId => {
-          deleteNode(nodeId)
-        })
+        if (selectedNodeIds.length === 1) {
+          deleteNode(selectedNodeIds[0])
+        } else {
+          deleteNodes(selectedNodeIds)
+        }
         return
       }
 
-      // Cmd/Ctrl + D: 快速复制选中的节点
-      if (cmdKey && key.toLowerCase() === 'd' && selectedNodeIds.length === 1) {
+      // Cmd/Ctrl + D: 快速复制选中的节点（支持多选）
+      if (cmdKey && key.toLowerCase() === 'd' && selectedNodeIds.length > 0) {
         event.preventDefault()
-        duplicateNode(selectedNodeIds[0])
+        if (selectedNodeIds.length === 1) {
+          duplicateNode(selectedNodeIds[0])
+        } else {
+          duplicateNodes(selectedNodeIds)
+        }
+        notification.info(`已复制 ${selectedNodeIds.length} 个节点`, 1500)
         return
       }
 
-      // Cmd/Ctrl + C: 复制到剪贴板
-      if (cmdKey && key.toLowerCase() === 'c' && selectedNodeIds.length === 1) {
+      // Cmd/Ctrl + C: 复制到剪贴板（支持多选）
+      if (cmdKey && key.toLowerCase() === 'c' && selectedNodeIds.length > 0) {
         event.preventDefault()
-        copyNode(selectedNodeIds[0])
-        notification.info('已复制', 1500)
+        if (selectedNodeIds.length === 1) {
+          copyNode(selectedNodeIds[0])
+          notification.info('已复制', 1500)
+        } else {
+          copyNodes(selectedNodeIds)
+          notification.info(`已复制 ${selectedNodeIds.length} 个节点`, 1500)
+        }
         return
       }
 
-      // Cmd/Ctrl + X: 剪切到剪贴板
-      if (cmdKey && key.toLowerCase() === 'x' && selectedNodeIds.length === 1) {
+      // Cmd/Ctrl + X: 剪切到剪贴板（支持多选）
+      if (cmdKey && key.toLowerCase() === 'x' && selectedNodeIds.length > 0) {
         event.preventDefault()
-        cutNode(selectedNodeIds[0])
-        notification.info('已剪切', 1500)
+        if (selectedNodeIds.length === 1) {
+          cutNode(selectedNodeIds[0])
+          notification.info('已剪切', 1500)
+        } else {
+          // 多选时只删除，不支持剪切
+          deleteNodes(selectedNodeIds)
+          notification.info(`已删除 ${selectedNodeIds.length} 个节点`, 1500)
+        }
         return
       }
 
-      // Cmd/Ctrl + V: 从剪贴板粘贴
+      // Cmd/Ctrl + V: 从剪贴板粘贴（支持批量粘贴）
       if (cmdKey && key.toLowerCase() === 'v' && clipboard) {
         event.preventDefault()
-        const targetId = selectedNodeIds.length === 1 ? selectedNodeIds[0] : undefined
-        pasteNode(targetId)
-        notification.info('已粘贴', 1500)
+
+        // 检查是否为多节点剪贴板
+        if (clipboard.type === '__MultiCopy__' && clipboard.props?.nodes) {
+          pasteMultiNodes()
+          const nodes = clipboard.props.nodes as NodeSchema[]
+          notification.info(`已粘贴 ${nodes.length} 个节点`, 1500)
+        } else {
+          // 单节点粘贴
+          const targetId = selectedNodeIds.length === 1 ? selectedNodeIds[0] : undefined
+          pasteNode(targetId)
+          notification.info('已粘贴', 1500)
+        }
         return
       }
 
-      // Cmd/Ctrl + A: 全选（选择根节点的所有直接子节点）
+      // Cmd/Ctrl + A: 全选
       if (cmdKey && key.toLowerCase() === 'a') {
         event.preventDefault()
-        // 这里暂时不实现全选，避免选择过多节点导致混乱
+        selectAll()
         return
       }
 
@@ -232,10 +265,15 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       copyNode,
       cutNode,
       pasteNode,
+      pasteMultiNodes,
       clipboard,
       selectNode,
+      selectAll,
       pageSchema,
       materialRegistry,
+      copyNodes,
+      deleteNodes,
+      duplicateNodes,
     ]
   )
 
@@ -292,6 +330,11 @@ export function getKeyboardShortcuts(): KeyboardShortcut[] {
     {
       key: 'Delete / Backspace',
       description: '删除选中节点',
+      action: () => {},
+    },
+    {
+      key: `${cmdKey} + A`,
+      description: '全选',
       action: () => {},
     },
     {

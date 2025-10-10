@@ -16,7 +16,7 @@ interface ExpectedPositionProps {
   arrivalTime?: string
 }
 
-const ExpectedPosition: React.FC<ExpectedPositionProps> = ({ 
+const ExpectedPosition: React.FC<ExpectedPositionProps> = ({
   style,
   position = '前端工程师',
   industry = '互联网/电子商务',
@@ -26,7 +26,7 @@ const ExpectedPosition: React.FC<ExpectedPositionProps> = ({
   arrivalTime = '随时到岗',
 }) => {
   const theme = useThemeConfig()
-  
+
   const items = [
     { label: '期望职位', value: position },
     { label: '期望行业', value: industry },
@@ -35,29 +35,35 @@ const ExpectedPosition: React.FC<ExpectedPositionProps> = ({
     { label: '工作性质', value: jobType },
     { label: '到岗时间', value: arrivalTime },
   ].filter(item => item.value)
-  
+
   return (
-    <div style={{
-      marginBottom: `${theme.spacing.item}px`,
-      display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)',
-      gap: `${theme.spacing.line}px ${theme.spacing.paragraph}px`,
-      ...style,
-    }}>
+    <div
+      style={{
+        marginBottom: `${theme.spacing.item}px`,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: `${theme.spacing.line}px ${theme.spacing.paragraph}px`,
+        ...style,
+      }}
+    >
       {items.map((item, index) => (
         <div key={index}>
-          <span style={{
-            fontSize: `${theme.font.bodySize.small}px`,
-            color: theme.color.text.tertiary,
-            marginRight: '6px',
-          }}>
+          <span
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              marginRight: '6px',
+            }}
+          >
             {item.label}：
           </span>
-          <span style={{
-            fontSize: `${theme.font.bodySize.normal}px`,
-            color: theme.color.text.primary,
-            fontWeight: theme.font.weight.medium,
-          }}>
+          <span
+            style={{
+              fontSize: `${theme.font.bodySize.normal}px`,
+              color: theme.color.text.primary,
+              fontWeight: theme.font.weight.medium,
+            }}
+          >
             {item.value}
           </span>
         </div>
@@ -72,6 +78,7 @@ export const ExpectedPositionMaterial: IMaterialDefinition = {
     title: '期望职位',
     description: '求职意向信息',
     category: 'resume',
+    subcategory: 'info',
     tags: ['简历', '求职', '期望'],
     version: '1.0.0',
   },
@@ -148,4 +155,3 @@ export const ExpectedPositionMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

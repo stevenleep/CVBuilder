@@ -14,27 +14,29 @@ interface SelfEvaluationProps {
   showTitle?: boolean
 }
 
-const SelfEvaluation: React.FC<SelfEvaluationProps> = ({ 
+const SelfEvaluation: React.FC<SelfEvaluationProps> = ({
   style,
   content = '',
   title = '自我评价',
   showTitle = true,
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
     <div style={{ marginBottom: `${theme.spacing.item}px`, ...style }}>
       {showTitle && title && (
-        <div style={{
-          fontSize: `${theme.font.bodySize.normal}px`,
-          fontWeight: theme.font.weight.semibold,
-          color: theme.color.text.primary,
-          marginBottom: `${theme.spacing.line}px`,
-        }}>
+        <div
+          style={{
+            fontSize: `${theme.font.bodySize.normal}px`,
+            fontWeight: theme.font.weight.semibold,
+            color: theme.color.text.primary,
+            marginBottom: `${theme.spacing.line}px`,
+          }}
+        >
           {title}
         </div>
       )}
-      
+
       <RichTextDisplay
         html={content}
         style={{
@@ -53,6 +55,7 @@ export const SelfEvaluationMaterial: IMaterialDefinition = {
     title: '自我评价',
     description: '个性特点和优势总结',
     category: 'resume',
+    subcategory: 'content',
     tags: ['简历', '自我评价'],
     version: '1.0.0',
   },
@@ -62,7 +65,8 @@ export const SelfEvaluationMaterial: IMaterialDefinition = {
       name: 'content',
       label: '评价内容',
       type: 'richtext',
-      defaultValue: '<ul><li>工作认真负责，有强烈的责任心</li><li>善于沟通协作，团队意识强</li><li>学习能力强，能快速适应新环境</li></ul>',
+      defaultValue:
+        '<ul><li>工作认真负责，有强烈的责任心</li><li>善于沟通协作，团队意识强</li><li>学习能力强，能快速适应新环境</li></ul>',
       description: '支持富文本格式',
       required: true,
       group: '内容',
@@ -84,7 +88,8 @@ export const SelfEvaluationMaterial: IMaterialDefinition = {
     },
   ],
   defaultProps: {
-    content: '<ul><li>工作认真负责，有强烈的责任心</li><li>善于沟通协作，团队意识强</li><li>学习能力强，能快速适应新环境</li></ul>',
+    content:
+      '<ul><li>工作认真负责，有强烈的责任心</li><li>善于沟通协作，团队意识强</li><li>学习能力强，能快速适应新环境</li></ul>',
     title: '自我评价',
     showTitle: true,
   },
@@ -95,4 +100,3 @@ export const SelfEvaluationMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

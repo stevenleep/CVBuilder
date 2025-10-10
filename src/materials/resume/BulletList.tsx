@@ -12,12 +12,12 @@ interface BulletListProps {
   content?: string
 }
 
-const BulletList: React.FC<BulletListProps> = ({ 
+const BulletList: React.FC<BulletListProps> = ({
   style,
   content = '<ul><li>第一项</li><li>第二项</li><li>第三项</li></ul>',
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
     <RichTextDisplay
       html={content}
@@ -37,6 +37,7 @@ export const BulletListMaterial: IMaterialDefinition = {
     title: '列表',
     description: '项目符号列表',
     category: 'resume',
+    subcategory: 'content',
     tags: ['简历', '列表', '内容'],
     version: '2.0.0',
   },

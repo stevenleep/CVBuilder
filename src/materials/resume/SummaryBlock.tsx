@@ -13,13 +13,13 @@ interface SummaryBlockProps {
   showQuote?: boolean
 }
 
-const SummaryBlock: React.FC<SummaryBlockProps> = ({ 
+const SummaryBlock: React.FC<SummaryBlockProps> = ({
   style,
   content = '在这里输入您的个人总结或自我评价...',
   showQuote = false,
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
     <div
       style={{
@@ -58,6 +58,7 @@ export const SummaryBlockMaterial: IMaterialDefinition = {
     title: '个人总结',
     description: '自我评价或职业目标',
     category: 'resume',
+    subcategory: 'content',
     tags: ['简历', '总结', '评价'],
     version: '1.0.0',
   },
@@ -67,7 +68,8 @@ export const SummaryBlockMaterial: IMaterialDefinition = {
       name: 'content',
       label: '个人总结',
       type: 'richtext',
-      defaultValue: '具有<strong>5年</strong>前端开发经验，擅长React生态和TypeScript。<ul><li>深入理解前端工程化和性能优化</li><li>良好的代码规范和团队协作能力</li><li>热爱技术，持续学习新技术</li></ul>',
+      defaultValue:
+        '具有<strong>5年</strong>前端开发经验，擅长React生态和TypeScript。<ul><li>深入理解前端工程化和性能优化</li><li>良好的代码规范和团队协作能力</li><li>热爱技术，持续学习新技术</li></ul>',
       description: '支持加粗、列表等格式',
       required: true,
       group: '内容',
@@ -82,7 +84,8 @@ export const SummaryBlockMaterial: IMaterialDefinition = {
     },
   ],
   defaultProps: {
-    content: '具有<strong>5年</strong>前端开发经验，擅长React生态和TypeScript。<ul><li>深入理解前端工程化和性能优化</li><li>良好的代码规范和团队协作能力</li><li>热爱技术，持续学习新技术</li></ul>',
+    content:
+      '具有<strong>5年</strong>前端开发经验，擅长React生态和TypeScript。<ul><li>深入理解前端工程化和性能优化</li><li>良好的代码规范和团队协作能力</li><li>热爱技术，持续学习新技术</li></ul>',
     showQuote: false,
   },
   capabilities: {

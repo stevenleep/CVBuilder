@@ -45,6 +45,84 @@ body {
   scrollbar-color: #e0e0e0 transparent;
 }
 
+/* 分页间隙标记 - 编辑模式下可见 */
+.page-break-marker {
+  user-select: none;
+}
+
+/* 页面容器内容流 */
+.page-sheet {
+  display: block;
+}
+
+.page-sheet > div {
+  display: block;
+}
+
+/* 编辑模式下模拟分页效果 - 避免内容被切成一半 */
+[data-material-type] {
+  /* 使用CSS列布局来模拟分页 */
+  position: relative;
+  display: block;
+}
+
+/* 所有内容块避免跨页截断 - 编辑器和打印都生效 */
+[data-material-type='Section'],
+[data-material-type='ExperienceItem'],
+[data-material-type='EducationItem'],
+[data-material-type='ProjectItem'],
+[data-material-type='PersonalInfo'],
+[data-material-type='SkillList'],
+[data-material-type='SkillRating'],
+[data-material-type='WorkExperienceSection'],
+[data-material-type='EducationSection'],
+[data-material-type='SkillsSection'],
+[data-material-type='CertificationItem'],
+[data-material-type='AwardItem'],
+[data-material-type='HighlightBox'],
+[data-material-type='MetricsCard'],
+[data-material-type='SummaryBlock'],
+[data-material-type='RichTextBlock'],
+[data-material-type='TextBlock'],
+[data-material-type='BulletList'],
+[data-material-type='SelfEvaluation'],
+[data-material-type='InterestsHobbies'],
+[data-material-type='LanguageSkills'],
+[data-material-type='ExpectedPosition'] {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  display: block;
+  box-sizing: border-box;
+  /* 如果放不下，整体移到下一页 */
+  overflow: visible;
+}
+
+/* 标题元素避免孤立在页面底部 */
+h1, h2, h3, h4, h5, h6 {
+  page-break-after: avoid !important;
+  break-after: avoid !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+/* 段落和列表项避免截断 */
+p, li, ul, ol {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+/* div 容器也避免被截断 */
+[data-material-type] > div {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* 孤儿行和寡妇行控制 */
+p, li, div {
+  orphans: 3;
+  widows: 3;
+}
+
 /* 打印样式 */
 @media print {
   body {
@@ -61,6 +139,7 @@ body {
   /* 隐藏不需要打印的元素 */
   [data-no-print],
   .no-print,
+  .page-break-marker,
   button,
   nav,
   aside,
@@ -80,8 +159,27 @@ body {
   [data-canvas] {
     transform: none !important;
     margin: 0 auto !important;
-    page-break-inside: avoid;
     box-shadow: none !important;
+  }
+
+  /* 页面容器打印样式 */
+  .page-sheet {
+    page-break-after: always;
+    page-break-inside: avoid;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  /* 最后一页不需要分页 */
+  .page-sheet:last-child {
+    page-break-after: auto;
+  }
+
+  /* 打印时让内容自动流动到各个页面 */
+  .page-sheet > div {
+    height: auto !important;
   }
 
   /* 确保主容器占满整个打印区域 */
@@ -107,5 +205,10 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 避免内容块在页面边界被截断 */
+  .page-sheet > div > div > * {
+    page-break-inside: avoid !important;
   }
 }

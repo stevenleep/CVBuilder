@@ -86,12 +86,14 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         style={{
           position: 'fixed',
           top: '20px',
-          right: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
           zIndex: 100000,
           display: 'flex',
           flexDirection: 'column',
           gap: '10px',
           pointerEvents: 'none',
+          alignItems: 'center',
         }}
       >
         {toasts.map(toast => (
@@ -110,43 +112,42 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
 // Toast 组件
 function Toast({ message, type = 'info' }: ToastOptions) {
-  const colors = {
-    success: { bg: '#10b981', icon: '✓' },
-    error: { bg: '#ef4444', icon: '✕' },
-    warning: { bg: '#f59e0b', icon: '⚠' },
-    info: { bg: '#3b82f6', icon: 'ℹ' },
+  const styles = {
+    success: { bg: '#2d2d2d', border: '#4a4a4a', text: '#fff' },
+    error: { bg: '#2d2d2d', border: '#4a4a4a', text: '#fff' },
+    warning: { bg: '#2d2d2d', border: '#4a4a4a', text: '#fff' },
+    info: { bg: '#2d2d2d', border: '#4a4a4a', text: '#fff' },
   }
 
-  const { bg, icon } = colors[type]
+  const style = styles[type]
 
   return (
     <div
       style={{
-        backgroundColor: bg,
-        color: 'white',
-        padding: '12px 20px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+        backgroundColor: style.bg,
+        color: style.text,
+        padding: '12px 24px',
+        borderRadius: '6px',
+        border: `1px solid ${style.border}`,
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
         display: 'flex',
         alignItems: 'center',
-        gap: '10px',
-        minWidth: '200px',
-        maxWidth: '400px',
+        minWidth: '300px',
+        maxWidth: '500px',
         pointerEvents: 'auto',
-        animation: 'slideIn 0.3s ease-out',
+        animation: 'slideDown 0.3s ease-out',
       }}
     >
-      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>{icon}</span>
-      <span style={{ flex: 1, fontSize: '14px' }}>{message}</span>
+      <span style={{ fontSize: '14px' }}>{message}</span>
       <style>
         {`
-          @keyframes slideIn {
+          @keyframes slideDown {
             from {
-              transform: translateX(100%);
+              transform: translateY(-100%);
               opacity: 0;
             }
             to {
-              transform: translateX(0);
+              transform: translateY(0);
               opacity: 1;
             }
           }
@@ -162,16 +163,8 @@ function ConfirmDialog({
   message,
   confirmText = '确定',
   cancelText = '取消',
-  type = 'warning',
   onClose,
 }: ConfirmOptions & { onClose: (confirmed: boolean) => void }) {
-  const colors = {
-    success: '#10b981',
-    error: '#ef4444',
-    warning: '#f59e0b',
-    info: '#3b82f6',
-  }
-
   return (
     <div
       style={{
@@ -180,7 +173,7 @@ function ConfirmDialog({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -191,12 +184,13 @@ function ConfirmDialog({
     >
       <div
         style={{
-          backgroundColor: 'white',
-          borderRadius: '12px',
+          backgroundColor: '#2d2d2d',
+          borderRadius: '8px',
           padding: '24px',
           minWidth: '400px',
           maxWidth: '500px',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
+          border: '1px solid #4a4a4a',
           animation: 'scaleIn 0.2s ease-out',
         }}
         onClick={e => e.stopPropagation()}
@@ -205,34 +199,33 @@ function ConfirmDialog({
           style={{
             margin: '0 0 16px 0',
             fontSize: '18px',
-            fontWeight: '600',
-            color: colors[type],
+            fontWeight: '500',
+            color: '#fff',
           }}
         >
           {title}
         </h3>
-        <p style={{ margin: '0 0 24px 0', fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
+        <p style={{ margin: '0 0 24px 0', fontSize: '14px', color: '#bbb', lineHeight: '1.5' }}>
           {message}
         </p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
           <button
             onClick={() => onClose(false)}
             style={{
-              padding: '8px 16px',
-              border: '1px solid #e5e7eb',
+              padding: '8px 20px',
+              border: '1px solid #555',
               borderRadius: '6px',
-              backgroundColor: 'white',
-              color: '#374151',
+              backgroundColor: '#3a3a3a',
+              color: '#ccc',
               cursor: 'pointer',
               fontSize: '14px',
-              fontWeight: '500',
               transition: 'all 0.2s',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = '#f9fafb'
+              e.currentTarget.style.backgroundColor = '#4a4a4a'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.backgroundColor = 'white'
+              e.currentTarget.style.backgroundColor = '#3a3a3a'
             }}
           >
             {cancelText}
@@ -240,21 +233,20 @@ function ConfirmDialog({
           <button
             onClick={() => onClose(true)}
             style={{
-              padding: '8px 16px',
+              padding: '8px 20px',
               border: 'none',
               borderRadius: '6px',
-              backgroundColor: colors[type],
+              backgroundColor: '#555',
               color: 'white',
               cursor: 'pointer',
               fontSize: '14px',
-              fontWeight: '500',
               transition: 'all 0.2s',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.opacity = '0.9'
+              e.currentTarget.style.backgroundColor = '#666'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.opacity = '1'
+              e.currentTarget.style.backgroundColor = '#555'
             }}
           >
             {confirmText}
@@ -308,7 +300,7 @@ function PromptDialog({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -319,12 +311,13 @@ function PromptDialog({
     >
       <div
         style={{
-          backgroundColor: 'white',
-          borderRadius: '12px',
+          backgroundColor: '#2d2d2d',
+          borderRadius: '8px',
           padding: '24px',
           minWidth: '400px',
           maxWidth: '500px',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
+          border: '1px solid #4a4a4a',
           animation: 'scaleIn 0.2s ease-out',
         }}
         onClick={e => e.stopPropagation()}
@@ -334,8 +327,8 @@ function PromptDialog({
             style={{
               margin: '0 0 8px 0',
               fontSize: '18px',
-              fontWeight: '600',
-              color: '#1f2937',
+              fontWeight: '500',
+              color: '#fff',
             }}
           >
             {title}
@@ -344,7 +337,7 @@ function PromptDialog({
             style={{
               margin: '0 0 16px 0',
               fontSize: '14px',
-              color: '#666',
+              color: '#bbb',
               lineHeight: '1.5',
             }}
           >
@@ -359,18 +352,21 @@ function PromptDialog({
             style={{
               width: '100%',
               padding: '10px 12px',
-              border: '1px solid #e5e7eb',
+              border: '1px solid #555',
               borderRadius: '6px',
               fontSize: '14px',
               outline: 'none',
               transition: 'border-color 0.2s',
               marginBottom: '24px',
+              boxSizing: 'border-box',
+              backgroundColor: '#1a1a1a',
+              color: '#fff',
             }}
             onFocus={e => {
-              e.currentTarget.style.borderColor = '#3b82f6'
+              e.currentTarget.style.borderColor = '#777'
             }}
             onBlur={e => {
-              e.currentTarget.style.borderColor = '#e5e7eb'
+              e.currentTarget.style.borderColor = '#555'
             }}
           />
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
@@ -378,21 +374,20 @@ function PromptDialog({
               type="button"
               onClick={() => onClose(null)}
               style={{
-                padding: '8px 16px',
-                border: '1px solid #e5e7eb',
+                padding: '8px 20px',
+                border: '1px solid #555',
                 borderRadius: '6px',
-                backgroundColor: 'white',
-                color: '#374151',
+                backgroundColor: '#3a3a3a',
+                color: '#ccc',
                 cursor: 'pointer',
                 fontSize: '14px',
-                fontWeight: '500',
                 transition: 'all 0.2s',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#f9fafb'
+                e.currentTarget.style.backgroundColor = '#4a4a4a'
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = 'white'
+                e.currentTarget.style.backgroundColor = '#3a3a3a'
               }}
             >
               {cancelText}
@@ -400,21 +395,20 @@ function PromptDialog({
             <button
               type="submit"
               style={{
-                padding: '8px 16px',
+                padding: '8px 20px',
                 border: 'none',
                 borderRadius: '6px',
-                backgroundColor: '#3b82f6',
+                backgroundColor: '#555',
                 color: 'white',
                 cursor: 'pointer',
                 fontSize: '14px',
-                fontWeight: '500',
                 transition: 'all 0.2s',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.opacity = '0.9'
+                e.currentTarget.style.backgroundColor = '#666'
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.opacity = '1'
+                e.currentTarget.style.backgroundColor = '#555'
               }}
             >
               {confirmText}

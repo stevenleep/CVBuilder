@@ -12,12 +12,12 @@ interface LanguageSkillsProps {
   content?: string
 }
 
-const LanguageSkills: React.FC<LanguageSkillsProps> = ({ 
+const LanguageSkills: React.FC<LanguageSkillsProps> = ({
   style,
   content = '<ul><li>英语 - 熟练</li><li>日语 - 良好</li><li>德语 - 入门</li></ul>',
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
     <RichTextDisplay
       html={content}
@@ -37,6 +37,7 @@ export const LanguageSkillsMaterial: IMaterialDefinition = {
     title: '语言能力',
     description: '外语水平展示',
     category: 'resume',
+    subcategory: 'skills',
     tags: ['简历', '语言', '技能'],
     version: '2.0.0',
   },
@@ -63,4 +64,3 @@ export const LanguageSkillsMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

@@ -23,7 +23,7 @@ import {
 import { nanoid } from 'nanoid'
 import { indexedDBService, STORES } from '@utils/indexedDB'
 
-interface EditorState {
+export interface EditorState {
   // 页面数据
   pageSchema: PageSchema
 
@@ -62,6 +62,8 @@ interface EditorState {
 
   // 选中操作
   selectNode: (nodeId: NodeId, multiSelect?: boolean) => void
+  selectNodes: (nodeIds: NodeId[]) => void
+  selectAll: () => void
   clearSelection: () => void
   setHoveredNode: (nodeId: NodeId | null) => void
 
@@ -69,6 +71,10 @@ interface EditorState {
   copyNode: (nodeId: NodeId) => void
   cutNode: (nodeId: NodeId) => void
   pasteNode: (targetId?: NodeId) => void
+  pasteMultiNodes: () => void
+  copyNodes: (nodeIds: NodeId[]) => void
+  deleteNodes: (nodeIds: NodeId[]) => void
+  duplicateNodes: (nodeIds: NodeId[]) => void
 
   // 模式切换
   setMode: (mode: EditorMode) => void
@@ -324,6 +330,28 @@ export const useEditorStore = create<EditorState>()(
       })
     },
 
+    // 批量选中节点
+    selectNodes: nodeIds => {
+      set(state => {
+        state.selectedNodeIds = nodeIds
+      })
+    },
+
+    // 全选（选中所有非Page节点）
+    selectAll: () => {
+      set(state => {
+        const allNodeIds: NodeId[] = []
+        const collectNodeIds = (node: NodeSchema) => {
+          if (node.type !== 'Page') {
+            allNodeIds.push(node.id)
+          }
+          node.children?.forEach(collectNodeIds)
+        }
+        collectNodeIds(state.pageSchema.root)
+        state.selectedNodeIds = allNodeIds
+      })
+    },
+
     // 清除选中
     clearSelection: () => {
       set(state => {
@@ -402,6 +430,81 @@ export const useEditorStore = create<EditorState>()(
         }
 
         draft.selectedNodeIds = [newNode.id]
+      })
+      addHistory(set)
+    },
+
+    // 粘贴多个节点
+    pasteMultiNodes: () => {
+      const state = get()
+      if (!state.clipboard || state.clipboard.type !== '__MultiCopy__') {
+        return
+      }
+
+      set(draft => {
+        if (!draft.clipboard || !draft.clipboard.props?.nodes) return
+        const nodes = draft.clipboard.props.nodes as NodeSchema[]
+        const newNodeIds: string[] = []
+
+        nodes.forEach(node => {
+          const cloned = cloneNode(node)
+          draft.pageSchema.root = appendChild(
+            draft.pageSchema.root,
+            draft.pageSchema.root.id,
+            cloned
+          )
+          newNodeIds.push(cloned.id)
+        })
+
+        draft.selectedNodeIds = newNodeIds
+      })
+      addHistory(set)
+    },
+
+    // 批量复制节点（将多个节点存储为数组）
+    copyNodes: nodeIds => {
+      const state = get()
+      const nodes = nodeIds
+        .map(id => findNode(state.pageSchema.root, id))
+        .filter(Boolean) as NodeSchema[]
+      if (nodes.length > 0) {
+        set(draft => {
+          // 存储多个节点的数组
+          draft.clipboard = {
+            id: 'multi-copy',
+            type: '__MultiCopy__',
+            props: { nodes: JSON.parse(JSON.stringify(nodes)) },
+            style: {},
+            children: [],
+          }
+        })
+      }
+    },
+
+    // 批量删除节点
+    deleteNodes: nodeIds => {
+      set(state => {
+        nodeIds.forEach(nodeId => {
+          state.pageSchema.root = deleteNode(state.pageSchema.root, nodeId)
+        })
+        state.selectedNodeIds = []
+      })
+      addHistory(set)
+    },
+
+    // 批量复制节点
+    duplicateNodes: nodeIds => {
+      set(state => {
+        const newNodeIds: string[] = []
+        nodeIds.forEach(nodeId => {
+          const node = findNode(state.pageSchema.root, nodeId)
+          if (node) {
+            const cloned = cloneNode(node)
+            state.pageSchema.root = insertAfter(state.pageSchema.root, nodeId, cloned)
+            newNodeIds.push(cloned.id)
+          }
+        })
+        state.selectedNodeIds = newNodeIds
       })
       addHistory(set)
     },

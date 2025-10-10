@@ -10,6 +10,7 @@ import { MaterialRegistry, MATERIAL_REGISTRY_TOKEN } from './services/MaterialRe
 import { PluginManager, PLUGIN_MANAGER_TOKEN } from './services/PluginManager'
 import { IEditorContext, IEditorConfig } from './context/EditorContext'
 import { globalServices } from './globals'
+import { useEditorStore } from '@store/editorStore'
 
 /**
  * 引导编辑器
@@ -28,9 +29,15 @@ export function bootstrapEditor(config: IEditorConfig = {}): IEditorContext {
   container.register(
     PLUGIN_MANAGER_TOKEN,
     (materialRegistry, eventBus) => {
-      // 这里需要传入获取状态的函数，暂时使用空实现
-      const getState = () => ({})
-      const setState = () => {}
+      // 连接到 editorStore - 直接使用 Zustand store
+      const getState = () => {
+        return useEditorStore.getState()
+      }
+
+      const setState = (updater: Parameters<typeof useEditorStore.setState>[0]) => {
+        useEditorStore.setState(updater)
+      }
+
       return new PluginManager(materialRegistry, eventBus, getState, setState)
     },
     {
@@ -62,8 +69,15 @@ export function bootstrapEditor(config: IEditorConfig = {}): IEditorContext {
     },
   }
 
+  // 调试模式：输出初始化信息
   if (config.debug) {
-    //
+    console.group('[Editor Bootstrap] 初始化完成')
+    console.log('📦 事件总线:', eventBus)
+    console.log('🎨 物料注册表:', materialRegistry)
+    console.log('🔌 插件管理器:', pluginManager)
+    console.log('⚙️ 配置:', editorContext.config)
+    console.log('📊 已注册物料数量:', materialRegistry.getAll().length)
+    console.groupEnd()
   }
 
   return editorContext

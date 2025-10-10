@@ -378,6 +378,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     title: '个人信息',
     description: '完整的个人信息模块',
     category: 'resume',
+    subcategory: 'info',
     tags: ['简历', '个人信息', '联系方式'],
     version: '2.0.0',
   },

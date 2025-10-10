@@ -224,6 +224,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
     title: '教育经历',
     description: '完整的教育背景信息',
     category: 'resume',
+    subcategory: 'items',
     tags: ['简历', '教育', '学历'],
     version: '2.0.0',
   },

@@ -12,12 +12,12 @@ interface SkillListProps {
   content?: string
 }
 
-const SkillList: React.FC<SkillListProps> = ({ 
+const SkillList: React.FC<SkillListProps> = ({
   style,
   content = '<ul><li>React</li><li>TypeScript</li><li>Node.js</li><li>Python</li><li>Docker</li></ul>',
 }) => {
   const theme = useThemeConfig()
-  
+
   return (
     <RichTextDisplay
       html={content}
@@ -37,6 +37,7 @@ export const SkillListMaterial: IMaterialDefinition = {
     title: '技能列表',
     description: '技能展示',
     category: 'resume',
+    subcategory: 'skills',
     icon: '⚡',
     tags: ['简历', '技能'],
     version: '2.0.0',
@@ -47,7 +48,8 @@ export const SkillListMaterial: IMaterialDefinition = {
       name: 'content',
       label: '技能内容',
       type: 'richtext',
-      defaultValue: '<ul><li>React</li><li>TypeScript</li><li>Node.js</li><li>Python</li><li>Docker</li></ul>',
+      defaultValue:
+        '<ul><li>React</li><li>TypeScript</li><li>Node.js</li><li>Python</li><li>Docker</li></ul>',
       description: '使用列表或自由格式',
       required: true,
       group: '内容',
@@ -55,7 +57,8 @@ export const SkillListMaterial: IMaterialDefinition = {
     },
   ],
   defaultProps: {
-    content: '<ul><li>React</li><li>TypeScript</li><li>Node.js</li><li>Python</li><li>Docker</li></ul>',
+    content:
+      '<ul><li>React</li><li>TypeScript</li><li>Node.js</li><li>Python</li><li>Docker</li></ul>',
   },
   capabilities: {
     copyable: true,
