@@ -1,6 +1,6 @@
 /**
  * 模板管理器
- * 
+ *
  * 管理用户自定义的组件模板
  */
 
@@ -24,8 +24,8 @@ class TemplateManager {
   private storageKey = 'resume-builder-templates'
 
   private constructor() {
-    this.loadFromStorage().catch(err => {
-      console.error('[TemplateManager] 初始化加载失败:', err)
+    this.loadFromStorage().catch(() => {
+      // 静默失败
     })
   }
 
@@ -57,7 +57,6 @@ class TemplateManager {
     this.templates.set(template.id, template)
     this.saveToStorage()
 
-    console.log('[TemplateManager] 保存模板:', template.name)
     return template
   }
 
@@ -88,7 +87,6 @@ class TemplateManager {
   public deleteTemplate(id: string): void {
     this.templates.delete(id)
     this.saveToStorage()
-    console.log('[TemplateManager] 删除模板:', id)
   }
 
   /**
@@ -99,7 +97,6 @@ class TemplateManager {
     if (template) {
       template.name = newName
       this.saveToStorage()
-      console.log('[TemplateManager] 重命名模板:', newName)
     }
   }
 
@@ -107,7 +104,7 @@ class TemplateManager {
    * 更新模板信息
    */
   public updateTemplateInfo(
-    id: string, 
+    id: string,
     updates: { name?: string; description?: string; category?: string }
   ): void {
     const template = this.templates.get(id)
@@ -116,7 +113,6 @@ class TemplateManager {
       if (updates.description !== undefined) template.description = updates.description
       if (updates.category) template.category = updates.category
       this.saveToStorage()
-      console.log('[TemplateManager] 更新模板信息:', template.name)
     }
   }
 
@@ -128,7 +124,6 @@ class TemplateManager {
     if (template) {
       template.schema = JSON.parse(JSON.stringify(schema))
       this.saveToStorage()
-      console.log('[TemplateManager] 更新模板:', template.name)
     }
   }
 
@@ -140,7 +135,7 @@ class TemplateManager {
       const data = Array.from(this.templates.values())
       await indexedDBService.setItem(STORES.TEMPLATES, this.storageKey, data)
     } catch (error) {
-      console.error('[TemplateManager] 保存失败:', error)
+      // 静默失败
     }
   }
 
@@ -149,18 +144,19 @@ class TemplateManager {
    */
   private async loadFromStorage(): Promise<void> {
     try {
-      const saved = await indexedDBService.getItem<CustomTemplate[]>(STORES.TEMPLATES, this.storageKey)
+      const saved = await indexedDBService.getItem<CustomTemplate[]>(
+        STORES.TEMPLATES,
+        this.storageKey
+      )
       if (saved) {
         saved.forEach(template => {
           this.templates.set(template.id, template)
         })
-        console.log('[TemplateManager] 加载模板:', saved.length, '个')
       }
     } catch (error) {
-      console.error('[TemplateManager] 加载失败:', error)
+      // 静默失败
     }
   }
 }
 
 export const templateManager = TemplateManager.getInstance()
-

@@ -1,6 +1,6 @@
 /**
  * 编辑器状态管理（增强版）
- * 
+ *
  * 使用Zustand管理全局编辑器状态，支持拖拽排序
  */
 
@@ -8,13 +8,13 @@ import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { NodeSchema, NodeId, PageSchema, PropValue } from '../types/material'
 import { EditorMode, CanvasConfig } from '../types/editor'
-import { 
-  createNode, 
+import {
+  createNode,
   findNode,
   findParentNode,
-  appendChild, 
-  deleteNode, 
-  updateNodeProps, 
+  appendChild,
+  deleteNode,
+  updateNodeProps,
   updateNodeStyle,
   insertBefore,
   insertAfter,
@@ -26,27 +26,27 @@ import { indexedDBService, STORES } from '@utils/indexedDB'
 interface EditorState {
   // 页面数据
   pageSchema: PageSchema
-  
+
   // 选中状态
   selectedNodeIds: NodeId[]
   hoveredNodeId: NodeId | null
-  
+
   // 编辑模式
   mode: EditorMode
-  
+
   // 画布配置
   canvasConfig: CanvasConfig
-  
+
   // 历史记录
   history: PageSchema[]
   historyIndex: number
-  
+
   // 剪贴板
   clipboard: NodeSchema | null
-  
+
   // Actions
   setPageSchema: (schema: PageSchema) => void
-  
+
   // 节点操作
   addNode: (materialType: string, parentId?: NodeId) => void
   addNodeBefore: (materialType: string, targetId: NodeId) => void
@@ -59,29 +59,29 @@ interface EditorState {
   moveNodeUp: (nodeId: NodeId) => void
   moveNodeDown: (nodeId: NodeId) => void
   moveNodeTo: (nodeId: NodeId, targetId: NodeId, position: 'before' | 'after' | 'inside') => void
-  
+
   // 选中操作
   selectNode: (nodeId: NodeId, multiSelect?: boolean) => void
   clearSelection: () => void
   setHoveredNode: (nodeId: NodeId | null) => void
-  
+
   // 剪贴板操作
   copyNode: (nodeId: NodeId) => void
   cutNode: (nodeId: NodeId) => void
   pasteNode: (targetId?: NodeId) => void
-  
+
   // 模式切换
   setMode: (mode: EditorMode) => void
-  
+
   // 画布配置
   updateCanvasConfig: (config: Partial<CanvasConfig>) => void
-  
+
   // 历史记录
   undo: () => void
   redo: () => void
   canUndo: () => boolean
   canRedo: () => boolean
-  
+
   // 持久化
   saveToStorage: () => Promise<void>
   loadFromStorage: () => Promise<void>
@@ -134,8 +134,8 @@ export const useEditorStore = create<EditorState>()(
     clipboard: null,
 
     // 设置页面Schema
-    setPageSchema: (schema) => {
-      set((state) => {
+    setPageSchema: schema => {
+      set(state => {
         state.pageSchema = schema
       })
       addHistory(set)
@@ -143,7 +143,7 @@ export const useEditorStore = create<EditorState>()(
 
     // 添加节点
     addNode: (materialType, parentId) => {
-      set((state) => {
+      set(state => {
         const newNode = createNode(materialType)
         const targetParentId = parentId || state.pageSchema.root.id
         state.pageSchema.root = appendChild(state.pageSchema.root, targetParentId, newNode)
@@ -154,7 +154,7 @@ export const useEditorStore = create<EditorState>()(
 
     // 在指定节点前添加
     addNodeBefore: (materialType, targetId) => {
-      set((state) => {
+      set(state => {
         const newNode = createNode(materialType)
         state.pageSchema.root = insertBefore(state.pageSchema.root, targetId, newNode)
         state.selectedNodeIds = [newNode.id]
@@ -164,7 +164,7 @@ export const useEditorStore = create<EditorState>()(
 
     // 在指定节点后添加
     addNodeAfter: (materialType, targetId) => {
-      set((state) => {
+      set(state => {
         const newNode = createNode(materialType)
         state.pageSchema.root = insertAfter(state.pageSchema.root, targetId, newNode)
         state.selectedNodeIds = [newNode.id]
@@ -173,8 +173,8 @@ export const useEditorStore = create<EditorState>()(
     },
 
     // 删除节点
-    deleteNode: (nodeId) => {
-      set((state) => {
+    deleteNode: nodeId => {
+      set(state => {
         state.pageSchema.root = deleteNode(state.pageSchema.root, nodeId)
         state.selectedNodeIds = state.selectedNodeIds.filter(id => id !== nodeId)
       })
@@ -182,8 +182,8 @@ export const useEditorStore = create<EditorState>()(
     },
 
     // 复制节点
-    duplicateNode: (nodeId) => {
-      set((state) => {
+    duplicateNode: nodeId => {
+      set(state => {
         const node = findNode(state.pageSchema.root, nodeId)
         if (node) {
           const cloned = cloneNode(node)
@@ -196,7 +196,7 @@ export const useEditorStore = create<EditorState>()(
 
     // 更新节点属性
     updateNodeProps: (nodeId, props) => {
-      set((state) => {
+      set(state => {
         state.pageSchema.root = updateNodeProps(state.pageSchema.root, nodeId, props)
       })
       addHistory(set)
@@ -204,15 +204,15 @@ export const useEditorStore = create<EditorState>()(
 
     // 更新节点样式
     updateNodeStyle: (nodeId, style) => {
-      set((state) => {
+      set(state => {
         state.pageSchema.root = updateNodeStyle(state.pageSchema.root, nodeId, style)
       })
       addHistory(set)
     },
 
     // 切换节点显示/隐藏
-    toggleNodeVisibility: (nodeId) => {
-      set((state) => {
+    toggleNodeVisibility: nodeId => {
+      set(state => {
         const node = findNode(state.pageSchema.root, nodeId)
         if (node) {
           state.pageSchema.root = updateNodeProps(state.pageSchema.root, nodeId, {
@@ -224,16 +224,19 @@ export const useEditorStore = create<EditorState>()(
     },
 
     // 上移节点
-    moveNodeUp: (nodeId) => {
-      set((state) => {
+    moveNodeUp: nodeId => {
+      set(state => {
         const parent = findParentNode(state.pageSchema.root, nodeId)
         if (!parent || !parent.children) return
 
         const index = parent.children.findIndex(c => c.id === nodeId)
         if (index > 0) {
           const newChildren = [...parent.children]
-          ;[newChildren[index - 1], newChildren[index]] = [newChildren[index], newChildren[index - 1]]
-          
+          ;[newChildren[index - 1], newChildren[index]] = [
+            newChildren[index],
+            newChildren[index - 1],
+          ]
+
           const updateParent = (node: NodeSchema): NodeSchema => {
             if (node.id === parent.id) {
               return { ...node, children: newChildren }
@@ -243,7 +246,7 @@ export const useEditorStore = create<EditorState>()(
             }
             return node
           }
-          
+
           state.pageSchema.root = updateParent(state.pageSchema.root)
         }
       })
@@ -251,16 +254,19 @@ export const useEditorStore = create<EditorState>()(
     },
 
     // 下移节点
-    moveNodeDown: (nodeId) => {
-      set((state) => {
+    moveNodeDown: nodeId => {
+      set(state => {
         const parent = findParentNode(state.pageSchema.root, nodeId)
         if (!parent || !parent.children) return
 
         const index = parent.children.findIndex(c => c.id === nodeId)
         if (index < parent.children.length - 1) {
           const newChildren = [...parent.children]
-          ;[newChildren[index], newChildren[index + 1]] = [newChildren[index + 1], newChildren[index]]
-          
+          ;[newChildren[index], newChildren[index + 1]] = [
+            newChildren[index + 1],
+            newChildren[index],
+          ]
+
           const updateParent = (node: NodeSchema): NodeSchema => {
             if (node.id === parent.id) {
               return { ...node, children: newChildren }
@@ -270,7 +276,7 @@ export const useEditorStore = create<EditorState>()(
             }
             return node
           }
-          
+
           state.pageSchema.root = updateParent(state.pageSchema.root)
         }
       })
@@ -279,7 +285,7 @@ export const useEditorStore = create<EditorState>()(
 
     // 移动节点到指定位置
     moveNodeTo: (nodeId, targetId, position) => {
-      set((state) => {
+      set(state => {
         // 不能移动到自己
         if (nodeId === targetId) return
 
@@ -305,7 +311,7 @@ export const useEditorStore = create<EditorState>()(
 
     // 选中节点
     selectNode: (nodeId, multiSelect = false) => {
-      set((state) => {
+      set(state => {
         if (multiSelect) {
           if (state.selectedNodeIds.includes(nodeId)) {
             state.selectedNodeIds = state.selectedNodeIds.filter(id => id !== nodeId)
@@ -320,82 +326,82 @@ export const useEditorStore = create<EditorState>()(
 
     // 清除选中
     clearSelection: () => {
-      set((state) => {
+      set(state => {
         state.selectedNodeIds = []
       })
     },
 
     // 设置悬停节点
-    setHoveredNode: (nodeId) => {
-      set((state) => {
+    setHoveredNode: nodeId => {
+      set(state => {
         state.hoveredNodeId = nodeId
       })
     },
 
     // 切换模式
-    setMode: (mode) => {
-      set((state) => {
+    setMode: mode => {
+      set(state => {
         state.mode = mode
       })
     },
 
     // 更新画布配置
-    updateCanvasConfig: (config) => {
-      set((state) => {
+    updateCanvasConfig: config => {
+      set(state => {
         state.canvasConfig = { ...state.canvasConfig, ...config }
       })
     },
 
     // 复制节点到剪贴板
-    copyNode: (nodeId) => {
+    copyNode: nodeId => {
       const state = get()
       const node = findNode(state.pageSchema.root, nodeId)
       if (node) {
-        set((draft) => {
+        set(draft => {
           draft.clipboard = JSON.parse(JSON.stringify(node)) // 深拷贝
         })
-        console.log('[EditorStore] 复制节点到剪贴板:', nodeId)
       }
     },
 
     // 剪切节点到剪贴板
-    cutNode: (nodeId) => {
+    cutNode: nodeId => {
       const state = get()
       const node = findNode(state.pageSchema.root, nodeId)
       if (node) {
-        set((draft) => {
+        set(draft => {
           draft.clipboard = JSON.parse(JSON.stringify(node)) // 深拷贝
           draft.pageSchema.root = deleteNode(draft.pageSchema.root, nodeId)
           draft.selectedNodeIds = draft.selectedNodeIds.filter(id => id !== nodeId)
         })
         addHistory(set)
-        console.log('[EditorStore] 剪切节点到剪贴板:', nodeId)
       }
     },
 
     // 粘贴节点
-    pasteNode: (targetId) => {
+    pasteNode: targetId => {
       const state = get()
       if (!state.clipboard) {
-        console.warn('[EditorStore] 剪贴板为空')
         return
       }
 
-      set((draft) => {
+      set(draft => {
         // 克隆剪贴板中的节点并生成新ID
         if (!draft.clipboard) return
         const newNode = cloneNode(draft.clipboard)
-        
+
         if (targetId) {
           // 如果指定了目标节点，粘贴到其后面
           draft.pageSchema.root = insertAfter(draft.pageSchema.root, targetId, newNode)
         } else {
           // 否则粘贴到根节点
-          draft.pageSchema.root = appendChild(draft.pageSchema.root, draft.pageSchema.root.id, newNode)
+          draft.pageSchema.root = appendChild(
+            draft.pageSchema.root,
+            draft.pageSchema.root.id,
+            newNode
+          )
         }
-        
+
         draft.selectedNodeIds = [newNode.id]
-        console.log('[EditorStore] 粘贴节点:', newNode.id)
       })
       addHistory(set)
     },
@@ -404,7 +410,7 @@ export const useEditorStore = create<EditorState>()(
     undo: () => {
       const state = get()
       if (state.canUndo()) {
-        set((draft) => {
+        set(draft => {
           draft.historyIndex -= 1
           draft.pageSchema = JSON.parse(JSON.stringify(draft.history[draft.historyIndex]))
         })
@@ -415,7 +421,7 @@ export const useEditorStore = create<EditorState>()(
     redo: () => {
       const state = get()
       if (state.canRedo()) {
-        set((draft) => {
+        set(draft => {
           draft.historyIndex += 1
           draft.pageSchema = JSON.parse(JSON.stringify(draft.history[draft.historyIndex]))
         })
@@ -439,9 +445,8 @@ export const useEditorStore = create<EditorState>()(
       const state = get()
       try {
         await indexedDBService.setItem(STORES.EDITOR_STATE, STORAGE_KEY, state.pageSchema)
-        console.log('[EditorStore] 已保存到 IndexedDB')
       } catch (error) {
-        console.error('[EditorStore] 保存失败:', error)
+        // 静默失败
       }
     },
 
@@ -451,10 +456,9 @@ export const useEditorStore = create<EditorState>()(
         const saved = await indexedDBService.getItem<PageSchema>(STORES.EDITOR_STATE, STORAGE_KEY)
         if (saved) {
           get().setPageSchema(saved)
-          console.log('[EditorStore] 已从 IndexedDB 加载')
         }
       } catch (error) {
-        console.error('[EditorStore] 加载失败:', error)
+        // 静默失败
       }
     },
   }))

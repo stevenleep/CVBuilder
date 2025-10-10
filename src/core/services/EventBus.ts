@@ -37,7 +37,7 @@ export class EventBus implements IEventBus {
         try {
           handler(processedEvent!.payload)
         } catch (error) {
-          console.error(`[EventBus] Error in event handler for "${event}":`, error)
+          // 静默失败
         }
       })
     }
@@ -49,7 +49,7 @@ export class EventBus implements IEventBus {
         try {
           handler(processedEvent)
         } catch (error) {
-          console.error(`[EventBus] Error in wildcard handler:`, error)
+          // 静默失败
         }
       })
     }

@@ -71,7 +71,6 @@ export function bootstrapEditor(config: IEditorConfig = {}): IEditorContext {
   }
 
   if (config.debug) {
-    console.log('[Bootstrap] 编辑器初始化完成', editorContext)
   }
 
   return editorContext
@@ -83,6 +82,5 @@ export function bootstrapEditor(config: IEditorConfig = {}): IEditorContext {
 export function cleanupEditor(): void {
   globalServices.clear()
   container.clear()
-  console.log('[Bootstrap] 编辑器资源已清理')
 }
 

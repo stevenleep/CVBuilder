@@ -39,7 +39,6 @@ export const DraggableNode: React.FC<DraggableNodeProps> = ({
       if (!monitor.isOver({ shallow: true })) return
       
       // TODO: 处理拖放逻辑
-      console.log('[DraggableNode] Drop:', item, 'on', nodeId)
     },
     collect: (monitor) => ({
       isOver: monitor.isOver({ shallow: true }),

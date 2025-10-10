@@ -29,10 +29,6 @@ export class PluginManager implements IPluginManager {
   public register(plugin: IPlugin): void {
     const { id } = plugin.meta
 
-    if (this.plugins.has(id)) {
-      console.warn(`[PluginManager] 插件 "${id}" 已存在，将被覆盖`)
-    }
-
     // 检查依赖
     if (plugin.meta.dependencies) {
       for (const depId of plugin.meta.dependencies) {
@@ -43,7 +39,6 @@ export class PluginManager implements IPluginManager {
     }
 
     this.plugins.set(id, plugin)
-    console.log(`[PluginManager] 注册插件: ${id}`)
   }
 
   /**
@@ -51,7 +46,6 @@ export class PluginManager implements IPluginManager {
    */
   public async activate(pluginId: string): Promise<void> {
     if (this.activePlugins.has(pluginId)) {
-      console.warn(`[PluginManager] 插件 "${pluginId}" 已激活`)
       return
     }
 
@@ -71,10 +65,7 @@ export class PluginManager implements IPluginManager {
       // 激活插件
       await plugin.activate(this.pluginContext)
       this.activePlugins.add(pluginId)
-      
-      console.log(`[PluginManager] 激活插件: ${pluginId}`)
     } catch (error) {
-      console.error(`[PluginManager] 激活插件 "${pluginId}" 失败:`, error)
       throw error
     }
   }
@@ -84,7 +75,6 @@ export class PluginManager implements IPluginManager {
    */
   public async deactivate(pluginId: string): Promise<void> {
     if (!this.activePlugins.has(pluginId)) {
-      console.warn(`[PluginManager] 插件 "${pluginId}" 未激活`)
       return
     }
 
@@ -107,9 +97,7 @@ export class PluginManager implements IPluginManager {
       }
       
       this.activePlugins.delete(pluginId)
-      console.log(`[PluginManager] 停用插件: ${pluginId}`)
     } catch (error) {
-      console.error(`[PluginManager] 停用插件 "${pluginId}" 失败:`, error)
       throw error
     }
   }
@@ -147,19 +135,15 @@ export class PluginManager implements IPluginManager {
       },
       registerCommand: (command: any) => {
         // TODO: 实现命令注册
-        console.log('[PluginManager] 注册命令:', command.id)
       },
       registerShortcut: (shortcut: any) => {
         // TODO: 实现快捷键注册
-        console.log('[PluginManager] 注册快捷键:', shortcut.key)
       },
       registerPanel: (panel: any) => {
         // TODO: 实现面板注册
-        console.log('[PluginManager] 注册面板:', panel.id)
       },
       registerMiddleware: (middleware: any) => {
         // TODO: 实现中间件注册
-        console.log('[PluginManager] 注册中间件:', middleware.name)
       },
       on: (event: string, handler: (data: any) => void) => {
         return this.eventBus.on(event, handler)

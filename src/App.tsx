@@ -13,7 +13,7 @@ import { DndProvider } from './editor/DndProvider'
 
 function App() {
   const [isInitialized, setIsInitialized] = useState(false)
-  
+
   // 初始化编辑器上下文（只初始化一次）
   const editorContext = useMemo(() => {
     const context = bootstrapEditor({
@@ -22,35 +22,39 @@ function App() {
       maxHistorySize: 50,
       enablePlugins: true,
     })
-    
+
     // 立即注册所有物料
     registerAllMaterials(context.materialRegistry)
-    
+
     return context
   }, [])
 
   useEffect(() => {
     // 尝试从 IndexedDB 加载
-    useEditorStore.getState().loadFromStorage().then(() => {
-      setIsInitialized(true)
-      console.log('[App] 应用初始化完成')
-    }).catch(err => {
-      console.error('[App] 加载数据失败:', err)
-      setIsInitialized(true)
-    })
+    useEditorStore
+      .getState()
+      .loadFromStorage()
+      .then(() => {
+        setIsInitialized(true)
+      })
+      .catch(() => {
+        setIsInitialized(true)
+      })
   }, [editorContext])
-  
+
   if (!isInitialized) {
     return (
-      <div style={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '18px',
-        color: '#666',
-      }}>
+      <div
+        style={{
+          width: '100vw',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '18px',
+          color: '#666',
+        }}
+      >
         正在加载编辑器...
       </div>
     )

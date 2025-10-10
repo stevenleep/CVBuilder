@@ -30,12 +30,7 @@ class MaterialRegistry implements IMaterialRegistry {
   public register(definition: MaterialDefinition): void {
     const { type } = definition.meta
     
-    if (this.materials.has(type)) {
-      console.warn(`[MaterialRegistry] 物料 "${type}" 已存在，将被覆盖`)
-    }
-
     this.materials.set(type, definition)
-    console.log(`[MaterialRegistry] 注册物料: ${type}`)
   }
 
   /**

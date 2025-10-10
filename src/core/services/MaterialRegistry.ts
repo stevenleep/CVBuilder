@@ -1,6 +1,6 @@
 /**
  * 物料注册表实现（增强版）
- * 
+ *
  * 实现完整的物料协议，支持生命周期、事件等
  */
 
@@ -24,19 +24,17 @@ export class MaterialRegistry implements IMaterialRegistry {
     // 验证物料定义
     this.validateMaterialDefinition(definition)
 
-    if (this.materials.has(type)) {
-      console.warn(`[MaterialRegistry] 物料 "${type}" 已存在，将被覆盖`)
-    }
+    const existingMaterial = this.materials.get(type)
 
     this.materials.set(type, definition)
-    
-    // 发送注册事件
-    this.eventBus?.emit(EditorEventType.MATERIAL_REGISTERED, { 
-      materialType: type,
-      definition 
-    })
 
-    console.log(`[MaterialRegistry] 注册物料: ${type}`)
+    // 发送注册事件
+    if (!existingMaterial) {
+      this.eventBus?.emit(EditorEventType.MATERIAL_REGISTERED, {
+        materialType: type,
+        definition,
+      })
+    }
   }
 
   /**
@@ -81,13 +79,11 @@ export class MaterialRegistry implements IMaterialRegistry {
     const definition = this.materials.get(type)
     if (definition) {
       this.materials.delete(type)
-      
+
       // 发送注销事件
-      this.eventBus?.emit(EditorEventType.MATERIAL_UNREGISTERED, { 
-        materialType: type 
+      this.eventBus?.emit(EditorEventType.MATERIAL_UNREGISTERED, {
+        materialType: type,
       })
-      
-      console.log(`[MaterialRegistry] 注销物料: ${type}`)
     }
   }
 
@@ -136,7 +132,9 @@ export class MaterialRegistry implements IMaterialRegistry {
         throw new Error(`[MaterialRegistry] 物料 "${definition.meta.type}" 的属性Schema必须有name`)
       }
       if (!propSchema.label) {
-        throw new Error(`[MaterialRegistry] 物料 "${definition.meta.type}" 的属性 "${propSchema.name}" 必须有label`)
+        throw new Error(
+          `[MaterialRegistry] 物料 "${definition.meta.type}" 的属性 "${propSchema.name}" 必须有label`
+        )
       }
     })
 
@@ -145,7 +143,9 @@ export class MaterialRegistry implements IMaterialRegistry {
     if (capabilities) {
       if (capabilities.minChildren !== undefined && capabilities.maxChildren !== undefined) {
         if (capabilities.minChildren > capabilities.maxChildren) {
-          throw new Error(`[MaterialRegistry] 物料 "${definition.meta.type}" 的minChildren不能大于maxChildren`)
+          throw new Error(
+            `[MaterialRegistry] 物料 "${definition.meta.type}" 的minChildren不能大于maxChildren`
+          )
         }
       }
     }
@@ -154,4 +154,3 @@ export class MaterialRegistry implements IMaterialRegistry {
 
 // 服务标识符
 export const MATERIAL_REGISTRY_TOKEN = Symbol('MaterialRegistry')
-

@@ -1,6 +1,6 @@
 /**
  * 键盘快捷键 Hook
- * 
+ *
  * 管理编辑器的键盘快捷键
  */
 
@@ -53,11 +53,7 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
     (event: KeyboardEvent) => {
       // 如果在输入框中，不触发快捷键
       const target = event.target as HTMLElement
-      if (
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.isContentEditable
-      ) {
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
         return
       }
 
@@ -72,7 +68,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         event.preventDefault()
         if (canUndo()) {
           undo()
-          console.log('[Shortcut] 撤销')
         }
         return
       }
@@ -82,7 +77,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         event.preventDefault()
         if (canRedo()) {
           redo()
-          console.log('[Shortcut] 重做')
         }
         return
       }
@@ -92,7 +86,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         event.preventDefault()
         if (canRedo()) {
           redo()
-          console.log('[Shortcut] 重做')
         }
         return
       }
@@ -101,8 +94,7 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       if (cmdKey && key.toLowerCase() === 's') {
         event.preventDefault()
         saveToStorage()
-        console.log('[Shortcut] 保存')
-        
+
         // 显示保存提示
         showToast('已保存')
         return
@@ -116,7 +108,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         selectedNodeIds.forEach(nodeId => {
           deleteNode(nodeId)
         })
-        console.log('[Shortcut] 删除节点')
         return
       }
 
@@ -124,7 +115,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       if (cmdKey && key.toLowerCase() === 'd' && selectedNodeIds.length === 1) {
         event.preventDefault()
         duplicateNode(selectedNodeIds[0])
-        console.log('[Shortcut] 快速复制节点')
         return
       }
 
@@ -133,7 +123,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         event.preventDefault()
         copyNode(selectedNodeIds[0])
         showToast('已复制')
-        console.log('[Shortcut] 复制到剪贴板')
         return
       }
 
@@ -142,7 +131,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         event.preventDefault()
         cutNode(selectedNodeIds[0])
         showToast('已剪切')
-        console.log('[Shortcut] 剪切到剪贴板')
         return
       }
 
@@ -152,7 +140,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         const targetId = selectedNodeIds.length === 1 ? selectedNodeIds[0] : undefined
         pasteNode(targetId)
         showToast('已粘贴')
-        console.log('[Shortcut] 粘贴')
         return
       }
 
@@ -160,7 +147,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       if (cmdKey && key.toLowerCase() === 'a') {
         event.preventDefault()
         // 这里暂时不实现全选，避免选择过多节点导致混乱
-        console.log('[Shortcut] 全选（暂未实现）')
         return
       }
 
@@ -168,7 +154,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       if (key === 'Escape' && selectedNodeIds.length > 0) {
         event.preventDefault()
         clearSelection()
-        console.log('[Shortcut] 取消选中')
         return
       }
 
@@ -176,7 +161,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       if ((key === '?' || key === '/') && !cmdKey && !shiftKey && onShowHelp) {
         event.preventDefault()
         onShowHelp()
-        console.log('[Shortcut] 显示快捷键帮助')
         return
       }
 
@@ -184,20 +168,20 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       if (isEditMode && selectedNodeIds.length === 1) {
         const selectedNodeId = selectedNodeIds[0]
         const node = findNode(pageSchema.root, selectedNodeId)
-        
+
         if (node) {
           const materialDef = materialRegistry.get(node.type)
-          
+
           if (materialDef?.shortcuts) {
             for (const shortcut of materialDef.shortcuts) {
               const keyMatch = key.toLowerCase() === shortcut.key.toLowerCase()
               const ctrlMatch = !shortcut.ctrl || (shortcut.ctrl && cmdKey)
               const shiftMatch = !shortcut.shift || (shortcut.shift && shiftKey)
               const altMatch = !shortcut.alt || (shortcut.alt && event.altKey)
-              
+
               if (keyMatch && ctrlMatch && shiftMatch && altMatch) {
                 event.preventDefault()
-                
+
                 // 创建物料上下文
                 const context = {
                   nodeId: selectedNodeId,
@@ -209,23 +193,22 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
                   on: () => () => {},
                   getEditorAPI: () => ({
                     selectNode,
-                    updateNodeProps: (id: string, props: Record<string, string | number | boolean | null>) => 
-                      useEditorStore.getState().updateNodeProps(id, props),
-                    updateNodeStyle: (id: string, style: React.CSSProperties) => 
+                    updateNodeProps: (
+                      id: string,
+                      props: Record<string, string | number | boolean | null>
+                    ) => useEditorStore.getState().updateNodeProps(id, props),
+                    updateNodeStyle: (id: string, style: React.CSSProperties) =>
                       useEditorStore.getState().updateNodeStyle(id, style),
-                    deleteNode: (id: string) => 
-                      useEditorStore.getState().deleteNode(id),
+                    deleteNode: (id: string) => useEditorStore.getState().deleteNode(id),
                     addNode: (materialType: string, parentId?: string) => {
                       useEditorStore.getState().addNode(materialType, parentId)
                       return ''
                     },
-                    findNode: (id: string) => 
-                      findNode(pageSchema.root, id),
+                    findNode: (id: string) => findNode(pageSchema.root, id),
                   }),
                 }
-                
+
                 shortcut.handler(context)
-                console.log('[Shortcut] 执行物料快捷键:', shortcut.description)
                 return
               }
             }
@@ -296,7 +279,7 @@ function showToast(message: string) {
       100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
     }
   `
-  
+
   if (!document.getElementById('toast-styles')) {
     style.id = 'toast-styles'
     document.head.appendChild(style)
@@ -317,7 +300,7 @@ function showToast(message: string) {
  */
 export function getKeyboardShortcuts(): KeyboardShortcut[] {
   const cmdKey = isMac ? '⌘' : 'Ctrl'
-  
+
   return [
     {
       key: `${cmdKey} + Z`,
@@ -371,4 +354,3 @@ export function getKeyboardShortcuts(): KeyboardShortcut[] {
     },
   ]
 }
-

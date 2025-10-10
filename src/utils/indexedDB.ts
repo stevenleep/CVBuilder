@@ -1,6 +1,6 @@
 /**
  * IndexedDB 存储服务
- * 
+ *
  * 统一管理浏览器 IndexedDB 存储
  */
 
@@ -39,19 +39,16 @@ class IndexedDBService {
       const request = indexedDB.open(DB_NAME, DB_VERSION)
 
       request.onerror = () => {
-        console.error('[IndexedDB] 打开数据库失败:', request.error)
         reject(request.error)
       }
 
       request.onsuccess = () => {
         this.db = request.result
-        console.log('[IndexedDB] 数据库已打开')
         resolve()
       }
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result
-        console.log('[IndexedDB] 数据库升级中...')
 
         // 创建存储对象
         if (!db.objectStoreNames.contains(STORES.EDITOR_STATE)) {
@@ -65,8 +62,6 @@ class IndexedDBService {
         if (!db.objectStoreNames.contains(STORES.RESUME_TEMPLATES)) {
           db.createObjectStore(STORES.RESUME_TEMPLATES)
         }
-
-        console.log('[IndexedDB] 数据库升级完成')
       }
     })
 
@@ -187,4 +182,3 @@ class IndexedDBService {
 
 export const indexedDBService = IndexedDBService.getInstance()
 export { STORES }
-

@@ -1,6 +1,6 @@
 /**
  * 简历模板管理器
- * 
+ *
  * 管理完整的简历模板
  */
 
@@ -24,8 +24,8 @@ class ResumeTemplateManager {
   private storageKey = 'resume-builder-resume-templates'
 
   private constructor() {
-    this.loadFromStorage().catch(err => {
-      console.error('[ResumeTemplateManager] 初始化加载失败:', err)
+    this.loadFromStorage().catch(() => {
+      // 静默失败
     })
   }
 
@@ -39,11 +39,7 @@ class ResumeTemplateManager {
   /**
    * 保存当前简历为模板
    */
-  public saveAsTemplate(
-    schema: PageSchema,
-    name: string,
-    description?: string
-  ): ResumeTemplate {
+  public saveAsTemplate(schema: PageSchema, name: string, description?: string): ResumeTemplate {
     const template: ResumeTemplate = {
       id: nanoid(),
       name,
@@ -56,7 +52,6 @@ class ResumeTemplateManager {
     this.templates.set(template.id, template)
     this.saveToStorage()
 
-    console.log('[ResumeTemplateManager] 保存简历模板:', template.name)
     return template
   }
 
@@ -64,8 +59,9 @@ class ResumeTemplateManager {
    * 获取所有模板
    */
   public getAllTemplates(): ResumeTemplate[] {
-    return Array.from(this.templates.values())
-      .sort((a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime())
+    return Array.from(this.templates.values()).sort(
+      (a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime()
+    )
   }
 
   /**
@@ -81,7 +77,6 @@ class ResumeTemplateManager {
   public deleteTemplate(id: string): void {
     this.templates.delete(id)
     this.saveToStorage()
-    console.log('[ResumeTemplateManager] 删除模板:', id)
   }
 
   /**
@@ -92,7 +87,6 @@ class ResumeTemplateManager {
     if (template) {
       Object.assign(template, updates, { updateTime: new Date().toISOString() })
       this.saveToStorage()
-      console.log('[ResumeTemplateManager] 更新模板:', template.name)
     }
   }
 
@@ -105,7 +99,6 @@ class ResumeTemplateManager {
       template.schema = JSON.parse(JSON.stringify(schema))
       template.updateTime = new Date().toISOString()
       this.saveToStorage()
-      console.log('[ResumeTemplateManager] 更新模板内容:', template.name)
     }
   }
 
@@ -117,7 +110,7 @@ class ResumeTemplateManager {
       const data = Array.from(this.templates.values())
       await indexedDBService.setItem(STORES.RESUME_TEMPLATES, this.storageKey, data)
     } catch (error) {
-      console.error('[ResumeTemplateManager] 保存失败:', error)
+      // 静默失败
     }
   }
 
@@ -126,18 +119,19 @@ class ResumeTemplateManager {
    */
   private async loadFromStorage(): Promise<void> {
     try {
-      const saved = await indexedDBService.getItem<ResumeTemplate[]>(STORES.RESUME_TEMPLATES, this.storageKey)
+      const saved = await indexedDBService.getItem<ResumeTemplate[]>(
+        STORES.RESUME_TEMPLATES,
+        this.storageKey
+      )
       if (saved) {
         saved.forEach(template => {
           this.templates.set(template.id, template)
         })
-        console.log('[ResumeTemplateManager] 加载简历模板:', saved.length, '个')
       }
     } catch (error) {
-      console.error('[ResumeTemplateManager] 加载失败:', error)
+      // 静默失败
     }
   }
 }
 
 export const resumeTemplateManager = ResumeTemplateManager.getInstance()
-
