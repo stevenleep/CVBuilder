@@ -11,8 +11,12 @@ import { Canvas } from './Canvas'
 import { PropertyPanel } from './PropertyPanel'
 import { ResizablePanel } from './ResizablePanel'
 import { DragPreview } from './DragPreview'
+import { useKeyboardShortcuts } from '@/core/hooks/useKeyboardShortcuts'
 
 export const EditorLayout: React.FC = () => {
+  // 启用键盘快捷键
+  useKeyboardShortcuts()
+
   return (
     <div style={{ 
       height: '100vh',

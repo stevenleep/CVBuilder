@@ -15,9 +15,11 @@ import {
   ZoomOut,
   FileText,
   Library,
+  HelpCircle,
 } from 'lucide-react'
 import { SaveResumeTemplateDialog } from './SaveResumeTemplateDialog'
 import { ResumeTemplatesPanel } from './ResumeTemplatesPanel'
+import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
 import { resumeTemplateManager } from '@/core/services/ResumeTemplateManager'
 
 export const Toolbar: React.FC = () => {
@@ -36,6 +38,7 @@ export const Toolbar: React.FC = () => {
   
   const [showSaveResumeDialog, setShowSaveResumeDialog] = useState(false)
   const [showTemplatesPanel, setShowTemplatesPanel] = useState(false)
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
 
   const handleZoomIn = () => {
     const newScale = Math.min(canvasConfig.scale + 0.1, 2)
@@ -143,6 +146,14 @@ export const Toolbar: React.FC = () => {
       
       {/* 右侧操作 */}
       <IconButton
+        icon={<HelpCircle size={16} />}
+        tooltip="快捷键帮助 (?)"
+        onClick={() => setShowShortcutsHelp(true)}
+      />
+      
+      <Divider />
+      
+      <IconButton
         icon={<Library size={16} />}
         tooltip="简历模板库"
         onClick={() => setShowTemplatesPanel(true)}
@@ -163,6 +174,11 @@ export const Toolbar: React.FC = () => {
         保存
       </PrimaryButton>
       
+      {/* 快捷键帮助 */}
+      {showShortcutsHelp && (
+        <KeyboardShortcutsHelp onClose={() => setShowShortcutsHelp(false)} />
+      )}
+
       {/* 简历模板库面板 */}
       {showTemplatesPanel && (
         <ResumeTemplatesPanel onClose={() => setShowTemplatesPanel(false)} />

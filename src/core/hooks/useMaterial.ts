@@ -36,9 +36,7 @@ export function useMaterialsByCategory(category: string): IMaterialDefinition[] 
  * 获取所有物料分类
  */
 export function useMaterialCategories(): string[] {
-  const registry = useMaterialRegistry()
   const materials = useAllMaterials()
-  
   return useMemo(() => {
     const categories = new Set<string>()
     materials.forEach(m => categories.add(m.meta.category))

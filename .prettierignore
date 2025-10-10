@@ -1,0 +1,42 @@
+# 依赖
+node_modules
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# 构建产物
+dist
+build
+.next
+out
+
+# 缓存
+.cache
+.turbo
+.eslintcache
+
+# 日志
+*.log
+logs
+
+# 其他
+.DS_Store
+*.local
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea
+
+# 配置文件
+tsconfig.json
+vite.config.ts
+

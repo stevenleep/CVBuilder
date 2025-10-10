@@ -41,6 +41,9 @@ interface EditorState {
   history: PageSchema[]
   historyIndex: number
   
+  // 剪贴板
+  clipboard: NodeSchema | null
+  
   // Actions
   setPageSchema: (schema: PageSchema) => void
   
@@ -61,6 +64,11 @@ interface EditorState {
   selectNode: (nodeId: NodeId, multiSelect?: boolean) => void
   clearSelection: () => void
   setHoveredNode: (nodeId: NodeId | null) => void
+  
+  // 剪贴板操作
+  copyNode: (nodeId: NodeId) => void
+  cutNode: (nodeId: NodeId) => void
+  pasteNode: (targetId?: NodeId) => void
   
   // 模式切换
   setMode: (mode: EditorMode) => void
@@ -123,6 +131,7 @@ export const useEditorStore = create<EditorState>()(
     },
     history: [],
     historyIndex: -1,
+    clipboard: null,
 
     // 设置页面Schema
     setPageSchema: (schema) => {
@@ -335,6 +344,60 @@ export const useEditorStore = create<EditorState>()(
       set((state) => {
         state.canvasConfig = { ...state.canvasConfig, ...config }
       })
+    },
+
+    // 复制节点到剪贴板
+    copyNode: (nodeId) => {
+      const state = get()
+      const node = findNode(state.pageSchema.root, nodeId)
+      if (node) {
+        set((draft) => {
+          draft.clipboard = JSON.parse(JSON.stringify(node)) // 深拷贝
+        })
+        console.log('[EditorStore] 复制节点到剪贴板:', nodeId)
+      }
+    },
+
+    // 剪切节点到剪贴板
+    cutNode: (nodeId) => {
+      const state = get()
+      const node = findNode(state.pageSchema.root, nodeId)
+      if (node) {
+        set((draft) => {
+          draft.clipboard = JSON.parse(JSON.stringify(node)) // 深拷贝
+          draft.pageSchema.root = deleteNode(draft.pageSchema.root, nodeId)
+          draft.selectedNodeIds = draft.selectedNodeIds.filter(id => id !== nodeId)
+        })
+        addHistory(set)
+        console.log('[EditorStore] 剪切节点到剪贴板:', nodeId)
+      }
+    },
+
+    // 粘贴节点
+    pasteNode: (targetId) => {
+      const state = get()
+      if (!state.clipboard) {
+        console.warn('[EditorStore] 剪贴板为空')
+        return
+      }
+
+      set((draft) => {
+        // 克隆剪贴板中的节点并生成新ID
+        if (!draft.clipboard) return
+        const newNode = cloneNode(draft.clipboard)
+        
+        if (targetId) {
+          // 如果指定了目标节点，粘贴到其后面
+          draft.pageSchema.root = insertAfter(draft.pageSchema.root, targetId, newNode)
+        } else {
+          // 否则粘贴到根节点
+          draft.pageSchema.root = appendChild(draft.pageSchema.root, draft.pageSchema.root.id, newNode)
+        }
+        
+        draft.selectedNodeIds = [newNode.id]
+        console.log('[EditorStore] 粘贴节点:', newNode.id)
+      })
+      addHistory(set)
     },
 
     // 撤销

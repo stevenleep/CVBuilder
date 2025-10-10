@@ -1,6 +1,6 @@
 /**
  * 物料协议接口
- * 
+ *
  * 定义物料系统的完整协议，包括生命周期、通信、校验等
  */
 
@@ -42,7 +42,17 @@ export interface IPropSchema {
   /** 显示标签 */
   label: string
   /** 属性类型 */
-  type: 'string' | 'number' | 'boolean' | 'select' | 'color' | 'textarea' | 'richtext' | 'image' | 'date' | 'json'
+  type:
+    | 'string'
+    | 'number'
+    | 'boolean'
+    | 'select'
+    | 'color'
+    | 'textarea'
+    | 'richtext'
+    | 'image'
+    | 'date'
+    | 'json'
   /** 默认值 */
   defaultValue?: any
   /** 选项（用于select） */
@@ -164,6 +174,26 @@ export interface IMaterialAction {
 }
 
 /**
+ * 物料快捷键定义
+ */
+export interface IMaterialShortcut {
+  /** 快捷键组合 */
+  key: string
+  /** Ctrl/Cmd 键 */
+  ctrl?: boolean
+  /** Shift 键 */
+  shift?: boolean
+  /** Alt 键 */
+  alt?: boolean
+  /** 描述 */
+  description: string
+  /** 执行函数 */
+  handler: (context: IMaterialContext) => void | Promise<void>
+  /** 是否只在选中时生效 */
+  requiresSelection?: boolean
+}
+
+/**
  * 物料定义协议
  */
 export interface IMaterialDefinition {
@@ -187,6 +217,8 @@ export interface IMaterialDefinition {
   onDoubleClick?: (context: IMaterialContext) => void
   /** 自定义渲染器（可选，用于特殊渲染需求） */
   customRenderer?: (props: any) => React.ReactElement
+  /** 物料专属快捷键 */
+  shortcuts?: IMaterialShortcut[]
 }
 
 /**
@@ -210,4 +242,3 @@ export interface IMaterialRegistry {
   /** 按标签搜索 */
   searchByTags(tags: string[]): IMaterialDefinition[]
 }
-

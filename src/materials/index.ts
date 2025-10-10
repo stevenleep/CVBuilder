@@ -1,6 +1,6 @@
 /**
  * 物料导出入口
- * 
+ *
  * 统一注册所有物料（使用新的协议）
  */
 
@@ -53,7 +53,7 @@ import { ExpectedPositionMaterial } from './resume/ExpectedPosition'
 export function registerAllMaterials(registry: IMaterialRegistry) {
   // 系统物料（必需，但不在面板显示）
   registry.register(PageMaterial)
-  
+
   // 基础物料
   registry.register(ContainerMaterial)
   registry.register(RowMaterial)
@@ -65,12 +65,12 @@ export function registerAllMaterials(registry: IMaterialRegistry) {
   registry.register(ImageMaterial)
   registry.register(LinkMaterial)
   registry.register(BadgeMaterial)
-  
+
   // 复合物料
   registry.register(WorkExperienceSectionMaterial)
   registry.register(EducationSectionMaterial)
   registry.register(SkillsSectionMaterial)
-  
+
   // 简历物料
   registry.register(PersonalInfoMaterial)
   registry.register(SectionMaterial)
@@ -91,8 +91,6 @@ export function registerAllMaterials(registry: IMaterialRegistry) {
   registry.register(InterestsHobbiesMaterial)
   registry.register(SelfEvaluationMaterial)
   registry.register(ExpectedPositionMaterial)
-  
-  console.log('[Materials] 所有物料已注册，共', registry.getAll().length, '个')
 }
 
 // 导出所有物料定义
