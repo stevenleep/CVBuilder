@@ -1,6 +1,6 @@
 /**
  * 画布组件
- * 
+ *
  * 核心编辑区域，负责渲染页面和处理交互
  */
 
@@ -9,8 +9,8 @@ import { Renderer } from '@engine/Renderer'
 import { useEditorStore } from '@store/editorStore'
 
 export const Canvas: React.FC = () => {
-  const { 
-    pageSchema, 
+  const {
+    pageSchema,
     selectedNodeIds,
     hoveredNodeId,
     mode,
@@ -38,7 +38,7 @@ export const Canvas: React.FC = () => {
   }
 
   return (
-    <div 
+    <div
       className="canvas-container"
       style={{
         flex: 1,
@@ -52,6 +52,7 @@ export const Canvas: React.FC = () => {
       onClick={handleCanvasClick}
     >
       <div
+        data-canvas
         style={{
           transform: `scale(${canvasConfig.scale})`,
           transformOrigin: 'top center',
@@ -71,4 +72,3 @@ export const Canvas: React.FC = () => {
     </div>
   )
 }
-

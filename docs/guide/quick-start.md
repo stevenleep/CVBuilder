@@ -4,13 +4,13 @@
 
 ### 在线体验
 
-访问 [在线演示](https://你的用户名.github.io/CVBuilder/) 即可直接使用，无需安装。
+访问 [在线演示](https://stevenleep.github.io/CVBuilder/) 即可直接使用，无需安装。
 
 ### 本地运行
 
 ```bash
 # 克隆项目
-git clone https://github.com/你的用户名/CVBuilder.git
+git clone https://stevenleep.github.com/CVBuilder.git
 cd CVBuilder
 
 # 安装依赖（使用 pnpm）

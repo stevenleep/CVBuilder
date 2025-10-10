@@ -9,9 +9,9 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -50,11 +50,62 @@ body {
   body {
     margin: 0;
     padding: 0;
+    background: white;
   }
-  
+
   @page {
-    size: A4;
+    size: A4 portrait;
     margin: 0;
   }
-}
 
+  /* 隐藏不需要打印的元素 */
+  [data-no-print],
+  .no-print,
+  button,
+  nav,
+  aside,
+  header {
+    display: none !important;
+  }
+
+  /* 确保画布正常显示 */
+  .canvas-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  [data-canvas] {
+    transform: none !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  /* 确保主容器占满整个打印区域 */
+  #root {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 避免内容被截断 */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  /* 优化文字渲染 */
+  body,
+  p,
+  span,
+  div {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

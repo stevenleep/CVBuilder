@@ -1,20 +1,48 @@
 /**
  * 主题上下文
- * 
+ *
  * 提供全局主题配置
  */
 
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { ITheme, IThemeContext } from '../protocols/IThemeProtocol'
 import { modernTheme } from '../theme/themes'
+import { indexedDBService, STORES } from '@utils/indexedDB'
 
 const ThemeContext = createContext<IThemeContext | null>(null)
 
-export const ThemeProvider: React.FC<{ 
+const THEME_KEY = 'current-theme'
+
+export const ThemeProvider: React.FC<{
   children: ReactNode
   initialTheme?: ITheme
 }> = ({ children, initialTheme = modernTheme }) => {
   const [theme, setThemeState] = useState<ITheme>(initialTheme)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  // 加载主题
+  useEffect(() => {
+    indexedDBService
+      .getItem<ITheme>(STORES.THEME, THEME_KEY)
+      .then(savedTheme => {
+        if (savedTheme) {
+          setThemeState(savedTheme)
+        }
+        setIsLoaded(true)
+      })
+      .catch(() => {
+        setIsLoaded(true)
+      })
+  }, [])
+
+  // 保存主题
+  useEffect(() => {
+    if (isLoaded) {
+      indexedDBService.setItem(STORES.THEME, THEME_KEY, theme).catch(() => {
+        // 静默失败
+      })
+    }
+  }, [theme, isLoaded])
 
   const setTheme = (newTheme: ITheme) => {
     setThemeState(newTheme)
@@ -38,11 +66,7 @@ export const ThemeProvider: React.FC<{
     updateTheme,
   }
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  )
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 
 /**
@@ -88,4 +112,3 @@ export function useStyleConfig() {
   const { theme } = useTheme()
   return theme.style
 }
-

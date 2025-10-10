@@ -5,13 +5,14 @@
  */
 
 const DB_NAME = 'resume-builder-db'
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 // 存储对象的定义
 const STORES = {
   EDITOR_STATE: 'editor-state',
   TEMPLATES: 'templates',
   RESUME_TEMPLATES: 'resume-templates',
+  THEME: 'theme',
 }
 
 class IndexedDBService {
@@ -61,6 +62,10 @@ class IndexedDBService {
 
         if (!db.objectStoreNames.contains(STORES.RESUME_TEMPLATES)) {
           db.createObjectStore(STORES.RESUME_TEMPLATES)
+        }
+
+        if (!db.objectStoreNames.contains(STORES.THEME)) {
+          db.createObjectStore(STORES.THEME)
         }
       }
     })
