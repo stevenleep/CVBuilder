@@ -20,31 +20,40 @@ export const DraggableNode: React.FC<DraggableNodeProps> = ({
   nodeType,
   isEditMode,
   children,
-  onMove,
   style,
 }) => {
-  const [{ isDragging }, drag] = useDrag<NodeDragItem, void, { isDragging: boolean }>(() => ({
-    type: DragItemTypes.NODE,
-    item: { type: DragItemTypes.NODE, nodeId, nodeType },
-    canDrag: () => isEditMode,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+  const [{ isDragging }, drag] = useDrag<NodeDragItem, void, { isDragging: boolean }>(
+    () => ({
+      type: DragItemTypes.NODE,
+      item: { type: DragItemTypes.NODE, nodeId, nodeType },
+      canDrag: () => isEditMode,
+      collect: monitor => ({
+        isDragging: monitor.isDragging(),
+      }),
     }),
-  }), [nodeId, nodeType, isEditMode])
+    [nodeId, nodeType, isEditMode]
+  )
 
-  const [{ isOver, canDrop }, drop] = useDrop<DragItem, void, { isOver: boolean; canDrop: boolean }>(() => ({
-    accept: [DragItemTypes.MATERIAL, DragItemTypes.NODE],
-    canDrop: () => isEditMode,
-    drop: (item, monitor) => {
-      if (!monitor.isOver({ shallow: true })) return
-      
-      // TODO: 处理拖放逻辑
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver({ shallow: true }),
-      canDrop: monitor.canDrop(),
+  const [{ isOver, canDrop }, drop] = useDrop<
+    DragItem,
+    void,
+    { isOver: boolean; canDrop: boolean }
+  >(
+    () => ({
+      accept: [DragItemTypes.MATERIAL, DragItemTypes.NODE],
+      canDrop: () => isEditMode,
+      drop: (_item, monitor) => {
+        if (!monitor.isOver({ shallow: true })) return
+
+        // TODO: 处理拖放逻辑
+      },
+      collect: monitor => ({
+        isOver: monitor.isOver({ shallow: true }),
+        canDrop: monitor.canDrop(),
+      }),
     }),
-  }), [nodeId, isEditMode])
+    [nodeId, isEditMode]
+  )
 
   const combinedRef = (el: HTMLDivElement | null) => {
     drag(el)
@@ -57,14 +66,15 @@ export const DraggableNode: React.FC<DraggableNodeProps> = ({
       style={{
         ...style,
         opacity: isDragging ? 0.4 : 1,
-        ...(isOver && canDrop ? {
-          outline: '2px dashed #000',
-          outlineOffset: '2px',
-        } : {}),
+        ...(isOver && canDrop
+          ? {
+              outline: '2px dashed #000',
+              outlineOffset: '2px',
+            }
+          : {}),
       }}
     >
       {children}
     </div>
   )
 }
-

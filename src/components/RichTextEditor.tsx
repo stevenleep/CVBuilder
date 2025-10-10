@@ -1,11 +1,11 @@
 /**
  * 富文本编辑器组件
- * 
+ *
  * 轻量级的富文本编辑器，支持基本格式化
  */
 
 import React, { useRef, useEffect, useState } from 'react'
-import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Tag, ChevronDown } from 'lucide-react'
+import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Tag } from 'lucide-react'
 import { notification } from '@/utils/notification'
 
 interface RichTextEditorProps {
@@ -35,11 +35,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     if (editorRef.current) {
       onChange(editorRef.current.innerHTML)
     }
-  }
-
-  const execCommand = (command: string, value?: string) => {
-    document.execCommand(command, false, value)
-    editorRef.current?.focus()
   }
 
   const insertUnorderedList = (e: React.MouseEvent) => {
@@ -92,59 +87,50 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }
 
-
   return (
-    <div style={{
-      border: `1px solid ${isFocused ? '#e0e0e0' : '#f1f1f1'}`,
-      borderRadius: '4px',
-      backgroundColor: isFocused ? '#fff' : '#fafafa',
-      transition: 'all 0.1s',
-    }}>
+    <div
+      style={{
+        border: `1px solid ${isFocused ? '#e0e0e0' : '#f1f1f1'}`,
+        borderRadius: '4px',
+        backgroundColor: isFocused ? '#fff' : '#fafafa',
+        transition: 'all 0.1s',
+      }}
+    >
       {/* 工具栏 - 始终显示 */}
-      <div style={{
-        display: 'flex',
-        gap: '2px',
-        padding: '4px',
-        borderBottom: '1px solid #f1f1f1',
-        backgroundColor: '#fafafa',
-      }}>
-          <EditorButton
-            icon={<Bold size={14} />}
-            tooltip="加粗 (Ctrl+B)"
-            onClick={toggleBold}
-          />
-          <EditorButton
-            icon={<Italic size={14} />}
-            tooltip="斜体 (Ctrl+I)"
-            onClick={toggleItalic}
-          />
-          
-          <div style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 4px' }} />
-          
-          <EditorButton
-            icon={<List size={14} />}
-            tooltip="无序列表"
-            onClick={insertUnorderedList}
-          />
-          <EditorButton
-            icon={<ListOrdered size={14} />}
-            tooltip="有序列表"
-            onClick={insertOrderedList}
-          />
-          
-          <div style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 4px' }} />
-          
-          <EditorButton
-            icon={<Tag size={14} />}
-            tooltip="标签样式"
-            onClick={insertBadge}
-          />
-          
-          <EditorButton
-            icon={<LinkIcon size={14} />}
-            tooltip="插入链接 (Ctrl+K)"
-            onClick={insertLink}
-          />
+      <div
+        style={{
+          display: 'flex',
+          gap: '2px',
+          padding: '4px',
+          borderBottom: '1px solid #f1f1f1',
+          backgroundColor: '#fafafa',
+        }}
+      >
+        <EditorButton icon={<Bold size={14} />} tooltip="加粗 (Ctrl+B)" onClick={toggleBold} />
+        <EditorButton icon={<Italic size={14} />} tooltip="斜体 (Ctrl+I)" onClick={toggleItalic} />
+
+        <div
+          style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 4px' }}
+        />
+
+        <EditorButton icon={<List size={14} />} tooltip="无序列表" onClick={insertUnorderedList} />
+        <EditorButton
+          icon={<ListOrdered size={14} />}
+          tooltip="有序列表"
+          onClick={insertOrderedList}
+        />
+
+        <div
+          style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 4px' }}
+        />
+
+        <EditorButton icon={<Tag size={14} />} tooltip="标签样式" onClick={insertBadge} />
+
+        <EditorButton
+          icon={<LinkIcon size={14} />}
+          tooltip="插入链接 (Ctrl+K)"
+          onClick={insertLink}
+        />
       </div>
 
       {/* 编辑区 */}
@@ -246,7 +232,7 @@ const EditorButton: React.FC<{
     <button
       type="button"
       onClick={onClick}
-      onMouseDown={(e) => e.preventDefault()} // 防止失去焦点
+      onMouseDown={e => e.preventDefault()} // 防止失去焦点
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       title={tooltip}
@@ -268,4 +254,3 @@ const EditorButton: React.FC<{
     </button>
   )
 }
-

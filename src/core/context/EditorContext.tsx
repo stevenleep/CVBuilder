@@ -1,6 +1,6 @@
 /**
  * 编辑器上下文
- * 
+ *
  * 提供编辑器的全局上下文和依赖注入
  */
 
@@ -48,16 +48,13 @@ export interface EditorProviderProps {
 }
 
 export const EditorProvider: React.FC<EditorProviderProps> = ({ children, value }) => {
-  return (
-    <EditorContext.Provider value={value}>
-      {children}
-    </EditorContext.Provider>
-  )
+  return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
 }
 
 /**
  * 使用编辑器上下文的Hook
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useEditorContext(): IEditorContext {
   const context = useContext(EditorContext)
   if (!context) {
@@ -69,6 +66,7 @@ export function useEditorContext(): IEditorContext {
 /**
  * 使用物料注册表的Hook
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useMaterialRegistry(): IMaterialRegistry {
   const { materialRegistry } = useEditorContext()
   return materialRegistry
@@ -77,6 +75,7 @@ export function useMaterialRegistry(): IMaterialRegistry {
 /**
  * 使用事件总线的Hook
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useEventBus(): IEventBus {
   const { eventBus } = useEditorContext()
   return eventBus
@@ -85,6 +84,7 @@ export function useEventBus(): IEventBus {
 /**
  * 使用插件管理器的Hook
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function usePluginManager(): IPluginManager {
   const { pluginManager } = useEditorContext()
   return pluginManager
@@ -93,7 +93,8 @@ export function usePluginManager(): IPluginManager {
 /**
  * 订阅编辑器事件的Hook
  */
-export function useEditorEvent<T = any>(
+// eslint-disable-next-line react-refresh/only-export-components
+export function useEditorEvent<T = unknown>(
   event: string,
   handler: (data: T) => void,
   deps: React.DependencyList = []
@@ -113,10 +114,9 @@ export function useEditorEvent<T = any>(
 export function useEmitEvent() {
   const eventBus = useEventBus()
   return React.useCallback(
-    <T = any>(event: string, data?: T) => {
+    <T = any,>(event: string, data?: T) => {
       eventBus.emit(event, data)
     },
     [eventBus]
   )
 }
-

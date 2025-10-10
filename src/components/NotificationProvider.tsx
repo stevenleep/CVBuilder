@@ -5,13 +5,7 @@
  */
 
 import { useEffect, useState, useCallback } from 'react'
-import {
-  notification,
-  ToastOptions,
-  ConfirmOptions,
-  PromptOptions,
-  NotificationType,
-} from '@/utils/notification'
+import { notification, ToastOptions, ConfirmOptions, PromptOptions } from '@/utils/notification'
 
 interface ToastItem extends ToastOptions {
   id: string
@@ -449,4 +443,3 @@ function PromptDialog({
     </div>
   )
 }
-

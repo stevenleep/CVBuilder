@@ -2,9 +2,8 @@
  * 右键菜单组件
  */
 
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { IMaterialAction } from '@/core'
-import { Copy, Trash2, MoveUp, MoveDown } from 'lucide-react'
 
 interface ContextMenuProps {
   x: number
@@ -14,13 +13,7 @@ interface ContextMenuProps {
   onAction: (actionId: string) => void
 }
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({
-  x,
-  y,
-  actions,
-  onClose,
-  onAction,
-}) => {
+export const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, actions, onClose, onAction }) => {
   useEffect(() => {
     const handleClick = () => onClose()
     const handleEscape = (e: KeyboardEvent) => {
@@ -50,9 +43,9 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
         minWidth: '180px',
         zIndex: 10000,
       }}
-      onClick={(e) => e.stopPropagation()}
+      onClick={e => e.stopPropagation()}
     >
-      {actions.map((action) => (
+      {actions.map(action => (
         <div
           key={action.id}
           onClick={() => {
@@ -70,21 +63,23 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
             gap: '10px',
             transition: 'background 0.1s',
           }}
-          onMouseEnter={(e) => {
+          onMouseEnter={e => {
             e.currentTarget.style.backgroundColor = '#fafafa'
           }}
-          onMouseLeave={(e) => {
+          onMouseLeave={e => {
             e.currentTarget.style.backgroundColor = 'transparent'
           }}
         >
           {action.icon && <span>{action.icon}</span>}
           <span>{action.label}</span>
           {action.shortcut && (
-            <span style={{ 
-              marginLeft: 'auto', 
-              fontSize: '11px', 
-              color: '#999' 
-            }}>
+            <span
+              style={{
+                marginLeft: 'auto',
+                fontSize: '11px',
+                color: '#999',
+              }}
+            >
               {action.shortcut}
             </span>
           )}
@@ -93,4 +88,3 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     </div>
   )
 }
-

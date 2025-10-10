@@ -1,6 +1,6 @@
 /**
  * 编辑器引导程序
- * 
+ *
  * 初始化依赖注入容器和核心服务
  */
 
@@ -16,21 +16,13 @@ import { globalServices } from './globals'
  */
 export function bootstrapEditor(config: IEditorConfig = {}): IEditorContext {
   // 注册事件总线（单例）
-  container.register(
-    EVENT_BUS_TOKEN,
-    () => new EventBus(),
-    { singleton: true }
-  )
+  container.register(EVENT_BUS_TOKEN, () => new EventBus(), { singleton: true })
 
   // 注册物料注册表（依赖事件总线）
-  container.register(
-    MATERIAL_REGISTRY_TOKEN,
-    (eventBus) => new MaterialRegistry(eventBus),
-    { 
-      dependencies: [EVENT_BUS_TOKEN],
-      singleton: true 
-    }
-  )
+  container.register(MATERIAL_REGISTRY_TOKEN, eventBus => new MaterialRegistry(eventBus), {
+    dependencies: [EVENT_BUS_TOKEN],
+    singleton: true,
+  })
 
   // 注册插件管理器
   container.register(
@@ -43,14 +35,14 @@ export function bootstrapEditor(config: IEditorConfig = {}): IEditorContext {
     },
     {
       dependencies: [MATERIAL_REGISTRY_TOKEN, EVENT_BUS_TOKEN],
-      singleton: true
+      singleton: true,
     }
   )
 
   // 解析所有服务
-  const eventBus = container.resolve(EVENT_BUS_TOKEN)
-  const materialRegistry = container.resolve(MATERIAL_REGISTRY_TOKEN)
-  const pluginManager = container.resolve(PLUGIN_MANAGER_TOKEN)
+  const eventBus = container.resolve(EVENT_BUS_TOKEN) as EventBus
+  const materialRegistry = container.resolve(MATERIAL_REGISTRY_TOKEN) as MaterialRegistry
+  const pluginManager = container.resolve(PLUGIN_MANAGER_TOKEN) as PluginManager
 
   // 设置全局服务访问器（用于非React组件）
   globalServices.setMaterialRegistry(materialRegistry)
@@ -71,6 +63,7 @@ export function bootstrapEditor(config: IEditorConfig = {}): IEditorContext {
   }
 
   if (config.debug) {
+    //
   }
 
   return editorContext
@@ -83,4 +76,3 @@ export function cleanupEditor(): void {
   globalServices.clear()
   container.clear()
 }
-

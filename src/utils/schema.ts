@@ -1,11 +1,11 @@
 /**
  * Schema工具函数
- * 
+ *
  * 提供节点查找、添加、删除、更新等操作
  */
 
 import { nanoid } from 'nanoid'
-import { NodeSchema, NodeId, MaterialType, PropValue } from '@types/material'
+import type { NodeSchema, NodeId, MaterialType, PropValue } from '../types/material'
 import { getMaterialRegistry } from '@/core/globals'
 
 /**
@@ -17,7 +17,7 @@ export function createNode(
 ): NodeSchema {
   const materialRegistry = getMaterialRegistry()
   const materialDef = materialRegistry.get(materialType)
-  
+
   if (!materialDef) {
     throw new Error(`物料类型 "${materialType}" 未注册`)
   }
@@ -32,9 +32,9 @@ export function createNode(
       ...materialDef.defaultProps,
       ...props,
     },
-    style: { 
+    style: {
       ...meta.defaultStyle,
-      ...materialDef.defaultStyle 
+      ...materialDef.defaultStyle,
     },
     children: [],
   }
@@ -98,11 +98,7 @@ export function getNodePath(root: NodeSchema, nodeId: NodeId): NodeId[] {
 /**
  * 添加子节点
  */
-export function appendChild(
-  root: NodeSchema,
-  parentId: NodeId,
-  childNode: NodeSchema
-): NodeSchema {
+export function appendChild(root: NodeSchema, parentId: NodeId, childNode: NodeSchema): NodeSchema {
   if (root.id === parentId) {
     return {
       ...root,
@@ -123,11 +119,7 @@ export function appendChild(
 /**
  * 在指定节点前插入节点
  */
-export function insertBefore(
-  root: NodeSchema,
-  targetId: NodeId,
-  newNode: NodeSchema
-): NodeSchema {
+export function insertBefore(root: NodeSchema, targetId: NodeId, newNode: NodeSchema): NodeSchema {
   if (root.children) {
     const index = root.children.findIndex(child => child.id === targetId)
     if (index !== -1) {
@@ -148,11 +140,7 @@ export function insertBefore(
 /**
  * 在指定节点后插入节点
  */
-export function insertAfter(
-  root: NodeSchema,
-  targetId: NodeId,
-  newNode: NodeSchema
-): NodeSchema {
+export function insertAfter(root: NodeSchema, targetId: NodeId, newNode: NodeSchema): NodeSchema {
   if (root.children) {
     const index = root.children.findIndex(child => child.id === targetId)
     if (index !== -1) {
@@ -285,4 +273,3 @@ export function moveNode(
 
   return newRoot
 }
-

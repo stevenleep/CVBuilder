@@ -4,7 +4,6 @@
 
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
-import { useThemeConfig } from '@/core/context/ThemeContext'
 
 interface RowProps {
   children?: React.ReactNode
@@ -15,8 +14,8 @@ interface RowProps {
   wrap?: boolean
 }
 
-const Row: React.FC<RowProps> = ({ 
-  children, 
+const Row: React.FC<RowProps> = ({
+  children,
   style,
   gap = 12,
   align = 'center',
@@ -107,4 +106,3 @@ export const RowMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

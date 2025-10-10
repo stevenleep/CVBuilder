@@ -5,13 +5,11 @@
 import React, { useState } from 'react'
 import { useEditorStore } from '@store/editorStore'
 import { notification } from '@/utils/notification'
-import { 
-  Undo, 
-  Redo, 
-  Eye, 
-  Edit3, 
-  Save, 
-  Download,
+import {
+  Undo,
+  Redo,
+  Eye,
+  Edit3,
   ZoomIn,
   ZoomOut,
   FileText,
@@ -24,8 +22,8 @@ import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
 import { resumeTemplateManager } from '@/core/services/ResumeTemplateManager'
 
 export const Toolbar: React.FC = () => {
-  const { 
-    mode, 
+  const {
+    mode,
     canvasConfig,
     canUndo,
     canRedo,
@@ -36,7 +34,7 @@ export const Toolbar: React.FC = () => {
     saveToStorage,
     pageSchema,
   } = useEditorStore()
-  
+
   const [showSaveResumeDialog, setShowSaveResumeDialog] = useState(false)
   const [showTemplatesPanel, setShowTemplatesPanel] = useState(false)
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
@@ -54,22 +52,22 @@ export const Toolbar: React.FC = () => {
   const handleExport = () => {
     const schema = useEditorStore.getState().pageSchema
     const dataStr = JSON.stringify(schema, null, 2)
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
     const exportFileDefaultName = 'resume.json'
-    
+
     const linkElement = document.createElement('a')
     linkElement.setAttribute('href', dataUri)
     linkElement.setAttribute('download', exportFileDefaultName)
     linkElement.click()
   }
-  
+
   const handleSaveResumeTemplate = (name: string, description: string) => {
     resumeTemplateManager.saveAsTemplate(pageSchema, name, description)
     notification.success('简历模板保存成功！')
   }
 
   return (
-    <div 
+    <div
       style={{
         height: '48px',
         borderBottom: '1px solid #f1f1f1',
@@ -81,110 +79,88 @@ export const Toolbar: React.FC = () => {
       }}
     >
       {/* Logo */}
-      <div style={{ 
-        fontWeight: '600', 
-        fontSize: '15px', 
-        color: '#000',
-        marginRight: '16px',
-      }}>
+      <div
+        style={{
+          fontWeight: '600',
+          fontSize: '15px',
+          color: '#000',
+          marginRight: '16px',
+        }}
+      >
         Resume
       </div>
-      
+
       {/* 历史操作 */}
-      <IconButton 
-        icon={<Undo size={16} />} 
-        tooltip="撤销"
-        onClick={undo}
-        disabled={!canUndo()}
-      />
-      <IconButton 
-        icon={<Redo size={16} />} 
-        tooltip="重做"
-        onClick={redo}
-        disabled={!canRedo()}
-      />
-      
+      <IconButton icon={<Undo size={16} />} tooltip="撤销" onClick={undo} disabled={!canUndo()} />
+      <IconButton icon={<Redo size={16} />} tooltip="重做" onClick={redo} disabled={!canRedo()} />
+
       <Divider />
-      
+
       {/* 视图控制 */}
-      <IconButton 
-        icon={<ZoomOut size={16} />} 
-        tooltip="缩小"
-        onClick={handleZoomOut}
-      />
-      <span style={{ 
-        minWidth: '48px',
-        fontSize: '13px',
-        color: '#666',
-        textAlign: 'center',
-        fontVariantNumeric: 'tabular-nums',
-      }}>
+      <IconButton icon={<ZoomOut size={16} />} tooltip="缩小" onClick={handleZoomOut} />
+      <span
+        style={{
+          minWidth: '48px',
+          fontSize: '13px',
+          color: '#666',
+          textAlign: 'center',
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
         {Math.round(canvasConfig.scale * 100)}%
       </span>
-      <IconButton 
-        icon={<ZoomIn size={16} />} 
-        tooltip="放大"
-        onClick={handleZoomIn}
-      />
-      
+      <IconButton icon={<ZoomIn size={16} />} tooltip="放大" onClick={handleZoomIn} />
+
       <Divider />
-      
+
       {/* 模式切换 */}
-      <IconButton 
-        icon={<Edit3 size={16} />} 
+      <IconButton
+        icon={<Edit3 size={16} />}
         tooltip="编辑"
         onClick={() => setMode('edit')}
         active={mode === 'edit'}
       />
-      <IconButton 
-        icon={<Eye size={16} />} 
+      <IconButton
+        icon={<Eye size={16} />}
         tooltip="预览"
         onClick={() => setMode('preview')}
         active={mode === 'preview'}
       />
-      
+
       <div style={{ flex: 1 }} />
-      
+
       {/* 右侧操作 */}
       <IconButton
         icon={<HelpCircle size={16} />}
         tooltip="快捷键帮助 (?)"
         onClick={() => setShowShortcutsHelp(true)}
       />
-      
+
       <Divider />
-      
+
       <IconButton
         icon={<Library size={16} />}
         tooltip="简历模板库"
         onClick={() => setShowTemplatesPanel(true)}
       />
-      
+
       <IconButton
         icon={<FileText size={16} />}
         tooltip="保存为模板"
         onClick={() => setShowSaveResumeDialog(true)}
       />
-      
+
       <Divider />
-      
-      <TextButton onClick={handleExport}>
-        导出
-      </TextButton>
-      <PrimaryButton onClick={() => saveToStorage()}>
-        保存
-      </PrimaryButton>
-      
+
+      <TextButton onClick={handleExport}>导出</TextButton>
+      <PrimaryButton onClick={() => saveToStorage()}>保存</PrimaryButton>
+
       {/* 快捷键帮助 */}
-      {showShortcutsHelp && (
-        <KeyboardShortcutsHelp onClose={() => setShowShortcutsHelp(false)} />
-      )}
+      {showShortcutsHelp && <KeyboardShortcutsHelp onClose={() => setShowShortcutsHelp(false)} />}
 
       {/* 简历模板库面板 */}
-      {showTemplatesPanel && (
-        <ResumeTemplatesPanel onClose={() => setShowTemplatesPanel(false)} />
-      )}
-      
+      {showTemplatesPanel && <ResumeTemplatesPanel onClose={() => setShowTemplatesPanel(false)} />}
+
       {/* 保存简历模板对话框 */}
       {showSaveResumeDialog && (
         <SaveResumeTemplateDialog
@@ -205,7 +181,7 @@ const IconButton: React.FC<{
   active?: boolean
 }> = ({ icon, tooltip, onClick, disabled = false, active = false }) => {
   const [hover, setHover] = React.useState(false)
-  
+
   return (
     <button
       onClick={onClick}
@@ -238,7 +214,7 @@ const TextButton: React.FC<{
   children: React.ReactNode
 }> = ({ onClick, children }) => {
   const [hover, setHover] = React.useState(false)
-  
+
   return (
     <button
       onClick={onClick}
@@ -268,7 +244,7 @@ const PrimaryButton: React.FC<{
   children: React.ReactNode
 }> = ({ onClick, children }) => {
   const [hover, setHover] = React.useState(false)
-  
+
   return (
     <button
       onClick={onClick}
@@ -294,10 +270,12 @@ const PrimaryButton: React.FC<{
 
 // 分隔线
 const Divider = () => (
-  <div style={{ 
-    width: '1px', 
-    height: '16px', 
-    backgroundColor: '#f1f1f1',
-    margin: '0 4px',
-  }} />
+  <div
+    style={{
+      width: '1px',
+      height: '16px',
+      backgroundColor: '#f1f1f1',
+      margin: '0 4px',
+    }}
+  />
 )

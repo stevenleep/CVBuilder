@@ -30,9 +30,9 @@ export interface IMaterialMeta {
   /** 版本 */
   version?: string
   /** 默认样式（可选） */
-  defaultStyle?: {}
+  defaultStyle?: Record<string, never>
   /** 默认属性（可选） */
-  defaultProps?: {}
+  defaultProps?: Record<string, never>
 }
 
 /**

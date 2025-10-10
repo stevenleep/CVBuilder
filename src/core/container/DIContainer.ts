@@ -1,15 +1,19 @@
 /**
  * 依赖注入容器
- * 
+ *
  * 管理所有服务的注册和获取，实现控制反转
  */
 
-export type ServiceIdentifier<T = any> = string | symbol | { new(...args: any[]): T }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ServiceIdentifier<T = any> = string | symbol | { new (...args: any[]): T }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ServiceFactory<T = any> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (...deps: any[]): T
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ServiceDescriptor<T = any> {
   identifier: ServiceIdentifier<T>
   factory: ServiceFactory<T>
@@ -21,6 +25,7 @@ export interface ServiceDescriptor<T = any> {
 export class DIContainer {
   private static instance: DIContainer
   private services: Map<ServiceIdentifier, ServiceDescriptor> = new Map()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private singletonCache: Map<ServiceIdentifier, any> = new Map()
 
   private constructor() {}
@@ -98,4 +103,3 @@ export class DIContainer {
 
 // 导出单例
 export const container = DIContainer.getInstance()
-

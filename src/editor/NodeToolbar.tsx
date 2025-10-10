@@ -1,6 +1,6 @@
 /**
  * 节点浮动工具栏
- * 
+ *
  * 鼠标悬停时显示，提供快捷操作
  */
 
@@ -27,20 +27,15 @@ interface NodeToolbarProps {
 }
 
 export const NodeToolbar: React.FC<NodeToolbarProps> = ({
-  nodeId,
   actions = [],
   onCopy,
   onDelete,
   onMoveUp,
   onMoveDown,
-  onAddBefore,
-  onAddAfter,
   onSaveAsTemplate,
   onCustomAction,
   capabilities = {},
 }) => {
-  const [showMore, setShowMore] = React.useState(false)
-
   const { copyable = true, deletable = true, moveable = true } = capabilities
 
   return (
@@ -61,78 +56,59 @@ export const NodeToolbar: React.FC<NodeToolbarProps> = ({
         zIndex: 10001,
         pointerEvents: 'auto',
       }}
-      onClick={(e) => {
+      onClick={e => {
         e.stopPropagation()
         e.preventDefault()
       }}
-      onMouseDown={(e) => {
+      onMouseDown={e => {
         e.stopPropagation()
         e.preventDefault()
       }}
     >
       {/* 拖动手柄 */}
       {moveable && (
-        <ToolButton 
-          icon={<GripVertical size={14} />}
-          tooltip="拖动"
-          style={{ cursor: 'grab' }}
-        />
+        <ToolButton icon={<GripVertical size={14} />} tooltip="拖动" style={{ cursor: 'grab' }} />
       )}
 
       {/* 上移下移 */}
       {moveable && onMoveUp && (
-        <ToolButton 
-          icon={<ChevronUp size={14} />}
-          tooltip="上移"
-          onClick={onMoveUp}
-        />
+        <ToolButton icon={<ChevronUp size={14} />} tooltip="上移" onClick={onMoveUp} />
       )}
       {moveable && onMoveDown && (
-        <ToolButton 
-          icon={<ChevronDown size={14} />}
-          tooltip="下移"
-          onClick={onMoveDown}
-        />
+        <ToolButton icon={<ChevronDown size={14} />} tooltip="下移" onClick={onMoveDown} />
       )}
 
       <div style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 2px' }} />
 
       {/* 复制 */}
-      {copyable && (
-        <ToolButton 
-          icon={<Copy size={14} />}
-          tooltip="复制"
-          onClick={onCopy}
-        />
-      )}
-      
+      {copyable && <ToolButton icon={<Copy size={14} />} tooltip="复制" onClick={onCopy} />}
+
       {/* 保存为模板 */}
       {onSaveAsTemplate && (
-        <ToolButton 
-          icon={<Save size={14} />}
-          tooltip="保存为模板"
-          onClick={onSaveAsTemplate}
-        />
+        <ToolButton icon={<Save size={14} />} tooltip="保存为模板" onClick={onSaveAsTemplate} />
       )}
 
       {/* 删除 */}
       {deletable && (
-        <ToolButton 
-          icon={<Trash2 size={14} />}
-          tooltip="删除"
-          onClick={onDelete}
-          danger
-        />
+        <ToolButton icon={<Trash2 size={14} />} tooltip="删除" onClick={onDelete} danger />
       )}
 
       {/* 自定义Actions */}
       {actions.length > 0 && (
         <>
-          <div style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 2px' }} />
+          <div
+            style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 2px' }}
+          />
           {actions.slice(0, 2).map(action => (
             <ToolButton
               key={action.id}
-              icon={action.icon ? <span style={{ fontSize: '12px' }}>{action.icon}</span> : <Plus size={14} />}
+              icon={
+                action.icon ? (
+                  <span style={{ fontSize: '12px' }}>{action.icon}</span>
+                ) : (
+                  <Plus size={14} />
+                )
+              }
               tooltip={action.label}
               onClick={() => onCustomAction?.(action.id)}
             />
@@ -154,11 +130,11 @@ const ToolButton: React.FC<{
 
   return (
     <button
-      onClick={(e) => {
+      onClick={e => {
         e.stopPropagation()
         onClick?.()
       }}
-      onMouseDown={(e) => e.stopPropagation()}
+      onMouseDown={e => e.stopPropagation()}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       title={tooltip}
@@ -181,4 +157,3 @@ const ToolButton: React.FC<{
     </button>
   )
 }
-

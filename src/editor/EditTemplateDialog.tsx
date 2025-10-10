@@ -44,7 +44,6 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!dialogRef.current) return
-      const rect = dialogRef.current.getBoundingClientRect()
       const centerX = window.innerWidth / 2
       const centerY = window.innerHeight / 2
 
@@ -103,12 +102,14 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
     setTemplateSchema(newSchema)
   }
 
-  const handleDeleteNode = (nodeId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleDeleteNode = (_nodeId: string) => {
     // 简化版：不允许在模板编辑中删除
     notification.info('请在主界面编辑完整内容后重新保存模板')
   }
 
-  const handleDuplicateNode = (nodeId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleDuplicateNode = (_nodeId: string) => {
     // 简化版：不允许在模板编辑中复制
     notification.info('请在主界面编辑完整内容后重新保存模板')
   }

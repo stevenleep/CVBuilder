@@ -1,10 +1,14 @@
 /**
  * 物料注册表实现
- * 
+ *
  * 采用单例模式，管理所有物料的注册和查询
  */
 
-import { MaterialDefinition, MaterialRegistry as IMaterialRegistry, MaterialType } from '@types/material'
+import type {
+  MaterialDefinition,
+  MaterialRegistry as IMaterialRegistry,
+  MaterialType,
+} from '../types/material'
 
 class MaterialRegistry implements IMaterialRegistry {
   private static instance: MaterialRegistry
@@ -29,7 +33,7 @@ class MaterialRegistry implements IMaterialRegistry {
    */
   public register(definition: MaterialDefinition): void {
     const { type } = definition.meta
-    
+
     this.materials.set(type, definition)
   }
 
@@ -80,4 +84,3 @@ class MaterialRegistry implements IMaterialRegistry {
 
 // 导出单例实例
 export const materialRegistry = MaterialRegistry.getInstance()
-
