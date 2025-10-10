@@ -30,7 +30,7 @@ export const Toolbar: React.FC = () => {
     redo,
     setMode,
     updateCanvasConfig,
-    saveToLocalStorage,
+    saveToStorage,
     pageSchema,
   } = useEditorStore()
   
@@ -159,7 +159,7 @@ export const Toolbar: React.FC = () => {
       <TextButton onClick={handleExport}>
         导出
       </TextButton>
-      <PrimaryButton onClick={saveToLocalStorage}>
+      <PrimaryButton onClick={() => saveToStorage()}>
         保存
       </PrimaryButton>
       

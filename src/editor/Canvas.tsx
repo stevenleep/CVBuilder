@@ -7,7 +7,6 @@
 import React from 'react'
 import { Renderer } from '@engine/Renderer'
 import { useEditorStore } from '@store/editorStore'
-import clsx from 'clsx'
 
 export const Canvas: React.FC = () => {
   const { 

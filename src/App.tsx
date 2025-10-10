@@ -2,7 +2,7 @@
  * 应用入口组件
  */
 
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { EditorLayout } from './editor/EditorLayout'
 import { registerAllMaterials } from './materials'
 import { useEditorStore } from './store/editorStore'
@@ -30,11 +30,14 @@ function App() {
   }, [])
 
   useEffect(() => {
-    // 尝试从本地存储加载
-    useEditorStore.getState().loadFromLocalStorage()
-    
-    setIsInitialized(true)
-    console.log('[App] 应用初始化完成')
+    // 尝试从 IndexedDB 加载
+    useEditorStore.getState().loadFromStorage().then(() => {
+      setIsInitialized(true)
+      console.log('[App] 应用初始化完成')
+    }).catch(err => {
+      console.error('[App] 加载数据失败:', err)
+      setIsInitialized(true)
+    })
   }, [editorContext])
   
   if (!isInitialized) {

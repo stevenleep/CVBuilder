@@ -21,6 +21,7 @@ import {
   cloneNode,
 } from '@utils/schema'
 import { nanoid } from 'nanoid'
+import { indexedDBService, STORES } from '@utils/indexedDB'
 
 interface EditorState {
   // 页面数据
@@ -74,8 +75,8 @@ interface EditorState {
   canRedo: () => boolean
   
   // 持久化
-  saveToLocalStorage: () => void
-  loadFromLocalStorage: () => void
+  saveToStorage: () => Promise<void>
+  loadFromStorage: () => Promise<void>
 }
 
 const STORAGE_KEY = 'resume-builder-state'
@@ -370,25 +371,24 @@ export const useEditorStore = create<EditorState>()(
       return state.historyIndex < state.history.length - 1
     },
 
-    // 保存到本地存储
-    saveToLocalStorage: () => {
+    // 保存到 IndexedDB
+    saveToStorage: async () => {
       const state = get()
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.pageSchema))
-        console.log('[EditorStore] 已保存到本地存储')
+        await indexedDBService.setItem(STORES.EDITOR_STATE, STORAGE_KEY, state.pageSchema)
+        console.log('[EditorStore] 已保存到 IndexedDB')
       } catch (error) {
         console.error('[EditorStore] 保存失败:', error)
       }
     },
 
-    // 从本地存储加载
-    loadFromLocalStorage: () => {
+    // 从 IndexedDB 加载
+    loadFromStorage: async () => {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY)
+        const saved = await indexedDBService.getItem<PageSchema>(STORES.EDITOR_STATE, STORAGE_KEY)
         if (saved) {
-          const schema = JSON.parse(saved)
-          get().setPageSchema(schema)
-          console.log('[EditorStore] 已从本地存储加载')
+          get().setPageSchema(saved)
+          console.log('[EditorStore] 已从 IndexedDB 加载')
         }
       } catch (error) {
         console.error('[EditorStore] 加载失败:', error)

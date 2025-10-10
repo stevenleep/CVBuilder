@@ -51,7 +51,7 @@ export const Renderer: React.FC<RendererProps> = ({
   const { id, type, props = {}, style = {}, children = [], hidden } = schema;
 
   // 获取编辑器操作方法
-  const { duplicateNode, deleteNode, pageSchema } = useEditorStore();
+  const { duplicateNode, deleteNode, pageSchema, moveNodeUp, moveNodeDown } = useEditorStore();
 
   // 获取物料定义（必须在所有Hooks之前）
   const materialDef = materialRegistry.get(type);
@@ -140,7 +140,7 @@ export const Renderer: React.FC<RendererProps> = ({
             onNodeHover(null);
             setShowToolbar(false);
           }
-        }, 100);
+        }, 200);
       }
     },
     [isEditMode, onNodeHover, id]
@@ -162,6 +162,78 @@ export const Renderer: React.FC<RendererProps> = ({
       }),
     }),
     [id, type, isEditMode, materialDef]
+  );
+
+  // 双击处理
+  const handleDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (isEditMode && materialDef?.onDoubleClick) {
+        e.stopPropagation();
+        const context = createMaterialContext(
+          id,
+          type,
+          props,
+          style,
+          children,
+          eventBus
+        );
+        materialDef.onDoubleClick(context);
+      }
+    },
+    [isEditMode, materialDef, id, type, props, style, children, eventBus]
+  );
+
+  // 操作处理
+  const handleCopy = useCallback(() => {
+    duplicateNode(id);
+    setShowToolbar(false);
+  }, [id, duplicateNode]);
+
+  const handleDelete = useCallback(() => {
+    deleteNode(id);
+    setShowToolbar(false);
+  }, [id, deleteNode]);
+
+  const handleMoveUp = useCallback(() => {
+    moveNodeUp(id);
+  }, [id, moveNodeUp]);
+
+  const handleMoveDown = useCallback(() => {
+    moveNodeDown(id);
+  }, [id, moveNodeDown]);
+
+  const handleSaveAsTemplate = useCallback(() => {
+    setShowSaveDialog(true);
+  }, []);
+
+  const handleSaveTemplate = useCallback(
+    (name: string, description: string, category: string) => {
+      const node = findNode(pageSchema.root, id);
+      if (node) {
+        templateManager.saveAsTemplate(node, name, description, category);
+        alert("模板保存成功！");
+      }
+    },
+    [id, pageSchema]
+  );
+
+  const handleCustomAction = useCallback(
+    (actionId: string) => {
+      const action = materialDef?.actions?.find((a) => a.id === actionId);
+      if (action) {
+        const context = createMaterialContext(
+          id,
+          type,
+          props,
+          style,
+          children,
+          eventBus
+        );
+        action.execute(context);
+      }
+      setShowToolbar(false);
+    },
+    [materialDef, id, type, props, style, children, eventBus]
   );
 
   // 现在可以进行条件返回
@@ -270,81 +342,6 @@ export const Renderer: React.FC<RendererProps> = ({
         onMouseLeave: handleMouseLeave,
       }
     : {};
-
-  // 双击处理
-  const handleDoubleClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (isEditMode && materialDef.onDoubleClick) {
-        e.stopPropagation();
-        const context = createMaterialContext(
-          id,
-          type,
-          props,
-          style,
-          children,
-          eventBus
-        );
-        materialDef.onDoubleClick(context);
-      }
-    },
-    [isEditMode, materialDef, id, type, props, style, children, eventBus]
-  );
-
-  // 获取操作方法
-  const { moveNodeUp, moveNodeDown } = useEditorStore();
-
-  // 操作处理
-  const handleCopy = useCallback(() => {
-    duplicateNode(id);
-    setShowToolbar(false);
-  }, [id, duplicateNode]);
-
-  const handleDelete = useCallback(() => {
-    deleteNode(id);
-    setShowToolbar(false);
-  }, [id, deleteNode]);
-
-  const handleMoveUp = useCallback(() => {
-    moveNodeUp(id);
-  }, [id, moveNodeUp]);
-
-  const handleMoveDown = useCallback(() => {
-    moveNodeDown(id);
-  }, [id, moveNodeDown]);
-
-  const handleSaveAsTemplate = useCallback(() => {
-    setShowSaveDialog(true);
-  }, []);
-
-  const handleSaveTemplate = useCallback(
-    (name: string, description: string, category: string) => {
-      const node = findNode(pageSchema.root, id);
-      if (node) {
-        templateManager.saveAsTemplate(node, name, description, category);
-        alert("模板保存成功！");
-      }
-    },
-    [id, pageSchema]
-  );
-
-  const handleCustomAction = useCallback(
-    (actionId: string) => {
-      const action = materialDef.actions?.find((a) => a.id === actionId);
-      if (action) {
-        const context = createMaterialContext(
-          id,
-          type,
-          props,
-          style,
-          children,
-          eventBus
-        );
-        action.execute(context);
-      }
-      setShowToolbar(false);
-    },
-    [materialDef, id, type, props, style, children, eventBus]
-  );
 
   const content = (
     <div
@@ -475,12 +472,6 @@ function createMaterialContext(
   children: any[],
   eventBus: any
 ): any {
-  // 延迟导入避免循环依赖
-  const getEditorStore = () => {
-    // Use dynamic import to avoid 'require' lint error
-    return import("@store/editorStore").then(({ useEditorStore }) => useEditorStore.getState());
-  };
-
   return {
     nodeId,
     materialType,
@@ -494,7 +485,7 @@ function createMaterialContext(
       return eventBus.on(`material:${nodeId}:${event}`, handler);
     },
     getEditorAPI: () => {
-      const store = getEditorStore();
+      const store = useEditorStore.getState();
       return {
         selectNode: (id: string) => store.selectNode(id),
         updateNodeProps: (id: string, props: any) =>
@@ -507,10 +498,7 @@ function createMaterialContext(
           return "";
         },
         findNode: (id: string) => {
-          // Use dynamic import to avoid require lint error
-          return import("@utils/schema").then(({ findNode }) => {
-            return findNode(store.pageSchema.root, id);
-          });
+          return findNode(store.pageSchema.root, id);
         },
       };
     },

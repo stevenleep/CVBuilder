@@ -6,6 +6,7 @@
 
 import { NodeSchema } from '@/types/material'
 import { nanoid } from 'nanoid'
+import { indexedDBService, STORES } from '@/utils/indexedDB'
 
 export interface CustomTemplate {
   id: string
@@ -23,7 +24,9 @@ class TemplateManager {
   private storageKey = 'resume-builder-templates'
 
   private constructor() {
-    this.loadFromStorage()
+    this.loadFromStorage().catch(err => {
+      console.error('[TemplateManager] 初始化加载失败:', err)
+    })
   }
 
   public static getInstance(): TemplateManager {
@@ -130,29 +133,28 @@ class TemplateManager {
   }
 
   /**
-   * 保存到本地存储
+   * 保存到 IndexedDB
    */
-  private saveToStorage(): void {
+  private async saveToStorage(): Promise<void> {
     try {
       const data = Array.from(this.templates.values())
-      localStorage.setItem(this.storageKey, JSON.stringify(data))
+      await indexedDBService.setItem(STORES.TEMPLATES, this.storageKey, data)
     } catch (error) {
       console.error('[TemplateManager] 保存失败:', error)
     }
   }
 
   /**
-   * 从本地存储加载
+   * 从 IndexedDB 加载
    */
-  private loadFromStorage(): void {
+  private async loadFromStorage(): Promise<void> {
     try {
-      const saved = localStorage.getItem(this.storageKey)
+      const saved = await indexedDBService.getItem<CustomTemplate[]>(STORES.TEMPLATES, this.storageKey)
       if (saved) {
-        const data: CustomTemplate[] = JSON.parse(saved)
-        data.forEach(template => {
+        saved.forEach(template => {
           this.templates.set(template.id, template)
         })
-        console.log('[TemplateManager] 加载模板:', data.length, '个')
+        console.log('[TemplateManager] 加载模板:', saved.length, '个')
       }
     } catch (error) {
       console.error('[TemplateManager] 加载失败:', error)
