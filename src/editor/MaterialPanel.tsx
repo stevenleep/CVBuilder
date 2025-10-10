@@ -14,7 +14,7 @@ import { StructurePanel } from './StructureTree'
 import { notification } from '@/utils/notification'
 
 export const MaterialPanel: React.FC = () => {
-  const { addNode, selectedNodeIds, pageSchema } = useEditorStore()
+  const { addNode, pageSchema } = useEditorStore()
   const [activeTab, setActiveTab] = useState<'components' | 'structure'>('components')
   const [activeCategory, setActiveCategory] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
@@ -80,9 +80,9 @@ export const MaterialPanel: React.FC = () => {
   ]
 
   const handleAddMaterial = (materialType: string) => {
-    const parentId = selectedNodeIds.length > 0 ? selectedNodeIds[0] : pageSchema.root.id
-
-    addNode(materialType, parentId)
+    // 始终添加到页面根节点，而不是选中的节点
+    // 如果需要添加到特定位置，可以通过拖拽实现
+    addNode(materialType, pageSchema.root.id)
   }
 
   const handleAddTemplate = (template: CustomTemplate) => {
