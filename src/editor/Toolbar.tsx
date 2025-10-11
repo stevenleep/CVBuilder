@@ -20,11 +20,13 @@ import {
 import { SaveResumeDialog } from './SaveResumeDialog'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
 import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
+import { ExportPreviewDialog, ExportOptions } from './ExportPreviewDialog'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 import { useTheme } from '@/core/context/ThemeContext'
+import { generateThumbnail } from '@/utils/thumbnailGenerator'
 
 export const Toolbar: React.FC = () => {
   const navigate = useNavigate()
@@ -49,6 +51,7 @@ export const Toolbar: React.FC = () => {
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
   const [showExportMenu, setShowExportMenu] = useState(false)
+  const [showExportPreview, setShowExportPreview] = useState(false)
 
   // 监听快捷键保存事件
   React.useEffect(() => {
@@ -142,7 +145,26 @@ export const Toolbar: React.FC = () => {
     input.click()
   }
 
-  const handleExportPNG = async () => {
+  const handleExportWithOptions = async (options: ExportOptions) => {
+    setShowExportPreview(false)
+    
+    if (options.format === 'json') {
+      handleExportJSON()
+      return
+    }
+
+    if (options.format === 'png') {
+      await handleExportPNG(options.scale, options.quality)
+      return
+    }
+
+    if (options.format === 'pdf') {
+      await handleExportPDF(options.scale, options.quality)
+      return
+    }
+  }
+
+  const handleExportPNG = async (scale = 4, quality = 0.98) => {
     try {
       // 切换到预览模式
       const originalMode = mode
@@ -171,16 +193,15 @@ export const Toolbar: React.FC = () => {
       // 如果只有一页，直接导出PNG
       if (pageElements.length === 1) {
         const canvas = await html2canvas(pageElements[0], {
-          scale: 4,
+          scale,
           useCORS: true,
           allowTaint: false,
-          backgroundColor: null, // 使用元素自身背景色
+          backgroundColor: null,
           logging: false,
           imageTimeout: 0,
           removeContainer: false,
           foreignObjectRendering: false,
           onclone: clonedDoc => {
-            // 移除data-no-print元素
             const noprint = clonedDoc.querySelectorAll('[data-no-print]')
             noprint.forEach(el => el.remove())
           },
@@ -199,20 +220,19 @@ export const Toolbar: React.FC = () => {
             }
           },
           'image/png',
-          1.0
+          quality / 100
         )
       } else {
         // 多页：打包为zip
         const JSZip = (await import('jszip')).default
         const zip = new JSZip()
 
-        // 逐页截图并添加到zip
         for (let i = 0; i < pageElements.length; i++) {
           const canvas = await html2canvas(pageElements[i], {
-            scale: 4,
+            scale,
             useCORS: true,
             allowTaint: false,
-            backgroundColor: null, // 使用元素自身背景色
+            backgroundColor: null,
             logging: false,
             imageTimeout: 0,
             removeContainer: false,
@@ -224,7 +244,7 @@ export const Toolbar: React.FC = () => {
           })
 
           const blob = await new Promise<Blob | null>(resolve => {
-            canvas.toBlob(resolve, 'image/png', 1.0)
+            canvas.toBlob(resolve, 'image/png', quality / 100)
           })
 
           if (blob) {
@@ -232,7 +252,6 @@ export const Toolbar: React.FC = () => {
           }
         }
 
-        // 生成并下载zip
         const zipBlob = await zip.generateAsync({ type: 'blob' })
         const url = URL.createObjectURL(zipBlob)
         const link = document.createElement('a')
@@ -259,7 +278,7 @@ export const Toolbar: React.FC = () => {
     }
   }
 
-  const handleExportPDF = async () => {
+  const handleExportPDF = async (scale = 3, quality = 0.98) => {
     try {
       // 切换到预览模式
       const originalMode = mode
@@ -301,35 +320,30 @@ export const Toolbar: React.FC = () => {
       for (let i = 0; i < pageElements.length; i++) {
         const pageElement = pageElements[i]
 
-        // 截图当前页面 - 保持完全一致的样式
         const canvas = await html2canvas(pageElement, {
-          scale: 3,
+          scale,
           useCORS: true,
           allowTaint: false,
-          backgroundColor: null, // 使用元素自身背景色，保持一致
+          backgroundColor: null,
           logging: false,
           imageTimeout: 0,
           removeContainer: false,
           foreignObjectRendering: false,
           onclone: clonedDoc => {
-            // 移除页码标识等不需要导出的元素
             const noprint = clonedDoc.querySelectorAll('[data-no-print]')
             noprint.forEach(el => el.remove())
           },
         })
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.98) // 提高质量到98%
+        const imgData = canvas.toDataURL('image/jpeg', quality / 100)
 
-        // 如果不是第一页，添加新页
         if (i > 0) {
           pdf.addPage()
         }
 
-        // 添加图片到当前页，保持原始比例
         const imgWidth = a4Width
         const imgHeight = (canvas.height * imgWidth) / canvas.width
 
-        // 如果图片高度超过A4，按比例缩小
         if (imgHeight > a4Height) {
           const scale = a4Height / imgHeight
           pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth * scale, a4Height)
@@ -338,7 +352,6 @@ export const Toolbar: React.FC = () => {
         }
       }
 
-      // 保存 PDF
       pdf.save(`resume-${Date.now()}.pdf`)
 
       // 恢复原始模式和缩放
@@ -383,6 +396,32 @@ export const Toolbar: React.FC = () => {
   //   notification.info('请在打印对话框中选择"另存为PDF"')
   // }
 
+  // 生成缩略图
+  const generateResumeThumbnail = async (resumeId: string): Promise<void> => {
+    try {
+      // 查找页面元素
+      const pageElement = document.querySelector('.page-sheet') as HTMLElement
+      if (!pageElement) {
+        console.warn('未找到页面元素，跳过缩略图生成')
+        return
+      }
+
+      // 生成缩略图
+      const thumbnail = await generateThumbnail(pageElement, {
+        width: 300,
+        height: 400,
+        quality: 0.85,
+        scale: 2,
+      })
+
+      // 保存缩略图
+      await indexedDBService.setItem(STORES.THUMBNAILS, `resume-${resumeId}`, thumbnail)
+    } catch (error) {
+      console.error('生成缩略图失败:', error)
+      // 不阻塞保存流程
+    }
+  }
+
   // 保存简历（更新/新建）
   const handleSave = async (name?: string, description?: string) => {
     try {
@@ -396,6 +435,10 @@ export const Toolbar: React.FC = () => {
             updatedAt: new Date().toISOString(),
           }
           await indexedDBService.setItem(STORES.RESUMES, currentResumeId, updated)
+          
+          // 生成缩略图（异步，不阻塞）
+          generateResumeThumbnail(currentResumeId)
+          
           notification.success('简历已更新！')
 
           // 触发简历列表刷新事件
@@ -420,6 +463,10 @@ export const Toolbar: React.FC = () => {
 
         await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
         useEditorStore.getState().setCurrentResumeId(newId)
+        
+        // 生成缩略图（异步，不阻塞）
+        generateResumeThumbnail(newId)
+        
         notification.success('简历已保存！')
 
         // 更新URL为带ID的形式
@@ -449,6 +496,10 @@ export const Toolbar: React.FC = () => {
 
       await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
       useEditorStore.getState().setCurrentResumeId(newId)
+      
+      // 生成缩略图（异步，不阻塞）
+      generateResumeThumbnail(newId)
+      
       notification.success('已另存为新简历！')
 
       // 更新URL
@@ -465,8 +516,9 @@ export const Toolbar: React.FC = () => {
   // 保存为模板
   const handleSaveAsTemplate = async (name: string, description: string) => {
     try {
+      const templateId = nanoid()
       const templateData = {
-        id: nanoid(),
+        id: templateId,
         name,
         description,
         schema: pageSchema,
@@ -474,7 +526,24 @@ export const Toolbar: React.FC = () => {
         createdAt: new Date().toISOString(),
       }
 
-      await indexedDBService.setItem(STORES.RESUME_TEMPLATES, templateData.id, templateData)
+      await indexedDBService.setItem(STORES.RESUME_TEMPLATES, templateId, templateData)
+      
+      // 生成缩略图（异步，不阻塞）
+      try {
+        const pageElement = document.querySelector('.page-sheet') as HTMLElement
+        if (pageElement) {
+          const thumbnail = await generateThumbnail(pageElement, {
+            width: 300,
+            height: 400,
+            quality: 0.85,
+            scale: 2,
+          })
+          await indexedDBService.setItem(STORES.THUMBNAILS, `template-${templateId}`, thumbnail)
+        }
+      } catch (err) {
+        console.error('生成模板缩略图失败:', err)
+      }
+      
       notification.success('已保存为模板！')
     } catch (error) {
       notification.error('保存模板失败')
@@ -485,14 +554,14 @@ export const Toolbar: React.FC = () => {
   return (
     <div
       style={{
-        height: '56px',
+        height: '50px',
         borderBottom: '1px solid #e8e8e8',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 20px',
-        gap: '12px',
+        padding: '0 16px',
+        gap: '10px',
         backgroundColor: '#ffffff',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
       }}
     >
       {/* 品牌Logo */}
@@ -605,7 +674,7 @@ export const Toolbar: React.FC = () => {
           <ChevronDown size={14} />
         </TextButton>
 
-        {showExportMenu && (
+          {showExportMenu && (
           <div
             style={{
               position: 'absolute',
@@ -619,9 +688,12 @@ export const Toolbar: React.FC = () => {
               zIndex: 1000,
             }}
           >
-            <MenuButton onClick={handleExportPNG}>导出高清图片</MenuButton>
-            <MenuButton onClick={handleExportPDF}>导出 PDF</MenuButton>
-            {/* <MenuButton onClick={handlePrintPDF}>浏览器打印</MenuButton> */}
+            <MenuButton onClick={() => {
+              setShowExportPreview(true)
+              setShowExportMenu(false)
+            }}>
+              导出简历...
+            </MenuButton>
             <div
               style={{
                 height: '1px',
@@ -629,9 +701,16 @@ export const Toolbar: React.FC = () => {
                 margin: '4px 0',
               }}
             />
-            <MenuButton onClick={handleExportJSON}>导出数据</MenuButton>
             <MenuButton onClick={handleImportJSON}>导入数据</MenuButton>
           </div>
+        )}
+
+        {/* 导出预览对话框 */}
+        {showExportPreview && (
+          <ExportPreviewDialog
+            onExport={handleExportWithOptions}
+            onClose={() => setShowExportPreview(false)}
+          />
         )}
       </div>
 
@@ -748,8 +827,8 @@ const IconButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        width: '34px',
-        height: '34px',
+        width: '32px',
+        height: '32px',
         border: 'none',
         borderRadius: '6px',
         display: 'flex',
@@ -758,8 +837,8 @@ const IconButton: React.FC<{
         cursor: disabled ? 'not-allowed' : 'pointer',
         backgroundColor: active ? '#f0f0f0' : hover && !disabled ? '#f8f9fa' : 'transparent',
         color: disabled ? '#d0d0d0' : active ? '#2d2d2d' : hover ? '#2d2d2d' : '#666',
-        transition: 'all 0.15s',
-        boxShadow: active ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
+        transition: 'all 0.12s',
+        boxShadow: active ? '0 1px 2px rgba(0,0,0,0.04)' : 'none',
       }}
     >
       {icon}
@@ -826,17 +905,17 @@ const ModeButton: React.FC<{
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        padding: '6px 12px',
+        gap: '5px',
+        padding: '5px 10px',
         border: 'none',
-        borderRadius: '4px',
+        borderRadius: '5px',
         backgroundColor: active ? '#fff' : 'transparent',
         color: active ? '#2d2d2d' : '#999',
         cursor: 'pointer',
         fontSize: '12px',
         fontWeight: '600',
-        transition: 'all 0.15s',
-        boxShadow: active ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+        transition: 'all 0.12s',
+        boxShadow: active ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
       }}
     >
       {icon}

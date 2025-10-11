@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, FileText, Trash2, Edit, Calendar } from 'lucide-react'
+import { ArrowLeft, FileText, Trash2, Edit, Calendar, ImageIcon } from 'lucide-react'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { notification } from '@/utils/notification'
 
@@ -15,6 +15,7 @@ interface SavedResume {
   schema: any
   createdAt: string
   updatedAt: string
+  thumbnail?: string // 新增：缩略图
 }
 
 export const ResumesPage: React.FC = () => {
@@ -43,7 +44,15 @@ export const ResumesPage: React.FC = () => {
       for (const key of allKeys) {
         const resume = await indexedDBService.getItem<SavedResume>(STORES.RESUMES, String(key))
         if (resume) {
-          loadedResumes.push(resume)
+          // 尝试加载缩略图
+          const thumbnail = await indexedDBService.getItem<string>(
+            STORES.THUMBNAILS,
+            `resume-${String(key)}`
+          )
+          loadedResumes.push({
+            ...resume,
+            thumbnail: thumbnail || undefined,
+          })
         }
       }
 
@@ -235,9 +244,33 @@ const ResumeCard: React.FC<{
           alignItems: 'center',
           justifyContent: 'center',
           borderBottom: '1px solid #e8e8e8',
+          overflow: 'hidden',
+          position: 'relative',
         }}
       >
-        <FileText size={56} style={{ color: '#ccc' }} />
+        {resume.thumbnail ? (
+          <img
+            src={resume.thumbnail}
+            alt={resume.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <FileText size={48} style={{ color: '#ccc' }} />
+            <span style={{ fontSize: '11px', color: '#999' }}>暂无预览</span>
+          </div>
+        )}
       </div>
 
       {/* 信息区域 */}

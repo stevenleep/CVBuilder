@@ -65,16 +65,59 @@ export const DraggableNode: React.FC<DraggableNodeProps> = ({
       ref={isEditMode ? combinedRef : null}
       style={{
         ...style,
-        opacity: isDragging ? 0.4 : 1,
+        opacity: isDragging ? 0.5 : 1,
+        transform: isDragging ? 'scale(0.98)' : 'scale(1)',
+        transition: 'all 0.15s ease',
+        cursor: isEditMode ? 'move' : 'default',
         ...(isOver && canDrop
           ? {
-              outline: '2px dashed #000',
-              outlineOffset: '2px',
+              outline: '3px dashed #3b82f6',
+              outlineOffset: '3px',
+              backgroundColor: 'rgba(59, 130, 246, 0.05)',
+              boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.1)',
+            }
+          : {}),
+        ...(isDragging
+          ? {
+              filter: 'blur(1px)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
             }
           : {}),
       }}
     >
       {children}
+      {isDragging && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '6px',
+            pointerEvents: 'none',
+            zIndex: 1,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              fontWeight: '600',
+              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+            }}
+          >
+            拖拽中...
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -364,10 +364,34 @@ const TemplateCard: React.FC<{
           justifyContent: 'center',
           borderBottom: '1px solid #e8e8e8',
           cursor: 'pointer',
+          overflow: 'hidden',
+          position: 'relative',
         }}
         onClick={onPreview}
       >
-        <FileText size={48} style={{ color: '#ccc' }} />
+        {template.thumbnail ? (
+          <img
+            src={template.thumbnail}
+            alt={template.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <FileText size={42} style={{ color: '#ccc' }} />
+            <span style={{ fontSize: '11px', color: '#999' }}>暂无预览</span>
+          </div>
+        )}
       </div>
 
       {/* 信息区域 */}

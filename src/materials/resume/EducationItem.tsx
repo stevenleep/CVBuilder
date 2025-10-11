@@ -310,7 +310,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：3.8/4.0',
-      group: '详细信息',
+      group: '更多信息',
     },
     {
       name: 'rank',
@@ -318,7 +318,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：专业前5%',
-      group: '详细信息',
+      group: '更多信息',
     },
     {
       name: 'scholarships',
@@ -326,7 +326,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：国家奖学金、一等奖学金',
-      group: '详细信息',
+      group: '更多信息',
     },
     {
       name: 'achievements',
@@ -334,16 +334,17 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'richtext',
       defaultValue: '',
       description: '其他荣誉和成就',
-      group: '详细信息',
+      group: '更多信息',
       minHeight: 80,
     },
     {
       name: 'courses',
       label: '主修课程',
-      type: 'textarea',
+      type: 'richtext',
       defaultValue: '',
       description: '如：数据结构、算法、操作系统',
-      group: '详细信息',
+      group: '更多信息',
+      minHeight: 80,
     },
 
     // 补充信息（不常用）
@@ -353,7 +354,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：工学、理学',
-      group: '补充信息',
+      group: '更多信息',
     },
     {
       name: 'gpaScale',
@@ -361,7 +362,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：4.0（如已在GPA中填写则不需要）',
-      group: '补充信息',
+      group: '更多信息',
     },
     {
       name: 'eduType',
@@ -375,21 +376,21 @@ export const EducationItemMaterial: IMaterialDefinition = {
         { label: '成人教育', value: '成教' },
         { label: '网络教育', value: '网教' },
       ],
-      group: '补充信息',
+      group: '更多信息',
     },
     {
       name: 'thesis',
       label: '毕业论文',
       type: 'string',
       defaultValue: '',
-      group: '补充信息',
+      group: '更多信息',
     },
     {
       name: 'thesisAdvisor',
       label: '论文导师',
       type: 'string',
       defaultValue: '',
-      group: '补充信息',
+      group: '更多信息',
     },
     {
       name: 'transferInfo',
@@ -397,7 +398,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：大三交换至XX大学',
-      group: '补充信息',
+      group: '更多信息',
     },
   ],
   defaultProps: {

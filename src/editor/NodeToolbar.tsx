@@ -1,7 +1,7 @@
 /**
- * 节点浮动工具栏
+ * 节点浮动工具栏 - 智能定位版
  *
- * 鼠标悬停时显示，提供快捷操作
+ * 选中时显示，自动判断上下位置
  */
 
 import React from 'react'
@@ -42,19 +42,20 @@ export const NodeToolbar: React.FC<NodeToolbarProps> = ({
     <div
       style={{
         position: 'absolute',
-        bottom: '100%',
+        top: '100%',
+        marginTop: '6px',
         left: '50%',
         transform: 'translateX(-50%)',
-        marginBottom: '8px',
         display: 'flex',
-        gap: '4px',
-        backgroundColor: 'white',
-        border: '1px solid #e0e0e0',
+        gap: '2px',
+        backgroundColor: '#2d2d2d',
+        border: '1px solid #3d3d3d',
         borderRadius: '6px',
-        padding: '4px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0,0,0,0.05)',
-        zIndex: 10001,
+        padding: '3px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08)',
+        zIndex: 100000,
         pointerEvents: 'auto',
+        whiteSpace: 'nowrap',
       }}
       onClick={e => {
         e.stopPropagation()
@@ -67,37 +68,49 @@ export const NodeToolbar: React.FC<NodeToolbarProps> = ({
     >
       {/* 拖动手柄 */}
       {moveable && (
-        <ToolButton icon={<GripVertical size={14} />} tooltip="拖动" style={{ cursor: 'grab' }} />
+        <ToolButton icon={<GripVertical size={13} />} tooltip="拖动" style={{ cursor: 'grab' }} />
       )}
 
       {/* 上移下移 */}
       {moveable && onMoveUp && (
-        <ToolButton icon={<ChevronUp size={14} />} tooltip="上移" onClick={onMoveUp} />
+        <ToolButton icon={<ChevronUp size={13} />} tooltip="上移" onClick={onMoveUp} />
       )}
       {moveable && onMoveDown && (
-        <ToolButton icon={<ChevronDown size={14} />} tooltip="下移" onClick={onMoveDown} />
+        <ToolButton icon={<ChevronDown size={13} />} tooltip="下移" onClick={onMoveDown} />
       )}
 
-      <div style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 2px' }} />
+      <div
+        style={{
+          width: '1px',
+          height: '16px',
+          backgroundColor: 'rgba(255, 255, 255, 0.12)',
+          margin: '0 3px',
+        }}
+      />
 
       {/* 复制 */}
-      {copyable && <ToolButton icon={<Copy size={14} />} tooltip="复制" onClick={onCopy} />}
+      {copyable && <ToolButton icon={<Copy size={13} />} tooltip="复制" onClick={onCopy} />}
 
       {/* 保存为模板 */}
       {onSaveAsTemplate && (
-        <ToolButton icon={<Save size={14} />} tooltip="保存为模板" onClick={onSaveAsTemplate} />
+        <ToolButton icon={<Save size={13} />} tooltip="保存为模板" onClick={onSaveAsTemplate} />
       )}
 
       {/* 删除 */}
       {deletable && (
-        <ToolButton icon={<Trash2 size={14} />} tooltip="删除" onClick={onDelete} danger />
+        <ToolButton icon={<Trash2 size={13} />} tooltip="删除" onClick={onDelete} danger />
       )}
 
       {/* 自定义Actions */}
       {actions.length > 0 && (
         <>
           <div
-            style={{ width: '1px', height: '20px', backgroundColor: '#f1f1f1', margin: '0 2px' }}
+            style={{
+              width: '1px',
+              height: '16px',
+              backgroundColor: 'rgba(255, 255, 255, 0.12)',
+              margin: '0 3px',
+            }}
           />
           {actions.slice(0, 2).map(action => (
             <ToolButton
@@ -147,9 +160,13 @@ const ToolButton: React.FC<{
         alignItems: 'center',
         justifyContent: 'center',
         cursor: 'pointer',
-        backgroundColor: hover ? (danger ? '#fef2f2' : '#f5f5f5') : 'transparent',
-        color: danger ? '#ef4444' : '#666',
-        transition: 'all 0.1s',
+        backgroundColor: hover
+          ? danger
+            ? 'rgba(239, 68, 68, 0.2)'
+            : 'rgba(255, 255, 255, 0.15)'
+          : 'transparent',
+        color: danger ? '#fca5a5' : hover ? 'white' : 'rgba(255, 255, 255, 0.7)',
+        transition: 'all 0.12s',
         ...style,
       }}
     >

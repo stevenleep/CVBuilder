@@ -261,29 +261,30 @@ export const Renderer: React.FC<RendererProps> = ({
     })
   }
 
-  // 编辑模式包装器样式
+  // 编辑模式包装器样式 - 简洁版
   const wrapperStyle: React.CSSProperties = {
     position: 'relative',
     opacity: isDragging ? 0.3 : hidden ? 0.3 : 1,
     ...(isEditMode && isSelected
       ? {
-          boxShadow: '0 0 0 2px #666',
-          borderRadius: '2px',
+          outline: '1px dashed #2d2d2d',
+          outlineOffset: '-1px',
+          borderRadius: '3px',
         }
       : {}),
     ...(isEditMode && isHovered
       ? {
-          boxShadow: '0 0 0 1px #e0e0e0',
+          outline: '1px dashed #d0d0d0',
+          outlineOffset: '-1px',
           borderRadius: '2px',
-          backgroundColor: 'rgba(0, 0, 0, 0.01)',
         }
       : {}),
     ...(hidden && isEditMode
       ? {
-          filter: 'grayscale(0.5)',
+          filter: 'grayscale(0.7) opacity(0.6)',
         }
       : {}),
-    transition: 'all 0.12s ease',
+    transition: 'all 0.15s ease',
     cursor: isEditMode ? (isDragging ? 'grabbing' : 'pointer') : 'default',
   }
 
@@ -312,18 +313,18 @@ export const Renderer: React.FC<RendererProps> = ({
         <div
           style={{
             position: 'absolute',
-            top: '-2px',
-            left: '-2px',
+            top: '-24px',
+            left: '0',
             fontSize: '10px',
             backgroundColor: '#2d2d2d',
             color: 'white',
-            padding: '2px 8px',
+            padding: '3px 8px',
             borderRadius: '3px',
-            fontWeight: '500',
+            fontWeight: '600',
             zIndex: 1000,
             pointerEvents: 'none',
-            border: '1px solid #666',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+            whiteSpace: 'nowrap',
           }}
         >
           {materialDef.meta.title}

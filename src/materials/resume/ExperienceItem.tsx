@@ -278,7 +278,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '公司名称',
       required: true,
-      group: '公司信息',
+      group: '基本信息',
     },
     {
       name: 'industry',
@@ -286,7 +286,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：互联网/电子商务',
-      group: '公司信息',
+      group: '基本信息',
     },
     {
       name: 'companySize',
@@ -302,7 +302,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         { label: '1000-9999人', value: '1000-9999人' },
         { label: '10000人以上', value: '10000人以上' },
       ],
-      group: '公司信息',
+      group: '基本信息',
     },
 
     // 职位信息
@@ -312,14 +312,14 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '职位名称',
       required: true,
-      group: '职位信息',
+      group: '基本信息',
     },
     {
       name: 'department',
       label: '所属部门',
       type: 'string',
       defaultValue: '',
-      group: '职位信息',
+      group: '基本信息',
     },
     {
       name: 'level',
@@ -327,7 +327,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：P7、M2',
-      group: '职位信息',
+      group: '基本信息',
     },
     {
       name: 'jobType',
@@ -341,7 +341,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         { label: '设计岗', value: 'design' },
         { label: '其他', value: 'other' },
       ],
-      group: '职位信息',
+      group: '基本信息',
     },
 
     // 时间地点
@@ -350,7 +350,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       label: '入职时间',
       type: 'string',
       defaultValue: '2020.01',
-      group: '时间',
+      group: '基本信息',
     },
     {
       name: 'endDate',
@@ -358,14 +358,14 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '2023.12',
       description: '填"present"表示至今',
-      group: '时间',
+      group: '基本信息',
     },
     {
       name: 'location',
       label: '工作地点',
       type: 'string',
       defaultValue: '北京',
-      group: '时间',
+      group: '基本信息',
     },
 
     // 工作性质
@@ -415,7 +415,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：10',
-      group: '团队信息',
+      group: '详细信息',
     },
     {
       name: 'reportTo',
@@ -423,14 +423,14 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：技术总监',
-      group: '团队信息',
+      group: '详细信息',
     },
     {
       name: 'subordinates',
       label: '下属人数',
       type: 'string',
       defaultValue: '',
-      group: '团队信息',
+      group: '详细信息',
     },
 
     // 薪资信息

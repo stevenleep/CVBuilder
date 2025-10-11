@@ -5,7 +5,7 @@
  */
 
 const DB_NAME = 'resume-builder-db'
-const DB_VERSION = 3
+const DB_VERSION = 4 // 增加版本号以支持新的 THUMBNAILS store
 
 // 存储对象的定义
 const STORES = {
@@ -14,6 +14,7 @@ const STORES = {
   RESUME_TEMPLATES: 'resume-templates',
   RESUMES: 'resumes',
   THEME: 'theme',
+  THUMBNAILS: 'thumbnails', // 新增：存储简历缩略图
 }
 
 class IndexedDBService {
@@ -71,6 +72,10 @@ class IndexedDBService {
 
         if (!db.objectStoreNames.contains(STORES.THEME)) {
           db.createObjectStore(STORES.THEME)
+        }
+
+        if (!db.objectStoreNames.contains(STORES.THUMBNAILS)) {
+          db.createObjectStore(STORES.THUMBNAILS)
         }
       }
     })

@@ -16,6 +16,7 @@ import { HomePage } from './pages/HomePage'
 import { EditorPage } from './pages/EditorPage'
 import { TemplatesPage } from './pages/TemplatesPage'
 import { TemplatePreviewPage } from './pages/TemplatePreviewPage'
+import { ExamplePreviewPage } from './pages/ExamplePreviewPage'
 import { ResumesPage } from './pages/ResumesPage'
 
 function App() {
@@ -139,6 +140,16 @@ function App() {
                 element={
                   <DndProvider>
                     <TemplatePreviewPage />
+                  </DndProvider>
+                }
+              />
+
+              {/* 示例预览 */}
+              <Route
+                path="/examples/:id/preview"
+                element={
+                  <DndProvider>
+                    <ExamplePreviewPage />
                   </DndProvider>
                 }
               />

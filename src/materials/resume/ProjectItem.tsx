@@ -321,7 +321,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '项目名称',
       required: true,
-      group: '项目信息',
+      group: '基本信息',
     },
     {
       name: 'projectType',
@@ -336,7 +336,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
         { label: '学术项目', value: '学术项目' },
         { label: '外包项目', value: '外包项目' },
       ],
-      group: '项目信息',
+      group: '基本信息',
     },
     {
       name: 'company',
@@ -344,7 +344,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如果是公司项目',
-      group: '项目信息',
+      group: '基本信息',
     },
     {
       name: 'projectStatus',
@@ -359,7 +359,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
         { label: '已完成', value: '已完成' },
         { label: '已下线', value: '已下线' },
       ],
-      group: '项目信息',
+      group: '基本信息',
     },
 
     // 角色与职责
@@ -369,7 +369,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '项目角色',
       required: true,
-      group: '角色',
+      group: '基本信息',
     },
     {
       name: 'responsibility',
@@ -377,7 +377,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：前端负责人',
-      group: '角色',
+      group: '基本信息',
     },
 
     // 时间
@@ -386,14 +386,14 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       label: '开始时间',
       type: 'string',
       defaultValue: '2022.01',
-      group: '时间',
+      group: '基本信息',
     },
     {
       name: 'endDate',
       label: '结束时间',
       type: 'string',
       defaultValue: '2023.12',
-      group: '时间',
+      group: '基本信息',
     },
 
     // 规模信息
@@ -403,7 +403,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：5',
-      group: '规模',
+      group: '项目详情',
     },
     {
       name: 'userScale',
@@ -411,7 +411,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：100万+',
-      group: '规模',
+      group: '项目详情',
     },
     {
       name: 'dataScale',
@@ -419,7 +419,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：日均PV 1000万',
-      group: '规模',
+      group: '项目详情',
     },
 
     // 技术信息
@@ -429,7 +429,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'textarea',
       defaultValue: 'React, TypeScript, Node.js, MySQL, Redis',
       description: '使用的技术',
-      group: '技术',
+      group: '项目详情',
     },
     {
       name: 'architecture',
@@ -437,7 +437,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '如：微服务、前后端分离',
-      group: '技术',
+      group: '项目详情',
     },
 
     // 链接
@@ -447,21 +447,21 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       description: '线上地址',
-      group: '链接',
+      group: '项目详情',
     },
     {
       name: 'githubUrl',
       label: 'GitHub地址',
       type: 'string',
       defaultValue: '',
-      group: '链接',
+      group: '项目详情',
     },
     {
       name: 'demoUrl',
       label: 'Demo地址',
       type: 'string',
       defaultValue: '',
-      group: '链接',
+      group: '项目详情',
     },
 
     // 内容

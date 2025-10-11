@@ -6,6 +6,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
 import { useEditorStore } from '@/store/editorStore'
+import { EmptyState } from '@/editor/EmptyState'
 
 interface PageProps {
   children?: React.ReactNode
@@ -22,7 +23,12 @@ interface SinglePageProps {
   totalPages?: number
 }
 
-const SinglePage: React.FC<SinglePageProps> = ({ children, style, pageNumber = 1, totalPages = 1 }) => {
+const SinglePage: React.FC<SinglePageProps> = ({
+  children,
+  style,
+  pageNumber = 1,
+  totalPages = 1,
+}) => {
   const theme = useThemeConfig()
   const { mode } = useEditorStore()
 
@@ -35,15 +41,19 @@ const SinglePage: React.FC<SinglePageProps> = ({ children, style, pageNumber = 1
         height: `${theme.layout.pageMinHeight}mm`,
         backgroundColor: theme.color.background.page,
         padding: `${theme.spacing.page}px`,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)',
+        boxShadow:
+          mode === 'edit'
+            ? '0 4px 16px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02)'
+            : '0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)',
         fontFamily: theme.font.family,
         color: theme.color.text.primary,
         lineHeight: theme.layout.lineHeight,
         position: 'relative',
-        marginBottom: '20px',
+        marginBottom: '24px',
         breakAfter: pageNumber < totalPages ? 'page' : 'auto',
         breakInside: 'avoid',
         boxSizing: 'border-box',
+        transition: 'box-shadow 0.2s ease',
         ...style,
       }}
     >
@@ -59,26 +69,27 @@ const SinglePage: React.FC<SinglePageProps> = ({ children, style, pageNumber = 1
       </div>
 
       {/* 页码标识（绝对定位，不占用空间） - 仅编辑模式显示 */}
-      {mode === 'edit' && (
+      {mode === 'edit' && totalPages > 1 && (
         <div
           data-no-print
           style={{
             position: 'absolute',
-            top: '-12px',
-            right: '0',
-            fontSize: '10px',
-            fontWeight: '500',
-            color: '#999',
-            backgroundColor: '#fff',
-            padding: '2px 8px',
-            borderRadius: '3px 3px 0 0',
-            border: '1px solid #e8e8e8',
+            top: '-14px',
+            right: '8px',
+            fontSize: '11px',
+            fontWeight: '600',
+            color: '#666',
+            backgroundColor: '#ffffff',
+            padding: '3px 10px',
+            borderRadius: '4px 4px 0 0',
+            border: '1px solid #e0e0e0',
             borderBottom: 'none',
             pointerEvents: 'none',
             zIndex: 9999,
+            boxShadow: '0 -2px 4px rgba(0,0,0,0.04)',
           }}
         >
-          {pageNumber}/{totalPages}
+          第 {pageNumber} 页 / 共 {totalPages} 页
         </div>
       )}
     </div>
@@ -90,12 +101,16 @@ const SinglePage: React.FC<SinglePageProps> = ({ children, style, pageNumber = 1
  */
 const Page: React.FC<PageProps> = ({ children, style }) => {
   const theme = useThemeConfig()
+  const { mode } = useEditorStore()
   const contentRef = useRef<HTMLDivElement>(null)
   const [pageCount, setPageCount] = useState(1)
 
   const pageHeightMm = theme.layout.pageMinHeight
   const pageHeightPx = (pageHeightMm / 25.4) * 96
   const availableHeight = pageHeightPx - theme.spacing.page * 2
+
+  // 检查是否有子内容
+  const hasChildren = React.Children.count(children) > 0
 
   // 计算需要的页数
   useEffect(() => {
@@ -105,6 +120,18 @@ const Page: React.FC<PageProps> = ({ children, style }) => {
       setPageCount(pages)
     }
   }, [availableHeight, children])
+
+  // 如果没有内容且在编辑模式，显示空状态
+  if (!hasChildren && mode === 'edit') {
+    return (
+      <SinglePage pageNumber={1} totalPages={1} style={style}>
+        <EmptyState
+          message="开始创建你的简历"
+          hint="从左侧物料库拖拽组件到这里，或点击组件快速添加"
+        />
+      </SinglePage>
+    )
+  }
 
   return (
     <>

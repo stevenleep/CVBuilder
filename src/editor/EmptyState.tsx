@@ -5,7 +5,7 @@
  */
 
 import React from 'react'
-import { MousePointer2, Sparkles } from 'lucide-react'
+import { MousePointer2 } from 'lucide-react'
 
 export const EmptyState: React.FC<{
   message?: string
@@ -14,54 +14,51 @@ export const EmptyState: React.FC<{
   return (
     <div
       style={{
-        padding: '60px 40px',
+        padding: '80px 40px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        border: '2px dashed #d0d0d0',
-        borderRadius: '8px',
-        color: '#999',
-        fontSize: '13px',
-        minHeight: '200px',
-        backgroundColor: '#fafafa',
+        border: '2px dashed #e8e8e8',
+        borderRadius: '12px',
+        minHeight: '240px',
+        backgroundColor: 'transparent',
       }}
     >
       <div
         style={{
-          width: '60px',
-          height: '60px',
+          width: '64px',
+          height: '64px',
           borderRadius: '50%',
-          backgroundColor: '#f0f0f0',
+          backgroundColor: '#f8f9fa',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          marginBottom: '20px',
+          marginBottom: '24px',
+          border: '1px solid #f0f0f0',
         }}
       >
-        <MousePointer2 size={28} style={{ color: '#bbb' }} />
+        <MousePointer2 size={28} style={{ color: '#d0d0d0' }} />
       </div>
       <div
         style={{
           fontSize: '15px',
           fontWeight: '600',
-          color: '#666',
-          marginBottom: '8px',
+          color: '#999',
+          marginBottom: '10px',
         }}
       >
         {message}
       </div>
       <div
         style={{
-          fontSize: '12px',
-          color: '#bbb',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
+          fontSize: '13px',
+          color: '#ccc',
+          textAlign: 'center',
+          lineHeight: '1.6',
         }}
       >
-        <Sparkles size={14} />
-        <span>{hint}</span>
+        {hint}
       </div>
     </div>
   )

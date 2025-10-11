@@ -4,10 +4,13 @@
  * 核心编辑区域，负责渲染页面和处理交互
  */
 
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Renderer } from '@engine/Renderer'
 import { useEditorStore } from '@store/editorStore'
 import { SelectionBox } from './SelectionBox'
+import { ContextMenu, ContextMenuItem } from './ContextMenu'
+import { Copy, Trash2, Clipboard, Scissors, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react'
+import { findNode } from '@utils/schema'
 
 export const Canvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -20,7 +23,22 @@ export const Canvas: React.FC = () => {
     selectNode,
     setHoveredNode,
     clearSelection,
+    copyNode,
+    cutNode,
+    pasteNode,
+    clipboard,
+    deleteNode,
+    duplicateNode,
+    moveNodeUp,
+    moveNodeDown,
+    toggleNodeVisibility,
   } = useEditorStore()
+
+  const [contextMenu, setContextMenu] = useState<{
+    x: number
+    y: number
+    nodeId: string | null
+  } | null>(null)
 
   const handleNodeClick = (nodeId: string, event: React.MouseEvent) => {
     event.stopPropagation()
@@ -42,6 +60,146 @@ export const Canvas: React.FC = () => {
     }
   }
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    if (mode !== 'edit') return
+
+    // 查找最近的节点元素
+    let target = e.target as HTMLElement
+    let nodeId: string | null = null
+
+    while (target && target !== containerRef.current) {
+      const id = target.getAttribute('data-node-id')
+      if (id) {
+        nodeId = id
+        break
+      }
+      target = target.parentElement as HTMLElement
+    }
+
+    // 如果右键点击的是节点，且该节点未选中，则选中它
+    if (nodeId && !selectedNodeIds.includes(nodeId)) {
+      selectNode(nodeId)
+    }
+
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      nodeId,
+    })
+  }
+
+  // 构建右键菜单项
+  const getContextMenuItems = (): ContextMenuItem[] => {
+    const { nodeId } = contextMenu || {}
+    const items: ContextMenuItem[] = []
+
+    if (nodeId && selectedNodeIds.length === 1) {
+      const node = findNode(pageSchema.root, nodeId)
+      const isHidden = node?.hidden
+
+      items.push(
+        {
+          id: 'copy',
+          label: '复制',
+          icon: <Copy size={16} />,
+          shortcut: '⌘D',
+        },
+        {
+          id: 'cut',
+          label: '剪切',
+          icon: <Scissors size={16} />,
+          shortcut: '⌘X',
+        },
+        {
+          id: 'duplicate',
+          label: '快速复制',
+          icon: <Copy size={16} />,
+          shortcut: '⌘C',
+        }
+      )
+
+      if (clipboard) {
+        items.push({
+          id: 'paste',
+          label: '粘贴',
+          icon: <Clipboard size={16} />,
+          shortcut: '⌘V',
+        })
+      }
+
+      items.push(
+        { id: 'divider-1', label: '', divider: true },
+        {
+          id: 'move-up',
+          label: '上移一层',
+          icon: <ArrowUp size={16} />,
+        },
+        {
+          id: 'move-down',
+          label: '下移一层',
+          icon: <ArrowDown size={16} />,
+        },
+        { id: 'divider-2', label: '', divider: true },
+        {
+          id: 'toggle-visibility',
+          label: isHidden ? '显示' : '隐藏',
+          icon: isHidden ? <Eye size={16} /> : <EyeOff size={16} />,
+        },
+        { id: 'divider-3', label: '', divider: true },
+        {
+          id: 'delete',
+          label: '删除',
+          icon: <Trash2 size={16} />,
+          shortcut: 'Del',
+          danger: true,
+        }
+      )
+    } else if (clipboard) {
+      // 画布右键菜单
+      items.push({
+        id: 'paste',
+        label: '粘贴',
+        icon: <Clipboard size={16} />,
+        shortcut: '⌘V',
+      })
+    }
+
+    return items
+  }
+
+  const handleContextMenuAction = (actionId: string) => {
+    const { nodeId } = contextMenu || {}
+
+    switch (actionId) {
+      case 'copy':
+        if (nodeId) copyNode(nodeId)
+        break
+      case 'cut':
+        if (nodeId) cutNode(nodeId)
+        break
+      case 'duplicate':
+        if (nodeId) duplicateNode(nodeId)
+        break
+      case 'paste':
+        pasteNode(nodeId || undefined)
+        break
+      case 'delete':
+        if (nodeId) deleteNode(nodeId)
+        break
+      case 'move-up':
+        if (nodeId) moveNodeUp(nodeId)
+        break
+      case 'move-down':
+        if (nodeId) moveNodeDown(nodeId)
+        break
+      case 'toggle-visibility':
+        if (nodeId) toggleNodeVisibility(nodeId)
+        break
+    }
+  }
+
   return (
     <div
       ref={containerRef}
@@ -49,14 +207,15 @@ export const Canvas: React.FC = () => {
       style={{
         flex: 1,
         overflow: 'auto',
-        backgroundColor: '#fafafa',
-        padding: '40px 0 80px 0',
+        backgroundColor: '#f5f5f5',
+        padding: '32px 24px 80px 24px',
         position: 'relative',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
       }}
       onClick={handleCanvasClick}
+      onContextMenu={handleContextMenu}
     >
       <div
         data-canvas
@@ -79,6 +238,17 @@ export const Canvas: React.FC = () => {
 
       {/* 框选组件 */}
       {mode === 'edit' && <SelectionBox containerRef={containerRef} />}
+
+      {/* 右键菜单 */}
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          items={getContextMenuItems()}
+          onClose={() => setContextMenu(null)}
+          onAction={handleContextMenuAction}
+        />
+      )}
     </div>
   )
 }

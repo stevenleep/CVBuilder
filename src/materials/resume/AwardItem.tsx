@@ -124,9 +124,10 @@ export const AwardItemMaterial: IMaterialDefinition = {
     {
       name: 'description',
       label: '奖项说明',
-      type: 'textarea',
+      type: 'richtext',
       defaultValue: '',
       group: '内容',
+      minHeight: 80,
     },
   ],
   defaultProps: {

@@ -84,10 +84,10 @@ export const MaterialPanel: React.FC = () => {
       style={{
         width: '100%',
         height: '100%',
-        borderRight: '1px solid #f1f1f1',
+        borderRight: '1px solid #e8e8e8',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#fff',
+        backgroundColor: '#fafafa',
       }}
     >
       {/* Tab切换 */}
@@ -95,8 +95,8 @@ export const MaterialPanel: React.FC = () => {
         style={{
           display: 'flex',
           gap: '4px',
-          padding: '8px',
-          borderBottom: '1px solid #f1f1f1',
+          padding: '10px',
+          borderBottom: '1px solid #e8e8e8',
           backgroundColor: '#fff',
         }}
       >
@@ -119,7 +119,7 @@ export const MaterialPanel: React.FC = () => {
       ) : (
         <>
           {/* 搜索 */}
-          <div style={{ padding: '10px 10px 8px 10px' }}>
+          <div style={{ padding: '10px', backgroundColor: '#fff' }}>
             <div
               style={{
                 position: 'relative',
@@ -137,27 +137,28 @@ export const MaterialPanel: React.FC = () => {
               />
               <input
                 type="text"
-                placeholder="搜索物料..."
+                placeholder="搜索组件..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 style={{
                   width: '100%',
-                  height: '30px',
+                  height: '32px',
                   padding: '0 10px 0 32px',
                   border: '1px solid #e8e8e8',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   fontSize: '12px',
                   outline: 'none',
-                  backgroundColor: '#f8f9fa',
-                  transition: 'all 0.15s',
+                  backgroundColor: '#fafafa',
+                  transition: 'all 0.12s',
+                  color: '#2d2d2d',
                 }}
                 onFocus={e => {
                   e.currentTarget.style.backgroundColor = '#fff'
                   e.currentTarget.style.borderColor = '#d0d0d0'
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.02)'
+                  e.currentTarget.style.boxShadow = '0 0 0 2px rgba(0,0,0,0.02)'
                 }}
                 onBlur={e => {
-                  e.currentTarget.style.backgroundColor = '#f8f9fa'
+                  e.currentTarget.style.backgroundColor = '#fafafa'
                   e.currentTarget.style.borderColor = '#e8e8e8'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
@@ -172,6 +173,7 @@ export const MaterialPanel: React.FC = () => {
               display: 'flex',
               gap: '5px',
               flexWrap: 'wrap',
+              backgroundColor: '#fff',
             }}
           >
             {categoryList.map(category => (
@@ -181,25 +183,25 @@ export const MaterialPanel: React.FC = () => {
                 style={{
                   height: '26px',
                   padding: '0 12px',
-                  border: `1px solid ${activeCategory === category.id ? '#e0e0e0' : 'transparent'}`,
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontWeight: '500',
+                  border: 'none',
+                  borderRadius: '5px',
+                  fontSize: '11px',
+                  fontWeight: '600',
                   cursor: 'pointer',
-                  backgroundColor: activeCategory === category.id ? '#f8f9fa' : 'transparent',
-                  color: activeCategory === category.id ? '#000' : '#999',
-                  transition: 'all 0.12s ease',
+                  backgroundColor: activeCategory === category.id ? '#2d2d2d' : 'transparent',
+                  color: activeCategory === category.id ? '#fff' : '#666',
+                  transition: 'all 0.12s',
                 }}
                 onMouseEnter={e => {
                   if (activeCategory !== category.id) {
-                    e.currentTarget.style.backgroundColor = '#f8f9fa'
-                    e.currentTarget.style.borderColor = '#f0f0f0'
+                    e.currentTarget.style.backgroundColor = '#f0f0f0'
+                    e.currentTarget.style.color = '#2d2d2d'
                   }
                 }}
                 onMouseLeave={e => {
                   if (activeCategory !== category.id) {
                     e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.borderColor = 'transparent'
+                    e.currentTarget.style.color = '#666'
                   }
                 }}
               >
@@ -212,8 +214,8 @@ export const MaterialPanel: React.FC = () => {
             style={{
               width: '100%',
               height: '1px',
-              backgroundColor: '#f1f1f1',
-              margin: '0 0 6px 0',
+              backgroundColor: '#e8e8e8',
+              margin: '6px 0',
             }}
           />
 
@@ -222,7 +224,7 @@ export const MaterialPanel: React.FC = () => {
             style={{
               flex: 1,
               overflow: 'auto',
-              padding: '0 10px 10px 10px',
+              padding: '10px',
             }}
           >
             {filteredMaterials.length === 0 ? (
@@ -243,11 +245,11 @@ export const MaterialPanel: React.FC = () => {
                   <div key={category} style={{ marginBottom: '16px' }}>
                     <div
                       style={{
-                        fontSize: '11px',
+                        fontSize: '10px',
                         fontWeight: '700',
-                        color: '#666',
-                        marginBottom: '10px',
-                        paddingLeft: '4px',
+                        color: '#999',
+                        marginBottom: '8px',
+                        paddingLeft: '2px',
                         textTransform: 'uppercase',
                         letterSpacing: '0.8px',
                       }}
@@ -259,19 +261,19 @@ export const MaterialPanel: React.FC = () => {
                       <div>
                         {Object.entries(groupedBySubcategory[category]).map(
                           ([subcategory, subMaterials]) => (
-                            <div key={subcategory} style={{ marginBottom: '12px' }}>
+                            <div key={subcategory} style={{ marginBottom: '16px' }}>
                               <div
                                 style={{
-                                  fontSize: '10px',
+                                  fontSize: '11px',
                                   fontWeight: '600',
-                                  color: '#999',
-                                  marginBottom: '6px',
-                                  paddingLeft: '4px',
+                                  color: '#bbb',
+                                  marginBottom: '8px',
+                                  paddingLeft: '2px',
                                 }}
                               >
                                 {getSubcategoryName(subcategory)}
                               </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 {subMaterials.map(material => (
                                   <DraggableMaterial
                                     key={material.meta.type}
@@ -361,24 +363,28 @@ const TabButton: React.FC<{
   active: boolean
   onClick: () => void
 }> = ({ icon, label, active, onClick }) => {
+  const [hover, setHover] = React.useState(false)
+
   return (
     <button
       onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       style={{
         flex: 1,
-        height: '28px',
+        height: '32px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '5px',
+        gap: '6px',
         border: 'none',
-        borderRadius: '4px',
-        fontSize: '12px',
-        fontWeight: '500',
+        borderRadius: '6px',
+        fontSize: '13px',
+        fontWeight: '600',
         cursor: 'pointer',
-        backgroundColor: active ? '#f8f9fa' : 'transparent',
-        color: active ? '#000' : '#999',
-        transition: 'all 0.12s',
+        backgroundColor: active ? '#2d2d2d' : hover ? '#f0f0f0' : 'transparent',
+        color: active ? '#fff' : '#666',
+        transition: 'all 0.15s',
       }}
     >
       {icon}

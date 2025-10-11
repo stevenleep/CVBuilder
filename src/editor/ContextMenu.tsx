@@ -1,90 +1,179 @@
 /**
- * 右键菜单组件
+ * 右键菜单组件 - 增强版
  */
 
-import { useEffect } from 'react'
-import { IMaterialAction } from '@/core'
+import React, { useEffect, useRef } from 'react'
+
+export interface ContextMenuItem {
+  id: string
+  label: string
+  icon?: React.ReactNode
+  shortcut?: string
+  divider?: boolean
+  danger?: boolean
+  disabled?: boolean
+}
 
 interface ContextMenuProps {
   x: number
   y: number
-  actions: IMaterialAction[]
+  items: ContextMenuItem[]
   onClose: () => void
   onAction: (actionId: string) => void
 }
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, actions, onClose, onAction }) => {
+export const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, items, onClose, onAction }) => {
+  const menuRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
-    const handleClick = () => onClose()
+    const handleClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        onClose()
+      }
+    }
+
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
 
-    document.addEventListener('click', handleClick)
-    document.addEventListener('keydown', handleEscape)
+    // 延迟添加事件监听，避免立即触发
+    setTimeout(() => {
+      document.addEventListener('click', handleClick)
+      document.addEventListener('contextmenu', handleClick)
+      document.addEventListener('keydown', handleEscape)
+    }, 0)
 
     return () => {
       document.removeEventListener('click', handleClick)
+      document.removeEventListener('contextmenu', handleClick)
       document.removeEventListener('keydown', handleEscape)
     }
   }, [onClose])
 
+  // 调整菜单位置，确保不超出视口
+  useEffect(() => {
+    if (menuRef.current) {
+      const menu = menuRef.current
+      const rect = menu.getBoundingClientRect()
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+
+      let adjustedX = x
+      let adjustedY = y
+
+      // 右侧超出
+      if (rect.right > viewportWidth) {
+        adjustedX = viewportWidth - rect.width - 8
+      }
+
+      // 底部超出
+      if (rect.bottom > viewportHeight) {
+        adjustedY = viewportHeight - rect.height - 8
+      }
+
+      menu.style.left = `${adjustedX}px`
+      menu.style.top = `${adjustedY}px`
+    }
+  }, [x, y])
+
   return (
     <div
+      ref={menuRef}
       style={{
         position: 'fixed',
         left: x,
         top: y,
-        backgroundColor: 'white',
-        border: '1px solid #f1f1f1',
-        borderRadius: '6px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-        padding: '4px',
-        minWidth: '180px',
-        zIndex: 10000,
+        backgroundColor: '#ffffff',
+        border: '1px solid #e0e0e0',
+        borderRadius: '8px',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
+        padding: '6px',
+        minWidth: '200px',
+        zIndex: 100000,
+        animation: 'context-menu-appear 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
       onClick={e => e.stopPropagation()}
+      onContextMenu={e => e.preventDefault()}
     >
-      {actions.map(action => (
-        <div
-          key={action.id}
-          onClick={() => {
-            onAction(action.id)
-            onClose()
-          }}
-          style={{
-            padding: '8px 12px',
-            cursor: 'pointer',
-            borderRadius: '4px',
-            fontSize: '13px',
-            color: '#000',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            transition: 'background 0.1s',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = '#fafafa'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = 'transparent'
-          }}
-        >
-          {action.icon && <span>{action.icon}</span>}
-          <span>{action.label}</span>
-          {action.shortcut && (
-            <span
+      {items.map((item, index) => (
+        <React.Fragment key={item.id}>
+          {item.divider ? (
+            <div
               style={{
-                marginLeft: 'auto',
-                fontSize: '11px',
-                color: '#999',
+                height: '1px',
+                backgroundColor: '#e8e8e8',
+                margin: '6px 0',
+              }}
+            />
+          ) : (
+            <div
+              onClick={() => {
+                if (!item.disabled) {
+                  onAction(item.id)
+                  onClose()
+                }
+              }}
+              style={{
+                padding: '10px 14px',
+                cursor: item.disabled ? 'not-allowed' : 'pointer',
+                borderRadius: '5px',
+                fontSize: '13px',
+                fontWeight: '500',
+                color: item.danger ? '#ef4444' : item.disabled ? '#999' : '#2d2d2d',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                transition: 'all 0.1s ease',
+                opacity: item.disabled ? 0.5 : 1,
+              }}
+              onMouseEnter={e => {
+                if (!item.disabled) {
+                  e.currentTarget.style.backgroundColor = item.danger ? '#fef2f2' : '#f8f9fa'
+                }
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'transparent'
               }}
             >
-              {action.shortcut}
-            </span>
+              {item.icon && (
+                <span style={{ display: 'flex', alignItems: 'center', fontSize: '16px' }}>
+                  {item.icon}
+                </span>
+              )}
+              <span style={{ flex: 1 }}>{item.label}</span>
+              {item.shortcut && (
+                <span
+                  style={{
+                    fontSize: '11px',
+                    color: '#999',
+                    fontFamily: 'monospace',
+                    backgroundColor: '#f0f0f0',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                  }}
+                >
+                  {item.shortcut}
+                </span>
+              )}
+            </div>
           )}
-        </div>
+        </React.Fragment>
       ))}
+
+      <style>
+        {`
+          @keyframes context-menu-appear {
+            from {
+              opacity: 0;
+              transform: scale(0.95) translateY(-4px);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
+          }
+        `}
+      </style>
     </div>
   )
 }

@@ -9,7 +9,7 @@ import type { PropValue } from '../types/material'
 import { Trash2, Copy, ChevronDown } from 'lucide-react'
 import { useMaterial, IPropSchema } from '@/core'
 import { ThemeSettings } from './ThemeSettings'
-import { RichTextEditor } from '@/components/RichTextEditor'
+import { QuillEditor, SimpleTextarea } from '@/components/QuillEditor'
 
 export const PropertyPanel: React.FC = () => {
   const { selectedNodeIds, pageSchema, updateNodeProps, deleteNode, duplicateNode } =
@@ -29,24 +29,25 @@ export const PropertyPanel: React.FC = () => {
         style={{
           width: '100%',
           height: '100%',
-          borderLeft: '1px solid #f1f1f1',
-          backgroundColor: '#fff',
+          borderLeft: '1px solid #e8e8e8',
+          backgroundColor: '#fafafa',
           display: 'flex',
           flexDirection: 'column',
         }}
       >
         <div
           style={{
-            padding: '16px',
-            borderBottom: '1px solid #f1f1f1',
+            padding: '14px',
+            borderBottom: '1px solid #e8e8e8',
+            backgroundColor: '#fff',
           }}
         >
           <div
             style={{
               fontSize: '12px',
-              fontWeight: '600',
-              color: '#000',
-              marginBottom: '2px',
+              fontWeight: '700',
+              color: '#2d2d2d',
+              marginBottom: '3px',
             }}
           >
             主题设置
@@ -61,7 +62,7 @@ export const PropertyPanel: React.FC = () => {
           </div>
         </div>
 
-        <div style={{ flex: 1, overflow: 'auto' }}>
+        <div style={{ flex: 1, overflow: 'auto', padding: '12px', backgroundColor: '#fafafa' }}>
           <ThemeSettings />
         </div>
       </div>
@@ -109,8 +110,8 @@ export const PropertyPanel: React.FC = () => {
       style={{
         width: '100%',
         height: '100%',
-        borderLeft: '1px solid #f1f1f1',
-        backgroundColor: '#fff',
+        borderLeft: '1px solid #e8e8e8',
+        backgroundColor: '#fafafa',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -118,16 +119,17 @@ export const PropertyPanel: React.FC = () => {
       {/* 标题 */}
       <div
         style={{
-          padding: '16px',
-          borderBottom: '1px solid #f1f1f1',
+          padding: '14px',
+          borderBottom: '1px solid #e8e8e8',
+          backgroundColor: '#fff',
         }}
       >
         <div
           style={{
             fontSize: '12px',
-            fontWeight: '600',
-            color: '#000',
-            marginBottom: '2px',
+            fontWeight: '700',
+            color: '#2d2d2d',
+            marginBottom: '3px',
           }}
         >
           {materialDef.meta.title}
@@ -146,10 +148,11 @@ export const PropertyPanel: React.FC = () => {
       {(canCopy || canDelete) && (
         <div
           style={{
-            padding: '12px 16px',
-            borderBottom: '1px solid #f1f1f1',
+            padding: '10px 14px',
+            borderBottom: '1px solid #e8e8e8',
             display: 'flex',
             gap: '6px',
+            backgroundColor: '#fff',
           }}
         >
           {canCopy && (
@@ -170,7 +173,8 @@ export const PropertyPanel: React.FC = () => {
         style={{
           flex: 1,
           overflow: 'auto',
-          padding: '16px',
+          padding: '12px',
+          backgroundColor: '#fafafa',
         }}
       >
         {Object.entries(groupedProps).map(([group, props]) => (
@@ -195,9 +199,10 @@ const PropertyGroup: React.FC<{
   onChange: (name: string, value: PropValue) => void
 }> = ({ title, props, nodeProps, onChange }) => {
   const [collapsed, setCollapsed] = React.useState(false)
+  const [hover, setHover] = React.useState(false)
 
   return (
-    <div style={{ marginBottom: '16px' }}>
+    <div style={{ marginBottom: '14px' }}>
       <div
         onClick={() => setCollapsed(!collapsed)}
         style={{
@@ -205,27 +210,27 @@ const PropertyGroup: React.FC<{
           alignItems: 'center',
           justifyContent: 'space-between',
           cursor: 'pointer',
-          marginBottom: collapsed ? '0' : '12px',
-          padding: '4px 0',
+          marginBottom: collapsed ? '0' : '10px',
+          padding: '5px 2px',
         }}
       >
         <div
           style={{
-            fontSize: '11px',
-            fontWeight: '600',
-            color: '#000',
+            fontSize: '10px',
+            fontWeight: '700',
+            color: '#999',
             textTransform: 'uppercase',
-            letterSpacing: '0.5px',
+            letterSpacing: '0.6px',
           }}
         >
           {title}
         </div>
         <ChevronDown
-          size={14}
+          size={13}
           style={{
-            color: '#999',
+            color: '#bbb',
             transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
-            transition: 'transform 0.15s',
+            transition: 'transform 0.12s',
           }}
         />
       </div>
@@ -261,20 +266,20 @@ const ActionButton: React.FC<{
       onMouseLeave={() => setHover(false)}
       style={{
         flex: 1,
-        height: '28px',
-        padding: '0 10px',
-        border: 'none',
-        borderRadius: '4px',
-        backgroundColor: hover ? (danger ? '#fff5f5' : '#fafafa') : 'transparent',
-        color: danger ? '#f00' : '#666',
+        height: '32px',
+        padding: '0 12px',
+        border: `1px solid ${danger ? '#fecaca' : '#e8e8e8'}`,
+        borderRadius: '6px',
+        backgroundColor: hover ? (danger ? '#fef2f2' : '#fafafa') : '#fff',
+        color: danger ? '#ef4444' : '#666',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '4px',
-        fontSize: '12px',
-        fontWeight: '500',
-        transition: 'all 0.1s',
+        gap: '6px',
+        fontSize: '13px',
+        fontWeight: '600',
+        transition: 'all 0.15s',
       }}
     >
       {icon}
@@ -426,31 +431,22 @@ const PropertyInput: React.FC<{
 
       case 'textarea':
         return (
-          <textarea
+          <SimpleTextarea
             value={String(value || '')}
-            onChange={e => onChange(e.target.value)}
+            onChange={val => onChange(val)}
             placeholder={schema.description}
             rows={4}
-            style={{
-              ...baseStyle,
-              height: 'auto',
-              padding: '8px 10px',
-              resize: 'vertical',
-              fontFamily: 'inherit',
-              lineHeight: '1.5',
-            }}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
           />
         )
 
       case 'richtext':
         return (
-          <RichTextEditor
+          <QuillEditor
             value={String(value || '')}
             onChange={val => onChange(val)}
             placeholder={schema.description}
             minHeight={schema.minHeight || 100}
+            simple={false}
           />
         )
 
@@ -474,21 +470,22 @@ const PropertyInput: React.FC<{
         style={{
           display: 'block',
           fontSize: '11px',
-          fontWeight: '500',
-          marginBottom: '6px',
+          fontWeight: '600',
+          marginBottom: '5px',
           color: '#666',
         }}
       >
         {schema.label}
-        {schema.required && <span style={{ color: '#f00' }}> *</span>}
+        {schema.required && <span style={{ color: '#ef4444' }}> *</span>}
       </label>
       {renderInput()}
       {schema.description && schema.type !== 'string' && schema.type !== 'textarea' && (
         <div
           style={{
-            fontSize: '10px',
-            color: '#999',
+            fontSize: '11px',
+            color: '#bbb',
             marginTop: '4px',
+            lineHeight: '1.4',
           }}
         >
           {schema.description}

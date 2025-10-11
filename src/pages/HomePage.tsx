@@ -4,9 +4,12 @@
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FileText, Plus, Clock, Folder, ArrowRight } from 'lucide-react'
+import { FileText, Plus, Clock, Folder, ArrowRight, Sparkles } from 'lucide-react'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { resumeTemplateManager } from '@/core/services/ResumeTemplateManager'
+import { exampleResumes } from '@/data/examples'
+import { nanoid } from 'nanoid'
+import { notification } from '@/utils/notification'
 
 interface RecentResume {
   id: string
@@ -18,7 +21,8 @@ interface RecentResume {
 export const HomePage: React.FC = () => {
   const navigate = useNavigate()
   const [recentResumes, setRecentResumes] = useState<RecentResume[]>([])
-  const [templates, setTemplates] = useState<any[]>([])
+  const [templates, setTemplates] = useState<unknown[]>([])
+  const [showExamples, setShowExamples] = useState(false)
 
   useEffect(() => {
     loadRecentResumes()
@@ -41,7 +45,7 @@ export const HomePage: React.FC = () => {
       const loaded: RecentResume[] = []
 
       for (const key of allKeys) {
-        const resume = await indexedDBService.getItem<any>(STORES.RESUMES, String(key))
+        const resume = await indexedDBService.getItem<RecentResume>(STORES.RESUMES, String(key))
         if (resume) {
           loaded.push(resume)
         }
@@ -70,6 +74,30 @@ export const HomePage: React.FC = () => {
     if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`
     if (diff < 604800) return `${Math.floor(diff / 86400)}天前`
     return date.toLocaleDateString('zh-CN')
+  }
+
+  const handleUseExample = async (exampleId: string) => {
+    const example = exampleResumes.find(ex => ex.id === exampleId)
+    if (!example) return
+
+    try {
+      const newId = nanoid()
+      const resumeData = {
+        id: newId,
+        name: example.name,
+        description: example.description,
+        schema: example.schema,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+
+      await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
+      notification.success(`已基于"${example.name}"创建新简历！`)
+      navigate(`/editor/${newId}`)
+    } catch (error) {
+      notification.error('创建失败')
+      console.error('Create from example error:', error)
+    }
   }
 
   return (
@@ -138,6 +166,12 @@ export const HomePage: React.FC = () => {
             primary
           />
           <QuickAction
+            icon={<Sparkles size={24} />}
+            title="使用示例"
+            description={`${exampleResumes.length} 个精选示例`}
+            onClick={() => setShowExamples(true)}
+          />
+          <QuickAction
             icon={<Folder size={24} />}
             title="模板库"
             description={`${templates.length} 个模板`}
@@ -150,6 +184,19 @@ export const HomePage: React.FC = () => {
             onClick={() => navigate('/resumes')}
           />
         </div>
+
+        {/* 示例简历对话框 */}
+        {showExamples && (
+          <ExampleDialog
+            examples={exampleResumes}
+            onSelect={handleUseExample}
+            onPreview={exampleId => {
+              setShowExamples(false)
+              navigate(`/examples/${exampleId}/preview`)
+            }}
+            onClose={() => setShowExamples(false)}
+          />
+        )}
 
         {/* 最近编辑 */}
         <div>
@@ -382,5 +429,265 @@ const ResumeItem: React.FC<{
         style={{ color: '#ccc', opacity: hover ? 1 : 0, transition: 'opacity 0.2s' }}
       />
     </button>
+  )
+}
+
+const ExampleDialog: React.FC<{
+  examples: typeof exampleResumes
+  onSelect: (id: string) => void
+  onPreview: (id: string) => void
+  onClose: () => void
+}> = ({ examples, onSelect, onPreview, onClose }) => {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 100001,
+        padding: '20px',
+        animation: 'fadeIn 0.2s ease-out',
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          backgroundColor: '#2d2d2d',
+          borderRadius: '12px',
+          padding: '28px 32px',
+          maxWidth: '920px',
+          width: '100%',
+          maxHeight: '85vh',
+          overflow: 'auto',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+          border: '1px solid #4a4a4a',
+          animation: 'scaleIn 0.2s ease-out',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        <h2
+          style={{
+            fontSize: '22px',
+            fontWeight: '700',
+            color: '#fff',
+            marginBottom: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+          }}
+        >
+          <Sparkles size={26} />
+          选择示例开始
+        </h2>
+        <p style={{ fontSize: '14px', color: '#aaa', marginBottom: '28px' }}>
+          选择一个示例简历，快速开始编辑你的专属简历
+        </p>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: '16px',
+          }}
+        >
+          {examples.map(example => (
+            <ExampleCard
+              key={example.id}
+              example={example}
+              onSelect={() => onSelect(example.id)}
+              onPreview={() => onPreview(example.id)}
+            />
+          ))}
+        </div>
+
+        <div style={{ marginTop: '28px', textAlign: 'center' }}>
+          <button
+            onClick={onClose}
+            style={{
+              padding: '10px 24px',
+              border: '1px solid #555',
+              borderRadius: '6px',
+              backgroundColor: '#3a3a3a',
+              color: '#ccc',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '600',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = '#4a4a4a'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = '#3a3a3a'
+            }}
+          >
+            关闭
+          </button>
+        </div>
+      </div>
+
+      <style>
+        {`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes scaleIn {
+            from {
+              transform: scale(0.95);
+              opacity: 0;
+            }
+            to {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+    </div>
+  )
+}
+
+const ExampleCard: React.FC<{
+  example: (typeof exampleResumes)[0]
+  onSelect: () => void
+  onPreview: () => void
+}> = ({ example, onSelect, onPreview }) => {
+  const [hover, setHover] = React.useState(false)
+
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        padding: '20px',
+        border: '2px solid #555',
+        borderRadius: '10px',
+        backgroundColor: hover ? '#3a3a3a' : '#1a1a1a',
+        transition: 'all 0.2s ease',
+        textAlign: 'left',
+        boxShadow: hover
+          ? '0 8px 24px rgba(255, 255, 255, 0.1), 0 0 0 2px rgba(255, 255, 255, 0.2)'
+          : '0 2px 8px rgba(0,0,0,0.3)',
+      }}
+    >
+      {/* 分类标签 */}
+      <div
+        style={{
+          display: 'inline-block',
+          padding: '4px 12px',
+          borderRadius: '6px',
+          backgroundColor: hover ? '#fff' : '#555',
+          color: hover ? '#2d2d2d' : 'white',
+          fontSize: '11px',
+          fontWeight: '600',
+          marginBottom: '14px',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        {example.category}
+      </div>
+
+      {/* 标题 */}
+      <div
+        style={{
+          fontSize: '17px',
+          fontWeight: '700',
+          color: '#fff',
+          marginBottom: '10px',
+        }}
+      >
+        {example.name}
+      </div>
+
+      {/* 描述 */}
+      <div
+        style={{
+          fontSize: '13px',
+          color: '#aaa',
+          lineHeight: '1.6',
+          marginBottom: '14px',
+        }}
+      >
+        {example.description}
+      </div>
+
+      {/* 标签 */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+        {example.tags.map(tag => (
+          <span
+            key={tag}
+            style={{
+              padding: '4px 10px',
+              borderRadius: '4px',
+              backgroundColor: hover ? 'rgba(255, 255, 255, 0.15)' : '#333',
+              color: hover ? '#fff' : '#888',
+              fontSize: '11px',
+              fontWeight: '500',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* 操作按钮 - 固定高度避免抖动 */}
+      <div
+        style={{
+          height: '44px',
+          display: 'flex',
+          gap: '8px',
+          marginTop: '2px',
+        }}
+      >
+        <button
+          onClick={e => {
+            e.stopPropagation()
+            onPreview()
+          }}
+          style={{
+            flex: 1,
+            padding: '10px',
+            border: '1px solid #555',
+            borderRadius: '6px',
+            backgroundColor: hover ? '#3a3a3a' : 'transparent',
+            color: '#ccc',
+            fontSize: '12px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          预览
+        </button>
+        <button
+          onClick={e => {
+            e.stopPropagation()
+            onSelect()
+          }}
+          style={{
+            flex: 1,
+            padding: '10px',
+            border: 'none',
+            borderRadius: '6px',
+            backgroundColor: hover ? '#fff' : '#555',
+            color: hover ? '#2d2d2d' : '#aaa',
+            fontSize: '12px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          使用
+        </button>
+      </div>
+    </div>
   )
 }

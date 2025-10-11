@@ -66,16 +66,50 @@ export const DropZone: React.FC<DropZoneProps> = ({
       <div ref={drop} style={{ position: 'relative', minHeight: '20px' }}>
         {children}
         {showDropIndicator && (
-          <div style={{
-            position: 'absolute',
-            inset: '-2px',
-            border: '2px solid #3b82f6',
-            borderRadius: '6px',
-            pointerEvents: 'none',
-            backgroundColor: 'rgba(59, 130, 246, 0.06)',
-            zIndex: 999,
-            boxShadow: 'inset 0 0 0 1px rgba(59, 130, 246, 0.2)',
-          }} />
+          <>
+            <div style={{
+              position: 'absolute',
+              inset: '-2px',
+              border: '3px solid #3b82f6',
+              borderRadius: '8px',
+              pointerEvents: 'none',
+              backgroundColor: 'rgba(59, 130, 246, 0.08)',
+              zIndex: 999,
+              boxShadow: 'inset 0 0 0 1px rgba(59, 130, 246, 0.3), 0 0 12px rgba(59, 130, 246, 0.4)',
+              animation: 'pulse-container 1.5s ease-in-out infinite',
+            }} />
+            {/* 中心提示标签 */}
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              fontWeight: '600',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.5)',
+              pointerEvents: 'none',
+              zIndex: 1000,
+            }}>
+              ✚ 添加到容器
+            </div>
+            <style>
+              {`
+                @keyframes pulse-container {
+                  0%, 100% {
+                    opacity: 1;
+                  }
+                  50% {
+                    opacity: 0.6;
+                  }
+                }
+              `}
+            </style>
+          </>
         )}
       </div>
     )
@@ -85,44 +119,76 @@ export const DropZone: React.FC<DropZoneProps> = ({
   if (showDropIndicator) {
     return (
       <div ref={drop} style={{ position: 'relative' }}>
-        {/* 插入位置指示器 */}
+        {/* 增强的插入位置指示器 */}
         <div style={{
-          height: '3px',
+          height: '4px',
           backgroundColor: '#3b82f6',
-          margin: position === 'before' ? '-1.5px 0 -1.5px 0' : '-1.5px 0 -1.5px 0',
-          borderRadius: '1.5px',
+          margin: position === 'before' ? '-2px 0 -2px 0' : '-2px 0 -2px 0',
+          borderRadius: '2px',
           position: 'relative',
           zIndex: 1000,
-          boxShadow: '0 0 4px rgba(59, 130, 246, 0.4)',
+          boxShadow: '0 0 8px rgba(59, 130, 246, 0.6), 0 0 16px rgba(59, 130, 246, 0.3)',
+          animation: 'pulse-drop-line 1.5s ease-in-out infinite',
         }}>
           {/* 左侧圆点 */}
           <div style={{
             position: 'absolute',
-            left: '-3px',
+            left: '-4px',
             top: '50%',
             transform: 'translateY(-50%)',
-            width: '7px',
-            height: '7px',
+            width: '10px',
+            height: '10px',
             backgroundColor: '#3b82f6',
             borderRadius: '50%',
-            border: '1.5px solid #fff',
-            boxShadow: '0 1px 3px rgba(59, 130, 246, 0.3)',
+            border: '2px solid #fff',
+            boxShadow: '0 2px 6px rgba(59, 130, 246, 0.5), 0 0 0 2px rgba(59, 130, 246, 0.2)',
           }} />
           {/* 右侧圆点 */}
           <div style={{
             position: 'absolute',
-            right: '-3px',
+            right: '-4px',
             top: '50%',
             transform: 'translateY(-50%)',
-            width: '7px',
-            height: '7px',
+            width: '10px',
+            height: '10px',
             backgroundColor: '#3b82f6',
             borderRadius: '50%',
-            border: '1.5px solid #fff',
-            boxShadow: '0 1px 3px rgba(59, 130, 246, 0.3)',
+            border: '2px solid #fff',
+            boxShadow: '0 2px 6px rgba(59, 130, 246, 0.5), 0 0 0 2px rgba(59, 130, 246, 0.2)',
           }} />
+          {/* 中心提示标签 */}
+          <div style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: '#3b82f6',
+            color: 'white',
+            padding: '4px 12px',
+            borderRadius: '4px',
+            fontSize: '11px',
+            fontWeight: '600',
+            whiteSpace: 'nowrap',
+            boxShadow: '0 2px 8px rgba(59, 130, 246, 0.4)',
+            pointerEvents: 'none',
+          }}>
+            {position === 'before' ? '↑ 插入到这里' : '↓ 插入到这里'}
+          </div>
         </div>
         {children}
+        
+        <style>
+          {`
+            @keyframes pulse-drop-line {
+              0%, 100% {
+                opacity: 1;
+              }
+              50% {
+                opacity: 0.7;
+              }
+            }
+          `}
+        </style>
       </div>
     )
   }
