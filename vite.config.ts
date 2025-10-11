@@ -26,6 +26,4 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000,
   },
-  // GitHub Pages 部署配置
-  base: process.env.NODE_ENV === 'production' ? '/Career/' : '/',
 })
