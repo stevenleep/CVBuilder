@@ -46,10 +46,9 @@ export const TemplatesPage: React.FC = () => {
 
   const handleSaveTemplateInfo = (name: string, description: string) => {
     if (editingTemplate) {
-      resumeTemplateManager.updateTemplateInfo(editingTemplate.id, {
+      resumeTemplateManager.updateTemplate(editingTemplate.id, {
         name,
         description,
-        category: editingTemplate.category,
       })
       setTemplates(resumeTemplateManager.getAllTemplates())
       setEditingTemplate(null)

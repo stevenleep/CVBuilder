@@ -6,7 +6,6 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, FileText, Trash2, Edit, Calendar } from 'lucide-react'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
-import { useEditorStore } from '@/store/editorStore'
 import { notification } from '@/utils/notification'
 
 interface SavedResume {
@@ -21,7 +20,6 @@ interface SavedResume {
 export const ResumesPage: React.FC = () => {
   const navigate = useNavigate()
   const [resumes, setResumes] = useState<SavedResume[]>([])
-  const { setPageSchema } = useEditorStore()
 
   useEffect(() => {
     loadResumes()
@@ -43,7 +41,7 @@ export const ResumesPage: React.FC = () => {
       const loadedResumes: SavedResume[] = []
 
       for (const key of allKeys) {
-        const resume = await indexedDBService.getItem<SavedResume>(STORES.RESUMES, key)
+        const resume = await indexedDBService.getItem<SavedResume>(STORES.RESUMES, String(key))
         if (resume) {
           loadedResumes.push(resume)
         }
