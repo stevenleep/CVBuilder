@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, FileText, Trash2, Edit, Calendar, ImageIcon } from 'lucide-react'
+import { ArrowLeft, FileText, Trash2, Edit, Calendar } from 'lucide-react'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { notification } from '@/utils/notification'
 

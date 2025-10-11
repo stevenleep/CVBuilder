@@ -199,7 +199,6 @@ const PropertyGroup: React.FC<{
   onChange: (name: string, value: PropValue) => void
 }> = ({ title, props, nodeProps, onChange }) => {
   const [collapsed, setCollapsed] = React.useState(false)
-  const [hover, setHover] = React.useState(false)
 
   return (
     <div style={{ marginBottom: '14px' }}>

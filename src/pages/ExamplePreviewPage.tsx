@@ -16,7 +16,7 @@ export const ExamplePreviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { setPageSchema, setMode, setCurrentResumeId } = useEditorStore()
-  const [example, setExample] = useState<ReturnType<typeof getExampleById>>(null)
+  const [example, setExample] = useState<ReturnType<typeof getExampleById>>(undefined)
 
   useEffect(() => {
     if (id) {
