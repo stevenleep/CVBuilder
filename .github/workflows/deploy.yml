@@ -58,6 +58,9 @@ jobs:
       - name: 创建 .nojekyll 文件
         run: touch dist/.nojekyll
 
+      - name: 复制 index.html 为 404.html (SPA 路由支持)
+        run: cp dist/index.html dist/404.html
+
       - name: 上传构建产物
         uses: actions/upload-pages-artifact@v3
         with:

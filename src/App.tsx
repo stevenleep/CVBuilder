@@ -104,7 +104,7 @@ function App() {
     <NotificationProvider>
       <EditorProvider value={editorContext}>
         <ThemeProvider>
-          <BrowserRouter>
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
             <Routes>
               {/* 首页 */}
               <Route path="/" element={<HomePage />} />
