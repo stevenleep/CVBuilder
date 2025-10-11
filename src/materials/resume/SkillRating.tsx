@@ -10,28 +10,39 @@ import { useThemeConfig } from '@/core/context/ThemeContext'
 
 interface SkillRatingProps {
   style?: React.CSSProperties
-  skills?: string
+  skills?: Array<{ name: string; level: number }>
   maxLevel?: number
   showDots?: boolean
+  layout?: 'list' | 'grid'
+  columns?: number
 }
 
 const SkillRating: React.FC<SkillRatingProps> = ({
   style,
-  skills = 'React,5|TypeScript,4|Node.js,4|Python,3',
+  skills = [
+    { name: 'React', level: 5 },
+    { name: 'TypeScript', level: 4 },
+    { name: 'Node.js', level: 4 },
+    { name: 'Python', level: 3 },
+  ],
   maxLevel = 5,
   showDots = true,
+  layout = 'list',
+  columns = 2,
 }) => {
   const theme = useThemeConfig()
-  const skillArray = skills
-    .split('|')
-    .map(s => {
-      const [name, level] = s.split(',').map(v => v.trim())
-      return { name, level: parseInt(level) || 0 }
-    })
-    .filter(s => s.name)
+  const skillArray = Array.isArray(skills) ? skills : []
 
   return (
-    <div style={{ marginBottom: `${theme.spacing.item}px`, ...style }}>
+    <div
+      style={{
+        marginBottom: `${theme.spacing.item}px`,
+        display: layout === 'grid' ? 'grid' : 'block',
+        gridTemplateColumns: layout === 'grid' ? `repeat(${columns}, 1fr)` : undefined,
+        gap: layout === 'grid' ? `${theme.spacing.paragraph}px` : undefined,
+        ...style,
+      }}
+    >
       {skillArray.map((skill, index) => (
         <div
           key={index}
@@ -90,11 +101,30 @@ export const SkillRatingMaterial: IMaterialDefinition = {
     {
       name: 'skills',
       label: '技能列表',
-      type: 'textarea',
-      defaultValue: 'React,5|TypeScript,4|Node.js,4|Python,3',
-      description: '格式：技能,等级|技能,等级',
+      type: 'array',
+      defaultValue: [
+        { name: 'React', level: 5 },
+        { name: 'TypeScript', level: 4 },
+        { name: 'Node.js', level: 4 },
+        { name: 'Python', level: 3 },
+      ],
       required: true,
       group: '内容',
+      itemSchema: [
+        {
+          name: 'name',
+          label: '技能名称',
+          type: 'string',
+          defaultValue: '',
+          placeholder: '如：React、TypeScript',
+        },
+        {
+          name: 'level',
+          label: '熟练度',
+          type: 'number',
+          defaultValue: 3,
+        },
+      ],
     },
     {
       name: 'maxLevel',
@@ -110,11 +140,37 @@ export const SkillRatingMaterial: IMaterialDefinition = {
       defaultValue: true,
       group: '样式',
     },
+    {
+      name: 'layout',
+      label: '布局方式',
+      type: 'select',
+      defaultValue: 'list',
+      options: [
+        { label: '列表', value: 'list' },
+        { label: '网格', value: 'grid' },
+      ],
+      group: '布局',
+    },
+    {
+      name: 'columns',
+      label: '列数',
+      type: 'number',
+      defaultValue: 2,
+      group: '布局',
+      visibleWhen: (props: Record<string, any>) => props.layout === 'grid',
+    },
   ],
   defaultProps: {
-    skills: 'React,5|TypeScript,4|Node.js,4|Python,3',
+    skills: [
+      { name: 'React', level: 5 },
+      { name: 'TypeScript', level: 4 },
+      { name: 'Node.js', level: 4 },
+      { name: 'Python', level: 3 },
+    ],
     maxLevel: 5,
     showDots: true,
+    layout: 'list',
+    columns: 2,
   },
   capabilities: {
     copyable: true,

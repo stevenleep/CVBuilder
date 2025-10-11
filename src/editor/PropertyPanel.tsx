@@ -6,7 +6,7 @@ import React from 'react'
 import { useEditorStore } from '@store/editorStore'
 import { findNode } from '@utils/schema'
 import type { PropValue } from '../types/material'
-import { Trash2, Copy, ChevronDown } from 'lucide-react'
+import { Trash2, Copy, ChevronDown, Plus, X } from 'lucide-react'
 import { useMaterial, IPropSchema } from '@/core'
 import { ThemeSettings } from './ThemeSettings'
 import { QuillEditor, SimpleTextarea } from '@/components/QuillEditor'
@@ -449,6 +449,9 @@ const PropertyInput: React.FC<{
           />
         )
 
+      case 'array':
+        return <ArrayInput value={(value as any[]) || []} onChange={onChange} schema={schema} />
+
       default:
         return (
           <input
@@ -490,6 +493,186 @@ const PropertyInput: React.FC<{
           {schema.description}
         </div>
       )}
+    </div>
+  )
+}
+
+// 数组输入组件
+const ArrayInput: React.FC<{
+  value: any[]
+  onChange: (value: any[]) => void
+  schema: IPropSchema
+}> = ({ value, onChange, schema }) => {
+  const items = Array.isArray(value) ? value : []
+
+  const handleAddItem = () => {
+    const newItem: any = {}
+    schema.itemSchema?.forEach(field => {
+      newItem[field.name] = field.defaultValue ?? ''
+    })
+    onChange([...items, newItem])
+  }
+
+  const handleRemoveItem = (index: number) => {
+    onChange(items.filter((_, i) => i !== index))
+  }
+
+  const handleItemChange = (index: number, fieldName: string, fieldValue: any) => {
+    const newItems = [...items]
+    newItems[index] = { ...newItems[index], [fieldName]: fieldValue }
+    onChange(newItems)
+  }
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+      }}
+    >
+      {items.map((item, index) => (
+        <div
+          key={index}
+          style={{
+            padding: '10px',
+            backgroundColor: '#fff',
+            border: '1px solid #e8e8e8',
+            borderRadius: '6px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          }}
+        >
+          {/* 删除按钮 */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              onClick={() => handleRemoveItem(index)}
+              style={{
+                width: '20px',
+                height: '20px',
+                border: 'none',
+                borderRadius: '4px',
+                backgroundColor: '#fef2f2',
+                color: '#ef4444',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              title="删除"
+            >
+              <X size={12} />
+            </button>
+          </div>
+
+          {/* 字段输入 */}
+          {schema.itemSchema?.map(field => (
+            <div key={field.name}>
+              <label
+                style={{
+                  display: 'block',
+                  fontSize: '10px',
+                  fontWeight: '600',
+                  marginBottom: '4px',
+                  color: '#999',
+                }}
+              >
+                {field.label}
+              </label>
+              {field.type === 'select' ? (
+                <select
+                  value={item[field.name] ?? field.defaultValue ?? ''}
+                  onChange={e => handleItemChange(index, field.name, e.target.value)}
+                  style={{
+                    width: '100%',
+                    height: '28px',
+                    padding: '0 8px',
+                    border: '1px solid #e8e8e8',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    outline: 'none',
+                    backgroundColor: '#fafafa',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {field.options?.map(opt => (
+                    <option key={String(opt.value)} value={String(opt.value)}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              ) : field.type === 'number' ? (
+                <input
+                  type="number"
+                  value={item[field.name] ?? field.defaultValue ?? 0}
+                  onChange={e => handleItemChange(index, field.name, Number(e.target.value))}
+                  placeholder={field.placeholder}
+                  style={{
+                    width: '100%',
+                    height: '28px',
+                    padding: '0 8px',
+                    border: '1px solid #e8e8e8',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    outline: 'none',
+                    backgroundColor: '#fafafa',
+                  }}
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={item[field.name] ?? field.defaultValue ?? ''}
+                  onChange={e => handleItemChange(index, field.name, e.target.value)}
+                  placeholder={field.placeholder}
+                  style={{
+                    width: '100%',
+                    height: '28px',
+                    padding: '0 8px',
+                    border: '1px solid #e8e8e8',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    outline: 'none',
+                    backgroundColor: '#fafafa',
+                  }}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      ))}
+
+      {/* 添加按钮 */}
+      <button
+        onClick={handleAddItem}
+        style={{
+          height: '32px',
+          padding: '0 12px',
+          border: '1px dashed #e8e8e8',
+          borderRadius: '6px',
+          backgroundColor: '#fafafa',
+          color: '#666',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '6px',
+          fontSize: '12px',
+          fontWeight: '600',
+          transition: 'all 0.15s',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.backgroundColor = '#f0f0f0'
+          e.currentTarget.style.borderColor = '#d0d0d0'
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.backgroundColor = '#fafafa'
+          e.currentTarget.style.borderColor = '#e8e8e8'
+        }}
+      >
+        <Plus size={14} />
+        添加项
+      </button>
     </div>
   )
 }

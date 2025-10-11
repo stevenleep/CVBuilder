@@ -57,6 +57,7 @@ export interface IPropSchema {
     | 'image'
     | 'date'
     | 'json'
+    | 'array'
   /** 默认值 */
   defaultValue?: any
   /** 选项（用于select） */
@@ -75,6 +76,15 @@ export interface IPropSchema {
   visibleWhen?: (props: Record<string, any>) => boolean
   /** 富文本最小高度 */
   minHeight?: number
+  /** 数组项的Schema（用于array类型） */
+  itemSchema?: Array<{
+    name: string
+    label: string
+    type: 'string' | 'number' | 'select'
+    defaultValue?: any
+    options?: Array<{ label: string; value: any }>
+    placeholder?: string
+  }>
 }
 
 /**

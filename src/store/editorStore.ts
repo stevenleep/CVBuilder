@@ -53,6 +53,7 @@ export interface EditorState {
 
   // 节点操作
   addNode: (materialType: string, parentId?: NodeId) => void
+  addNodeFromSchema: (schema: NodeSchema, parentId?: NodeId) => void
   addNodeBefore: (materialType: string, targetId: NodeId) => void
   addNodeAfter: (materialType: string, targetId: NodeId) => void
   deleteNode: (nodeId: NodeId) => void
@@ -163,6 +164,18 @@ export const useEditorStore = create<EditorState>()(
     addNode: (materialType, parentId) => {
       set(state => {
         const newNode = createNode(materialType)
+        const targetParentId = parentId || state.pageSchema.root.id
+        state.pageSchema.root = appendChild(state.pageSchema.root, targetParentId, newNode)
+        state.selectedNodeIds = [newNode.id]
+      })
+      addHistory(set)
+    },
+
+    // 从 Schema 添加节点（用于模板）
+    addNodeFromSchema: (schema, parentId) => {
+      set(state => {
+        // 克隆节点并生成新ID
+        const newNode = cloneNode(schema)
         const targetParentId = parentId || state.pageSchema.root.id
         state.pageSchema.root = appendChild(state.pageSchema.root, targetParentId, newNode)
         state.selectedNodeIds = [newNode.id]

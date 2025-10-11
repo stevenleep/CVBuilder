@@ -53,7 +53,7 @@ export const TextBlockMaterial: IMaterialDefinition = {
     {
       name: 'content',
       label: '内容',
-      type: 'richtext',
+      type: 'textarea',
       defaultValue: '在此输入文本内容...',
       required: true,
       group: '内容',

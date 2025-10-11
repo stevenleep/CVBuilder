@@ -75,7 +75,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
     email = 'zhangsan@example.com',
     wechat = '',
     qq = '',
-    currentLocation = '北京',
+    currentLocation = '',
     hometown = '',
     github = '',
     linkedin = '',
@@ -83,7 +83,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
     blog = '',
     education = '',
     summary = '',
-    align = 'center',
+    align = 'left',
   } = props
 
   const theme = useThemeConfig()
@@ -633,7 +633,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       name: 'align',
       label: '对齐方式',
       type: 'select',
-      defaultValue: 'center',
+      defaultValue: 'left',
       options: [
         { label: '左对齐', value: 'left' },
         { label: '居中', value: 'center' },
@@ -661,7 +661,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     email: 'zhangsan@example.com',
     wechat: '',
     qq: '',
-    currentLocation: '北京',
+    currentLocation: '',
     hometown: '',
     github: '',
     linkedin: '',
@@ -670,7 +670,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     avatar: '',
     showAvatar: false,
     summary: '',
-    align: 'center',
+    align: 'left',
   },
   capabilities: {
     copyable: true,

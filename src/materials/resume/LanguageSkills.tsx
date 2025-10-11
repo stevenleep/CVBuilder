@@ -1,33 +1,69 @@
 /**
- * 语言能力物料（使用富文本）
+ * 语言能力物料
  */
 
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
-import { RichTextDisplay } from '@/components/RichTextDisplay'
 
 interface LanguageSkillsProps {
   style?: React.CSSProperties
-  content?: string
+  languages?: Array<{ language: string; level: string }>
+  layout?: 'list' | 'grid' | 'inline'
+  columns?: number
 }
 
 const LanguageSkills: React.FC<LanguageSkillsProps> = ({
   style,
-  content = '<ul><li>英语 - 熟练</li><li>日语 - 良好</li><li>德语 - 入门</li></ul>',
+  languages = [
+    { language: '英语', level: '熟练' },
+    { language: '日语', level: '良好' },
+    { language: '德语', level: '入门' },
+  ],
+  layout = 'list',
+  columns = 2,
 }) => {
   const theme = useThemeConfig()
+  const languageArray = Array.isArray(languages) ? languages : []
 
   return (
-    <RichTextDisplay
-      html={content}
+    <div
       style={{
-        fontSize: `${theme.font.bodySize.normal}px`,
-        color: theme.color.text.secondary,
-        lineHeight: theme.layout.lineHeight,
+        marginBottom: `${theme.spacing.item}px`,
+        display: layout === 'grid' ? 'grid' : layout === 'inline' ? 'flex' : 'block',
+        gridTemplateColumns: layout === 'grid' ? `repeat(${columns}, 1fr)` : undefined,
+        gap:
+          layout === 'grid'
+            ? `${theme.spacing.paragraph}px`
+            : layout === 'inline'
+              ? `${theme.spacing.paragraph}px`
+              : undefined,
+        flexWrap: layout === 'inline' ? 'wrap' : undefined,
         ...style,
       }}
-    />
+    >
+      {languageArray.map((item, index) => (
+        <div
+          key={index}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: layout === 'list' ? `${theme.spacing.line - 2}px` : '0',
+            fontSize: `${theme.font.bodySize.normal}px`,
+            color: theme.color.text.secondary,
+            lineHeight: theme.layout.lineHeight,
+            padding: layout === 'inline' ? '4px 12px' : '0',
+            backgroundColor: layout === 'inline' ? theme.color.background.section : 'transparent',
+            borderRadius: layout === 'inline' ? '4px' : '0',
+          }}
+        >
+          <span style={{ fontWeight: theme.font.weight.medium }}>{item.language}</span>
+          <span style={{ color: theme.color.text.tertiary }}>-</span>
+          <span style={{ color: theme.color.text.tertiary }}>{item.level}</span>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -44,18 +80,69 @@ export const LanguageSkillsMaterial: IMaterialDefinition = {
   component: LanguageSkills,
   propsSchema: [
     {
-      name: 'content',
-      label: '语言能力',
-      type: 'richtext',
-      defaultValue: '<ul><li>英语 - 熟练</li><li>日语 - 良好</li><li>德语 - 入门</li></ul>',
-      description: '使用列表或自由格式',
+      name: 'languages',
+      label: '语言列表',
+      type: 'array',
+      defaultValue: [
+        { language: '英语', level: '熟练' },
+        { language: '日语', level: '良好' },
+        { language: '德语', level: '入门' },
+      ],
       required: true,
       group: '内容',
-      minHeight: 80,
+      itemSchema: [
+        {
+          name: 'language',
+          label: '语言',
+          type: 'string',
+          defaultValue: '',
+          placeholder: '如：英语、日语',
+        },
+        {
+          name: 'level',
+          label: '水平',
+          type: 'select',
+          defaultValue: '良好',
+          options: [
+            { label: '母语', value: '母语' },
+            { label: '精通', value: '精通' },
+            { label: '熟练', value: '熟练' },
+            { label: '良好', value: '良好' },
+            { label: '一般', value: '一般' },
+            { label: '入门', value: '入门' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'layout',
+      label: '布局方式',
+      type: 'select',
+      defaultValue: 'list',
+      options: [
+        { label: '列表', value: 'list' },
+        { label: '网格', value: 'grid' },
+        { label: '内联标签', value: 'inline' },
+      ],
+      group: '布局',
+    },
+    {
+      name: 'columns',
+      label: '列数',
+      type: 'number',
+      defaultValue: 2,
+      group: '布局',
+      visibleWhen: (props: Record<string, any>) => props.layout === 'grid',
     },
   ],
   defaultProps: {
-    content: '<ul><li>英语 - 熟练</li><li>日语 - 良好</li><li>德语 - 入门</li></ul>',
+    languages: [
+      { language: '英语', level: '熟练' },
+      { language: '日语', level: '良好' },
+      { language: '德语', level: '入门' },
+    ],
+    layout: 'list',
+    columns: 2,
   },
   capabilities: {
     copyable: true,

@@ -21,10 +21,18 @@ import { ImageMaterial } from './base/Image'
 import { LinkMaterial } from './base/Link'
 import { BadgeMaterial } from './base/Badge'
 
-// 复合物料
+// 复合物料 - 章节容器
 import { WorkExperienceSectionMaterial } from './composite/WorkExperienceSection'
 import { EducationSectionMaterial } from './composite/EducationSection'
 import { SkillsSectionMaterial } from './composite/SkillsSection'
+import { ProjectSectionMaterial } from './composite/ProjectSection'
+import { CertificationSectionMaterial } from './composite/CertificationSection'
+import { AwardSectionMaterial } from './composite/AwardSection'
+import { LanguageSectionMaterial } from './composite/LanguageSection'
+import { InterestsSectionMaterial } from './composite/InterestsSection'
+import { SelfEvaluationSectionMaterial } from './composite/SelfEvaluationSection'
+import { ExpectedPositionSectionMaterial } from './composite/ExpectedPositionSection'
+import { SummarySectionMaterial } from './composite/SummarySection'
 
 // 简历物料
 import { PersonalInfoMaterial } from './resume/PersonalInfo'
@@ -66,10 +74,18 @@ export function registerAllMaterials(registry: IMaterialRegistry) {
   registry.register(LinkMaterial)
   registry.register(BadgeMaterial)
 
-  // 复合物料
+  // 复合物料 - 章节容器
   registry.register(WorkExperienceSectionMaterial)
   registry.register(EducationSectionMaterial)
   registry.register(SkillsSectionMaterial)
+  registry.register(ProjectSectionMaterial)
+  registry.register(CertificationSectionMaterial)
+  registry.register(AwardSectionMaterial)
+  registry.register(LanguageSectionMaterial)
+  registry.register(InterestsSectionMaterial)
+  registry.register(SelfEvaluationSectionMaterial)
+  registry.register(ExpectedPositionSectionMaterial)
+  registry.register(SummarySectionMaterial)
 
   // 简历物料
   registry.register(PersonalInfoMaterial)

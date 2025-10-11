@@ -2,21 +2,35 @@
  * 物料面板 - 现代扁平化设计
  */
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useEditorStore } from '@store/editorStore'
-import { Search, Layers, Grid3x3 } from 'lucide-react'
-import { useAllMaterials, useMaterialCategories } from '@/core'
+import { Search, Layers, Grid3x3, Trash2, Edit2 } from 'lucide-react'
+import { useAllMaterials } from '@/core'
 import { DraggableMaterial } from './DraggableMaterial'
 import { StructurePanel } from './StructureTree'
+import { templateManager, CustomTemplate } from '@/core/services/TemplateManager'
+import { systemTemplateManager, SystemTemplate } from '@/core/services/SystemTemplateManager'
+import { notification } from '@/utils/notification'
 
 export const MaterialPanel: React.FC = () => {
   const { addNode, pageSchema } = useEditorStore()
   const [activeTab, setActiveTab] = useState<'components' | 'structure'>('components')
-  const [activeCategory, setActiveCategory] = useState<string>('all')
+  const [activeCategory, setActiveCategory] = useState<string>('resume')
   const [searchTerm, setSearchTerm] = useState('')
+  const [customTemplates, setCustomTemplates] = useState<CustomTemplate[]>([])
+  const [systemTemplates, setSystemTemplates] = useState<SystemTemplate[]>([])
 
   const allMaterials = useAllMaterials()
-  const categories = useMaterialCategories()
+
+  // 加载模板
+  useEffect(() => {
+    loadTemplates()
+  }, [])
+
+  const loadTemplates = () => {
+    setCustomTemplates(templateManager.getAllTemplates())
+    setSystemTemplates(systemTemplateManager.getAllTemplates())
+  }
 
   const filteredMaterials = allMaterials.filter(material => {
     // 过滤掉system分类（如Page根容器）
@@ -66,17 +80,48 @@ export const MaterialPanel: React.FC = () => {
     }
   })
 
+  // 按指定顺序排列分类
   const categoryList = [
+    { id: 'resume', name: '简历' },
+    { id: 'my-templates', name: '模板' },
+    { id: 'base', name: '基础' },
     { id: 'all', name: '全部' },
-    ...categories
-      .map(cat => ({ id: cat, name: getCategoryName(cat) }))
-      .filter(cat => cat.id !== 'system'),
   ]
 
   const handleAddMaterial = (materialType: string) => {
     // 始终添加到页面根节点，而不是选中的节点
     // 如果需要添加到特定位置，可以通过拖拽实现
     addNode(materialType, pageSchema.root.id)
+  }
+
+  const handleDeleteTemplate = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const confirmed = await notification.confirm({
+      title: '确认删除',
+      message: '确定删除这个模板吗？',
+      type: 'error',
+    })
+    if (confirmed) {
+      templateManager.deleteTemplate(id)
+      loadTemplates()
+      notification.success('模板已删除')
+    }
+  }
+
+  const handleEditTemplate = async (template: CustomTemplate, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const newName = await notification.prompt({
+      title: '修改模板名称',
+      message: '请输入新的模板名称',
+      defaultValue: template.name,
+    })
+    if (newName && newName.trim()) {
+      templateManager.updateTemplateInfo(template.id, {
+        name: newName.trim(),
+      })
+      loadTemplates()
+      notification.success('模板名称已更新')
+    }
   }
 
   return (
@@ -227,7 +272,80 @@ export const MaterialPanel: React.FC = () => {
               padding: '10px',
             }}
           >
-            {filteredMaterials.length === 0 ? (
+            {activeCategory === 'my-templates' ? (
+              // 模板列表
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {/* 系统模板 */}
+                {systemTemplates.length > 0 && (
+                  <div>
+                    <div
+                      style={{
+                        fontSize: '10px',
+                        fontWeight: '700',
+                        color: '#999',
+                        marginBottom: '8px',
+                        paddingLeft: '2px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.8px',
+                      }}
+                    >
+                      系统模板
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {systemTemplates.map(template => (
+                        <SystemTemplateCard key={template.id} template={template} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 用户自定义模板 */}
+                <div>
+                  <div
+                    style={{
+                      fontSize: '10px',
+                      fontWeight: '700',
+                      color: '#999',
+                      marginBottom: '8px',
+                      paddingLeft: '2px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.8px',
+                    }}
+                  >
+                    我的模板
+                  </div>
+                  {customTemplates.length === 0 ? (
+                    <div
+                      style={{
+                        textAlign: 'center',
+                        color: '#ddd',
+                        padding: '20px',
+                        fontSize: '11px',
+                        backgroundColor: '#fafafa',
+                        borderRadius: '6px',
+                        border: '1px dashed #e8e8e8',
+                      }}
+                    >
+                      暂无自定义模板
+                      <div style={{ marginTop: '4px', fontSize: '10px' }}>
+                        在画布中右键选择"保存为模板"
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {customTemplates.map(template => (
+                        <TemplateCard
+                          key={template.id}
+                          template={template}
+                          onEdit={e => handleEditTemplate(template, e)}
+                          onDelete={e => handleDeleteTemplate(template.id, e)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : filteredMaterials.length === 0 ? (
               <div
                 style={{
                   textAlign: 'center',
@@ -411,4 +529,189 @@ function getSubcategoryName(subcategory: string): string {
     highlight: '成就展示',
   }
   return map[subcategory] || subcategory
+}
+
+// 模板卡片组件
+const TemplateCard: React.FC<{
+  template: CustomTemplate
+  onEdit: (e: React.MouseEvent) => void
+  onDelete: (e: React.MouseEvent) => void
+}> = ({ template, onEdit, onDelete }) => {
+  const [hover, setHover] = useState(false)
+  const { addNodeFromSchema } = useEditorStore()
+
+  const handleUseTemplate = () => {
+    // 在根节点添加模板
+    addNodeFromSchema(template.schema)
+    notification.success(`已添加模板: ${template.name}`)
+  }
+
+  return (
+    <div
+      onClick={handleUseTemplate}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        padding: '10px',
+        border: '1px solid #e8e8e8',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        backgroundColor: hover ? '#fff' : '#fafafa',
+        transition: 'all 0.12s',
+        position: 'relative',
+      }}
+    >
+      <div
+        style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: '#2d2d2d',
+          marginBottom: '4px',
+          paddingRight: hover ? '56px' : '0',
+          transition: 'padding-right 0.12s',
+        }}
+      >
+        {template.name}
+      </div>
+
+      {template.description && (
+        <div
+          style={{
+            fontSize: '11px',
+            color: '#999',
+            marginBottom: '6px',
+            lineHeight: '1.4',
+          }}
+        >
+          {template.description}
+        </div>
+      )}
+
+      <div
+        style={{
+          fontSize: '10px',
+          color: '#ccc',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+      >
+        <span>{getCategoryDisplayName(template.category)}</span>
+        <span>·</span>
+        <span>{new Date(template.createTime).toLocaleDateString('zh-CN')}</span>
+      </div>
+
+      {hover && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            display: 'flex',
+            gap: '4px',
+          }}
+        >
+          <button
+            onClick={onEdit}
+            style={{
+              width: '22px',
+              height: '22px',
+              border: 'none',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              backgroundColor: '#f0f0f0',
+              color: '#666',
+            }}
+            title="编辑"
+          >
+            <Edit2 size={12} />
+          </button>
+          <button
+            onClick={onDelete}
+            style={{
+              width: '22px',
+              height: '22px',
+              border: 'none',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              backgroundColor: '#fef2f2',
+              color: '#ef4444',
+            }}
+            title="删除"
+          >
+            <Trash2 size={12} />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function getCategoryDisplayName(category: string): string {
+  const map: Record<string, string> = {
+    custom: '自定义',
+    work: '工作相关',
+    education: '教育相关',
+    project: '项目相关',
+  }
+  return map[category] || category
+}
+
+// 系统模板卡片组件（不可编辑/删除）
+const SystemTemplateCard: React.FC<{
+  template: SystemTemplate
+}> = ({ template }) => {
+  const [hover, setHover] = useState(false)
+  const { addNodeFromSchema } = useEditorStore()
+
+  const handleUseTemplate = () => {
+    addNodeFromSchema(template.schema)
+    notification.success(`已添加模板: ${template.name}`)
+  }
+
+  return (
+    <div
+      onClick={handleUseTemplate}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        padding: '10px',
+        border: '1px solid #e8e8e8',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        backgroundColor: hover ? '#fff' : '#fafafa',
+        transition: 'all 0.12s',
+        position: 'relative',
+      }}
+    >
+      <div
+        style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: '#2d2d2d',
+          marginBottom: '4px',
+        }}
+      >
+        {template.name}
+      </div>
+
+      {template.description && (
+        <div
+          style={{
+            fontSize: '11px',
+            color: '#999',
+            lineHeight: '1.4',
+          }}
+        >
+          {template.description}
+        </div>
+      )}
+    </div>
+  )
 }

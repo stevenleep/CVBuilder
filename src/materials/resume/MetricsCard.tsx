@@ -10,31 +10,33 @@ import { useThemeConfig } from '@/core/context/ThemeContext'
 
 interface MetricsCardProps {
   style?: React.CSSProperties
-  metrics?: string
-  layout?: 'horizontal' | 'vertical'
+  metrics?: Array<{ value: string; label: string }>
+  layout?: 'horizontal' | 'grid'
+  columns?: number
+  cardStyle?: 'filled' | 'outlined' | 'minimal'
 }
 
 const MetricsCard: React.FC<MetricsCardProps> = ({
   style,
-  metrics = '150%,业绩增长|50+,项目交付|10人,团队规模',
+  metrics = [
+    { value: '150%', label: '业绩增长' },
+    { value: '50+', label: '项目交付' },
+    { value: '10人', label: '团队规模' },
+  ],
   layout = 'horizontal',
+  columns = 3,
+  cardStyle = 'filled',
 }) => {
   const theme = useThemeConfig()
-  const metricArray = metrics
-    .split('|')
-    .map(m => {
-      const [value, label] = m.split(',').map(s => s.trim())
-      return { value, label }
-    })
-    .filter(m => m.value && m.label)
+  const metricArray = Array.isArray(metrics) ? metrics : []
 
   return (
     <div
       style={{
         display: layout === 'horizontal' ? 'flex' : 'grid',
         gap: `${theme.spacing.paragraph}px`,
-        gridTemplateColumns:
-          layout === 'vertical' ? 'repeat(auto-fit, minmax(120px, 1fr))' : undefined,
+        gridTemplateColumns: layout === 'grid' ? `repeat(${columns}, 1fr)` : undefined,
+        flexWrap: layout === 'horizontal' ? 'wrap' : undefined,
         marginBottom: `${theme.spacing.item}px`,
         ...style,
       }}
@@ -44,9 +46,21 @@ const MetricsCard: React.FC<MetricsCardProps> = ({
           key={index}
           style={{
             flex: layout === 'horizontal' ? 1 : undefined,
+            minWidth: layout === 'horizontal' ? '100px' : undefined,
             padding: `${theme.spacing.line}px ${theme.spacing.paragraph}px`,
-            backgroundColor: theme.color.background.section,
-            borderRadius: '4px',
+            backgroundColor:
+              cardStyle === 'filled'
+                ? theme.color.background.section
+                : cardStyle === 'outlined'
+                  ? 'transparent'
+                  : 'transparent',
+            border:
+              cardStyle === 'outlined'
+                ? `1px solid ${theme.color.border.normal}`
+                : cardStyle === 'minimal'
+                  ? 'none'
+                  : 'none',
+            borderRadius: cardStyle === 'minimal' ? '0' : '4px',
             textAlign: 'center',
           }}
         >
@@ -89,11 +103,30 @@ export const MetricsCardMaterial: IMaterialDefinition = {
     {
       name: 'metrics',
       label: '指标数据',
-      type: 'textarea',
-      defaultValue: '150%,业绩增长|50+,项目交付|10人,团队规模',
-      description: '格式：数值,标签|数值,标签',
+      type: 'array',
+      defaultValue: [
+        { value: '150%', label: '业绩增长' },
+        { value: '50+', label: '项目交付' },
+        { value: '10人', label: '团队规模' },
+      ],
       required: true,
       group: '内容',
+      itemSchema: [
+        {
+          name: 'value',
+          label: '数值',
+          type: 'string',
+          defaultValue: '',
+          placeholder: '如：150%、50+',
+        },
+        {
+          name: 'label',
+          label: '标签',
+          type: 'string',
+          defaultValue: '',
+          placeholder: '如：业绩增长、项目交付',
+        },
+      ],
     },
     {
       name: 'layout',
@@ -102,14 +135,40 @@ export const MetricsCardMaterial: IMaterialDefinition = {
       defaultValue: 'horizontal',
       options: [
         { label: '横向排列', value: 'horizontal' },
-        { label: '纵向网格', value: 'vertical' },
+        { label: '网格布局', value: 'grid' },
       ],
       group: '布局',
     },
+    {
+      name: 'columns',
+      label: '列数',
+      type: 'number',
+      defaultValue: 3,
+      group: '布局',
+      visibleWhen: (props: Record<string, any>) => props.layout === 'grid',
+    },
+    {
+      name: 'cardStyle',
+      label: '卡片样式',
+      type: 'select',
+      defaultValue: 'filled',
+      options: [
+        { label: '填充', value: 'filled' },
+        { label: '边框', value: 'outlined' },
+        { label: '极简', value: 'minimal' },
+      ],
+      group: '样式',
+    },
   ],
   defaultProps: {
-    metrics: '150%,业绩增长|50+,项目交付|10人,团队规模',
+    metrics: [
+      { value: '150%', label: '业绩增长' },
+      { value: '50+', label: '项目交付' },
+      { value: '10人', label: '团队规模' },
+    ],
     layout: 'horizontal',
+    columns: 3,
+    cardStyle: 'filled',
   },
   capabilities: {
     copyable: true,
