@@ -15,14 +15,14 @@ export const modernTheme: ITheme = {
     family:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     titleSize: {
-      h1: 24,
-      h2: 14,
-      h3: 12,
+      h1: 26,
+      h2: 15,
+      h3: 13,
     },
     bodySize: {
-      large: 12,
-      normal: 11,
-      small: 10,
+      large: 13,
+      normal: 12,
+      small: 11,
     },
     weight: {
       light: 300,
@@ -85,14 +85,14 @@ export const compactTheme: ITheme = {
     family:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     titleSize: {
-      h1: 22,
-      h2: 13,
-      h3: 11,
+      h1: 24,
+      h2: 14,
+      h3: 12,
     },
     bodySize: {
-      large: 11,
-      normal: 10,
-      small: 9,
+      large: 12,
+      normal: 11,
+      small: 10,
     },
     weight: {
       light: 300,
@@ -155,14 +155,14 @@ export const comfortableTheme: ITheme = {
     family:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     titleSize: {
-      h1: 26,
-      h2: 15,
-      h3: 13,
+      h1: 28,
+      h2: 16,
+      h3: 14,
     },
     bodySize: {
-      large: 13,
-      normal: 12,
-      small: 11,
+      large: 14,
+      normal: 13,
+      small: 12,
     },
     weight: {
       light: 300,
@@ -224,14 +224,14 @@ export const minimalTheme: ITheme = {
   font: {
     family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     titleSize: {
-      h1: 24,
-      h2: 14,
-      h3: 12,
+      h1: 26,
+      h2: 15,
+      h3: 13,
     },
     bodySize: {
-      large: 12,
-      normal: 11,
-      small: 10,
+      large: 13,
+      normal: 12,
+      small: 11,
     },
     weight: {
       light: 300,
@@ -293,14 +293,14 @@ export const elegantTheme: ITheme = {
   font: {
     family: 'Georgia, "Times New Roman", "STSong", serif',
     titleSize: {
-      h1: 26,
-      h2: 15,
-      h3: 13,
+      h1: 28,
+      h2: 16,
+      h3: 14,
     },
     bodySize: {
-      large: 13,
-      normal: 12,
-      small: 11,
+      large: 14,
+      normal: 13,
+      small: 12,
     },
     weight: {
       light: 300,
@@ -362,14 +362,14 @@ export const businessTheme: ITheme = {
   font: {
     family: 'Arial, "Helvetica Neue", "Microsoft YaHei", sans-serif',
     titleSize: {
-      h1: 24,
-      h2: 14,
-      h3: 12,
+      h1: 26,
+      h2: 15,
+      h3: 13,
     },
     bodySize: {
-      large: 12,
-      normal: 11,
-      small: 10,
+      large: 13,
+      normal: 12,
+      small: 11,
     },
     weight: {
       light: 300,
@@ -431,14 +431,14 @@ export const softBeigeTheme: ITheme = {
   font: {
     family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     titleSize: {
-      h1: 24,
-      h2: 14,
-      h3: 12,
+      h1: 26,
+      h2: 15,
+      h3: 13,
     },
     bodySize: {
-      large: 12,
-      normal: 11,
-      small: 10,
+      large: 13,
+      normal: 12,
+      small: 11,
     },
     weight: {
       light: 300,

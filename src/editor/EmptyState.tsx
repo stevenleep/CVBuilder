@@ -1,31 +1,68 @@
 /**
  * 空状态组件
- * 
+ *
  * 当容器为空时显示，提示用户拖拽添加
  */
 
 import React from 'react'
-import { Plus } from 'lucide-react'
+import { MousePointer2, Sparkles } from 'lucide-react'
 
 export const EmptyState: React.FC<{
   message?: string
-}> = ({ message = '拖拽组件到这里' }) => {
+  hint?: string
+}> = ({ message = '从左侧拖拽物料到这里开始创建', hint = '或点击物料快速添加' }) => {
   return (
-    <div style={{
-      padding: '32px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #e0e0e0',
-      borderRadius: '4px',
-      color: '#ccc',
-      fontSize: '12px',
-      minHeight: '100px',
-    }}>
-      <Plus size={24} style={{ marginBottom: '8px', opacity: 0.5 }} />
-      <div>{message}</div>
+    <div
+      style={{
+        padding: '60px 40px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '2px dashed #d0d0d0',
+        borderRadius: '8px',
+        color: '#999',
+        fontSize: '13px',
+        minHeight: '200px',
+        backgroundColor: '#fafafa',
+      }}
+    >
+      <div
+        style={{
+          width: '60px',
+          height: '60px',
+          borderRadius: '50%',
+          backgroundColor: '#f0f0f0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '20px',
+        }}
+      >
+        <MousePointer2 size={28} style={{ color: '#bbb' }} />
+      </div>
+      <div
+        style={{
+          fontSize: '15px',
+          fontWeight: '600',
+          color: '#666',
+          marginBottom: '8px',
+        }}
+      >
+        {message}
+      </div>
+      <div
+        style={{
+          fontSize: '12px',
+          color: '#bbb',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+        }}
+      >
+        <Sparkles size={14} />
+        <span>{hint}</span>
+      </div>
     </div>
   )
 }
-

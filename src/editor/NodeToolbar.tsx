@@ -42,10 +42,10 @@ export const NodeToolbar: React.FC<NodeToolbarProps> = ({
     <div
       style={{
         position: 'absolute',
-        top: '-4px',
+        bottom: '100%',
         left: '50%',
-        transform: 'translate(-50%, -100%)',
-        marginTop: '-6px',
+        transform: 'translateX(-50%)',
+        marginBottom: '8px',
         display: 'flex',
         gap: '4px',
         backgroundColor: 'white',

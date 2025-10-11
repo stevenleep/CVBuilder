@@ -1,9 +1,9 @@
 /**
- * 应用入口组件
+ * 应用入口组件 - 路由配置
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { EditorLayout } from './editor/EditorLayout'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { registerAllMaterials } from './materials'
 import { useEditorStore } from './store/editorStore'
 import { bootstrapEditor } from './core'
@@ -11,14 +11,21 @@ import { EditorProvider } from './core/context/EditorContext'
 import { ThemeProvider } from './core/context/ThemeContext'
 import { DndProvider } from './editor/DndProvider'
 import { NotificationProvider } from './components/NotificationProvider'
+import { WelcomeGuide } from './components/WelcomeGuide'
+import { HomePage } from './pages/HomePage'
+import { EditorPage } from './pages/EditorPage'
+import { TemplatesPage } from './pages/TemplatesPage'
+import { TemplatePreviewPage } from './pages/TemplatePreviewPage'
+import { ResumesPage } from './pages/ResumesPage'
 
 function App() {
   const [isInitialized, setIsInitialized] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(false)
 
   // 初始化编辑器上下文（只初始化一次）
   const editorContext = useMemo(() => {
     const context = bootstrapEditor({
-      debug: true,
+      debug: false,
       autoSaveInterval: 30000,
       maxHistorySize: 50,
       enablePlugins: true,
@@ -37,9 +44,25 @@ function App() {
       .loadFromStorage()
       .then(() => {
         setIsInitialized(true)
+
+        // 检查是否首次使用
+        const hasShownWelcome = localStorage.getItem('cv-builder-welcome-shown')
+        if (!hasShownWelcome) {
+          setTimeout(() => {
+            setShowWelcome(true)
+          }, 500)
+        }
       })
       .catch(() => {
         setIsInitialized(true)
+
+        // 首次使用显示欢迎
+        const hasShownWelcome = localStorage.getItem('cv-builder-welcome-shown')
+        if (!hasShownWelcome) {
+          setTimeout(() => {
+            setShowWelcome(true)
+          }, 500)
+        }
       })
   }, [editorContext])
 
@@ -52,11 +75,27 @@ function App() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '18px',
-          color: '#666',
+          backgroundColor: '#fafafa',
         }}
       >
-        正在加载编辑器...
+        <div style={{ textAlign: 'center' }}>
+          <svg width="64" height="64" viewBox="0 0 64 64" style={{ margin: '0 auto 20px' }}>
+            <rect width="64" height="64" rx="14" fill="#2d2d2d" />
+            <path d="M20 18h24v3H20zm0 10h24v3H20zm0 10h16v3H20z" fill="white" />
+          </svg>
+          <div
+            style={{
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#2d2d2d',
+              marginBottom: '8px',
+              letterSpacing: '0.5px',
+            }}
+          >
+            CVKit
+          </div>
+          <div style={{ fontSize: '13px', color: '#999' }}>正在加载...</div>
+        </div>
       </div>
     )
   }
@@ -65,9 +104,52 @@ function App() {
     <NotificationProvider>
       <EditorProvider value={editorContext}>
         <ThemeProvider>
-          <DndProvider>
-            <EditorLayout />
-          </DndProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* 首页 */}
+              <Route path="/" element={<HomePage />} />
+
+              {/* 编辑器 */}
+              <Route
+                path="/editor"
+                element={
+                  <DndProvider>
+                    <EditorPage />
+                    {showWelcome && <WelcomeGuide onClose={() => setShowWelcome(false)} />}
+                  </DndProvider>
+                }
+              />
+
+              {/* 编辑器 - 带ID */}
+              <Route
+                path="/editor/:id"
+                element={
+                  <DndProvider>
+                    <EditorPage />
+                  </DndProvider>
+                }
+              />
+
+              {/* 模板库 */}
+              <Route path="/templates" element={<TemplatesPage />} />
+
+              {/* 模板预览 */}
+              <Route
+                path="/templates/:id/preview"
+                element={
+                  <DndProvider>
+                    <TemplatePreviewPage />
+                  </DndProvider>
+                }
+              />
+
+              {/* 简历库 */}
+              <Route path="/resumes" element={<ResumesPage />} />
+
+              {/* 默认重定向到首页 */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
         </ThemeProvider>
       </EditorProvider>
     </NotificationProvider>

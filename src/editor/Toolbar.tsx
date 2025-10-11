@@ -3,6 +3,7 @@
  */
 
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useEditorStore } from '@store/editorStore'
 import { notification } from '@/utils/notification'
 import {
@@ -12,20 +13,21 @@ import {
   Edit3,
   ZoomIn,
   ZoomOut,
-  FileText,
-  Library,
   HelpCircle,
   ChevronDown,
+  Home,
 } from 'lucide-react'
-import { SaveResumeTemplateDialog } from './SaveResumeTemplateDialog'
-import { ResumeTemplatesPanel } from './ResumeTemplatesPanel'
+import { SaveResumeDialog } from './SaveResumeDialog'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
-import { resumeTemplateManager } from '@/core/services/ResumeTemplateManager'
+import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
+import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { nanoid } from 'nanoid'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 import { useTheme } from '@/core/context/ThemeContext'
 
 export const Toolbar: React.FC = () => {
+  const navigate = useNavigate()
   const {
     mode,
     canvasConfig,
@@ -35,16 +37,28 @@ export const Toolbar: React.FC = () => {
     redo,
     setMode,
     updateCanvasConfig,
-    saveToStorage,
     pageSchema,
+    currentResumeId,
   } = useEditorStore()
 
   const { theme, setTheme } = useTheme()
 
-  const [showSaveResumeDialog, setShowSaveResumeDialog] = useState(false)
-  const [showTemplatesPanel, setShowTemplatesPanel] = useState(false)
+  const [showSaveMenu, setShowSaveMenu] = useState(false)
+  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [showSaveAsDialog, setShowSaveAsDialog] = useState(false)
+  const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
   const [showExportMenu, setShowExportMenu] = useState(false)
+
+  // 监听快捷键保存事件
+  React.useEffect(() => {
+    const handleSaveShortcut = () => {
+      handleSave()
+    }
+    window.addEventListener('cvkit-save', handleSaveShortcut)
+    return () => window.removeEventListener('cvkit-save', handleSaveShortcut)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleZoomIn = () => {
     const newScale = Math.min(canvasConfig.scale + 0.1, 2)
@@ -160,8 +174,16 @@ export const Toolbar: React.FC = () => {
           scale: 4,
           useCORS: true,
           allowTaint: false,
-          backgroundColor: '#ffffff',
+          backgroundColor: null, // 使用元素自身背景色
           logging: false,
+          imageTimeout: 0,
+          removeContainer: false,
+          foreignObjectRendering: false,
+          onclone: clonedDoc => {
+            // 移除data-no-print元素
+            const noprint = clonedDoc.querySelectorAll('[data-no-print]')
+            noprint.forEach(el => el.remove())
+          },
         })
 
         canvas.toBlob(
@@ -190,8 +212,15 @@ export const Toolbar: React.FC = () => {
             scale: 4,
             useCORS: true,
             allowTaint: false,
-            backgroundColor: '#ffffff',
+            backgroundColor: null, // 使用元素自身背景色
             logging: false,
+            imageTimeout: 0,
+            removeContainer: false,
+            foreignObjectRendering: false,
+            onclone: clonedDoc => {
+              const noprint = clonedDoc.querySelectorAll('[data-no-print]')
+              noprint.forEach(el => el.remove())
+            },
           })
 
           const blob = await new Promise<Blob | null>(resolve => {
@@ -272,16 +301,24 @@ export const Toolbar: React.FC = () => {
       for (let i = 0; i < pageElements.length; i++) {
         const pageElement = pageElements[i]
 
-        // 截图当前页面
+        // 截图当前页面 - 保持完全一致的样式
         const canvas = await html2canvas(pageElement, {
           scale: 3,
           useCORS: true,
           allowTaint: false,
-          backgroundColor: '#ffffff',
+          backgroundColor: null, // 使用元素自身背景色，保持一致
           logging: false,
+          imageTimeout: 0,
+          removeContainer: false,
+          foreignObjectRendering: false,
+          onclone: clonedDoc => {
+            // 移除页码标识等不需要导出的元素
+            const noprint = clonedDoc.querySelectorAll('[data-no-print]')
+            noprint.forEach(el => el.remove())
+          },
         })
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.95)
+        const imgData = canvas.toDataURL('image/jpeg', 0.98) // 提高质量到98%
 
         // 如果不是第一页，添加新页
         if (i > 0) {
@@ -346,93 +383,214 @@ export const Toolbar: React.FC = () => {
   //   notification.info('请在打印对话框中选择"另存为PDF"')
   // }
 
-  const handleSaveResumeTemplate = (name: string, description: string) => {
-    resumeTemplateManager.saveAsTemplate(pageSchema, name, description)
-    notification.success('简历模板保存成功！')
+  // 保存简历（更新/新建）
+  const handleSave = async (name?: string, description?: string) => {
+    try {
+      if (currentResumeId) {
+        // 更新现有简历
+        const existing = await indexedDBService.getItem(STORES.RESUMES, currentResumeId)
+        if (existing) {
+          const updated = {
+            ...existing,
+            schema: pageSchema,
+            updatedAt: new Date().toISOString(),
+          }
+          await indexedDBService.setItem(STORES.RESUMES, currentResumeId, updated)
+          notification.success('简历已更新！')
+
+          // 触发简历列表刷新事件
+          window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
+        }
+      } else {
+        // 新建简历 - 需要名称
+        if (!name) {
+          setShowSaveDialog(true)
+          return
+        }
+
+        const newId = nanoid()
+        const resumeData = {
+          id: newId,
+          name,
+          description: description || '',
+          schema: pageSchema,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+
+        await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
+        useEditorStore.getState().setCurrentResumeId(newId)
+        notification.success('简历已保存！')
+
+        // 更新URL为带ID的形式
+        window.history.replaceState(null, '', `/editor/${newId}`)
+
+        // 触发简历列表刷新事件
+        window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
+      }
+    } catch (error) {
+      notification.error('保存失败')
+      console.error('Save error:', error)
+    }
+  }
+
+  // 另存为（复制一份新的）
+  const handleSaveAs = async (name: string, description: string) => {
+    try {
+      const newId = nanoid()
+      const resumeData = {
+        id: newId,
+        name,
+        description,
+        schema: pageSchema,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+
+      await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
+      useEditorStore.getState().setCurrentResumeId(newId)
+      notification.success('已另存为新简历！')
+
+      // 更新URL
+      window.history.replaceState(null, '', `/editor/${newId}`)
+
+      // 触发简历列表刷新事件
+      window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
+    } catch (error) {
+      notification.error('另存为失败')
+      console.error('Save as error:', error)
+    }
+  }
+
+  // 保存为模板
+  const handleSaveAsTemplate = async (name: string, description: string) => {
+    try {
+      const templateData = {
+        id: nanoid(),
+        name,
+        description,
+        schema: pageSchema,
+        category: 'custom',
+        createdAt: new Date().toISOString(),
+      }
+
+      await indexedDBService.setItem(STORES.RESUME_TEMPLATES, templateData.id, templateData)
+      notification.success('已保存为模板！')
+    } catch (error) {
+      notification.error('保存模板失败')
+      console.error('Save template error:', error)
+    }
   }
 
   return (
     <div
       style={{
-        height: '48px',
-        borderBottom: '1px solid #f1f1f1',
+        height: '56px',
+        borderBottom: '1px solid #e8e8e8',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 16px',
-        gap: '8px',
+        padding: '0 20px',
+        gap: '12px',
         backgroundColor: '#ffffff',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
       }}
     >
-      {/* Logo */}
-      <div
-        style={{
-          fontWeight: '600',
-          fontSize: '15px',
-          color: '#000',
-          marginRight: '16px',
-        }}
-      >
-        Resume
+      {/* 品牌Logo */}
+      {/* <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginRight: '16px' }}>
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="8" fill="#2d2d2d" />
+          <path d="M12 10h12v2H12zm0 6h12v2H12zm0 6h8v2h-8z" fill="white" />
+        </svg>
+        <div
+          style={{
+            fontSize: '17px',
+            fontWeight: '700',
+            color: '#2d2d2d',
+            letterSpacing: '0.3px',
+          }}
+        >
+          CVKit
+        </div>
+      </div> */}
+
+      {/* 返回首页 */}
+      <IconButton icon={<Home size={16} />} tooltip="返回首页" onClick={() => navigate('/')} />
+
+      <Divider />
+
+      {/* 历史操作组 */}
+      <div style={{ display: 'flex', gap: '4px' }}>
+        <IconButton
+          icon={<Undo size={16} />}
+          tooltip="撤销 (Ctrl+Z)"
+          onClick={undo}
+          disabled={!canUndo()}
+        />
+        <IconButton
+          icon={<Redo size={16} />}
+          tooltip="重做 (Ctrl+Shift+Z)"
+          onClick={redo}
+          disabled={!canRedo()}
+        />
       </div>
 
-      {/* 历史操作 */}
-      <IconButton icon={<Undo size={16} />} tooltip="撤销" onClick={undo} disabled={!canUndo()} />
-      <IconButton icon={<Redo size={16} />} tooltip="重做" onClick={redo} disabled={!canRedo()} />
-
       <Divider />
 
-      {/* 视图控制 */}
-      <IconButton icon={<ZoomOut size={16} />} tooltip="缩小" onClick={handleZoomOut} />
-      <span
+      {/* 模式切换组 */}
+      <div
         style={{
-          minWidth: '48px',
-          fontSize: '13px',
-          color: '#666',
-          textAlign: 'center',
-          fontVariantNumeric: 'tabular-nums',
+          display: 'flex',
+          gap: '4px',
+          backgroundColor: '#f8f9fa',
+          padding: '3px',
+          borderRadius: '6px',
         }}
       >
-        {Math.round(canvasConfig.scale * 100)}%
-      </span>
-      <IconButton icon={<ZoomIn size={16} />} tooltip="放大" onClick={handleZoomIn} />
+        <ModeButton
+          icon={<Edit3 size={15} />}
+          label="编辑"
+          active={mode === 'edit'}
+          onClick={() => setMode('edit')}
+        />
+        <ModeButton
+          icon={<Eye size={15} />}
+          label="预览"
+          active={mode === 'preview'}
+          onClick={() => setMode('preview')}
+        />
+      </div>
 
       <Divider />
 
-      {/* 模式切换 */}
-      <IconButton
-        icon={<Edit3 size={16} />}
-        tooltip="编辑"
-        onClick={() => setMode('edit')}
-        active={mode === 'edit'}
-      />
-      <IconButton
-        icon={<Eye size={16} />}
-        tooltip="预览"
-        onClick={() => setMode('preview')}
-        active={mode === 'preview'}
-      />
+      {/* 视图控制组 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <IconButton icon={<ZoomOut size={15} />} tooltip="缩小" onClick={handleZoomOut} />
+        <span
+          style={{
+            minWidth: '50px',
+            fontSize: '12px',
+            color: '#666',
+            textAlign: 'center',
+            fontVariantNumeric: 'tabular-nums',
+            fontWeight: '600',
+          }}
+        >
+          {Math.round(canvasConfig.scale * 100)}%
+        </span>
+        <IconButton icon={<ZoomIn size={15} />} tooltip="放大" onClick={handleZoomIn} />
+      </div>
 
       <div style={{ flex: 1 }} />
 
-      {/* 右侧操作 */}
+      {/* 自动保存状态 */}
+      <AutoSaveIndicator />
+
+      <Divider />
+
       <IconButton
         icon={<HelpCircle size={16} />}
         tooltip="快捷键帮助 (?)"
         onClick={() => setShowShortcutsHelp(true)}
-      />
-
-      <Divider />
-
-      <IconButton
-        icon={<Library size={16} />}
-        tooltip="简历模板库"
-        onClick={() => setShowTemplatesPanel(true)}
-      />
-
-      <IconButton
-        icon={<FileText size={16} />}
-        tooltip="保存为模板"
-        onClick={() => setShowSaveResumeDialog(true)}
       />
 
       <Divider />
@@ -477,19 +635,95 @@ export const Toolbar: React.FC = () => {
         )}
       </div>
 
-      <PrimaryButton onClick={() => saveToStorage()}>保存</PrimaryButton>
+      {/* 保存菜单 */}
+      <div style={{ position: 'relative' }}>
+        <TextButton
+          onClick={() => setShowSaveMenu(!showSaveMenu)}
+          style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+        >
+          保存
+          <ChevronDown size={14} />
+        </TextButton>
+
+        {/* 保存下拉菜单 */}
+        {showSaveMenu && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              marginTop: '8px',
+              minWidth: '200px',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+              border: '1px solid #e8e8e8',
+              padding: '6px',
+              zIndex: 1000,
+            }}
+          >
+            <MenuButton
+              onClick={() => {
+                handleSave()
+                setShowSaveMenu(false)
+              }}
+            >
+              {currentResumeId ? '保存' : '保存简历'}
+            </MenuButton>
+            <MenuButton
+              onClick={() => {
+                setShowSaveAsDialog(true)
+                setShowSaveMenu(false)
+              }}
+            >
+              另存为...
+            </MenuButton>
+            <div style={{ height: '1px', backgroundColor: '#f0f0f0', margin: '6px 0' }} />
+            <MenuButton
+              onClick={() => {
+                setShowSaveTemplateDialog(true)
+                setShowSaveMenu(false)
+              }}
+            >
+              保存为模板
+            </MenuButton>
+          </div>
+        )}
+      </div>
 
       {/* 快捷键帮助 */}
       {showShortcutsHelp && <KeyboardShortcutsHelp onClose={() => setShowShortcutsHelp(false)} />}
 
-      {/* 简历模板库面板 */}
-      {showTemplatesPanel && <ResumeTemplatesPanel onClose={() => setShowTemplatesPanel(false)} />}
+      {/* 保存简历对话框（仅新建时需要输入名称） */}
+      {showSaveDialog && (
+        <SaveResumeDialog
+          onSave={(name, description) => {
+            handleSave(name, description)
+            setShowSaveDialog(false)
+          }}
+          onClose={() => setShowSaveDialog(false)}
+        />
+      )}
 
-      {/* 保存简历模板对话框 */}
-      {showSaveResumeDialog && (
-        <SaveResumeTemplateDialog
-          onSave={handleSaveResumeTemplate}
-          onClose={() => setShowSaveResumeDialog(false)}
+      {/* 另存为对话框 */}
+      {showSaveAsDialog && (
+        <SaveResumeDialog
+          onSave={(name, description) => {
+            handleSaveAs(name, description)
+            setShowSaveAsDialog(false)
+          }}
+          onClose={() => setShowSaveAsDialog(false)}
+        />
+      )}
+
+      {/* 保存为模板对话框 */}
+      {showSaveTemplateDialog && (
+        <SaveResumeDialog
+          onSave={(name, description) => {
+            handleSaveAsTemplate(name, description)
+            setShowSaveTemplateDialog(false)
+          }}
+          onClose={() => setShowSaveTemplateDialog(false)}
         />
       )}
     </div>
@@ -514,17 +748,18 @@ const IconButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        width: '32px',
-        height: '32px',
+        width: '34px',
+        height: '34px',
         border: 'none',
-        borderRadius: '4px',
+        borderRadius: '6px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         cursor: disabled ? 'not-allowed' : 'pointer',
-        backgroundColor: active ? '#f5f5f5' : hover && !disabled ? '#fafafa' : 'transparent',
-        color: disabled ? '#d0d0d0' : active ? '#000' : '#666',
-        transition: 'all 0.1s',
+        backgroundColor: active ? '#f0f0f0' : hover && !disabled ? '#f8f9fa' : 'transparent',
+        color: disabled ? '#d0d0d0' : active ? '#2d2d2d' : hover ? '#2d2d2d' : '#666',
+        transition: 'all 0.15s',
+        boxShadow: active ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
       }}
     >
       {icon}
@@ -565,46 +800,50 @@ const TextButton: React.FC<{
 }
 
 // 主按钮
-const PrimaryButton: React.FC<{
-  onClick: () => void
-  children: React.ReactNode
-}> = ({ onClick, children }) => {
-  const [hover, setHover] = React.useState(false)
-
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        height: '32px',
-        padding: '0 16px',
-        border: 'none',
-        borderRadius: '4px',
-        fontSize: '13px',
-        fontWeight: '500',
-        cursor: 'pointer',
-        backgroundColor: hover ? '#000' : '#111',
-        color: '#fff',
-        transition: 'all 0.1s',
-      }}
-    >
-      {children}
-    </button>
-  )
-}
 
 // 分隔线
 const Divider = () => (
   <div
     style={{
       width: '1px',
-      height: '16px',
-      backgroundColor: '#f1f1f1',
+      height: '20px',
+      backgroundColor: '#e8e8e8',
       margin: '0 4px',
     }}
   />
 )
+
+// 模式切换按钮
+const ModeButton: React.FC<{
+  icon: React.ReactNode
+  label: string
+  active: boolean
+  onClick: () => void
+}> = ({ icon, label, active, onClick }) => {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '6px 12px',
+        border: 'none',
+        borderRadius: '4px',
+        backgroundColor: active ? '#fff' : 'transparent',
+        color: active ? '#2d2d2d' : '#999',
+        cursor: 'pointer',
+        fontSize: '12px',
+        fontWeight: '600',
+        transition: 'all 0.15s',
+        boxShadow: active ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+      }}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  )
+}
 
 // 菜单按钮
 const MenuButton: React.FC<{
@@ -620,15 +859,17 @@ const MenuButton: React.FC<{
       onMouseLeave={() => setHover(false)}
       style={{
         width: '100%',
-        height: '36px',
+        height: '38px',
         padding: '0 16px',
         border: 'none',
-        background: hover ? '#f5f5f5' : 'transparent',
+        background: hover ? '#f8f9fa' : 'transparent',
         fontSize: '13px',
-        color: '#333',
+        fontWeight: '500',
+        color: '#2d2d2d',
         cursor: 'pointer',
         textAlign: 'left',
-        transition: 'background 0.1s',
+        transition: 'all 0.15s',
+        borderRadius: '6px',
       }}
     >
       {children}

@@ -27,6 +27,9 @@ export interface EditorState {
   // 页面数据
   pageSchema: PageSchema
 
+  // 当前编辑的简历ID（用于保存）
+  currentResumeId: string | null
+
   // 选中状态
   selectedNodeIds: NodeId[]
   hoveredNodeId: NodeId | null
@@ -46,6 +49,7 @@ export interface EditorState {
 
   // Actions
   setPageSchema: (schema: PageSchema) => void
+  setCurrentResumeId: (id: string | null) => void
 
   // 节点操作
   addNode: (materialType: string, parentId?: NodeId) => void
@@ -126,6 +130,7 @@ export const useEditorStore = create<EditorState>()(
   immer((set, get) => ({
     // 初始状态
     pageSchema: createDefaultPageSchema(),
+    currentResumeId: null,
     selectedNodeIds: [],
     hoveredNodeId: null,
     mode: 'edit',
@@ -145,6 +150,13 @@ export const useEditorStore = create<EditorState>()(
         state.pageSchema = schema
       })
       addHistory(set)
+    },
+
+    // 设置当前简历ID
+    setCurrentResumeId: id => {
+      set(state => {
+        state.currentResumeId = id
+      })
     },
 
     // 添加节点

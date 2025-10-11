@@ -98,7 +98,12 @@ body {
 }
 
 /* 标题元素避免孤立在页面底部 */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   page-break-after: avoid !important;
   break-after: avoid !important;
   page-break-inside: avoid !important;
@@ -106,7 +111,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 段落和列表项避免截断 */
-p, li, ul, ol {
+p,
+li,
+ul,
+ol {
   page-break-inside: avoid !important;
   break-inside: avoid !important;
 }
@@ -118,7 +126,9 @@ p, li, ul, ol {
 }
 
 /* 孤儿行和寡妇行控制 */
-p, li, div {
+p,
+li,
+div {
   orphans: 3;
   widows: 3;
 }
@@ -162,13 +172,12 @@ p, li, div {
     box-shadow: none !important;
   }
 
-  /* 页面容器打印样式 */
+  /* 页面容器打印样式 - 保持样式一致 */
   .page-sheet {
     page-break-after: always;
     page-break-inside: avoid;
     margin: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
+    /* 不移除阴影和边框，保持与Web一致 */
     overflow: visible !important;
   }
 
@@ -180,6 +189,11 @@ p, li, div {
   /* 打印时让内容自动流动到各个页面 */
   .page-sheet > div {
     height: auto !important;
+  }
+
+  /* 保持页面间隙在打印时的一致性 */
+  .page-sheet:not(:last-child) {
+    margin-bottom: 20px !important;
   }
 
   /* 确保主容器占满整个打印区域 */

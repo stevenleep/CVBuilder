@@ -35,7 +35,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
     redo,
     canUndo,
     canRedo,
-    saveToStorage,
     deleteNode,
     duplicateNode,
     clearSelection,
@@ -97,13 +96,14 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
         return
       }
 
-      // Cmd/Ctrl + S: 保存
+      // Cmd/Ctrl + S: 智能保存
       if (cmdKey && key.toLowerCase() === 's') {
         event.preventDefault()
-        saveToStorage()
 
-        // 显示保存提示
-        notification.info('已保存', 1500)
+        // 触发工具栏的智能保存逻辑
+        // 通过自定义事件触发
+        const saveEvent = new CustomEvent('cvkit-save')
+        window.dispatchEvent(saveEvent)
         return
       }
 
@@ -255,7 +255,6 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       redo,
       canUndo,
       canRedo,
-      saveToStorage,
       deleteNode,
       duplicateNode,
       clearSelection,
