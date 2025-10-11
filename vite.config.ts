@@ -5,17 +5,27 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: process.env.NODE_ENV === 'production' ? '/CVBuilder/' : '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@engine': path.resolve(__dirname, './src/engine'),
-      '@materials': path.resolve(__dirname, './src/materials'),
-      '@editor': path.resolve(__dirname, './src/editor'),
       '@store': path.resolve(__dirname, './src/store'),
-      '@types': path.resolve(__dirname, './src/types'),
       '@utils': path.resolve(__dirname, './src/utils'),
+      '@engine': path.resolve(__dirname, './src/engine'),
     },
   },
+  build: {
+    // 分包优化
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'editor-core': ['zustand', 'react-dnd', 'react-dnd-html5-backend'],
+          'export-tools': ['html2canvas', 'jspdf', 'jszip'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
+  // GitHub Pages 部署配置
+  base: process.env.NODE_ENV === 'production' ? '/Career/' : '/',
 })
-
