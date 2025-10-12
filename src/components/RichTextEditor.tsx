@@ -23,17 +23,80 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const editorRef = useRef<HTMLDivElement>(null)
   const [isFocused, setIsFocused] = useState(false)
+  const isInternalChange = useRef(false)
 
-  // 初始化内容
+  // 初始化内容 - 改进版本，避免不必要的重新渲染
   useEffect(() => {
-    if (editorRef.current && editorRef.current.innerHTML !== value) {
+    if (!editorRef.current || isInternalChange.current) {
+      isInternalChange.current = false
+      return
+    }
+
+    // 规范化比较：去除空白和空标签
+    const normalizeHtml = (html: string) => {
+      return html
+        .replace(/<p><br><\/p>/g, '')
+        .replace(/<br>/g, '')
+        .replace(/<[^>]+><\/[^>]+>/g, '') // 移除空标签
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    const currentContent = normalizeHtml(editorRef.current.innerHTML)
+    const newContent = normalizeHtml(value)
+
+    // 只有当内容真正不同时才更新
+    if (currentContent !== newContent) {
+      // 保存当前光标位置
+      const selection = window.getSelection()
+      let cursorPosition = 0
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0)
+        cursorPosition = range.startOffset
+      }
+
       editorRef.current.innerHTML = value || ''
+
+      // 恢复光标位置
+      if (value && editorRef.current.firstChild) {
+        try {
+          const range = document.createRange()
+          const sel = window.getSelection()
+          const textNode = editorRef.current.firstChild
+          const maxOffset = textNode.textContent?.length || 0
+          range.setStart(textNode, Math.min(cursorPosition, maxOffset))
+          range.collapse(true)
+          sel?.removeAllRanges()
+          sel?.addRange(range)
+        } catch (e) {
+          // 光标恢复失败时忽略错误
+        }
+      }
     }
   }, [value])
 
   const handleInput = () => {
     if (editorRef.current) {
-      onChange(editorRef.current.innerHTML)
+      isInternalChange.current = true
+
+      // 清理空的列表标签
+      let content = editorRef.current.innerHTML
+
+      // 检查是否只剩下空标签
+      const textContent = editorRef.current.textContent?.trim() || ''
+      if (!textContent) {
+        // 如果没有实际内容，清空所有 HTML
+        content = ''
+        editorRef.current.innerHTML = ''
+      } else {
+        // 移除空的 ul/ol 标签
+        content = content.replace(/<ul>\s*<\/ul>/g, '')
+        content = content.replace(/<ol>\s*<\/ol>/g, '')
+        content = content.replace(/<ul><br><\/ul>/g, '')
+        content = content.replace(/<ol><br><\/ol>/g, '')
+      }
+
+      onChange(content)
     }
   }
 
