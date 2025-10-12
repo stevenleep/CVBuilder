@@ -37,7 +37,7 @@ export const DraggableMaterial: React.FC<DraggableMaterialProps> = ({
   )
   const cardRef = React.useRef<HTMLDivElement>(null)
 
-  const handleMouseEnter = (e: React.MouseEvent) => {
+  const handleMouseEnter = () => {
     setHover(true)
     if (description && cardRef.current) {
       const rect = cardRef.current.getBoundingClientRect()
@@ -141,7 +141,7 @@ export const DraggableMaterial: React.FC<DraggableMaterialProps> = ({
           >
             {title}
           </div>
-          
+
           {/* 描述 */}
           <div
             style={{
@@ -152,7 +152,7 @@ export const DraggableMaterial: React.FC<DraggableMaterialProps> = ({
           >
             {description}
           </div>
-          
+
           {/* 提示 */}
           <div
             style={{

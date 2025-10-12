@@ -94,7 +94,7 @@ export interface IMiddlewareService {
   unregister(pipelineId: string, middlewareId: string): void
 
   /** 创建管道 */
-  createPipeline<T = any, R = any>(id: string, name: string): void
+  createPipeline(id: string, name: string): void
 
   /** 删除管道 */
   deletePipeline(pipelineId: string): void

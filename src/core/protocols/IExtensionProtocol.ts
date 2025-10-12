@@ -116,14 +116,14 @@ export interface IExtensionService {
   getEnabledExtensions<T = any>(extensionPointId: string): IExtension<T>[]
 
   /** 执行扩展 */
-  execute<T = any, R = any>(
+  execute<R = any>(
     extensionPointId: string,
     context?: IExtensionContext,
     ...args: any[]
   ): Promise<IExtensionResult<R>[]>
 
   /** 执行第一个匹配的扩展 */
-  executeFirst<T = any, R = any>(
+  executeFirst<R = any>(
     extensionPointId: string,
     context?: IExtensionContext,
     ...args: any[]
