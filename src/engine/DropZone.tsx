@@ -6,7 +6,13 @@
 
 import React from 'react'
 import { useDrop } from 'react-dnd'
-import { DragItemTypes, DragItem, MaterialDragItem, NodeDragItem } from '@/editor/DndProvider'
+import {
+  DragItemTypes,
+  DragItem,
+  MaterialDragItem,
+  NodeDragItem,
+  TemplateDragItem,
+} from '@/editor/DndProvider'
 import { useEditorStore } from '@store/editorStore'
 
 interface DropZoneProps {
@@ -22,10 +28,10 @@ export const DropZone: React.FC<DropZoneProps> = ({
   isContainer = false,
   children,
 }) => {
-  const { addNode, addNodeBefore, addNodeAfter, moveNodeTo } = useEditorStore()
+  const { addNode, addNodeBefore, addNodeAfter, moveNodeTo, addNodeFromSchema } = useEditorStore()
 
   const [{ isOver, canDrop }, drop] = useDrop<DragItem, void, { isOver: boolean; canDrop: boolean }>(() => ({
-    accept: [DragItemTypes.MATERIAL, DragItemTypes.NODE],
+    accept: [DragItemTypes.MATERIAL, DragItemTypes.NODE, DragItemTypes.TEMPLATE],
     canDrop: (item) => {
       // 不能拖到自己上
       if (item.type === DragItemTypes.NODE && (item as NodeDragItem).nodeId === nodeId) {
@@ -51,13 +57,17 @@ export const DropZone: React.FC<DropZoneProps> = ({
         const nodeItem = item as NodeDragItem
         // 移动节点
         moveNodeTo(nodeItem.nodeId, nodeId, position)
+      } else if (item.type === DragItemTypes.TEMPLATE) {
+        const templateItem = item as TemplateDragItem
+        // 添加模板到容器内部
+        addNodeFromSchema(templateItem.templateSchema, nodeId)
       }
     },
     collect: (monitor) => ({
       isOver: monitor.isOver({ shallow: true }),
       canDrop: monitor.canDrop(),
     }),
-  }), [nodeId, position, addNode, addNodeBefore, addNodeAfter, moveNodeTo])
+  }), [nodeId, position, addNode, addNodeBefore, addNodeAfter, moveNodeTo, addNodeFromSchema])
 
   const showDropIndicator = isOver && canDrop
 

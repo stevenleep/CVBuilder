@@ -40,47 +40,50 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
         zIndex: 10000,
         paddingTop: '80px',
-        backdropFilter: 'blur(2px)',
+        backdropFilter: 'blur(4px)',
+        animation: 'fadeIn 0.2s ease-out',
       }}
       onClick={onClose}
     >
       <div
         style={{
           backgroundColor: 'white',
-          borderRadius: '8px',
-          padding: '24px',
-          width: '400px',
+          borderRadius: '12px',
+          padding: '28px',
+          width: '420px',
           maxWidth: '90vw',
-          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.2)',
-          border: '1px solid #e0e0e0',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.12)',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          animation: 'slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
         onClick={e => e.stopPropagation()}
       >
         <h3
           style={{
-            fontSize: '16px',
-            fontWeight: '600',
-            marginBottom: '20px',
-            color: '#000',
+            fontSize: '18px',
+            fontWeight: '700',
+            marginBottom: '24px',
+            color: '#1a1a1a',
+            letterSpacing: '-0.02em',
           }}
         >
           {existingTemplateId ? '更新模板' : '保存为模板'}
         </h3>
 
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginBottom: '18px' }}>
           <label
             style={{
               display: 'block',
               fontSize: '12px',
-              fontWeight: '500',
-              marginBottom: '6px',
-              color: '#666',
+              fontWeight: '600',
+              marginBottom: '8px',
+              color: '#2d2d2d',
             }}
           >
             模板名称 *
@@ -93,24 +96,36 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
             autoFocus
             style={{
               width: '100%',
-              height: '32px',
-              padding: '0 10px',
+              height: '38px',
+              padding: '0 14px',
               border: '1px solid #e0e0e0',
-              borderRadius: '4px',
+              borderRadius: '8px',
               fontSize: '13px',
               outline: 'none',
+              transition: 'all 0.2s',
+              backgroundColor: '#fafafa',
+            }}
+            onFocus={e => {
+              e.currentTarget.style.borderColor = '#3b82f6'
+              e.currentTarget.style.backgroundColor = '#fff'
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.08)'
+            }}
+            onBlur={e => {
+              e.currentTarget.style.borderColor = '#e0e0e0'
+              e.currentTarget.style.backgroundColor = '#fafafa'
+              e.currentTarget.style.boxShadow = 'none'
             }}
           />
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginBottom: '18px' }}>
           <label
             style={{
               display: 'block',
               fontSize: '12px',
-              fontWeight: '500',
-              marginBottom: '6px',
-              color: '#666',
+              fontWeight: '600',
+              marginBottom: '8px',
+              color: '#2d2d2d',
             }}
           >
             描述
@@ -122,25 +137,38 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
             rows={3}
             style={{
               width: '100%',
-              padding: '8px 10px',
+              padding: '10px 14px',
               border: '1px solid #e0e0e0',
-              borderRadius: '4px',
+              borderRadius: '8px',
               fontSize: '13px',
               outline: 'none',
               resize: 'none',
               fontFamily: 'inherit',
+              transition: 'all 0.2s',
+              backgroundColor: '#fafafa',
+              lineHeight: '1.5',
+            }}
+            onFocus={e => {
+              e.currentTarget.style.borderColor = '#3b82f6'
+              e.currentTarget.style.backgroundColor = '#fff'
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.08)'
+            }}
+            onBlur={e => {
+              e.currentTarget.style.borderColor = '#e0e0e0'
+              e.currentTarget.style.backgroundColor = '#fafafa'
+              e.currentTarget.style.boxShadow = 'none'
             }}
           />
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '24px' }}>
           <label
             style={{
               display: 'block',
               fontSize: '12px',
-              fontWeight: '500',
-              marginBottom: '6px',
-              color: '#666',
+              fontWeight: '600',
+              marginBottom: '8px',
+              color: '#2d2d2d',
             }}
           >
             分类
@@ -150,13 +178,25 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
             onChange={e => setCategory(e.target.value)}
             style={{
               width: '100%',
-              height: '32px',
-              padding: '0 10px',
+              height: '38px',
+              padding: '0 14px',
               border: '1px solid #e0e0e0',
-              borderRadius: '4px',
+              borderRadius: '8px',
               fontSize: '13px',
               outline: 'none',
               cursor: 'pointer',
+              transition: 'all 0.2s',
+              backgroundColor: '#fafafa',
+            }}
+            onFocus={e => {
+              e.currentTarget.style.borderColor = '#3b82f6'
+              e.currentTarget.style.backgroundColor = '#fff'
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.08)'
+            }}
+            onBlur={e => {
+              e.currentTarget.style.borderColor = '#e0e0e0'
+              e.currentTarget.style.backgroundColor = '#fafafa'
+              e.currentTarget.style.boxShadow = 'none'
             }}
           >
             <option value="custom">我的模板</option>
@@ -166,19 +206,28 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
           </select>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
           <button
             onClick={onClose}
             style={{
-              height: '32px',
-              padding: '0 16px',
-              border: 'none',
-              borderRadius: '4px',
+              height: '38px',
+              padding: '0 20px',
+              border: '1px solid #e0e0e0',
+              borderRadius: '8px',
               fontSize: '13px',
-              fontWeight: '500',
+              fontWeight: '600',
               cursor: 'pointer',
-              backgroundColor: '#fafafa',
+              backgroundColor: '#fff',
               color: '#666',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = '#f8f8f8'
+              e.currentTarget.style.borderColor = '#d0d0d0'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = '#fff'
+              e.currentTarget.style.borderColor = '#e0e0e0'
             }}
           >
             取消
@@ -186,15 +235,27 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
           <button
             onClick={handleSave}
             style={{
-              height: '32px',
-              padding: '0 16px',
+              height: '38px',
+              padding: '0 24px',
               border: 'none',
-              borderRadius: '4px',
+              borderRadius: '8px',
               fontSize: '13px',
-              fontWeight: '500',
+              fontWeight: '600',
               cursor: 'pointer',
-              backgroundColor: '#000',
+              backgroundColor: '#2d2d2d',
               color: '#fff',
+              transition: 'all 0.2s',
+              boxShadow: '0 2px 6px rgba(45, 45, 45, 0.2)',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = '#1a1a1a'
+              e.currentTarget.style.transform = 'translateY(-1px)'
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(45, 45, 45, 0.3)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = '#2d2d2d'
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 2px 6px rgba(45, 45, 45, 0.2)'
             }}
           >
             {existingTemplateId ? '更新' : '保存'}
@@ -216,6 +277,30 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
           </div>
         )}
       </div>
+
+      <style>
+        {`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+          
+          @keyframes slideUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px) scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+        `}
+      </style>
     </div>
   )
 }

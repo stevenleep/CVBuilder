@@ -559,43 +559,59 @@ const PropertyGroup: React.FC<{
   onChange: (props: Record<string, PropValue>) => void
 }> = ({ title, props, nodeProps, onChange }) => {
   const [collapsed, setCollapsed] = React.useState(false)
+  const [hover, setHover] = React.useState(false)
 
   return (
-    <div style={{ marginBottom: '16px' }}>
+    <div style={{ marginBottom: '12px' }}>
       <div
         onClick={() => setCollapsed(!collapsed)}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           cursor: 'pointer',
-          marginBottom: collapsed ? '0' : '12px',
-          padding: '4px 0',
+          marginBottom: collapsed ? '0' : '8px',
+          padding: '8px 10px',
+          borderRadius: '6px',
+          border: `1px solid ${hover ? '#e0e0e0' : 'transparent'}`,
+          backgroundColor: hover ? '#fafafa' : 'transparent',
+          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
         <div
           style={{
             fontSize: '11px',
-            fontWeight: '600',
-            color: '#000',
+            fontWeight: '700',
+            color: hover ? '#2d2d2d' : '#666',
             textTransform: 'uppercase',
-            letterSpacing: '0.5px',
+            letterSpacing: '0.3px',
+            transition: 'color 0.2s',
           }}
         >
           {title}
         </div>
         <ChevronDown
-          size={14}
+          size={13}
           style={{
-            color: '#999',
+            color: hover ? '#666' : '#ccc',
             transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
-            transition: 'transform 0.15s',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            flexShrink: 0,
           }}
         />
       </div>
 
       {!collapsed && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            paddingLeft: '4px',
+          }}
+        >
           {props.map(propSchema => (
             <PropertyInput
               key={propSchema.name}

@@ -27,16 +27,16 @@ export const ThemeSettings: React.FC = () => {
   ]
 
   return (
-    <div style={{ padding: '16px' }}>
-      {/* Tab导航 */}
+    <div style={{ padding: '12px' }}>
+      {/* Tab导航 - 简化 */}
       <div
         style={{
           display: 'flex',
-          gap: '4px',
-          marginBottom: '16px',
-          backgroundColor: '#f8f9fa',
-          padding: '3px',
-          borderRadius: '4px',
+          gap: '3px',
+          marginBottom: '12px',
+          backgroundColor: '#f5f5f5',
+          padding: '2px',
+          borderRadius: '5px',
         }}
       >
         {[
@@ -49,15 +49,15 @@ export const ThemeSettings: React.FC = () => {
             onClick={() => setActiveTab(tab.id as any)}
             style={{
               flex: 1,
-              height: '28px',
+              height: '26px',
               border: 'none',
-              borderRadius: '3px',
-              fontSize: '12px',
+              borderRadius: '4px',
+              fontSize: '11px',
               fontWeight: '500',
               cursor: 'pointer',
-              backgroundColor: activeTab === tab.id ? '#fff' : 'transparent',
-              color: activeTab === tab.id ? '#000' : '#999',
-              transition: 'all 0.1s',
+              backgroundColor: activeTab === tab.id ? '#2d2d2d' : 'transparent',
+              color: activeTab === tab.id ? '#fff' : '#888',
+              transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
             {tab.label}
@@ -67,7 +67,7 @@ export const ThemeSettings: React.FC = () => {
 
       {/* 内容 */}
       {activeTab === 'presets' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {presetThemes.map(preset => (
             <ThemeCard
               key={preset.id}
@@ -80,324 +80,344 @@ export const ThemeSettings: React.FC = () => {
       )}
 
       {activeTab === 'fonts' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {/* 字体族 */}
-          <div>
-            <SectionTitle>字体族</SectionTitle>
-            <SelectInput
-              label="全局字体"
-              value={theme.font.family}
-              options={systemFonts}
+          <SelectInput
+            label="字体"
+            value={theme.font.family}
+            options={systemFonts}
+            onChange={val =>
+              updateTheme({
+                font: { ...theme.font, family: val },
+              })
+            }
+          />
+
+          {/* 分隔线 */}
+          <div style={{ height: '1px', backgroundColor: '#e8e8e8', margin: '4px 0' }} />
+
+          {/* 标题字号 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <InputGroup
+              label="姓名"
+              value={theme.font.titleSize.h1}
               onChange={val =>
                 updateTheme({
-                  font: { ...theme.font, family: val },
+                  font: {
+                    ...theme.font,
+                    titleSize: { ...theme.font.titleSize, h1: val },
+                  },
+                })
+              }
+            />
+            <InputGroup
+              label="章节"
+              value={theme.font.titleSize.h2}
+              onChange={val =>
+                updateTheme({
+                  font: {
+                    ...theme.font,
+                    titleSize: { ...theme.font.titleSize, h2: val },
+                  },
+                })
+              }
+            />
+            <InputGroup
+              label="小标题"
+              value={theme.font.titleSize.h3}
+              onChange={val =>
+                updateTheme({
+                  font: {
+                    ...theme.font,
+                    titleSize: { ...theme.font.titleSize, h3: val },
+                  },
                 })
               }
             />
           </div>
 
-          {/* 字号设置 */}
-          <div>
-            <SectionTitle>字号</SectionTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <InputGroup
-                label="主标题 (H1)"
-                value={theme.font.titleSize.h1}
-                onChange={val =>
-                  updateTheme({
-                    font: {
-                      ...theme.font,
-                      titleSize: { ...theme.font.titleSize, h1: val },
-                    },
-                  })
-                }
-              />
-              <InputGroup
-                label="章节标题 (H2)"
-                value={theme.font.titleSize.h2}
-                onChange={val =>
-                  updateTheme({
-                    font: {
-                      ...theme.font,
-                      titleSize: { ...theme.font.titleSize, h2: val },
-                    },
-                  })
-                }
-              />
-              <InputGroup
-                label="小标题 (H3)"
-                value={theme.font.titleSize.h3}
-                onChange={val =>
-                  updateTheme({
-                    font: {
-                      ...theme.font,
-                      titleSize: { ...theme.font.titleSize, h3: val },
-                    },
-                  })
-                }
-              />
-              <InputGroup
-                label="正文字号"
-                value={theme.font.bodySize.normal}
-                onChange={val =>
-                  updateTheme({
-                    font: {
-                      ...theme.font,
-                      bodySize: { ...theme.font.bodySize, normal: val },
-                    },
-                  })
-                }
-              />
-              <InputGroup
-                label="小字号"
-                value={theme.font.bodySize.small}
-                onChange={val =>
-                  updateTheme({
-                    font: {
-                      ...theme.font,
-                      bodySize: { ...theme.font.bodySize, small: val },
-                    },
-                  })
-                }
-              />
-            </div>
+          {/* 分隔线 */}
+          <div style={{ height: '1px', backgroundColor: '#e8e8e8', margin: '4px 0' }} />
+
+          {/* 正文字号 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <InputGroup
+              label="大字号"
+              value={theme.font.bodySize.large}
+              onChange={val =>
+                updateTheme({
+                  font: {
+                    ...theme.font,
+                    bodySize: { ...theme.font.bodySize, large: val },
+                  },
+                })
+              }
+            />
+            <InputGroup
+              label="正文"
+              value={theme.font.bodySize.normal}
+              onChange={val =>
+                updateTheme({
+                  font: {
+                    ...theme.font,
+                    bodySize: { ...theme.font.bodySize, normal: val },
+                  },
+                })
+              }
+            />
+            <InputGroup
+              label="小字号"
+              value={theme.font.bodySize.small}
+              onChange={val =>
+                updateTheme({
+                  font: {
+                    ...theme.font,
+                    bodySize: { ...theme.font.bodySize, small: val },
+                  },
+                })
+              }
+            />
           </div>
 
+          {/* 分隔线 */}
+          <div style={{ height: '1px', backgroundColor: '#e8e8e8', margin: '4px 0' }} />
+
           {/* 字重 */}
-          <div>
-            <SectionTitle>字重</SectionTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <InputGroup
-                label="加粗"
-                value={theme.font.weight.bold}
-                onChange={val =>
-                  updateTheme({
-                    font: {
-                      ...theme.font,
-                      weight: { ...theme.font.weight, bold: val },
-                    },
-                  })
-                }
-              />
-              <InputGroup
-                label="半粗"
-                value={theme.font.weight.semibold}
-                onChange={val =>
-                  updateTheme({
-                    font: {
-                      ...theme.font,
-                      weight: { ...theme.font.weight, semibold: val },
-                    },
-                  })
-                }
-              />
-              <InputGroup
-                label="正常"
-                value={theme.font.weight.normal}
-                onChange={val =>
-                  updateTheme({
-                    font: {
-                      ...theme.font,
-                      weight: { ...theme.font.weight, normal: val },
-                    },
-                  })
-                }
-              />
-            </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <InputGroup
+              label="加粗"
+              value={theme.font.weight.bold}
+              onChange={val =>
+                updateTheme({
+                  font: {
+                    ...theme.font,
+                    weight: { ...theme.font.weight, bold: val },
+                  },
+                })
+              }
+            />
+            <InputGroup
+              label="半粗"
+              value={theme.font.weight.semibold}
+              onChange={val =>
+                updateTheme({
+                  font: {
+                    ...theme.font,
+                    weight: { ...theme.font.weight, semibold: val },
+                  },
+                })
+              }
+            />
+            <InputGroup
+              label="正常"
+              value={theme.font.weight.normal}
+              onChange={val =>
+                updateTheme({
+                  font: {
+                    ...theme.font,
+                    weight: { ...theme.font.weight, normal: val },
+                  },
+                })
+              }
+            />
           </div>
         </div>
       )}
 
       {activeTab === 'styles' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {/* 颜色 */}
-          <div>
-            <SectionTitle>颜色</SectionTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <ColorInput
-                label="主色调"
-                value={theme.color.primary}
-                onChange={val =>
-                  updateTheme({
-                    color: { ...theme.color, primary: val },
-                  })
-                }
-              />
-              <ColorInput
-                label="页面背景"
-                value={theme.color.background.page}
-                onChange={val =>
-                  updateTheme({
-                    color: {
-                      ...theme.color,
-                      background: { ...theme.color.background, page: val },
-                    },
-                  })
-                }
-              />
-              <ColorInput
-                label="主要文字"
-                value={theme.color.text.primary}
-                onChange={val =>
-                  updateTheme({
-                    color: {
-                      ...theme.color,
-                      text: { ...theme.color.text, primary: val },
-                    },
-                  })
-                }
-              />
-              <ColorInput
-                label="次要文字"
-                value={theme.color.text.secondary}
-                onChange={val =>
-                  updateTheme({
-                    color: {
-                      ...theme.color,
-                      text: { ...theme.color.text, secondary: val },
-                    },
-                  })
-                }
-              />
-              <ColorInput
-                label="辅助文字"
-                value={theme.color.text.tertiary}
-                onChange={val =>
-                  updateTheme({
-                    color: {
-                      ...theme.color,
-                      text: { ...theme.color.text, tertiary: val },
-                    },
-                  })
-                }
-              />
-            </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <ColorInput
+              label="主色"
+              value={theme.color.primary}
+              onChange={val =>
+                updateTheme({
+                  color: { ...theme.color, primary: val },
+                })
+              }
+            />
+            <ColorInput
+              label="页面背景"
+              value={theme.color.background.page}
+              onChange={val =>
+                updateTheme({
+                  color: {
+                    ...theme.color,
+                    background: { ...theme.color.background, page: val },
+                  },
+                })
+              }
+            />
+            <ColorInput
+              label="主文字"
+              value={theme.color.text.primary}
+              onChange={val =>
+                updateTheme({
+                  color: {
+                    ...theme.color,
+                    text: { ...theme.color.text, primary: val },
+                  },
+                })
+              }
+            />
+            <ColorInput
+              label="次要文字"
+              value={theme.color.text.secondary}
+              onChange={val =>
+                updateTheme({
+                  color: {
+                    ...theme.color,
+                    text: { ...theme.color.text, secondary: val },
+                  },
+                })
+              }
+            />
+            <ColorInput
+              label="辅助文字"
+              value={theme.color.text.tertiary}
+              onChange={val =>
+                updateTheme({
+                  color: {
+                    ...theme.color,
+                    text: { ...theme.color.text, tertiary: val },
+                  },
+                })
+              }
+            />
           </div>
+
+          {/* 分隔线 */}
+          <div style={{ height: '1px', backgroundColor: '#e8e8e8', margin: '4px 0' }} />
 
           {/* 间距 */}
-          <div>
-            <SectionTitle>间距</SectionTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <InputGroup
-                label="页面边距"
-                value={theme.spacing.page}
-                onChange={val =>
-                  updateTheme({
-                    spacing: { ...theme.spacing, page: val },
-                  })
-                }
-              />
-              <InputGroup
-                label="章节间距"
-                value={theme.spacing.section}
-                onChange={val =>
-                  updateTheme({
-                    spacing: { ...theme.spacing, section: val },
-                  })
-                }
-              />
-              <InputGroup
-                label="段落间距"
-                value={theme.spacing.paragraph}
-                onChange={val =>
-                  updateTheme({
-                    spacing: { ...theme.spacing, paragraph: val },
-                  })
-                }
-              />
-              <InputGroup
-                label="条目间距"
-                value={theme.spacing.item}
-                onChange={val =>
-                  updateTheme({
-                    spacing: { ...theme.spacing, item: val },
-                  })
-                }
-              />
-              <InputGroup
-                label="行间距"
-                value={theme.spacing.line}
-                onChange={val =>
-                  updateTheme({
-                    spacing: { ...theme.spacing, line: val },
-                  })
-                }
-              />
-            </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <InputGroup
+              label="页边距"
+              value={theme.spacing.page}
+              onChange={val =>
+                updateTheme({
+                  spacing: { ...theme.spacing, page: val },
+                })
+              }
+            />
+            <InputGroup
+              label="章节间距"
+              value={theme.spacing.section}
+              onChange={val =>
+                updateTheme({
+                  spacing: { ...theme.spacing, section: val },
+                })
+              }
+            />
+            <InputGroup
+              label="段落间距"
+              value={theme.spacing.paragraph}
+              onChange={val =>
+                updateTheme({
+                  spacing: { ...theme.spacing, paragraph: val },
+                })
+              }
+            />
+            <InputGroup
+              label="条目间距"
+              value={theme.spacing.item}
+              onChange={val =>
+                updateTheme({
+                  spacing: { ...theme.spacing, item: val },
+                })
+              }
+            />
+            <InputGroup
+              label="行间距"
+              value={theme.spacing.line}
+              onChange={val =>
+                updateTheme({
+                  spacing: { ...theme.spacing, line: val },
+                })
+              }
+            />
           </div>
 
-          {/* 样式配置 */}
-          <div>
-            <SectionTitle>视觉样式</SectionTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <BooleanInput
-                label="显示章节分隔线"
-                value={theme.style.showSectionDivider}
-                onChange={val =>
-                  updateTheme({
-                    style: { ...theme.style, showSectionDivider: val },
-                  })
-                }
-              />
-              <BooleanInput
-                label="显示个人信息分隔线"
-                value={theme.style.showPersonalInfoDivider}
-                onChange={val =>
-                  updateTheme({
-                    style: { ...theme.style, showPersonalInfoDivider: val },
-                  })
-                }
-              />
-              <BooleanInput
-                label="使用Emoji图标"
-                value={theme.style.useEmojiIcons}
-                onChange={val =>
-                  updateTheme({
-                    style: { ...theme.style, useEmojiIcons: val },
-                  })
-                }
-              />
-              <SelectInput
-                label="分隔线样式"
-                value={theme.style.dividerStyle}
-                options={[
-                  { label: '实线', value: 'solid' },
-                  { label: '虚线', value: 'dashed' },
-                  { label: '点线', value: 'dotted' },
-                ]}
-                onChange={val =>
-                  updateTheme({
-                    style: { ...theme.style, dividerStyle: val as any },
-                  })
-                }
-              />
-              <InputGroup
-                label="分隔线粗细"
-                value={theme.style.dividerThickness}
-                onChange={val =>
-                  updateTheme({
-                    style: { ...theme.style, dividerThickness: val },
-                  })
-                }
-              />
-            </div>
+          {/* 分隔线 */}
+          <div style={{ height: '1px', backgroundColor: '#e8e8e8', margin: '4px 0' }} />
+
+          {/* 视觉样式 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <BooleanInput
+              label="章节分隔线"
+              value={theme.style.showSectionDivider}
+              onChange={val =>
+                updateTheme({
+                  style: { ...theme.style, showSectionDivider: val },
+                })
+              }
+            />
+            <BooleanInput
+              label="个人信息分隔线"
+              value={theme.style.showPersonalInfoDivider}
+              onChange={val =>
+                updateTheme({
+                  style: { ...theme.style, showPersonalInfoDivider: val },
+                })
+              }
+            />
+            <BooleanInput
+              label="Emoji图标"
+              value={theme.style.useEmojiIcons}
+              onChange={val =>
+                updateTheme({
+                  style: { ...theme.style, useEmojiIcons: val },
+                })
+              }
+            />
           </div>
 
-          {/* 布局配置 */}
-          <div>
-            <SectionTitle>布局</SectionTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <InputGroup
-                label="行高"
-                value={theme.layout.lineHeight}
-                step={0.1}
-                onChange={val =>
-                  updateTheme({
-                    layout: { ...theme.layout, lineHeight: val },
-                  })
-                }
-              />
-            </div>
+          {/* 分隔线 */}
+          <div style={{ height: '1px', backgroundColor: '#e8e8e8', margin: '4px 0' }} />
+
+          {/* 分隔线设置 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <SelectInput
+              label="分隔线样式"
+              value={theme.style.dividerStyle}
+              options={[
+                { label: '实线', value: 'solid' },
+                { label: '虚线', value: 'dashed' },
+                { label: '点线', value: 'dotted' },
+              ]}
+              onChange={val =>
+                updateTheme({
+                  style: { ...theme.style, dividerStyle: val as any },
+                })
+              }
+            />
+            <InputGroup
+              label="分隔线粗细"
+              value={theme.style.dividerThickness}
+              onChange={val =>
+                updateTheme({
+                  style: { ...theme.style, dividerThickness: val },
+                })
+              }
+            />
+          </div>
+
+          {/* 分隔线 */}
+          <div style={{ height: '1px', backgroundColor: '#e8e8e8', margin: '4px 0' }} />
+
+          {/* 布局 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <InputGroup
+              label="行高"
+              value={theme.layout.lineHeight}
+              step={0.1}
+              onChange={val =>
+                updateTheme({
+                  layout: { ...theme.layout, lineHeight: val },
+                })
+              }
+            />
           </div>
         </div>
       )}
@@ -418,49 +438,33 @@ const ThemeCard: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        padding: '12px',
-        border: `1px solid ${active ? '#000' : '#f1f1f1'}`,
-        borderRadius: '6px',
+        padding: '8px 10px',
+        border: `1px solid ${active ? '#2d2d2d' : hover ? '#e0e0e0' : 'transparent'}`,
+        borderRadius: '5px',
         cursor: 'pointer',
-        backgroundColor: hover ? '#fafafa' : 'white',
-        transition: 'all 0.1s',
+        backgroundColor: active ? '#fafafa' : hover ? '#f8f8f8' : 'transparent',
+        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
       <div
         style={{
-          fontSize: '13px',
+          fontSize: '12px',
           fontWeight: '600',
-          color: '#000',
-          marginBottom: '4px',
+          color: active ? '#2d2d2d' : '#000',
+          marginBottom: '2px',
         }}
       >
         {theme.name}
       </div>
       <div
         style={{
-          fontSize: '11px',
+          fontSize: '10px',
           color: '#999',
+          lineHeight: '1.3',
         }}
       >
         {theme.description}
       </div>
-    </div>
-  )
-}
-
-const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <div
-      style={{
-        fontSize: '11px',
-        fontWeight: '600',
-        color: '#666',
-        marginBottom: '8px',
-        textTransform: 'uppercase',
-        letterSpacing: '0.5px',
-      }}
-    >
-      {children}
     </div>
   )
 }
@@ -472,14 +476,13 @@ const InputGroup: React.FC<{
   step?: number
 }> = ({ label, value, onChange, step = 1 }) => {
   return (
-    <div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
       <label
         style={{
-          display: 'block',
           fontSize: '11px',
           fontWeight: '500',
-          marginBottom: '6px',
           color: '#666',
+          minWidth: '45px',
         }}
       >
         {label}
@@ -490,14 +493,23 @@ const InputGroup: React.FC<{
         step={step}
         onChange={e => onChange(Number(e.target.value))}
         style={{
-          width: '100%',
-          height: '30px',
-          padding: '0 10px',
-          border: '1px solid #e8e8e8',
+          flex: 1,
+          height: '28px',
+          padding: '0 8px',
+          border: '1px solid #e0e0e0',
           borderRadius: '4px',
-          fontSize: '12px',
+          fontSize: '11px',
           outline: 'none',
-          backgroundColor: '#f8f9fa',
+          backgroundColor: '#fafafa',
+          transition: 'border-color 0.15s, background-color 0.15s',
+        }}
+        onFocus={e => {
+          e.target.style.backgroundColor = '#fff'
+          e.target.style.borderColor = '#888'
+        }}
+        onBlur={e => {
+          e.target.style.backgroundColor = '#fafafa'
+          e.target.style.borderColor = '#e0e0e0'
         }}
       />
     </div>
@@ -510,47 +522,53 @@ const ColorInput: React.FC<{
   onChange: (value: string) => void
 }> = ({ label, value, onChange }) => {
   return (
-    <div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
       <label
         style={{
-          display: 'block',
           fontSize: '11px',
           fontWeight: '500',
-          marginBottom: '6px',
           color: '#666',
+          minWidth: '45px',
         }}
       >
         {label}
       </label>
-      <div style={{ display: 'flex', gap: '8px' }}>
-        <input
-          type="color"
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          style={{
-            width: '30px',
-            height: '30px',
-            border: '1px solid #e8e8e8',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        />
-        <input
-          type="text"
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          style={{
-            flex: 1,
-            height: '30px',
-            padding: '0 10px',
-            border: '1px solid #e8e8e8',
-            borderRadius: '4px',
-            fontSize: '12px',
-            outline: 'none',
-            backgroundColor: '#f8f9fa',
-          }}
-        />
-      </div>
+      <input
+        type="color"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        style={{
+          width: '28px',
+          height: '28px',
+          border: '1px solid #e0e0e0',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}
+      />
+      <input
+        type="text"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        style={{
+          flex: 1,
+          height: '28px',
+          padding: '0 8px',
+          border: '1px solid #e0e0e0',
+          borderRadius: '4px',
+          fontSize: '11px',
+          outline: 'none',
+          backgroundColor: '#fafafa',
+          transition: 'border-color 0.15s, background-color 0.15s',
+        }}
+        onFocus={e => {
+          e.target.style.backgroundColor = '#fff'
+          e.target.style.borderColor = '#888'
+        }}
+        onBlur={e => {
+          e.target.style.backgroundColor = '#fafafa'
+          e.target.style.borderColor = '#e0e0e0'
+        }}
+      />
     </div>
   )
 }
@@ -565,9 +583,9 @@ const BooleanInput: React.FC<{
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '10px',
+        gap: '8px',
         cursor: 'pointer',
-        padding: '6px 0',
+        padding: '5px 0',
       }}
     >
       <input
@@ -575,15 +593,15 @@ const BooleanInput: React.FC<{
         checked={value}
         onChange={e => onChange(e.target.checked)}
         style={{
-          width: '16px',
-          height: '16px',
+          width: '14px',
+          height: '14px',
           cursor: 'pointer',
-          accentColor: '#666',
+          accentColor: '#2d2d2d',
         }}
       />
       <span
         style={{
-          fontSize: '12px',
+          fontSize: '11px',
           fontWeight: '500',
           color: '#666',
         }}
@@ -601,14 +619,13 @@ const SelectInput: React.FC<{
   onChange: (value: string) => void
 }> = ({ label, value, options, onChange }) => {
   return (
-    <div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
       <label
         style={{
-          display: 'block',
           fontSize: '11px',
           fontWeight: '500',
-          marginBottom: '6px',
           color: '#666',
+          minWidth: '45px',
         }}
       >
         {label}
@@ -617,15 +634,24 @@ const SelectInput: React.FC<{
         value={value}
         onChange={e => onChange(e.target.value)}
         style={{
-          width: '100%',
-          height: '30px',
-          padding: '0 10px',
-          border: '1px solid #e8e8e8',
+          flex: 1,
+          height: '28px',
+          padding: '0 8px',
+          border: '1px solid #e0e0e0',
           borderRadius: '4px',
-          fontSize: '12px',
+          fontSize: '11px',
           outline: 'none',
-          backgroundColor: '#f8f9fa',
+          backgroundColor: '#fafafa',
           cursor: 'pointer',
+          transition: 'border-color 0.15s, background-color 0.15s',
+        }}
+        onFocus={e => {
+          e.currentTarget.style.backgroundColor = '#fff'
+          e.currentTarget.style.borderColor = '#888'
+        }}
+        onBlur={e => {
+          e.currentTarget.style.backgroundColor = '#fafafa'
+          e.currentTarget.style.borderColor = '#e0e0e0'
         }}
       >
         {options.map(opt => (

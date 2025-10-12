@@ -135,10 +135,10 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
           </span>
         </div>
 
-        {/* 角色 - 加强视觉权重 */}
+        {/* 角色 - 和谐精致 */}
         <div
           style={{
-            fontSize: `${theme.font.bodySize.large}px`,
+            fontSize: `${theme.font.bodySize.normal}px`,
             fontWeight: theme.font.weight.medium,
             color: theme.color.text.secondary,
             letterSpacing: '-0.005em',

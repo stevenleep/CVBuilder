@@ -34,14 +34,14 @@ export const classicTheme: ITheme = {
   font: {
     family: '"Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif',
     titleSize: {
-      h1: 32, // 姓名：足够大但不夸张
-      h2: 16, // 章节标题：清晰醒目
-      h3: 13.5, // 条目标题：适度突出
+      h1: 20, // 姓名：精致和谐，不过分突出
+      h2: 15, // 章节标题：稍微缩小，更精致
+      h3: 13, // 条目标题：和正文对比更合理
     },
     bodySize: {
-      large: 14, // 职位/副标题
-      normal: 12, // 正文：黄金大小
-      small: 11, // 辅助信息
+      large: 13, // 职位/副标题：和标题更协调
+      normal: 12, // 正文：保持黄金大小
+      small: 11, // 辅助信息：保持
     },
     weight: {
       light: 300,
@@ -114,13 +114,13 @@ export const minimalTheme: ITheme = {
   font: {
     family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif',
     titleSize: {
-      h1: 40, // 姓名：大而自信
-      h2: 14, // 章节：小巧精致
-      h3: 12.5, // 条目：低调
+      h1: 22, // 姓名：精致和谐
+      h2: 14, // 章节：保持小巧精致
+      h3: 12.5, // 条目：保持低调
     },
     bodySize: {
-      large: 14,
-      normal: 12.5, // 正文：易读
+      large: 13.5, // 稍微缩小
+      normal: 12, // 正文：统一为12，更协调
       small: 11,
     },
     weight: {
@@ -193,12 +193,12 @@ export const compactTheme: ITheme = {
   font: {
     family: 'Arial, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif',
     titleSize: {
-      h1: 28, // 姓名：适度
-      h2: 14.5, // 章节
-      h3: 12.5, // 条目
+      h1: 18, // 姓名：紧凑精致
+      h2: 14, // 章节：更统一
+      h3: 12.5, // 条目：保持
     },
     bodySize: {
-      large: 13,
+      large: 12.5, // 更接近正文
       normal: 11.5, // 正文：可读性下限
       small: 10.5,
     },
@@ -272,14 +272,14 @@ export const modernTheme: ITheme = {
   font: {
     family: '-apple-system, BlinkMacSystemFont, "Inter", "SF Pro Text", "PingFang SC", sans-serif',
     titleSize: {
-      h1: 36, // 姓名：现代感
-      h2: 15, // 章节
-      h3: 13, // 条目
+      h1: 21, // 姓名：精致现代
+      h2: 15, // 章节：保持
+      h3: 13, // 条目：保持
     },
     bodySize: {
-      large: 14.5,
-      normal: 13, // 正文：大字号，易读
-      small: 11.5,
+      large: 13.5, // 稍微缩小
+      normal: 12, // 正文：统一为12，更协调
+      small: 11,
     },
     weight: {
       light: 300,
@@ -352,14 +352,14 @@ export const elegantTheme: ITheme = {
   font: {
     family: 'Georgia, "Palatino Linotype", "Songti SC", "STSong", serif',
     titleSize: {
-      h1: 34, // 姓名：优雅大气
-      h2: 16, // 章节：衬线稍大
-      h3: 13.5, // 条目
+      h1: 20, // 姓名：精致优雅
+      h2: 15, // 章节：稍微缩小
+      h3: 13, // 条目：更统一
     },
     bodySize: {
-      large: 14.5,
-      normal: 13, // 正文：衬线需要更大
-      small: 11.5,
+      large: 13, // 更接近正文
+      normal: 12, // 正文：统一为12
+      small: 11,
     },
     weight: {
       light: 300,

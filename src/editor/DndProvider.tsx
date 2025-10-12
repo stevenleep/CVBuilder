@@ -22,6 +22,7 @@ export const DndProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 export const DragItemTypes = {
   MATERIAL: 'material',  // 从物料面板拖拽
   NODE: 'node',          // 页面中节点拖拽
+  TEMPLATE: 'template',  // 从模板面板拖拽
 } as const
 
 /**
@@ -38,5 +39,11 @@ export interface NodeDragItem {
   nodeType: string
 }
 
-export type DragItem = MaterialDragItem | NodeDragItem
+export interface TemplateDragItem {
+  type: typeof DragItemTypes.TEMPLATE
+  templateSchema: any
+  templateName: string
+}
+
+export type DragItem = MaterialDragItem | NodeDragItem | TemplateDragItem
 

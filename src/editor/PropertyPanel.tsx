@@ -6,7 +6,22 @@ import React from 'react'
 import { useEditorStore } from '@store/editorStore'
 import { findNode } from '@utils/schema'
 import type { PropValue } from '../types/material'
-import { ChevronDown, Plus, X, Upload, Image as ImageIcon } from 'lucide-react'
+import {
+  ChevronDown,
+  Plus,
+  X,
+  Upload,
+  Image as ImageIcon,
+  User,
+  Phone,
+  FileText,
+  Eye,
+  Briefcase,
+  Info,
+  Code,
+  BookOpen,
+  Palette,
+} from 'lucide-react'
 import { useMaterial, IPropSchema } from '@/core'
 import { ThemeSettings } from './ThemeSettings'
 import { QuillEditor, SimpleTextarea } from '@/components/QuillEditor'
@@ -51,7 +66,7 @@ export const PropertyPanel: React.FC = () => {
       >
         <div
           style={{
-            padding: '14px',
+            padding: '12px',
             borderBottom: '1px solid #e8e8e8',
             backgroundColor: '#fff',
           }}
@@ -61,18 +76,13 @@ export const PropertyPanel: React.FC = () => {
               fontSize: '12px',
               fontWeight: '700',
               color: '#2d2d2d',
-              marginBottom: '3px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
             }}
           >
+            <Palette size={14} />
             主题设置
-          </div>
-          <div
-            style={{
-              fontSize: '11px',
-              color: '#999',
-            }}
-          >
-            统一管理简历样式
           </div>
         </div>
 
@@ -155,30 +165,30 @@ export const PropertyPanel: React.FC = () => {
   const getTabs = () => {
     if (isPersonalInfo) {
       return [
-        { id: 'basic' as const, label: '核心信息' },
-        { id: 'details' as const, label: '联系方式' },
-        { id: 'content' as const, label: '补充信息' },
-        { id: 'appearance' as const, label: '外观' },
+        { id: 'basic' as const, label: '核心信息', icon: <User size={12} /> },
+        { id: 'details' as const, label: '联系方式', icon: <Phone size={12} /> },
+        { id: 'content' as const, label: '补充信息', icon: <Info size={12} /> },
+        { id: 'appearance' as const, label: '外观', icon: <Eye size={12} /> },
       ]
     }
     if (isProjectItem) {
       return [
-        { id: 'basic' as const, label: '基本信息' },
-        { id: 'details' as const, label: '项目详情' },
-        { id: 'content' as const, label: '内容' },
+        { id: 'basic' as const, label: '基本信息', icon: <Info size={12} /> },
+        { id: 'details' as const, label: '项目详情', icon: <Code size={12} /> },
+        { id: 'content' as const, label: '内容', icon: <FileText size={12} /> },
       ]
     }
     if (isExperienceItem) {
       return [
-        { id: 'basic' as const, label: '基本信息' },
-        { id: 'details' as const, label: '详细信息' },
-        { id: 'content' as const, label: '工作内容' },
+        { id: 'basic' as const, label: '基本信息', icon: <Info size={12} /> },
+        { id: 'details' as const, label: '详细信息', icon: <Briefcase size={12} /> },
+        { id: 'content' as const, label: '工作内容', icon: <FileText size={12} /> },
       ]
     }
     if (isEducationItem) {
       return [
-        { id: 'basic' as const, label: '基本信息' },
-        { id: 'details' as const, label: '更多信息' },
+        { id: 'basic' as const, label: '基本信息', icon: <Info size={12} /> },
+        { id: 'details' as const, label: '更多信息', icon: <BookOpen size={12} /> },
       ]
     }
     return []
@@ -197,34 +207,24 @@ export const PropertyPanel: React.FC = () => {
         flexDirection: 'column',
       }}
     >
-      {/* 标题 - 优化排版 */}
+      {/* 标题 - 紧凑版 */}
       <div
         style={{
-          padding: '18px 16px 0',
+          padding: '12px',
           borderBottom: '1px solid #e0e0e0',
           backgroundColor: '#fff',
         }}
       >
         <div
           style={{
-            fontSize: '13px',
+            fontSize: '12px',
             fontWeight: '700',
             color: '#1a1a1a',
-            marginBottom: '4px',
+            marginBottom: needsTabs ? '10px' : '0',
             letterSpacing: '-0.01em',
           }}
         >
           {materialDef.meta.title}
-        </div>
-        <div
-          style={{
-            fontSize: '11px',
-            color: '#888',
-            lineHeight: '1.4',
-            marginBottom: '12px',
-          }}
-        >
-          {materialDef.meta.description}
         </div>
 
         {/* Tab 切换 */}
@@ -232,8 +232,8 @@ export const PropertyPanel: React.FC = () => {
           <div
             style={{
               display: 'flex',
-              gap: '4px',
-              marginBottom: '-1px',
+              gap: '2px',
+              flexWrap: 'nowrap',
             }}
           >
             {tabs.map(tab => (
@@ -241,6 +241,7 @@ export const PropertyPanel: React.FC = () => {
                 key={tab.id}
                 active={currentTab === tab.id}
                 onClick={() => setCurrentTab(tab.id)}
+                icon={tab.icon}
               >
                 {tab.label}
               </TabButton>
@@ -249,25 +250,26 @@ export const PropertyPanel: React.FC = () => {
         )}
       </div>
 
-      {/* 属性区域 - 优化背景和间距 */}
+      {/* 属性区域 - 紧凑版 */}
       <div
         style={{
           flex: 1,
           overflow: 'auto',
-          padding: '14px 16px',
+          padding: '12px',
           backgroundColor: '#f8f8f8',
         }}
       >
         {isPersonalInfo && currentTab === 'appearance' ? (
           <AppearancePanel nodeProps={node.props || {}} onChange={handlePropChange} />
         ) : (
-          Object.entries(groupedProps).map(([group, props]) => (
+          Object.entries(groupedProps).map(([group, props], _index, array) => (
             <PropertyGroup
               key={group}
               title={group}
               props={props}
               nodeProps={node.props || {}}
               onChange={handlePropChange}
+              showCollapse={array.length > 1}
             />
           ))
         )}
@@ -276,58 +278,106 @@ export const PropertyPanel: React.FC = () => {
   )
 }
 
+// 获取分组图标
+const getGroupIcon = (title: string) => {
+  const iconMap: Record<string, React.ReactNode> = {
+    核心信息: <User size={11} />,
+    联系方式: <Phone size={11} />,
+    在线链接: <Info size={11} />,
+    补充信息: <Info size={11} />,
+    外观: <Eye size={11} />,
+    基本信息: <Info size={11} />,
+    项目详情: <Code size={11} />,
+    内容: <FileText size={11} />,
+    工作性质: <Briefcase size={11} />,
+    技术信息: <Code size={11} />,
+    详细信息: <Info size={11} />,
+    薪资: <Info size={11} />,
+    更多信息: <BookOpen size={11} />,
+    其他: <Info size={11} />,
+    属性: <Info size={11} />,
+  }
+  return iconMap[title] || <Info size={11} />
+}
+
 // 属性分组 - 优化版
 const PropertyGroup: React.FC<{
   title: string
   props: IPropSchema[]
   nodeProps: Record<string, any>
   onChange: (name: string, value: PropValue) => void
-}> = ({ title, props, nodeProps, onChange }) => {
+  showCollapse?: boolean
+}> = ({ title, props, nodeProps, onChange, showCollapse = true }) => {
   const [collapsed, setCollapsed] = React.useState(false)
+  const groupIcon = getGroupIcon(title)
+
+  const [hover, setHover] = React.useState(false)
 
   return (
-    <div style={{ marginBottom: '16px' }}>
-      <div
-        onClick={() => setCollapsed(!collapsed)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: 'pointer',
-          marginBottom: collapsed ? '0' : '12px',
-          padding: '6px 4px',
-          borderRadius: '4px',
-          transition: 'background-color 0.12s',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = '#f0f0f0'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.backgroundColor = 'transparent'
-        }}
-      >
+    <div style={{ marginBottom: showCollapse ? '12px' : '0' }}>
+      {showCollapse && (
         <div
+          onClick={() => setCollapsed(!collapsed)}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
           style={{
-            fontSize: '11px',
-            fontWeight: '700',
-            color: '#666',
-            letterSpacing: '0.5px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+            marginBottom: collapsed ? '0' : '8px',
+            padding: '8px 10px',
+            borderRadius: '6px',
+            border: `1px solid ${hover ? '#e0e0e0' : 'transparent'}`,
+            backgroundColor: hover ? '#fafafa' : 'transparent',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
-          {title}
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: '700',
+              color: hover ? '#2d2d2d' : '#666',
+              letterSpacing: '0.3px',
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'color 0.2s',
+            }}
+          >
+            <span
+              style={{
+                display: 'flex',
+                color: hover ? '#666' : '#999',
+                transition: 'color 0.2s',
+              }}
+            >
+              {groupIcon}
+            </span>
+            {title}
+          </div>
+          <ChevronDown
+            size={13}
+            style={{
+              color: hover ? '#666' : '#ccc',
+              transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+              flexShrink: 0,
+            }}
+          />
         </div>
-        <ChevronDown
-          size={14}
-          style={{
-            color: '#aaa',
-            transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
-            transition: 'transform 0.15s',
-          }}
-        />
-      </div>
+      )}
 
-      {!collapsed && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
+      {(!showCollapse || !collapsed) && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            paddingLeft: showCollapse ? '4px' : '0',
+          }}
+        >
           {props.map(propSchema => (
             <PropertyInput
               key={propSchema.name}
@@ -342,12 +392,13 @@ const PropertyGroup: React.FC<{
   )
 }
 
-// Tab 按钮组件 - 统一风格
+// Tab 按钮组件 - 与物料面板分类按钮统一风格
 const TabButton: React.FC<{
   active: boolean
   onClick: () => void
+  icon?: React.ReactNode
   children: React.ReactNode
-}> = ({ active, onClick, children }) => {
+}> = ({ active, onClick, icon, children }) => {
   const [hover, setHover] = React.useState(false)
 
   return (
@@ -356,22 +407,39 @@ const TabButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        flex: 1,
-        height: '30px',
-        padding: '0 10px',
+        flex: '1 1 0',
+        minWidth: 0,
+        height: '26px',
+        padding: '0 6px',
         border: 'none',
-        borderBottom: active ? '2px solid #2d2d2d' : '2px solid transparent',
-        borderRadius: '0',
-        backgroundColor: 'transparent',
-        color: active ? '#2d2d2d' : hover ? '#666' : '#999',
+        borderRadius: '4px',
+        backgroundColor: active ? '#2d2d2d' : hover ? '#f0f0f0' : 'transparent',
+        color: active ? '#fff' : hover ? '#2d2d2d' : '#666',
         cursor: 'pointer',
-        fontSize: '11px',
-        fontWeight: active ? '700' : '500',
+        fontSize: '10.5px',
+        fontWeight: '600',
         transition: 'all 0.12s',
-        letterSpacing: '0.3px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '3px',
+        lineHeight: 1,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
       }}
     >
-      {children}
+      {icon && <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{icon}</span>}
+      <span
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {children}
+      </span>
     </button>
   )
 }
@@ -407,7 +475,7 @@ const AppearancePanel: React.FC<{
   ]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       {/* 板式预设选择 */}
       <div>
         <div
@@ -415,13 +483,13 @@ const AppearancePanel: React.FC<{
             fontSize: '11px',
             fontWeight: '700',
             color: '#666',
-            marginBottom: '10px',
+            marginBottom: '8px',
             letterSpacing: '0.5px',
           }}
         >
           板式预设
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {presets.map(preset => (
             <PresetCard
               key={preset.id}
@@ -440,23 +508,36 @@ const AppearancePanel: React.FC<{
             fontSize: '11px',
             fontWeight: '700',
             color: '#666',
-            marginBottom: '10px',
+            marginBottom: '8px',
             letterSpacing: '0.5px',
           }}
         >
           头像设置
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {/* 显示头像开关 */}
           <div>
             <label
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '9px',
+                gap: '10px',
                 cursor: 'pointer',
                 height: '32px',
-                padding: '0 2px',
+                padding: '0 12px',
+                backgroundColor: '#fafafa',
+                border: '1px solid #e8e8e8',
+                borderRadius: '6px',
+                transition: 'all 0.15s',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#fff'
+                e.currentTarget.style.borderColor = '#d0d0d0'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = '#fafafa'
+                e.currentTarget.style.borderColor = '#e8e8e8'
               }}
             >
               <input
@@ -467,28 +548,18 @@ const AppearancePanel: React.FC<{
                   width: '16px',
                   height: '16px',
                   cursor: 'pointer',
-                  accentColor: '#1a1a1a',
+                  accentColor: '#2d2d2d',
                 }}
               />
-              <span style={{ fontSize: '12px', color: '#555', fontWeight: '500' }}>显示头像</span>
+              <span style={{ fontSize: '12px', color: '#2d2d2d', fontWeight: '500' }}>
+                显示头像
+              </span>
             </label>
           </div>
 
           {/* 头像上传（仅在勾选后显示） */}
           {nodeProps.showAvatar && (
             <div>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  marginBottom: '6px',
-                  color: '#555',
-                  letterSpacing: '0.2px',
-                }}
-              >
-                头像
-              </label>
               <ImageUploadInput
                 value={String(nodeProps.avatar || '')}
                 onChange={value => onChange('avatar', value)}
@@ -506,7 +577,7 @@ const AppearancePanel: React.FC<{
               fontSize: '11px',
               fontWeight: '700',
               color: '#666',
-              marginBottom: '10px',
+              marginBottom: '8px',
               letterSpacing: '0.5px',
             }}
           >
@@ -538,7 +609,7 @@ const AppearancePanel: React.FC<{
             fontSize: '11px',
             fontWeight: '700',
             color: '#666',
-            marginBottom: '10px',
+            marginBottom: '8px',
             letterSpacing: '0.5px',
           }}
         >
@@ -555,16 +626,6 @@ const AppearancePanel: React.FC<{
           value={nodeProps.showFullLinks ?? true}
           onChange={value => onChange('showFullLinks', value)}
         />
-        <div
-          style={{
-            fontSize: '10px',
-            color: '#aaa',
-            marginTop: '5px',
-            lineHeight: '1.4',
-          }}
-        >
-          关闭后仅显示标题（带下划线），更简洁
-        </div>
       </div>
     </div>
   )
@@ -585,11 +646,17 @@ const PresetCard: React.FC<{
       onMouseLeave={() => setHover(false)}
       style={{
         padding: '10px 12px',
-        backgroundColor: isActive ? '#2d2d2d' : hover ? '#fafafa' : '#fff',
+        backgroundColor: isActive ? '#2d2d2d' : '#fafafa',
         border: `1px solid ${isActive ? '#2d2d2d' : '#e8e8e8'}`,
-        borderRadius: '5px',
+        borderRadius: '6px',
         cursor: 'pointer',
-        transition: 'all 0.12s',
+        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+        boxShadow: isActive
+          ? '0 2px 8px rgba(45,45,45,0.15)'
+          : hover
+            ? '0 2px 4px rgba(0,0,0,0.06)'
+            : '0 1px 2px rgba(0,0,0,0.02)',
+        transform: hover && !isActive ? 'translateY(-1px)' : 'translateY(0)',
       }}
     >
       <div
@@ -597,20 +664,10 @@ const PresetCard: React.FC<{
           fontSize: '12px',
           fontWeight: '600',
           color: isActive ? '#fff' : '#2d2d2d',
-          marginBottom: '3px',
           letterSpacing: '-0.01em',
         }}
       >
         {preset.name}
-      </div>
-      <div
-        style={{
-          fontSize: '11px',
-          color: isActive ? 'rgba(255,255,255,0.8)' : '#999',
-          lineHeight: '1.4',
-        }}
-      >
-        {preset.description}
       </div>
     </div>
   )
@@ -740,10 +797,10 @@ const ImageUploadInput: React.FC<{
             flex: 1,
             height: '32px',
             padding: '0 12px',
-            border: '1px solid #e0e0e0',
-            borderRadius: '4px',
-            backgroundColor: '#fff',
-            color: '#555',
+            border: '1px solid #e8e8e8',
+            borderRadius: '6px',
+            backgroundColor: '#fafafa',
+            color: '#2d2d2d',
             cursor: uploading ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -751,17 +808,21 @@ const ImageUploadInput: React.FC<{
             gap: '6px',
             fontSize: '12px',
             fontWeight: '600',
-            transition: 'all 0.12s',
+            transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+            opacity: uploading ? 0.6 : 1,
           }}
           onMouseEnter={e => {
             if (!uploading) {
-              e.currentTarget.style.backgroundColor = '#f8f8f8'
-              e.currentTarget.style.borderColor = '#c0c0c0'
+              e.currentTarget.style.backgroundColor = '#fff'
+              e.currentTarget.style.borderColor = '#d0d0d0'
+              e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.06)'
             }
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = '#fff'
-            e.currentTarget.style.borderColor = '#e0e0e0'
+            e.currentTarget.style.backgroundColor = '#fafafa'
+            e.currentTarget.style.borderColor = '#e8e8e8'
+            e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.02)'
           }}
         >
           {uploading ? (
@@ -783,10 +844,10 @@ const ImageUploadInput: React.FC<{
             flex: 1,
             height: '32px',
             padding: '0 12px',
-            border: '1px solid #e0e0e0',
-            borderRadius: '4px',
-            backgroundColor: '#fff',
-            color: '#555',
+            border: '1px solid #e8e8e8',
+            borderRadius: '6px',
+            backgroundColor: '#fafafa',
+            color: '#2d2d2d',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -794,31 +855,23 @@ const ImageUploadInput: React.FC<{
             gap: '6px',
             fontSize: '12px',
             fontWeight: '600',
-            transition: 'all 0.12s',
+            transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = '#f8f8f8'
-            e.currentTarget.style.borderColor = '#c0c0c0'
+            e.currentTarget.style.backgroundColor = '#fff'
+            e.currentTarget.style.borderColor = '#d0d0d0'
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.06)'
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = '#fff'
-            e.currentTarget.style.borderColor = '#e0e0e0'
+            e.currentTarget.style.backgroundColor = '#fafafa'
+            e.currentTarget.style.borderColor = '#e8e8e8'
+            e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.02)'
           }}
         >
           <ImageIcon size={14} />
           URL链接
         </button>
-      </div>
-
-      {/* 提示信息 */}
-      <div
-        style={{
-          fontSize: '10px',
-          color: '#aaa',
-          lineHeight: '1.4',
-        }}
-      >
-        支持 JPG、PNG、GIF 等格式，最大 5MB
       </div>
     </div>
   )
@@ -833,30 +886,31 @@ const PropertyInput: React.FC<{
     const baseStyle: React.CSSProperties = {
       width: '100%',
       height: '32px',
-      padding: '0 10px',
-      border: '1px solid #e0e0e0',
-      borderRadius: '4px',
+      padding: '0 12px',
+      border: '1px solid #e8e8e8',
+      borderRadius: '6px',
       fontSize: '12px',
       outline: 'none',
-      backgroundColor: '#fff',
-      color: '#1a1a1a',
-      transition: 'all 0.12s',
+      backgroundColor: '#fafafa',
+      color: '#2d2d2d',
+      transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+      boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
     }
 
     const handleFocus = (
       e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
       e.currentTarget.style.backgroundColor = '#fff'
-      e.currentTarget.style.borderColor = '#b0b0b0'
-      e.currentTarget.style.boxShadow = '0 0 0 2px rgba(0,0,0,0.03)'
+      e.currentTarget.style.borderColor = '#d0d0d0'
+      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(45,45,45,0.05), 0 2px 4px rgba(0,0,0,0.04)'
     }
 
     const handleBlur = (
       e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-      e.currentTarget.style.backgroundColor = '#fff'
-      e.currentTarget.style.borderColor = '#e0e0e0'
-      e.currentTarget.style.boxShadow = 'none'
+      e.currentTarget.style.backgroundColor = '#fafafa'
+      e.currentTarget.style.borderColor = '#e8e8e8'
+      e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.02)'
     }
 
     switch (schema.type) {
@@ -891,10 +945,23 @@ const PropertyInput: React.FC<{
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '9px',
+              gap: '10px',
               cursor: 'pointer',
               height: '32px',
-              padding: '0 2px',
+              padding: '0 12px',
+              backgroundColor: '#fafafa',
+              border: '1px solid #e8e8e8',
+              borderRadius: '6px',
+              transition: 'all 0.15s',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = '#fff'
+              e.currentTarget.style.borderColor = '#d0d0d0'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = '#fafafa'
+              e.currentTarget.style.borderColor = '#e8e8e8'
             }}
           >
             <input
@@ -905,10 +972,10 @@ const PropertyInput: React.FC<{
                 width: '16px',
                 height: '16px',
                 cursor: 'pointer',
-                accentColor: '#1a1a1a',
+                accentColor: '#2d2d2d',
               }}
             />
-            <span style={{ fontSize: '12px', color: '#555', fontWeight: '500' }}>启用</span>
+            <span style={{ fontSize: '12px', color: '#2d2d2d', fontWeight: '500' }}>启用</span>
           </label>
         )
 
@@ -920,12 +987,15 @@ const PropertyInput: React.FC<{
               value={String(value || '#000000')}
               onChange={e => onChange(e.target.value)}
               style={{
-                width: '30px',
-                height: '30px',
-                border: '1px solid #f1f1f1',
-                borderRadius: '4px',
+                width: '32px',
+                height: '32px',
+                border: '1px solid #e8e8e8',
+                borderRadius: '6px',
                 cursor: 'pointer',
-                padding: '2px',
+                padding: '3px',
+                backgroundColor: '#fafafa',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                transition: 'all 0.15s',
               }}
             />
             <input
@@ -1017,26 +1087,14 @@ const PropertyInput: React.FC<{
           fontSize: '11px',
           fontWeight: '600',
           marginBottom: '6px',
-          color: '#555',
-          letterSpacing: '0.2px',
+          color: '#666',
+          letterSpacing: '0.3px',
         }}
       >
         {schema.label}
-        {schema.required && <span style={{ color: '#ef4444', marginLeft: '2px' }}>*</span>}
+        {schema.required && <span style={{ color: '#ef4444', marginLeft: '3px' }}>*</span>}
       </label>
       {renderInput()}
-      {schema.description && schema.type !== 'string' && schema.type !== 'textarea' && (
-        <div
-          style={{
-            fontSize: '10px',
-            color: '#aaa',
-            marginTop: '5px',
-            lineHeight: '1.4',
-          }}
-        >
-          {schema.description}
-        </div>
-      )}
     </div>
   )
 }
@@ -1192,16 +1250,16 @@ const ArrayInput: React.FC<{
         </div>
       ))}
 
-      {/* 添加按钮 - 紧凑样式 */}
+      {/* 添加按钮 - 精美样式 */}
       <button
         onClick={handleAddItem}
         style={{
-          height: '30px',
+          height: '32px',
           padding: '0 12px',
-          border: '1px dashed #d0d0d0',
-          borderRadius: '4px',
-          backgroundColor: 'transparent',
-          color: '#888',
+          border: '1px dashed #d8d8d8',
+          borderRadius: '6px',
+          backgroundColor: '#fafafa',
+          color: '#666',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -1209,18 +1267,23 @@ const ArrayInput: React.FC<{
           gap: '5px',
           fontSize: '11px',
           fontWeight: '600',
-          transition: 'all 0.12s',
+          transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
           marginTop: '2px',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = '#f8f8f8'
-          e.currentTarget.style.borderColor = '#a0a0a0'
-          e.currentTarget.style.color = '#333'
+          e.currentTarget.style.backgroundColor = '#fff'
+          e.currentTarget.style.borderColor = '#b0b0b0'
+          e.currentTarget.style.borderStyle = 'solid'
+          e.currentTarget.style.color = '#2d2d2d'
+          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.06)'
         }}
         onMouseLeave={e => {
-          e.currentTarget.style.backgroundColor = 'transparent'
-          e.currentTarget.style.borderColor = '#d0d0d0'
-          e.currentTarget.style.color = '#888'
+          e.currentTarget.style.backgroundColor = '#fafafa'
+          e.currentTarget.style.borderColor = '#d8d8d8'
+          e.currentTarget.style.borderStyle = 'dashed'
+          e.currentTarget.style.color = '#666'
+          e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.02)'
         }}
       >
         <Plus size={13} />

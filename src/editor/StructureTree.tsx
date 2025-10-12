@@ -8,7 +8,21 @@ import React, { useState } from 'react'
 import { NodeSchema } from '@/types/material'
 import { useEditorStore } from '@store/editorStore'
 import { useMaterial } from '@/core'
-import { ChevronRight, ChevronDown, Eye, EyeOff, GripVertical, Copy, Trash2 } from 'lucide-react'
+import {
+  ChevronRight,
+  ChevronDown,
+  Eye,
+  EyeOff,
+  GripVertical,
+  Copy,
+  Trash2,
+  FileText,
+  Box,
+  Type,
+  Image as ImageIcon,
+  List,
+  Table,
+} from 'lucide-react'
 import { useDrag, useDrop } from 'react-dnd'
 import { DragItemTypes } from './DndProvider'
 import { notification } from '@/utils/notification'
@@ -141,15 +155,41 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
     }
   }
 
+  // 根据节点类型获取图标
+  const getNodeIcon = () => {
+    const type = schema.type.toLowerCase()
+    const iconProps = { size: 13, style: { flexShrink: 0 } }
+
+    if (type.includes('text') || type.includes('paragraph')) {
+      return <Type {...iconProps} />
+    }
+    if (type.includes('image') || type.includes('avatar')) {
+      return <ImageIcon {...iconProps} />
+    }
+    if (type.includes('list')) {
+      return <List {...iconProps} />
+    }
+    if (type.includes('table')) {
+      return <Table {...iconProps} />
+    }
+    if (type.includes('container') || type.includes('section')) {
+      return <Box {...iconProps} />
+    }
+    return <FileText {...iconProps} />
+  }
+
   return (
-    <div style={{ opacity: isDragging ? 0.4 : 1 }}>
+    <div style={{ opacity: isDragging ? 0.3 : 1, transition: 'opacity 0.2s' }}>
       {/* 拖放指示器 */}
       {isOver && canDrop && (
         <div
           style={{
-            height: '2px',
+            height: '3px',
             backgroundColor: '#3b82f6',
-            marginLeft: `${level * 16}px`,
+            marginLeft: `${level * 20 + 8}px`,
+            marginRight: '8px',
+            borderRadius: '2px',
+            boxShadow: '0 0 8px rgba(59, 130, 246, 0.4)',
           }}
         />
       )}
@@ -174,34 +214,47 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{
-          paddingLeft: `${level * 16 + 4}px`,
+          paddingLeft: `${level * 20 + 8}px`,
           paddingRight: '8px',
-          paddingTop: '4px',
-          paddingBottom: '4px',
+          paddingTop: '6px',
+          paddingBottom: '6px',
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
           cursor: 'pointer',
-          backgroundColor: isSelected ? '#f0f9ff' : hover ? '#fafafa' : 'transparent',
-          borderLeft: isSelected ? '2px solid #3b82f6' : '2px solid transparent',
-          transition: 'all 0.12s',
+          backgroundColor: isSelected
+            ? 'rgba(59, 130, 246, 0.08)'
+            : hover
+              ? 'rgba(0, 0, 0, 0.02)'
+              : 'transparent',
+          borderLeft: isSelected ? '3px solid #3b82f6' : '3px solid transparent',
+          borderRadius: isSelected ? '0 4px 4px 0' : '0',
+          transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
           opacity: schema.hidden ? 0.4 : 1,
+          position: 'relative',
         }}
       >
         {/* 拖动手柄 */}
         <div
           style={{
-            width: '14px',
-            height: '14px',
+            width: '16px',
+            height: '16px',
             display: hover ? 'flex' : 'none',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#999',
+            color: '#bbb',
             cursor: 'grab',
             flexShrink: 0,
+            transition: 'color 0.15s',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.color = '#666'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.color = '#bbb'
           }}
         >
-          <GripVertical size={12} />
+          <GripVertical size={13} />
         </div>
 
         {/* 展开/折叠图标 */}
@@ -212,31 +265,51 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
               setCollapsed(!collapsed)
             }}
             style={{
-              width: '14px',
-              height: '14px',
+              width: '16px',
+              height: '16px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              color: collapsed ? '#bbb' : '#888',
+              cursor: 'pointer',
               flexShrink: 0,
+              borderRadius: '3px',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.color = '#2d2d2d'
+              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.06)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.color = collapsed ? '#bbb' : '#888'
+              e.currentTarget.style.backgroundColor = 'transparent'
             }}
           >
-            {collapsed ? (
-              <ChevronRight size={12} style={{ color: '#999' }} />
-            ) : (
-              <ChevronDown size={12} style={{ color: '#999' }} />
-            )}
+            {collapsed ? <ChevronRight size={13} /> : <ChevronDown size={13} />}
           </div>
         ) : (
-          <div style={{ width: hover ? '14px' : '14px', flexShrink: 0 }} />
+          <div style={{ width: '16px', flexShrink: 0 }} />
         )}
+
+        {/* 节点类型图标 */}
+        <div
+          style={{
+            display: 'flex',
+            color: isSelected ? '#3b82f6' : '#999',
+            transition: 'color 0.15s',
+          }}
+        >
+          {getNodeIcon()}
+        </div>
 
         {/* 组件类型 */}
         <div
           style={{
             fontSize: '11px',
-            color: isSelected ? '#3b82f6' : '#000',
+            color: isSelected ? '#3b82f6' : '#2d2d2d',
             fontWeight: '600',
             flexShrink: 0,
+            transition: 'color 0.15s',
           }}
         >
           {materialDef?.meta.title || schema.type}

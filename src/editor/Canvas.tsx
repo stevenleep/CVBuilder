@@ -266,7 +266,7 @@ export const Canvas: React.FC = () => {
       style={{
         flex: 1,
         overflow: 'auto',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#f8f9fa',
         padding: '32px 24px 80px 24px',
         position: 'relative',
         display: 'flex',

@@ -118,12 +118,25 @@ const createDefaultPageSchema = (): PageSchema => ({
   },
 })
 
-// 辅助函数：添加历史记录
+// 历史记录配置
+const HISTORY_MAX_SIZE = 50 // 限制历史记录数量，避免内存溢出
+
+// 辅助函数：添加历史记录（优化版）
 const addHistory = (set: any) => {
   set((state: any) => {
+    // 删除当前索引之后的历史记录
     state.history = state.history.slice(0, state.historyIndex + 1)
+
+    // 添加新的历史记录
     state.history.push(JSON.parse(JSON.stringify(state.pageSchema)))
-    state.historyIndex = state.history.length - 1
+
+    // 限制历史记录数量，删除最旧的记录
+    if (state.history.length > HISTORY_MAX_SIZE) {
+      state.history = state.history.slice(state.history.length - HISTORY_MAX_SIZE)
+      state.historyIndex = HISTORY_MAX_SIZE - 1
+    } else {
+      state.historyIndex = state.history.length - 1
+    }
   })
 }
 

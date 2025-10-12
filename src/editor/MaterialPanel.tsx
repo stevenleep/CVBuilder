@@ -4,7 +4,19 @@
 
 import React, { useState, useEffect } from 'react'
 import { useEditorStore } from '@store/editorStore'
-import { Search, Layers, Grid3x3, Trash2, Edit2 } from 'lucide-react'
+import {
+  Search,
+  Layers,
+  Grid3x3,
+  Trash2,
+  Edit2,
+  FileText,
+  Layout,
+  Package,
+  LayoutGrid,
+  GripVertical,
+  X,
+} from 'lucide-react'
 import { useAllMaterials } from '@/core'
 import { DraggableMaterial } from './DraggableMaterial'
 import { StructurePanel } from './StructureTree'
@@ -12,6 +24,8 @@ import { templateManager, CustomTemplate } from '@/core/services/TemplateManager
 import { systemTemplateManager, SystemTemplate } from '@/core/services/SystemTemplateManager'
 import { notification } from '@/utils/notification'
 import { EditTemplateDialog } from './EditTemplateDialog'
+import { useDrag } from 'react-dnd'
+import { DragItemTypes, TemplateDragItem } from './DndProvider'
 
 export const MaterialPanel: React.FC = () => {
   const { addNode, pageSchema } = useEditorStore()
@@ -95,10 +109,10 @@ export const MaterialPanel: React.FC = () => {
 
   // 按指定顺序排列分类
   const categoryList = [
-    { id: 'resume', name: '简历' },
-    { id: 'my-templates', name: '模板' },
-    { id: 'base', name: '基础' },
-    { id: 'all', name: '全部' },
+    { id: 'resume', name: '简历', icon: <FileText size={12} /> },
+    { id: 'my-templates', name: '模板', icon: <Layout size={12} /> },
+    { id: 'base', name: '基础', icon: <Package size={12} /> },
+    { id: 'all', name: '全部', icon: <LayoutGrid size={12} /> },
   ]
 
   const handleAddMaterial = (materialType: string) => {
@@ -150,7 +164,7 @@ export const MaterialPanel: React.FC = () => {
         backgroundColor: '#fafafa',
       }}
     >
-      {/* Tab切换 */}
+      {/* Tab切换和搜索 - 放在一行 */}
       <div
         style={{
           display: 'flex',
@@ -158,6 +172,7 @@ export const MaterialPanel: React.FC = () => {
           padding: '10px',
           borderBottom: '1px solid #e8e8e8',
           backgroundColor: '#fff',
+          alignItems: 'center',
         }}
       >
         <TabButton
@@ -172,112 +187,202 @@ export const MaterialPanel: React.FC = () => {
           active={activeTab === 'structure'}
           onClick={() => setActiveTab('structure')}
         />
+
+        {/* 分隔线 */}
+        <div
+          style={{
+            width: '1px',
+            height: '20px',
+            backgroundColor: '#e8e8e8',
+            margin: '0 4px',
+          }}
+        />
+
+        {/* 搜索框 */}
+        {activeTab === 'components' && (
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              flex: 1,
+            }}
+          >
+            <Search
+              size={13}
+              style={{
+                position: 'absolute',
+                left: '10px',
+                color: '#999',
+                pointerEvents: 'none',
+              }}
+            />
+            <input
+              type="text"
+              placeholder="搜索..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              style={{
+                width: '100%',
+                height: '32px',
+                padding: '0 32px 0 32px',
+                border: '1px solid #e8e8e8',
+                borderRadius: '6px',
+                fontSize: '12px',
+                outline: 'none',
+                backgroundColor: '#fafafa',
+                transition: 'all 0.12s',
+                color: '#2d2d2d',
+              }}
+              onFocus={e => {
+                e.currentTarget.style.backgroundColor = '#fff'
+                e.currentTarget.style.borderColor = '#d0d0d0'
+                e.currentTarget.style.boxShadow = '0 0 0 2px rgba(0,0,0,0.02)'
+              }}
+              onBlur={e => {
+                e.currentTarget.style.backgroundColor = '#fafafa'
+                e.currentTarget.style.borderColor = '#e8e8e8'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                style={{
+                  position: 'absolute',
+                  right: '8px',
+                  width: '20px',
+                  height: '20px',
+                  border: 'none',
+                  borderRadius: '50%',
+                  backgroundColor: 'transparent',
+                  color: '#999',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.12s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = '#e8e8e8'
+                  e.currentTarget.style.color = '#666'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.color = '#999'
+                }}
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {activeTab === 'structure' ? (
         <StructurePanel />
       ) : (
         <>
-          {/* 搜索 */}
-          <div style={{ padding: '10px', backgroundColor: '#fff' }}>
-            <div
-              style={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <Search
-                size={13}
-                style={{
-                  position: 'absolute',
-                  left: '10px',
-                  color: '#999',
-                }}
-              />
-              <input
-                type="text"
-                placeholder="搜索组件..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                style={{
-                  width: '100%',
-                  height: '32px',
-                  padding: '0 10px 0 32px',
-                  border: '1px solid #e8e8e8',
-                  borderRadius: '6px',
-                  fontSize: '12px',
-                  outline: 'none',
-                  backgroundColor: '#fafafa',
-                  transition: 'all 0.12s',
-                  color: '#2d2d2d',
-                }}
-                onFocus={e => {
-                  e.currentTarget.style.backgroundColor = '#fff'
-                  e.currentTarget.style.borderColor = '#d0d0d0'
-                  e.currentTarget.style.boxShadow = '0 0 0 2px rgba(0,0,0,0.02)'
-                }}
-                onBlur={e => {
-                  e.currentTarget.style.backgroundColor = '#fafafa'
-                  e.currentTarget.style.borderColor = '#e8e8e8'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-              />
-            </div>
-          </div>
-
           {/* 分类 */}
           <div
             style={{
-              padding: '0 10px 10px 10px',
+              padding: '8px',
               display: 'flex',
-              gap: '5px',
+              gap: '4px',
               flexWrap: 'wrap',
               backgroundColor: '#fff',
+              borderBottom: '1px solid #e8e8e8',
             }}
           >
-            {categoryList.map(category => (
-              <button
-                key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                style={{
-                  height: '26px',
-                  padding: '0 12px',
-                  border: 'none',
-                  borderRadius: '5px',
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  backgroundColor: activeCategory === category.id ? '#2d2d2d' : 'transparent',
-                  color: activeCategory === category.id ? '#fff' : '#666',
-                  transition: 'all 0.12s',
-                }}
-                onMouseEnter={e => {
-                  if (activeCategory !== category.id) {
-                    e.currentTarget.style.backgroundColor = '#f0f0f0'
-                    e.currentTarget.style.color = '#2d2d2d'
-                  }
-                }}
-                onMouseLeave={e => {
-                  if (activeCategory !== category.id) {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.color = '#666'
-                  }
-                }}
-              >
-                {category.name}
-              </button>
-            ))}
+            {categoryList.map(category => {
+              const isActive = activeCategory === category.id
+              const [hover, setHover] = React.useState(false)
+
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => setActiveCategory(category.id)}
+                  onMouseEnter={() => setHover(true)}
+                  onMouseLeave={() => setHover(false)}
+                  style={{
+                    position: 'relative',
+                    height: '26px',
+                    padding: '0 9px',
+                    border: 'none',
+                    borderRadius: '5px',
+                    fontSize: '10.5px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    backgroundColor: isActive ? '#2d2d2d' : hover ? '#f5f5f5' : 'transparent',
+                    color: isActive ? '#fff' : hover ? '#2d2d2d' : '#666',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '5px',
+                    lineHeight: 1,
+                    transform: hover && !isActive ? 'translateY(-1px)' : 'translateY(0)',
+                    boxShadow: isActive
+                      ? '0 2px 8px rgba(45, 45, 45, 0.15)'
+                      : hover
+                        ? '0 1px 4px rgba(0, 0, 0, 0.08)'
+                        : 'none',
+                  }}
+                >
+                  {/* 活跃指示器 */}
+                  {isActive && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        left: '0',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '3px',
+                        height: '14px',
+                        backgroundColor: '#fff',
+                        borderRadius: '0 2px 2px 0',
+                      }}
+                    />
+                  )}
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      fontSize: '13px',
+                      transition: 'transform 0.2s',
+                      transform: hover ? 'scale(1.08)' : 'scale(1)',
+                    }}
+                  >
+                    {category.icon}
+                  </span>
+                  <span style={{ display: 'flex', alignItems: 'center' }}>{category.name}</span>
+                </button>
+              )
+            })}
           </div>
 
-          <div
-            style={{
-              width: '100%',
-              height: '1px',
-              backgroundColor: '#e8e8e8',
-              margin: '6px 0',
-            }}
-          />
+          {/* 搜索结果数量 */}
+          {searchTerm && (
+            <div
+              style={{
+                padding: '8px 12px',
+                fontSize: '11px',
+                color: '#666',
+                backgroundColor: '#f9f9f9',
+                borderBottom: '1px solid #e8e8e8',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <span>
+                找到 <strong style={{ color: '#2d2d2d' }}>{filteredMaterials.length}</strong> 个结果
+              </span>
+              {filteredMaterials.length > 0 && (
+                <span style={{ color: '#999' }}>"{searchTerm}"</span>
+              )}
+            </div>
+          )}
 
           {/* 物料列表 */}
           <div
@@ -298,7 +403,7 @@ export const MaterialPanel: React.FC = () => {
                         fontSize: '10px',
                         fontWeight: '700',
                         color: '#999',
-                        marginBottom: '8px',
+                        marginBottom: '6px',
                         paddingLeft: '2px',
                         textTransform: 'uppercase',
                         letterSpacing: '0.8px',
@@ -306,7 +411,7 @@ export const MaterialPanel: React.FC = () => {
                     >
                       系统模板
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                       {systemTemplates.map(template => (
                         <SystemTemplateCard key={template.id} template={template} />
                       ))}
@@ -321,7 +426,7 @@ export const MaterialPanel: React.FC = () => {
                       fontSize: '10px',
                       fontWeight: '700',
                       color: '#999',
-                      marginBottom: '8px',
+                      marginBottom: '6px',
                       paddingLeft: '2px',
                       textTransform: 'uppercase',
                       letterSpacing: '0.8px',
@@ -347,7 +452,7 @@ export const MaterialPanel: React.FC = () => {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                       {customTemplates.map(template => (
                         <TemplateCard
                           key={template.id}
@@ -363,13 +468,76 @@ export const MaterialPanel: React.FC = () => {
             ) : filteredMaterials.length === 0 ? (
               <div
                 style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '60px 20px',
                   textAlign: 'center',
-                  color: '#ccc',
-                  padding: '40px 20px',
-                  fontSize: '12px',
                 }}
               >
-                暂无组件
+                <div
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    backgroundColor: '#f5f5f5',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '16px',
+                  }}
+                >
+                  <Search size={28} style={{ color: '#ccc' }} />
+                </div>
+                <div
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    color: '#999',
+                    marginBottom: '6px',
+                  }}
+                >
+                  {searchTerm ? '未找到相关组件' : '暂无组件'}
+                </div>
+                <div style={{ fontSize: '11px', color: '#ccc', lineHeight: '1.5' }}>
+                  {searchTerm ? (
+                    <>
+                      尝试使用其他关键词搜索
+                      <br />
+                      或切换到其他分类查看
+                    </>
+                  ) : (
+                    '该分类下暂无可用组件'
+                  )}
+                </div>
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    style={{
+                      marginTop: '16px',
+                      padding: '6px 16px',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '6px',
+                      backgroundColor: '#fff',
+                      color: '#666',
+                      fontSize: '11px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.backgroundColor = '#f8f8f8'
+                      e.currentTarget.style.borderColor = '#d0d0d0'
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.backgroundColor = '#fff'
+                      e.currentTarget.style.borderColor = '#e0e0e0'
+                    }}
+                  >
+                    清除搜索
+                  </button>
+                )}
               </div>
             ) : activeCategory === 'all' ? (
               // 全部分类：按组显示
@@ -394,19 +562,19 @@ export const MaterialPanel: React.FC = () => {
                       <div>
                         {Object.entries(groupedBySubcategory[category]).map(
                           ([subcategory, subMaterials]) => (
-                            <div key={subcategory} style={{ marginBottom: '16px' }}>
+                            <div key={subcategory} style={{ marginBottom: '12px' }}>
                               <div
                                 style={{
                                   fontSize: '11px',
                                   fontWeight: '600',
                                   color: '#bbb',
-                                  marginBottom: '8px',
+                                  marginBottom: '6px',
                                   paddingLeft: '2px',
                                 }}
                               >
                                 {getSubcategoryName(subcategory)}
                               </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                                 {subMaterials.map(material => (
                                   <DraggableMaterial
                                     key={material.meta.type}
@@ -422,7 +590,7 @@ export const MaterialPanel: React.FC = () => {
                         )}
                       </div>
                     ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                         {materials.map(material => (
                           <DraggableMaterial
                             key={material.meta.type}
@@ -442,19 +610,19 @@ export const MaterialPanel: React.FC = () => {
               <div>
                 {Object.entries(groupedBySubcategory[activeCategory]).map(
                   ([subcategory, materials]) => (
-                    <div key={subcategory} style={{ marginBottom: '16px' }}>
+                    <div key={subcategory} style={{ marginBottom: '12px' }}>
                       <div
                         style={{
                           fontSize: '11px',
                           fontWeight: '600',
                           color: '#666',
-                          marginBottom: '8px',
+                          marginBottom: '6px',
                           paddingLeft: '4px',
                         }}
                       >
                         {getSubcategoryName(subcategory)}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                         {materials.map(material => (
                           <DraggableMaterial
                             key={material.meta.type}
@@ -471,7 +639,7 @@ export const MaterialPanel: React.FC = () => {
               </div>
             ) : (
               // 其他分类：直接列表
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                 {filteredMaterials.map(material => (
                   <DraggableMaterial
                     key={material.meta.type}
@@ -512,25 +680,24 @@ const TabButton: React.FC<{
       onClick={onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      title={label}
       style={{
-        flex: 1,
+        width: '32px',
         height: '32px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '6px',
+        padding: 0,
         border: 'none',
         borderRadius: '6px',
-        fontSize: '13px',
-        fontWeight: '600',
         cursor: 'pointer',
         backgroundColor: active ? '#2d2d2d' : hover ? '#f0f0f0' : 'transparent',
         color: active ? '#fff' : '#666',
         transition: 'all 0.15s',
+        flexShrink: 0,
       }}
     >
       {icon}
-      {label}
     </button>
   )
 }
@@ -555,14 +722,34 @@ function getSubcategoryName(subcategory: string): string {
   return map[subcategory] || subcategory
 }
 
-// 模板卡片组件
+// 模板卡片组件 - 简化版
 const TemplateCard: React.FC<{
   template: CustomTemplate
   onEdit: (e: React.MouseEvent) => void
   onDelete: (e: React.MouseEvent) => void
 }> = ({ template, onEdit, onDelete }) => {
   const [hover, setHover] = useState(false)
+  const [tooltipPosition, setTooltipPosition] = React.useState<{ x: number; y: number } | null>(
+    null
+  )
+  const cardRef = React.useRef<HTMLDivElement>(null)
   const { addNodeFromSchema } = useEditorStore()
+
+  // 添加拖拽功能
+  const [{ isDragging }, drag] = useDrag<TemplateDragItem, void, { isDragging: boolean }>(
+    () => ({
+      type: DragItemTypes.TEMPLATE,
+      item: {
+        type: DragItemTypes.TEMPLATE,
+        templateSchema: template.schema,
+        templateName: template.name,
+      },
+      collect: monitor => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }),
+    [template]
+  )
 
   const handleUseTemplate = () => {
     // 在根节点添加模板
@@ -570,172 +757,358 @@ const TemplateCard: React.FC<{
     notification.success(`已添加模板: ${template.name}`)
   }
 
+  const handleMouseEnter = () => {
+    setHover(true)
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect()
+      setTooltipPosition({
+        x: rect.right + 8,
+        y: rect.top,
+      })
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setHover(false)
+    setTooltipPosition(null)
+  }
+
+  const combineRefs = (el: HTMLDivElement | null) => {
+    drag(el)
+    ;(cardRef as any).current = el
+  }
+
   return (
-    <div
-      onClick={handleUseTemplate}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        padding: '10px',
-        border: '1px solid #e8e8e8',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        backgroundColor: hover ? '#fff' : '#fafafa',
-        transition: 'all 0.12s',
-        position: 'relative',
-      }}
-    >
+    <>
       <div
+        ref={combineRefs}
+        onClick={handleUseTemplate}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         style={{
-          fontSize: '13px',
-          fontWeight: '600',
-          color: '#2d2d2d',
-          marginBottom: '4px',
-          paddingRight: hover ? '56px' : '0',
-          transition: 'padding-right 0.12s',
-        }}
-      >
-        {template.name}
-      </div>
-
-      {template.description && (
-        <div
-          style={{
-            fontSize: '11px',
-            color: '#999',
-            marginBottom: '6px',
-            lineHeight: '1.4',
-          }}
-        >
-          {template.description}
-        </div>
-      )}
-
-      <div
-        style={{
-          fontSize: '10px',
-          color: '#ccc',
+          padding: '7px 8px',
+          border: `1px solid ${hover ? '#e0e0e0' : 'transparent'}`,
+          borderRadius: '5px',
+          cursor: isDragging ? 'grabbing' : 'grab',
+          backgroundColor: hover ? '#fff' : 'transparent',
+          transition: 'all 0.12s',
+          position: 'relative',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '6px',
+          boxShadow: hover ? '0 2px 4px rgba(0,0,0,0.04)' : 'none',
+          opacity: isDragging ? 0.5 : 1,
         }}
       >
-        <span>{getCategoryDisplayName(template.category)}</span>
-        <span>·</span>
-        <span>{new Date(template.createTime).toLocaleDateString('zh-CN')}</span>
-      </div>
-
-      {hover && (
+        {/* 拖动手柄 */}
         <div
           style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
+            width: '12px',
+            height: '12px',
             display: 'flex',
-            gap: '4px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: hover ? '#666' : '#d0d0d0',
+            flexShrink: 0,
+            transition: 'color 0.12s',
           }}
         >
-          <button
-            onClick={onEdit}
+          <GripVertical size={11} strokeWidth={2.5} />
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
             style={{
-              width: '22px',
-              height: '22px',
-              border: 'none',
-              borderRadius: '4px',
+              fontSize: '11px',
+              fontWeight: '600',
+              color: '#2d2d2d',
+              lineHeight: '1.2',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {template.name}
+          </div>
+        </div>
+
+        {hover && (
+          <div
+            style={{
+              display: 'flex',
+              gap: '3px',
+              flexShrink: 0,
+            }}
+          >
+            <button
+              onClick={onEdit}
+              style={{
+                width: '20px',
+                height: '20px',
+                border: 'none',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                backgroundColor: '#f0f0f0',
+                color: '#666',
+                transition: 'all 0.12s',
+              }}
+              title="编辑"
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#e0e0e0'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = '#f0f0f0'
+              }}
+            >
+              <Edit2 size={11} />
+            </button>
+            <button
+              onClick={onDelete}
+              style={{
+                width: '20px',
+                height: '20px',
+                border: 'none',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                backgroundColor: '#fef2f2',
+                color: '#ef4444',
+                transition: 'all 0.12s',
+              }}
+              title="删除"
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#fee'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = '#fef2f2'
+              }}
+            >
+              <Trash2 size={11} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Tooltip提示框 */}
+      {hover && tooltipPosition && (
+        <div
+          style={{
+            position: 'fixed',
+            left: `${tooltipPosition.x}px`,
+            top: `${tooltipPosition.y}px`,
+            maxWidth: '240px',
+            padding: '10px 12px',
+            backgroundColor: '#2d2d2d',
+            color: '#fff',
+            borderRadius: '6px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1)',
+            zIndex: 10000,
+            pointerEvents: 'none',
+            animation: 'fadeIn 0.15s ease-out',
+          }}
+        >
+          {/* 标题 */}
+          <div
+            style={{
+              fontSize: '12px',
+              fontWeight: '600',
+              marginBottom: '6px',
+              color: '#fff',
+              lineHeight: '1.3',
+            }}
+          >
+            {template.name}
+          </div>
+
+          {/* 描述 */}
+          {template.description && (
+            <div
+              style={{
+                fontSize: '11px',
+                lineHeight: '1.5',
+                color: 'rgba(255,255,255,0.85)',
+                marginBottom: '8px',
+              }}
+            >
+              {template.description}
+            </div>
+          )}
+
+          {/* 元信息 */}
+          <div
+            style={{
+              fontSize: '10px',
+              color: 'rgba(255,255,255,0.6)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              backgroundColor: '#f0f0f0',
-              color: '#666',
+              gap: '8px',
+              paddingTop: '8px',
+              borderTop: '1px solid rgba(255,255,255,0.1)',
             }}
-            title="编辑"
           >
-            <Edit2 size={12} />
-          </button>
-          <button
-            onClick={onDelete}
-            style={{
-              width: '22px',
-              height: '22px',
-              border: 'none',
-              borderRadius: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              backgroundColor: '#fef2f2',
-              color: '#ef4444',
-            }}
-            title="删除"
-          >
-            <Trash2 size={12} />
-          </button>
+            <span>📅 {new Date(template.createTime).toLocaleDateString('zh-CN')}</span>
+          </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
 
-function getCategoryDisplayName(category: string): string {
-  const map: Record<string, string> = {
-    custom: '自定义',
-    work: '工作相关',
-    education: '教育相关',
-    project: '项目相关',
-  }
-  return map[category] || category
-}
-
-// 系统模板卡片组件（不可编辑/删除）
+// 系统模板卡片组件 - 简化版（不可编辑/删除）
 const SystemTemplateCard: React.FC<{
   template: SystemTemplate
 }> = ({ template }) => {
   const [hover, setHover] = useState(false)
+  const [tooltipPosition, setTooltipPosition] = React.useState<{ x: number; y: number } | null>(
+    null
+  )
+  const cardRef = React.useRef<HTMLDivElement>(null)
   const { addNodeFromSchema } = useEditorStore()
+
+  // 添加拖拽功能
+  const [{ isDragging }, drag] = useDrag<TemplateDragItem, void, { isDragging: boolean }>(
+    () => ({
+      type: DragItemTypes.TEMPLATE,
+      item: {
+        type: DragItemTypes.TEMPLATE,
+        templateSchema: template.schema,
+        templateName: template.name,
+      },
+      collect: monitor => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }),
+    [template]
+  )
 
   const handleUseTemplate = () => {
     addNodeFromSchema(template.schema)
     notification.success(`已添加模板: ${template.name}`)
   }
 
+  const handleMouseEnter = () => {
+    setHover(true)
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect()
+      setTooltipPosition({
+        x: rect.right + 8,
+        y: rect.top,
+      })
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setHover(false)
+    setTooltipPosition(null)
+  }
+
+  const combineRefs = (el: HTMLDivElement | null) => {
+    drag(el)
+    ;(cardRef as any).current = el
+  }
+
   return (
-    <div
-      onClick={handleUseTemplate}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        padding: '10px',
-        border: '1px solid #e8e8e8',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        backgroundColor: hover ? '#fff' : '#fafafa',
-        transition: 'all 0.12s',
-        position: 'relative',
-      }}
-    >
+    <>
       <div
+        ref={combineRefs}
+        onClick={handleUseTemplate}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         style={{
-          fontSize: '13px',
-          fontWeight: '600',
-          color: '#2d2d2d',
-          marginBottom: '4px',
+          padding: '7px 8px',
+          border: `1px solid ${hover ? '#e0e0e0' : 'transparent'}`,
+          borderRadius: '5px',
+          cursor: isDragging ? 'grabbing' : 'grab',
+          backgroundColor: hover ? '#fff' : 'transparent',
+          transition: 'all 0.12s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          boxShadow: hover ? '0 2px 4px rgba(0,0,0,0.04)' : 'none',
+          opacity: isDragging ? 0.5 : 1,
         }}
       >
-        {template.name}
-      </div>
-
-      {template.description && (
+        {/* 拖动手柄 */}
         <div
           style={{
-            fontSize: '11px',
-            color: '#999',
-            lineHeight: '1.4',
+            width: '12px',
+            height: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: hover ? '#666' : '#d0d0d0',
+            flexShrink: 0,
+            transition: 'color 0.12s',
           }}
         >
-          {template.description}
+          <GripVertical size={11} strokeWidth={2.5} />
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: '600',
+              color: '#2d2d2d',
+              lineHeight: '1.2',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {template.name}
+          </div>
+        </div>
+      </div>
+
+      {/* Tooltip提示框 */}
+      {hover && template.description && tooltipPosition && (
+        <div
+          style={{
+            position: 'fixed',
+            left: `${tooltipPosition.x}px`,
+            top: `${tooltipPosition.y}px`,
+            maxWidth: '240px',
+            padding: '10px 12px',
+            backgroundColor: '#2d2d2d',
+            color: '#fff',
+            borderRadius: '6px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1)',
+            zIndex: 10000,
+            pointerEvents: 'none',
+            animation: 'fadeIn 0.15s ease-out',
+          }}
+        >
+          {/* 标题 */}
+          <div
+            style={{
+              fontSize: '12px',
+              fontWeight: '600',
+              marginBottom: '6px',
+              color: '#fff',
+              lineHeight: '1.3',
+            }}
+          >
+            {template.name}
+          </div>
+
+          {/* 描述 */}
+          <div
+            style={{
+              fontSize: '11px',
+              lineHeight: '1.5',
+              color: 'rgba(255,255,255,0.85)',
+            }}
+          >
+            {template.description}
+          </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

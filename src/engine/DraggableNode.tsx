@@ -67,20 +67,19 @@ export const DraggableNode: React.FC<DraggableNodeProps> = ({
         ...style,
         opacity: isDragging ? 0.5 : 1,
         transform: isDragging ? 'scale(0.98)' : 'scale(1)',
-        transition: 'all 0.15s ease',
+        transition: isDragging ? 'none' : 'all 0.15s ease',
         cursor: isEditMode ? 'move' : 'default',
+        willChange: isDragging ? 'transform, opacity' : 'auto',
         ...(isOver && canDrop
           ? {
-              outline: '3px dashed #3b82f6',
-              outlineOffset: '3px',
-              backgroundColor: 'rgba(59, 130, 246, 0.05)',
-              boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.1)',
+              outline: '2px dashed #3b82f6',
+              outlineOffset: '2px',
+              backgroundColor: 'rgba(59, 130, 246, 0.03)',
             }
           : {}),
         ...(isDragging
           ? {
-              filter: 'blur(1px)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+              pointerEvents: 'none',
             }
           : {}),
       }}

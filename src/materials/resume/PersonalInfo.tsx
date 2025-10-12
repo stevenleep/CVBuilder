@@ -183,10 +183,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
           {title && (
             <div
               style={{
-                fontSize: `${theme.font.bodySize.large}px`,
+                fontSize: `${theme.font.bodySize.normal}px`,
                 color: theme.color.text.secondary,
                 marginBottom: `${theme.spacing.line}px`,
-                fontWeight: theme.font.weight.normal,
+                fontWeight: theme.font.weight.medium,
               }}
             >
               {title}
@@ -425,10 +425,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
         {title && (
           <div
             style={{
-              fontSize: `${theme.font.bodySize.large}px`,
+              fontSize: `${theme.font.bodySize.normal}px`,
               color: theme.color.text.secondary,
               marginBottom: `${theme.spacing.paragraph}px`,
-              fontWeight: theme.font.weight.normal,
+              fontWeight: theme.font.weight.medium,
             }}
           >
             {title}
@@ -535,7 +535,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
           {title && (
             <span
               style={{
-                fontSize: `${theme.font.bodySize.large}px`,
+                fontSize: `${theme.font.bodySize.normal}px`,
                 fontWeight: theme.font.weight.normal,
                 color: theme.color.text.tertiary,
                 marginLeft: `${theme.spacing.paragraph + 4}px`,
@@ -612,7 +612,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
           {title && (
             <div
               style={{
-                fontSize: `${theme.font.bodySize.large}px`,
+                fontSize: `${theme.font.bodySize.normal}px`,
                 color: theme.color.text.secondary,
                 fontWeight: theme.font.weight.medium,
               }}

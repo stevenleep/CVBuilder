@@ -4,7 +4,7 @@
  * 专业的富文本编辑体验，支持丰富的格式化选项
  */
 
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useEffect } from 'react'
 import ReactQuill from 'react-quill'
 import 'quill/dist/quill.snow.css'
 
@@ -24,6 +24,29 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
   simple = false,
 }) => {
   const quillRef = useRef<ReactQuill>(null)
+  const previousValueRef = useRef<string>(value)
+
+  // 监听内容变化，当内容被清空时重置格式
+  useEffect(() => {
+    const editor = quillRef.current?.getEditor()
+    if (!editor) return
+
+    const currentText = editor.getText().trim()
+    const previousText = previousValueRef.current.replace(/<[^>]*>/g, '').trim()
+
+    // 当内容从有到无（被全部删除）时，重置所有格式
+    if (previousText && !currentText) {
+      // 清除所有格式
+      editor.removeFormat(0, editor.getLength())
+
+      // 重置选区到开始位置
+      setTimeout(() => {
+        editor.setSelection(0, 0)
+      }, 0)
+    }
+
+    previousValueRef.current = value
+  }, [value])
 
   // 工具栏配置
   const modules = useMemo(
@@ -57,6 +80,33 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
     'background',
   ]
 
+  // 自定义 onChange 处理，确保内容清空时也清除格式
+  const handleChange = (content: string) => {
+    const editor = quillRef.current?.getEditor()
+    if (!editor) {
+      onChange(content)
+      return
+    }
+
+    // 检查是否内容被清空
+    const text = editor.getText().trim()
+
+    if (!text || text === '') {
+      // 内容为空时，清除所有格式并更新为空字符串
+      onChange('')
+      // 延迟清除格式，确保编辑器已更新
+      setTimeout(() => {
+        if (editor) {
+          editor.removeFormat(0, editor.getLength())
+          // 确保光标在正确位置
+          editor.setSelection(0, 0)
+        }
+      }, 0)
+    } else {
+      onChange(content)
+    }
+  }
+
   return (
     <div
       className="quill-wrapper"
@@ -70,7 +120,7 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
       <ReactQuill
         ref={quillRef}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         placeholder={placeholder}
         modules={modules}
         formats={formats}

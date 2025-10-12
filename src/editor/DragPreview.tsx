@@ -6,9 +6,9 @@
 
 import React from 'react'
 import { useDragLayer } from 'react-dnd'
-import { DragItemTypes, MaterialDragItem, NodeDragItem } from './DndProvider'
+import { DragItemTypes, MaterialDragItem, NodeDragItem, TemplateDragItem } from './DndProvider'
 import { useMaterial } from '@/core'
-import { GripVertical, Move } from 'lucide-react'
+import { GripVertical, Move, Layout } from 'lucide-react'
 
 export const DragPreview: React.FC = () => {
   const { isDragging, item, currentOffset, itemType } = useDragLayer(monitor => ({
@@ -83,6 +83,29 @@ export const DragPreview: React.FC = () => {
       >
         <Move size={16} style={{ opacity: 0.8 }} />
         <span>移动 {materialDef?.meta.title || '组件'}</span>
+      </div>
+    )
+  } else if (itemType === DragItemTypes.TEMPLATE && item) {
+    const templateItem = item as TemplateDragItem
+    previewContent = (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '10px 14px',
+          backgroundColor: '#8b5cf6',
+          color: 'white',
+          borderRadius: '8px',
+          fontSize: '13px',
+          fontWeight: '600',
+          boxShadow: '0 8px 24px rgba(139, 92, 246, 0.6), 0 0 0 1px rgba(255,255,255,0.2)',
+          whiteSpace: 'nowrap',
+          backdropFilter: 'blur(8px)',
+        }}
+      >
+        <Layout size={16} style={{ opacity: 0.8 }} />
+        <span>添加模板 {templateItem.templateName}</span>
       </div>
     )
   }

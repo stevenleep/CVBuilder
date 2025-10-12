@@ -12,6 +12,7 @@ import { ThemeProvider } from './core/context/ThemeContext'
 import { DndProvider } from './editor/DndProvider'
 import { NotificationProvider } from './components/NotificationProvider'
 import { WelcomeGuide } from './components/WelcomeGuide'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { Logo } from './components/Logo'
 import { HomePage } from './pages/HomePage'
 import { EditorPage } from './pages/EditorPage'
@@ -102,68 +103,70 @@ function App() {
   }
 
   return (
-    <NotificationProvider>
-      <EditorProvider value={editorContext}>
-        <ThemeProvider>
-          <BrowserRouter basename={import.meta.env.BASE_URL}>
-            <Routes>
-              {/* 首页 */}
-              <Route path="/" element={<HomePage />} />
+    <ErrorBoundary>
+      <NotificationProvider>
+        <EditorProvider value={editorContext}>
+          <ThemeProvider>
+            <BrowserRouter basename={import.meta.env.BASE_URL}>
+              <Routes>
+                {/* 首页 */}
+                <Route path="/" element={<HomePage />} />
 
-              {/* 编辑器 */}
-              <Route
-                path="/editor"
-                element={
-                  <DndProvider>
-                    <EditorPage />
-                    {showWelcome && <WelcomeGuide onClose={() => setShowWelcome(false)} />}
-                  </DndProvider>
-                }
-              />
+                {/* 编辑器 */}
+                <Route
+                  path="/editor"
+                  element={
+                    <DndProvider>
+                      <EditorPage />
+                      {showWelcome && <WelcomeGuide onClose={() => setShowWelcome(false)} />}
+                    </DndProvider>
+                  }
+                />
 
-              {/* 编辑器 - 带ID */}
-              <Route
-                path="/editor/:id"
-                element={
-                  <DndProvider>
-                    <EditorPage />
-                  </DndProvider>
-                }
-              />
+                {/* 编辑器 - 带ID */}
+                <Route
+                  path="/editor/:id"
+                  element={
+                    <DndProvider>
+                      <EditorPage />
+                    </DndProvider>
+                  }
+                />
 
-              {/* 模板库 */}
-              <Route path="/templates" element={<TemplatesPage />} />
+                {/* 模板库 */}
+                <Route path="/templates" element={<TemplatesPage />} />
 
-              {/* 模板预览 */}
-              <Route
-                path="/templates/:id/preview"
-                element={
-                  <DndProvider>
-                    <TemplatePreviewPage />
-                  </DndProvider>
-                }
-              />
+                {/* 模板预览 */}
+                <Route
+                  path="/templates/:id/preview"
+                  element={
+                    <DndProvider>
+                      <TemplatePreviewPage />
+                    </DndProvider>
+                  }
+                />
 
-              {/* 示例预览 */}
-              <Route
-                path="/examples/:id/preview"
-                element={
-                  <DndProvider>
-                    <ExamplePreviewPage />
-                  </DndProvider>
-                }
-              />
+                {/* 示例预览 */}
+                <Route
+                  path="/examples/:id/preview"
+                  element={
+                    <DndProvider>
+                      <ExamplePreviewPage />
+                    </DndProvider>
+                  }
+                />
 
-              {/* 简历库 */}
-              <Route path="/resumes" element={<ResumesPage />} />
+                {/* 简历库 */}
+                <Route path="/resumes" element={<ResumesPage />} />
 
-              {/* 默认重定向到首页 */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </BrowserRouter>
-        </ThemeProvider>
-      </EditorProvider>
-    </NotificationProvider>
+                {/* 默认重定向到首页 */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </BrowserRouter>
+          </ThemeProvider>
+        </EditorProvider>
+      </NotificationProvider>
+    </ErrorBoundary>
   )
 }
 
