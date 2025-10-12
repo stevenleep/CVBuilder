@@ -1,36 +1,67 @@
 /**
- * 自动保存状态指示器
+ * 自动保存状态指示器（增强版）
  *
  * 显示在工具栏，提示用户保存状态
+ * 支持保存到编辑器状态和简历库
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Check, Cloud, Loader2 } from 'lucide-react'
 import { useEditorStore } from '@/store/editorStore'
+import { indexedDBService, STORES } from '@/utils/indexedDB'
 
 export const AutoSaveIndicator: React.FC = () => {
   const [status, setStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved')
   const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null)
-  const { pageSchema } = useEditorStore()
+  const { pageSchema, currentResumeId } = useEditorStore()
+  const saveTimeoutRef = useRef<NodeJS.Timeout>()
 
-  // 监听页面变化
+  // 监听页面变化，实现防抖自动保存
   useEffect(() => {
     setStatus('unsaved')
 
-    // 延迟保存
-    const timer = setTimeout(async () => {
+    // 清除之前的定时器
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+
+    // 延迟 1.5 秒保存（防抖）
+    saveTimeoutRef.current = setTimeout(async () => {
       setStatus('saving')
       try {
+        // 1. 保存到编辑器状态（快速恢复用）
         await useEditorStore.getState().saveToStorage()
+
+        // 2. 如果有简历 ID，保存到简历库
+        if (currentResumeId) {
+          const existing = await indexedDBService.getItem(STORES.RESUMES, currentResumeId)
+          if (existing) {
+            const updated = {
+              ...existing,
+              schema: pageSchema,
+              updatedAt: new Date().toISOString(),
+            }
+            await indexedDBService.setItem(STORES.RESUMES, currentResumeId, updated)
+            
+            // 触发简历列表刷新事件
+            window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
+          }
+        }
+
         setStatus('saved')
         setLastSaveTime(new Date())
       } catch (error) {
+        console.error('Auto save error:', error)
         setStatus('unsaved')
       }
-    }, 1000)
+    }, 1500)
 
-    return () => clearTimeout(timer)
-  }, [pageSchema])
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+    }
+  }, [pageSchema, currentResumeId])
 
   const getStatusText = () => {
     switch (status) {

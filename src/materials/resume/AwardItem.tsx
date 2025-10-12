@@ -26,7 +26,7 @@ const AwardItem: React.FC<AwardItemProps> = ({
   return (
     <div
       style={{
-        marginBottom: `${theme.spacing.item - 2}px`,
+        marginBottom: `${theme.spacing.item}px`,
         ...style,
       }}
     >
@@ -35,28 +35,29 @@ const AwardItem: React.FC<AwardItemProps> = ({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'baseline',
-          gap: '16px',
-          marginBottom: description ? `${theme.spacing.line - 2}px` : '0',
+          gap: '20px',
+          marginBottom: description ? `${theme.spacing.line}px` : '0',
         }}
       >
         <div style={{ flex: 1 }}>
           <span
             style={{
               fontSize: `${theme.font.titleSize.h3}px`,
-              fontWeight: theme.font.weight.semibold,
+              fontWeight: theme.font.weight.bold,
               color: theme.color.text.primary,
+              letterSpacing: '-0.01em',
             }}
           >
             {title}
           </span>
           <span
             style={{
-              fontSize: `${theme.font.bodySize.normal}px`,
-              color: theme.color.text.secondary,
-              marginLeft: `${theme.spacing.line + 4}px`,
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              marginLeft: `${theme.spacing.paragraph}px`,
             }}
           >
-            · {issuer}
+            {issuer}
           </span>
         </div>
 

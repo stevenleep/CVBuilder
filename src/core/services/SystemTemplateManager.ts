@@ -22,21 +22,21 @@ export interface SystemTemplate {
 const createPersonalInfoTemplate = (): SystemTemplate => {
   return {
     id: 'sys-personal-info',
-    name: '个人信息模板',
-    description: '包含完整的个人信息展示',
+    name: '个人信息',
+    description: '简洁专业的个人信息展示',
     category: 'system',
     schema: {
       id: nanoid(),
       type: 'PersonalInfo',
       props: {
-        name: '张三',
+        name: '张明',
         title: '高级前端工程师',
         phone: '138-0000-0000',
-        email: 'zhangsan@example.com',
-        location: '北京市',
-        website: '',
-        github: '',
-        linkedin: '',
+        email: 'zhangming@example.com',
+        currentLocation: '',
+        github: 'github.com/zhangming',
+        workYears: '5',
+        align: 'left',
       },
       style: {},
       children: [],
@@ -45,13 +45,13 @@ const createPersonalInfoTemplate = (): SystemTemplate => {
 }
 
 /**
- * 创建工作经历模板（包含3个工作经历）
+ * 创建工作经历模板（包含2个精简的工作经历）
  */
 const createWorkExperienceTemplate = (): SystemTemplate => {
   return {
     id: 'sys-work-experience',
-    name: '工作经历模板',
-    description: '包含3个工作经历示例',
+    name: '工作经历',
+    description: '清晰展示工作经验与成就',
     category: 'system',
     schema: {
       id: nanoid(),
@@ -65,13 +65,13 @@ const createWorkExperienceTemplate = (): SystemTemplate => {
           id: nanoid(),
           type: 'ExperienceItem',
           props: {
-            company: '某科技公司',
+            company: '某科技有限公司',
             position: '高级前端工程师',
-            startDate: '2022.03',
+            startDate: '2021.06',
             endDate: '至今',
             location: '北京',
             description:
-              '<ul><li>负责公司核心产品的前端架构设计和开发</li><li>带领5人团队完成多个重要项目</li><li>推动前端技术栈升级，提升开发效率30%</li></ul>',
+              '<ul><li>负责企业级管理系统的前端架构设计与核心功能开发</li><li>主导技术选型，采用 React + TypeScript 技术栈，提升代码可维护性</li><li>优化构建流程，首屏加载时间减少 40%，提升用户体验</li><li>指导初级工程师，推动团队技术能力提升</li></ul>',
           },
           style: {},
           children: [],
@@ -80,28 +80,13 @@ const createWorkExperienceTemplate = (): SystemTemplate => {
           id: nanoid(),
           type: 'ExperienceItem',
           props: {
-            company: '互联网公司',
+            company: '某互联网公司',
             position: '前端工程师',
-            startDate: '2020.07',
-            endDate: '2022.02',
+            startDate: '2019.07',
+            endDate: '2021.05',
             location: '上海',
             description:
-              '<ul><li>参与多个To B产品的前端开发</li><li>负责组件库的设计和实现</li><li>优化页面性能，提升用户体验</li></ul>',
-          },
-          style: {},
-          children: [],
-        },
-        {
-          id: nanoid(),
-          type: 'ExperienceItem',
-          props: {
-            company: '创业公司',
-            position: '前端开发实习生',
-            startDate: '2019.07',
-            endDate: '2020.06',
-            location: '深圳',
-            description:
-              '<ul><li>参与公司官网和管理后台的开发</li><li>学习并实践React技术栈</li><li>协助团队完成产品迭代</li></ul>',
+              '<ul><li>参与电商平台前端开发，负责商品详情、购物车等核心模块</li><li>封装通用业务组件，提高团队开发效率 30%</li><li>配合后端完成接口对接，解决跨域、性能等问题</li></ul>',
           },
           style: {},
           children: [],
@@ -112,13 +97,13 @@ const createWorkExperienceTemplate = (): SystemTemplate => {
 }
 
 /**
- * 创建项目经历模板（包含3个项目）
+ * 创建项目经历模板（包含2个精选项目）
  */
 const createProjectTemplate = (): SystemTemplate => {
   return {
     id: 'sys-project',
-    name: '项目经历模板',
-    description: '包含3个项目经历示例',
+    name: '项目经历',
+    description: '突出项目价值与技术亮点',
     category: 'system',
     schema: {
       id: nanoid(),
@@ -132,16 +117,18 @@ const createProjectTemplate = (): SystemTemplate => {
           id: nanoid(),
           type: 'ProjectItem',
           props: {
-            projectName: '电商平台前端系统',
+            projectName: '企业级管理平台',
             projectType: '商业项目',
             role: '前端负责人',
-            startDate: '2022.06',
-            endDate: '2023.12',
-            techStack: 'React, TypeScript, Next.js, Redux, Ant Design',
+            startDate: '2022.03',
+            endDate: '2023.08',
+            techStack: 'React 18, TypeScript, Ant Design, Redux Toolkit',
+            teamSize: '6',
+            userScale: '5000+',
             description:
-              '<ul><li>负责电商平台的前端架构设计和开发</li><li>实现商品展示、购物车、订单管理等核心功能</li></ul>',
+              '<ul><li>负责平台整体前端架构设计，统一技术栈与开发规范</li><li>实现复杂的权限控制、数据可视化、工作流引擎等核心功能</li><li>建立组件库与工具函数库，提升团队协作效率</li></ul>',
             achievements:
-              '<ul><li>页面加载速度提升40%</li><li>支持日均10万+用户访问</li><li>代码可维护性显著提升</li></ul>',
+              '<ul><li>页面响应速度提升 50%，首屏加载优化至 1.2s 内</li><li>成功支持 5000+ 企业用户稳定运行，零重大故障</li><li>代码复用率达 60%，显著降低维护成本</li></ul>',
           },
           style: {},
           children: [],
@@ -150,32 +137,17 @@ const createProjectTemplate = (): SystemTemplate => {
           id: nanoid(),
           type: 'ProjectItem',
           props: {
-            projectName: '企业管理系统',
+            projectName: '在线教育 H5 应用',
             projectType: '商业项目',
             role: '核心开发',
-            startDate: '2021.03',
-            endDate: '2022.05',
-            techStack: 'Vue3, Element Plus, Vuex, Axios',
+            startDate: '2021.06',
+            endDate: '2022.02',
+            techStack: 'Vue 3, Vite, Pinia, Vant',
+            userScale: '10万+',
             description:
-              '<ul><li>开发企业内部管理系统</li><li>实现权限管理、数据统计等功能</li></ul>',
-            achievements: '<ul><li>提升企业运营效率20%</li><li>获得客户高度认可</li></ul>',
-          },
-          style: {},
-          children: [],
-        },
-        {
-          id: nanoid(),
-          type: 'ProjectItem',
-          props: {
-            projectName: '个人博客系统',
-            projectType: '个人项目',
-            role: '全栈开发',
-            startDate: '2020.08',
-            endDate: '2021.02',
-            techStack: 'React, Node.js, Express, MongoDB',
-            githubUrl: 'https://github.com/example/blog',
-            description:
-              '<ul><li>设计并实现个人博客系统</li><li>包含文章管理、评论系统、用户认证等功能</li></ul>',
+              '<ul><li>开发移动端在线学习平台，包含课程播放、在线答题、学习报告等功能</li><li>适配多种机型与浏览器，确保良好兼容性</li><li>优化视频播放体验，实现断点续播、倍速播放等特性</li></ul>',
+            achievements:
+              '<ul><li>上线 3 个月内获得 10 万+ 用户，日活跃用户 2 万+</li><li>用户满意度达 4.7/5.0</li></ul>',
           },
           style: {},
           children: [],
@@ -191,8 +163,8 @@ const createProjectTemplate = (): SystemTemplate => {
 const createEducationTemplate = (): SystemTemplate => {
   return {
     id: 'sys-education',
-    name: '教育经历模板',
-    description: '包含教育背景信息',
+    name: '教育背景',
+    description: '简明扼要的教育信息',
     category: 'system',
     schema: {
       id: nanoid(),
@@ -209,11 +181,11 @@ const createEducationTemplate = (): SystemTemplate => {
             school: '某某大学',
             major: '计算机科学与技术',
             degree: '本科',
-            startDate: '2016.09',
-            endDate: '2020.06',
-            gpa: '3.8/4.0',
+            startDate: '2015.09',
+            endDate: '2019.06',
+            gpa: '3.6/4.0',
             description:
-              '<ul><li>主修课程：数据结构、算法、操作系统、计算机网络</li><li>获得校级一等奖学金</li><li>参与多个科研项目</li></ul>',
+              '<ul><li>核心课程：数据结构与算法、操作系统、计算机网络、数据库原理</li><li>获得国家励志奖学金、校级三好学生</li></ul>',
           },
           style: {},
           children: [],
@@ -229,8 +201,8 @@ const createEducationTemplate = (): SystemTemplate => {
 const createSkillsTemplate = (): SystemTemplate => {
   return {
     id: 'sys-skills',
-    name: '技能模板',
-    description: '包含技能展示',
+    name: '专业技能',
+    description: '清晰展示技术能力',
     category: 'system',
     schema: {
       id: nanoid(),
@@ -245,14 +217,17 @@ const createSkillsTemplate = (): SystemTemplate => {
           type: 'SkillRating',
           props: {
             skills: [
-              { name: 'React', level: 5 },
-              { name: 'Vue.js', level: 5 },
-              { name: 'TypeScript', level: 4 },
+              { name: 'React / Vue.js', level: 5 },
+              { name: 'TypeScript', level: 5 },
+              { name: 'HTML / CSS / JavaScript', level: 5 },
+              { name: 'Webpack / Vite', level: 4 },
               { name: 'Node.js', level: 4 },
-              { name: 'Webpack', level: 3 },
+              { name: 'Git', level: 4 },
             ],
             maxLevel: 5,
             showDots: true,
+            layout: 'grid',
+            columns: 2,
           },
           style: {},
           children: [],

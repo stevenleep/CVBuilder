@@ -15,7 +15,7 @@ interface ImageProps {
   align?: 'left' | 'center' | 'right'
 }
 
-const Image: React.FC<ImageProps> = ({ 
+const Image: React.FC<ImageProps> = ({
   style,
   src = '',
   alt = '图片',
@@ -25,10 +25,12 @@ const Image: React.FC<ImageProps> = ({
   align = 'left',
 }) => {
   return (
-    <div style={{ 
-      textAlign: align,
-      ...style,
-    }}>
+    <div
+      style={{
+        textAlign: align,
+        ...style,
+      }}
+    >
       {src ? (
         <img
           src={src}
@@ -41,17 +43,19 @@ const Image: React.FC<ImageProps> = ({
           }}
         />
       ) : (
-        <div style={{
-          width: `${width}px`,
-          height: `${height}px`,
-          backgroundColor: '#f5f5f5',
-          borderRadius: '4px',
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#ccc',
-          fontSize: '12px',
-        }}>
+        <div
+          style={{
+            width: `${width}px`,
+            height: `${height}px`,
+            backgroundColor: '#f5f5f5',
+            borderRadius: '4px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#ccc',
+            fontSize: '12px',
+          }}
+        >
           图片
         </div>
       )}
@@ -72,8 +76,8 @@ export const ImageMaterial: IMaterialDefinition = {
   propsSchema: [
     {
       name: 'src',
-      label: '图片URL',
-      type: 'string',
+      label: '图片',
+      type: 'image',
       defaultValue: '',
       required: true,
       group: '内容',
@@ -139,4 +143,3 @@ export const ImageMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

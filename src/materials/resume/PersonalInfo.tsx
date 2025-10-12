@@ -51,6 +51,8 @@ interface PersonalInfoProps {
   // 其他
   summary?: string
   align?: 'left' | 'center' | 'right'
+  layoutPreset?: 'classic' | 'centered' | 'minimal' | 'detailed'
+  showFullLinks?: boolean
 }
 
 const PersonalInfo: React.FC<PersonalInfoProps> = props => {
@@ -84,6 +86,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
     education = '',
     summary = '',
     align = 'left',
+    layoutPreset = 'classic',
+    showFullLinks = true,
   } = props
 
   const theme = useThemeConfig()
@@ -109,65 +113,321 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
     arrivalTime,
   ].filter(Boolean)
 
-  return (
-    <div
-      style={{
-        paddingBottom: `${theme.spacing.paragraph * 1.5}px`,
-        borderBottom: styleConfig.showPersonalInfoDivider
-          ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
-          : 'none',
-        marginBottom: `${theme.spacing.section}px`,
-        display: showAvatar && avatar ? 'flex' : 'block',
-        gap: showAvatar && avatar ? `${theme.spacing.paragraph * 2}px` : '0',
-        alignItems: 'flex-start',
-        ...style,
-      }}
-    >
-      {/* 头像 */}
-      {showAvatar && avatar && (
-        <div
-          style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: `${styleConfig.borderRadius}px`,
-            overflow: 'hidden',
-            flexShrink: 0,
-            border: `2px solid ${theme.color.border.light}`,
-          }}
-        >
-          <img
-            src={avatar}
-            alt={name}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
-        </div>
-      )}
+  // 根据预设选择渲染方式
+  switch (layoutPreset) {
+    case 'centered':
+      return renderCenteredLayout()
+    case 'minimal':
+      return renderMinimalLayout()
+    case 'detailed':
+      return renderDetailedLayout()
+    default:
+      return renderClassicLayout()
+  }
 
-      <div style={{ flex: 1, textAlign: showAvatar && avatar ? 'left' : align }}>
+  // 经典布局（默认）
+  function renderClassicLayout() {
+    return (
+      <div
+        style={{
+          paddingBottom: `${theme.spacing.paragraph * 1.5}px`,
+          borderBottom: styleConfig.showPersonalInfoDivider
+            ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
+            : 'none',
+          marginBottom: `${theme.spacing.section}px`,
+          display: showAvatar && avatar ? 'flex' : 'block',
+          gap: showAvatar && avatar ? `${theme.spacing.paragraph * 2}px` : '0',
+          alignItems: 'flex-start',
+          ...style,
+        }}
+      >
+        {/* 头像 */}
+        {showAvatar && avatar && (
+          <div
+            style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: `${styleConfig.borderRadius}px`,
+              overflow: 'hidden',
+              flexShrink: 0,
+              border: `2px solid ${theme.color.border.light}`,
+            }}
+          >
+            <img
+              src={avatar}
+              alt={name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          </div>
+        )}
+
+        <div style={{ flex: 1, textAlign: align }}>
+          {/* 姓名 */}
+          <h1
+            style={{
+              fontSize: `${theme.font.titleSize.h1}px`,
+              fontWeight: theme.font.weight.bold,
+              margin: `0 0 ${theme.spacing.line - 2}px 0`,
+              color: theme.color.text.primary,
+              letterSpacing: '-0.03em',
+            }}
+          >
+            {name}
+          </h1>
+
+          {/* 职位/目标 */}
+          {title && (
+            <div
+              style={{
+                fontSize: `${theme.font.bodySize.large}px`,
+                color: theme.color.text.secondary,
+                marginBottom: `${theme.spacing.line}px`,
+                fontWeight: theme.font.weight.normal,
+              }}
+            >
+              {title}
+            </div>
+          )}
+
+          {/* 基本信息 */}
+          {basicInfo.length > 0 && (
+            <div
+              style={{
+                fontSize: `${theme.font.bodySize.small}px`,
+                color: theme.color.text.tertiary,
+                marginBottom: `${theme.spacing.line}px`,
+              }}
+            >
+              {basicInfo.join(' · ')}
+            </div>
+          )}
+
+          {/* 求职意向 */}
+          {jobExpectation.length > 0 && (
+            <div
+              style={{
+                fontSize: `${theme.font.bodySize.small}px`,
+                color: theme.color.text.secondary,
+                marginBottom: `${theme.spacing.paragraph}px`,
+                fontWeight: theme.font.weight.medium,
+              }}
+            >
+              {jobExpectation.join(' | ')}
+            </div>
+          )}
+
+          {/* 联系方式 - 优化排版 */}
+          <div
+            style={{
+              display: 'flex',
+              gap: `${theme.spacing.paragraph + 2}px`,
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.secondary,
+              flexWrap: 'wrap',
+              marginTop: `${theme.spacing.line}px`,
+              justifyContent:
+                showAvatar && avatar
+                  ? 'flex-start'
+                  : align === 'center'
+                    ? 'center'
+                    : align === 'right'
+                      ? 'flex-end'
+                      : 'flex-start',
+            }}
+          >
+            {phone && <span>{phone}</span>}
+            {email && <span>{email}</span>}
+            {wechat && <span>微信: {wechat}</span>}
+            {qq && <span>QQ: {qq}</span>}
+          </div>
+
+          {/* 地址 */}
+          {(currentLocation || hometown) && (
+            <div
+              style={{
+                fontSize: `${theme.font.bodySize.small}px`,
+                color: theme.color.text.tertiary,
+                marginTop: `${theme.spacing.line - 2}px`,
+                display: 'flex',
+                gap: `${theme.spacing.paragraph}px`,
+                flexWrap: 'wrap',
+                justifyContent:
+                  showAvatar && avatar
+                    ? 'flex-start'
+                    : align === 'center'
+                      ? 'center'
+                      : align === 'right'
+                        ? 'flex-end'
+                        : 'flex-start',
+              }}
+            >
+              {currentLocation && (
+                <span>
+                  {styleConfig.useEmojiIcons ? '📍 ' : '现居: '}
+                  {currentLocation}
+                </span>
+              )}
+              {hometown && (
+                <span>
+                  {styleConfig.useEmojiIcons ? '🏠 ' : '户籍: '}
+                  {hometown}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* 社交媒体 - 可配置显示方式 */}
+          {(github || linkedin || website || blog) && (
+            <div
+              style={{
+                fontSize: `${theme.font.bodySize.small}px`,
+                marginTop: `${theme.spacing.line - 1}px`,
+                display: 'flex',
+                gap: `${theme.spacing.paragraph + 2}px`,
+                flexWrap: 'wrap',
+                justifyContent:
+                  showAvatar && avatar
+                    ? 'flex-start'
+                    : align === 'center'
+                      ? 'center'
+                      : align === 'right'
+                        ? 'flex-end'
+                        : 'flex-start',
+              }}
+            >
+              {github &&
+                (showFullLinks ? (
+                  <span style={{ color: theme.color.text.tertiary }}>GitHub: {github}</span>
+                ) : (
+                  <a
+                    href={github.startsWith('http') ? github : `https://${github}`}
+                    style={{
+                      color: theme.color.text.secondary,
+                      textDecoration: 'none',
+                      borderBottom: `1px solid ${theme.color.border.normal}`,
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GitHub
+                  </a>
+                ))}
+              {linkedin &&
+                (showFullLinks ? (
+                  <span style={{ color: theme.color.text.tertiary }}>LinkedIn: {linkedin}</span>
+                ) : (
+                  <a
+                    href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`}
+                    style={{
+                      color: theme.color.text.secondary,
+                      textDecoration: 'none',
+                      borderBottom: `1px solid ${theme.color.border.normal}`,
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    LinkedIn
+                  </a>
+                ))}
+              {website &&
+                (showFullLinks ? (
+                  <span style={{ color: theme.color.text.tertiary }}>网站: {website}</span>
+                ) : (
+                  <a
+                    href={website.startsWith('http') ? website : `https://${website}`}
+                    style={{
+                      color: theme.color.text.secondary,
+                      textDecoration: 'none',
+                      borderBottom: `1px solid ${theme.color.border.normal}`,
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    个人网站
+                  </a>
+                ))}
+              {blog &&
+                (showFullLinks ? (
+                  <span style={{ color: theme.color.text.tertiary }}>博客: {blog}</span>
+                ) : (
+                  <a
+                    href={blog.startsWith('http') ? blog : `https://${blog}`}
+                    style={{
+                      color: theme.color.text.secondary,
+                      textDecoration: 'none',
+                      borderBottom: `1px solid ${theme.color.border.normal}`,
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    博客
+                  </a>
+                ))}
+            </div>
+          )}
+        </div>
+
+        {/* 个人简介 */}
+        {summary && (
+          <div
+            style={{
+              marginTop: `${theme.spacing.paragraph + 4}px`,
+              textAlign: 'left',
+              width: '100%',
+            }}
+          >
+            <RichTextDisplay
+              html={summary}
+              style={{
+                fontSize: `${theme.font.bodySize.normal}px`,
+                color: theme.color.text.secondary,
+                lineHeight: theme.layout.lineHeight,
+              }}
+            />
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // 居中简约布局
+  function renderCenteredLayout() {
+    return (
+      <div
+        style={{
+          paddingBottom: `${theme.spacing.paragraph * 1.5}px`,
+          borderBottom: styleConfig.showPersonalInfoDivider
+            ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
+            : 'none',
+          marginBottom: `${theme.spacing.section}px`,
+          textAlign: 'center',
+          ...style,
+        }}
+      >
         {/* 姓名 */}
         <h1
           style={{
             fontSize: `${theme.font.titleSize.h1}px`,
             fontWeight: theme.font.weight.bold,
-            margin: `0 0 ${theme.spacing.line - 2}px 0`,
+            margin: `0 0 ${theme.spacing.line}px 0`,
             color: theme.color.text.primary,
-            letterSpacing: '-0.03em',
+            letterSpacing: '-0.02em',
           }}
         >
           {name}
         </h1>
 
-        {/* 职位/目标 */}
+        {/* 职位 */}
         {title && (
           <div
             style={{
               fontSize: `${theme.font.bodySize.large}px`,
               color: theme.color.text.secondary,
-              marginBottom: `${theme.spacing.line}px`,
+              marginBottom: `${theme.spacing.paragraph}px`,
               fontWeight: theme.font.weight.normal,
             }}
           >
@@ -175,34 +435,118 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
           </div>
         )}
 
-        {/* 基本信息 */}
-        {basicInfo.length > 0 && (
-          <div
-            style={{
-              fontSize: `${theme.font.bodySize.small}px`,
-              color: theme.color.text.tertiary,
-              marginBottom: `${theme.spacing.line}px`,
-            }}
-          >
-            {basicInfo.join(' · ')}
-          </div>
-        )}
-
-        {/* 求职意向 */}
-        {jobExpectation.length > 0 && (
-          <div
-            style={{
-              fontSize: `${theme.font.bodySize.small}px`,
-              color: theme.color.text.secondary,
-              marginBottom: `${theme.spacing.paragraph}px`,
-              fontWeight: theme.font.weight.medium,
-            }}
-          >
-            {jobExpectation.join(' | ')}
-          </div>
-        )}
-
         {/* 联系方式 */}
+        <div
+          style={{
+            display: 'flex',
+            gap: `${theme.spacing.paragraph + 2}px`,
+            fontSize: `${theme.font.bodySize.small}px`,
+            color: theme.color.text.secondary,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            marginBottom: `${theme.spacing.line}px`,
+          }}
+        >
+          {phone && <span>{phone}</span>}
+          {email && <span>{email}</span>}
+          {currentLocation && <span>{currentLocation}</span>}
+        </div>
+
+        {/* 社交链接 */}
+        {(github || linkedin || website) && (
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              display: 'flex',
+              gap: `${theme.spacing.paragraph}px`,
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+            }}
+          >
+            {github && (
+              <a
+                href={github.startsWith('http') ? github : `https://${github}`}
+                style={{
+                  color: theme.color.text.secondary,
+                  textDecoration: 'none',
+                  borderBottom: `1px solid ${theme.color.border.normal}`,
+                }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
+            )}
+            {linkedin && (
+              <a
+                href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`}
+                style={{
+                  color: theme.color.text.secondary,
+                  textDecoration: 'none',
+                  borderBottom: `1px solid ${theme.color.border.normal}`,
+                }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn
+              </a>
+            )}
+            {website && (
+              <a
+                href={website.startsWith('http') ? website : `https://${website}`}
+                style={{
+                  color: theme.color.text.secondary,
+                  textDecoration: 'none',
+                  borderBottom: `1px solid ${theme.color.border.normal}`,
+                }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                网站
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // 极简布局
+  function renderMinimalLayout() {
+    return (
+      <div
+        style={{
+          paddingBottom: `${theme.spacing.paragraph}px`,
+          marginBottom: `${theme.spacing.section}px`,
+          ...style,
+        }}
+      >
+        {/* 姓名与职位 */}
+        <h1
+          style={{
+            fontSize: `${theme.font.titleSize.h1}px`,
+            fontWeight: theme.font.weight.bold,
+            margin: 0,
+            color: theme.color.text.primary,
+            letterSpacing: '-0.02em',
+          }}
+        >
+          {name}
+          {title && (
+            <span
+              style={{
+                fontSize: `${theme.font.bodySize.large}px`,
+                fontWeight: theme.font.weight.normal,
+                color: theme.color.text.tertiary,
+                marginLeft: `${theme.spacing.paragraph + 4}px`,
+              }}
+            >
+              {title}
+            </span>
+          )}
+        </h1>
+
+        {/* 联系方式 - 一行紧凑 */}
         <div
           style={{
             display: 'flex',
@@ -210,146 +554,183 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
             fontSize: `${theme.font.bodySize.small}px`,
             color: theme.color.text.tertiary,
             flexWrap: 'wrap',
-            justifyContent:
-              showAvatar && avatar
-                ? 'flex-start'
-                : align === 'center'
-                  ? 'center'
-                  : align === 'right'
-                    ? 'flex-end'
-                    : 'flex-start',
+            marginTop: `${theme.spacing.line}px`,
           }}
         >
-          {phone && (
-            <span>
-              {styleConfig.useEmojiIcons ? '📱 ' : '电话: '}
-              {phone}
-            </span>
-          )}
-          {email && (
-            <span>
-              {styleConfig.useEmojiIcons ? '✉️ ' : '邮箱: '}
-              {email}
-            </span>
-          )}
-          {wechat && (
-            <span>
-              {styleConfig.useEmojiIcons ? '💬 ' : '微信: '}
-              {wechat}
-            </span>
-          )}
-          {qq && (
-            <span>
-              {styleConfig.useEmojiIcons ? 'QQ: ' : 'QQ: '}
-              {qq}
-            </span>
+          {phone && <span>{phone}</span>}
+          {email && <span>{email}</span>}
+          {currentLocation && <span>{currentLocation}</span>}
+          {github && <span>GitHub</span>}
+        </div>
+      </div>
+    )
+  }
+
+  // 详细信息布局 - 智能两栏分布
+  function renderDetailedLayout() {
+    // 收集所有信息项
+    const allItems = [
+      phone && { label: '电话', value: phone },
+      email && { label: '邮箱', value: email },
+      currentLocation && { label: '现居', value: currentLocation },
+      hometown && { label: '户籍', value: hometown },
+      workYears && { label: '工作年限', value: `${workYears}年` },
+      age && { label: '年龄', value: `${age}岁` },
+      education && { label: '学历', value: education },
+      wechat && { label: '微信', value: wechat },
+    ].filter(Boolean) as Array<{ label: string; value: string }>
+
+    // 智能分配到两栏（尽量平均）
+    const mid = Math.ceil(allItems.length / 2)
+    const leftItems = allItems.slice(0, mid)
+    const rightItems = allItems.slice(mid)
+
+    return (
+      <div
+        style={{
+          paddingBottom: `${theme.spacing.paragraph * 1.5}px`,
+          borderBottom: styleConfig.showPersonalInfoDivider
+            ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
+            : 'none',
+          marginBottom: `${theme.spacing.section}px`,
+          ...style,
+        }}
+      >
+        {/* 顶部：姓名和职位 */}
+        <div style={{ marginBottom: `${theme.spacing.paragraph}px` }}>
+          <h1
+            style={{
+              fontSize: `${theme.font.titleSize.h1}px`,
+              fontWeight: theme.font.weight.bold,
+              margin: `0 0 ${theme.spacing.line - 2}px 0`,
+              color: theme.color.text.primary,
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {name}
+          </h1>
+          {title && (
+            <div
+              style={{
+                fontSize: `${theme.font.bodySize.large}px`,
+                color: theme.color.text.secondary,
+                fontWeight: theme.font.weight.medium,
+              }}
+            >
+              {title}
+            </div>
           )}
         </div>
 
-        {/* 地址 */}
-        {(currentLocation || hometown) && (
-          <div
-            style={{
-              fontSize: `${theme.font.bodySize.small}px`,
-              color: theme.color.text.tertiary,
-              marginTop: `${theme.spacing.line - 2}px`,
-              display: 'flex',
-              gap: `${theme.spacing.paragraph}px`,
-              flexWrap: 'wrap',
-              justifyContent:
-                showAvatar && avatar
-                  ? 'flex-start'
-                  : align === 'center'
-                    ? 'center'
-                    : align === 'right'
-                      ? 'flex-end'
-                      : 'flex-start',
-            }}
-          >
-            {currentLocation && (
-              <span>
-                {styleConfig.useEmojiIcons ? '📍 ' : '现居: '}
-                {currentLocation}
-              </span>
-            )}
-            {hometown && (
-              <span>
-                {styleConfig.useEmojiIcons ? '🏠 ' : '户籍: '}
-                {hometown}
-              </span>
-            )}
+        {/* 两栏布局：智能分配信息 */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: `${theme.spacing.paragraph * 2}px`,
+            fontSize: `${theme.font.bodySize.small}px`,
+          }}
+        >
+          {/* 左栏 */}
+          <div>
+            {leftItems.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  marginBottom: `${theme.spacing.line - 1}px`,
+                  color: theme.color.text.secondary,
+                }}
+              >
+                <span style={{ fontWeight: theme.font.weight.medium }}>{item.label}：</span>
+                {item.value}
+              </div>
+            ))}
           </div>
-        )}
 
-        {/* 社交媒体 */}
-        {(github || linkedin || website || blog) && (
+          {/* 右栏 */}
+          <div>
+            {rightItems.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  marginBottom: `${theme.spacing.line - 1}px`,
+                  color: theme.color.text.secondary,
+                }}
+              >
+                <span style={{ fontWeight: theme.font.weight.medium }}>{item.label}：</span>
+                {item.value}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 社交链接 */}
+        {(github || linkedin || website) && (
           <div
             style={{
+              marginTop: `${theme.spacing.paragraph}px`,
               fontSize: `${theme.font.bodySize.small}px`,
-              color: theme.color.text.tertiary,
-              marginTop: `${theme.spacing.line - 2}px`,
               display: 'flex',
               gap: `${theme.spacing.paragraph}px`,
               flexWrap: 'wrap',
-              justifyContent:
-                showAvatar && avatar
-                  ? 'flex-start'
-                  : align === 'center'
-                    ? 'center'
-                    : align === 'right'
-                      ? 'flex-end'
-                      : 'flex-start',
             }}
           >
-            {github && (
-              <span>
-                {styleConfig.useEmojiIcons ? '💻 ' : 'GitHub: '}
-                {github}
-              </span>
-            )}
-            {linkedin && (
-              <span>
-                {styleConfig.useEmojiIcons ? '💼 ' : 'LinkedIn: '}
-                {linkedin}
-              </span>
-            )}
-            {website && (
-              <span>
-                {styleConfig.useEmojiIcons ? '🌐 ' : '网站: '}
-                {website}
-              </span>
-            )}
-            {blog && (
-              <span>
-                {styleConfig.useEmojiIcons ? '📝 ' : '博客: '}
-                {blog}
-              </span>
-            )}
+            {github &&
+              (showFullLinks ? (
+                <span style={{ color: theme.color.text.tertiary }}>GitHub: {github}</span>
+              ) : (
+                <a
+                  href={github.startsWith('http') ? github : `https://${github}`}
+                  style={{
+                    color: theme.color.text.secondary,
+                    textDecoration: 'none',
+                    borderBottom: `1px solid ${theme.color.border.normal}`,
+                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub
+                </a>
+              ))}
+            {linkedin &&
+              (showFullLinks ? (
+                <span style={{ color: theme.color.text.tertiary }}>LinkedIn: {linkedin}</span>
+              ) : (
+                <a
+                  href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`}
+                  style={{
+                    color: theme.color.text.secondary,
+                    textDecoration: 'none',
+                    borderBottom: `1px solid ${theme.color.border.normal}`,
+                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  LinkedIn
+                </a>
+              ))}
+            {website &&
+              (showFullLinks ? (
+                <span style={{ color: theme.color.text.tertiary }}>网站: {website}</span>
+              ) : (
+                <a
+                  href={website.startsWith('http') ? website : `https://${website}`}
+                  style={{
+                    color: theme.color.text.secondary,
+                    textDecoration: 'none',
+                    borderBottom: `1px solid ${theme.color.border.normal}`,
+                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  网站
+                </a>
+              ))}
           </div>
         )}
       </div>
-
-      {/* 个人简介 */}
-      {summary && (
-        <div
-          style={{
-            marginTop: `${theme.spacing.paragraph + 4}px`,
-            textAlign: 'left',
-            width: '100%',
-          }}
-        >
-          <RichTextDisplay
-            html={summary}
-            style={{
-              fontSize: `${theme.font.bodySize.normal}px`,
-              color: theme.color.text.secondary,
-              lineHeight: theme.layout.lineHeight,
-            }}
-          />
-        </div>
-      )}
-    </div>
-  )
+    )
+  }
 }
 
 const personalInfoActions: IMaterialAction[] = [
@@ -622,12 +1003,25 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     },
     {
       name: 'avatar',
-      label: '头像URL',
-      type: 'string',
+      label: '头像',
+      type: 'image',
       defaultValue: '',
-      description: '图片链接',
       group: '外观',
       visibleWhen: props => props.showAvatar,
+    },
+    {
+      name: 'layoutPreset',
+      label: '板式预设',
+      type: 'select',
+      defaultValue: 'classic',
+      options: [
+        { label: '经典布局', value: 'classic' },
+        { label: '居中简约', value: 'centered' },
+        { label: '极简风格', value: 'minimal' },
+        { label: '详细信息', value: 'detailed' },
+      ],
+      group: '外观',
+      hidden: true, // 隐藏，因为有专门的 tab
     },
     {
       name: 'align',
@@ -639,6 +1033,14 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '居中', value: 'center' },
         { label: '右对齐', value: 'right' },
       ],
+      group: '外观',
+      visibleWhen: (props: Record<string, any>) => props.layoutPreset === 'classic',
+    },
+    {
+      name: 'showFullLinks',
+      label: '显示完整链接',
+      type: 'boolean',
+      defaultValue: true,
       group: '外观',
     },
   ],
@@ -670,7 +1072,9 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     avatar: '',
     showAvatar: false,
     summary: '',
+    layoutPreset: 'classic',
     align: 'left',
+    showFullLinks: true,
   },
   capabilities: {
     copyable: true,

@@ -26,7 +26,7 @@ const CertificationItem: React.FC<CertificationItemProps> = ({
   return (
     <div
       style={{
-        marginBottom: `${theme.spacing.item - 2}px`,
+        marginBottom: `${theme.spacing.item}px`,
         ...style,
       }}
     >
@@ -35,27 +35,28 @@ const CertificationItem: React.FC<CertificationItemProps> = ({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'baseline',
-          gap: '16px',
+          gap: '20px',
         }}
       >
         <div style={{ flex: 1 }}>
           <span
             style={{
               fontSize: `${theme.font.titleSize.h3}px`,
-              fontWeight: theme.font.weight.semibold,
+              fontWeight: theme.font.weight.bold,
               color: theme.color.text.primary,
+              letterSpacing: '-0.01em',
             }}
           >
             {name}
           </span>
           <span
             style={{
-              fontSize: `${theme.font.bodySize.normal}px`,
-              color: theme.color.text.secondary,
-              marginLeft: `${theme.spacing.line + 4}px`,
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              marginLeft: `${theme.spacing.paragraph}px`,
             }}
           >
-            · {issuer}
+            {issuer}
           </span>
         </div>
 
@@ -75,10 +76,11 @@ const CertificationItem: React.FC<CertificationItemProps> = ({
           style={{
             fontSize: `${theme.font.bodySize.small}px`,
             color: theme.color.text.tertiary,
-            marginTop: '2px',
+            marginTop: `${theme.spacing.line - 1}px`,
           }}
         >
-          证书编号：{credentialId}
+          <span style={{ fontWeight: theme.font.weight.medium }}>证书编号：</span>
+          {credentialId}
         </div>
       )}
     </div>

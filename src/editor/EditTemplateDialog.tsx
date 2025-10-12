@@ -119,11 +119,13 @@ export const EditTemplateDialog: React.FC<EditTemplateDialogProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         zIndex: 10000,
+        paddingTop: '80px',
+        backdropFilter: 'blur(2px)',
       }}
       onClick={onClose}
     >

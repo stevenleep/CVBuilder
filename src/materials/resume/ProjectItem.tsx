@@ -88,23 +88,25 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
         ...style,
       }}
     >
-      {/* 标题行 */}
-      <div style={{ marginBottom: `${theme.spacing.line}px` }}>
+      {/* 标题行 - 优化层次 */}
+      <div style={{ marginBottom: `${theme.spacing.paragraph}px` }}>
+        {/* 项目名与时间 */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'baseline',
-            gap: '16px',
-            marginBottom: '2px',
+            gap: '20px',
+            marginBottom: `${theme.spacing.line - 1}px`,
           }}
         >
           <div style={{ flex: 1 }}>
             <span
               style={{
                 fontSize: `${theme.font.titleSize.h3}px`,
-                fontWeight: theme.font.weight.semibold,
+                fontWeight: theme.font.weight.bold,
                 color: theme.color.text.primary,
+                letterSpacing: '-0.01em',
               }}
             >
               {projectName}
@@ -114,10 +116,10 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
                 style={{
                   fontSize: `${theme.font.bodySize.small}px`,
                   color: theme.color.text.tertiary,
-                  marginLeft: `${theme.spacing.line + 4}px`,
+                  marginLeft: `${theme.spacing.paragraph}px`,
                 }}
               >
-                · {projectMeta.join(' · ')}
+                {projectMeta.join(' · ')}
               </span>
             )}
           </div>
@@ -133,16 +135,27 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
           </span>
         </div>
 
-        {/* 角色与职责 */}
+        {/* 角色 - 加强视觉权重 */}
         <div
           style={{
-            fontSize: `${theme.font.bodySize.normal}px`,
+            fontSize: `${theme.font.bodySize.large}px`,
+            fontWeight: theme.font.weight.medium,
             color: theme.color.text.secondary,
+            letterSpacing: '-0.005em',
           }}
         >
           {role}
           {responsibility && (
-            <span style={{ color: theme.color.text.tertiary }}> · {responsibility}</span>
+            <span
+              style={{
+                fontSize: `${theme.font.bodySize.small}px`,
+                color: theme.color.text.tertiary,
+                fontWeight: theme.font.weight.normal,
+                marginLeft: `${theme.spacing.paragraph}px`,
+              }}
+            >
+              {responsibility}
+            </span>
           )}
         </div>
       </div>
@@ -153,10 +166,11 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
           style={{
             fontSize: `${theme.font.bodySize.small}px`,
             color: theme.color.text.tertiary,
-            marginBottom: `${theme.spacing.line}px`,
+            marginBottom: `${theme.spacing.paragraph - 1}px`,
           }}
         >
-          项目规模：{scaleInfo.join(' · ')}
+          <span style={{ fontWeight: theme.font.weight.medium }}>项目规模：</span>
+          {scaleInfo.join(' · ')}
         </div>
       )}
 
@@ -166,11 +180,12 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
           style={{
             fontSize: `${theme.font.bodySize.small}px`,
             color: theme.color.text.tertiary,
-            marginBottom: `${theme.spacing.line}px`,
-            fontStyle: 'italic',
+            marginBottom: `${theme.spacing.paragraph}px`,
+            padding: `${theme.spacing.line - 1}px 0`,
           }}
         >
-          技术栈：{techStack}
+          <span style={{ fontWeight: theme.font.weight.medium }}>技术栈：</span>
+          {techStack}
         </div>
       )}
 
@@ -235,7 +250,7 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
             fontSize: `${theme.font.bodySize.normal}px`,
             color: theme.color.text.secondary,
             lineHeight: theme.layout.lineHeight,
-            marginBottom: achievements || contribution ? `${theme.spacing.line}px` : '0',
+            marginBottom: achievements || contribution ? `${theme.spacing.paragraph}px` : '0',
           }}
         />
       )}
@@ -244,17 +259,17 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
       {contribution && (
         <div
           style={{
-            paddingLeft: `${theme.spacing.paragraph}px`,
-            borderLeft: `2px solid ${theme.color.border.light}`,
-            marginBottom: achievements ? `${theme.spacing.line}px` : '0',
+            marginBottom: achievements ? `${theme.spacing.paragraph}px` : '0',
+            marginTop: `${theme.spacing.line}px`,
           }}
         >
           <div
             style={{
-              fontSize: `${theme.font.bodySize.small}px`,
+              fontSize: `${theme.font.bodySize.normal}px`,
               fontWeight: theme.font.weight.semibold,
               color: theme.color.text.primary,
-              marginBottom: `${theme.spacing.line - 2}px`,
+              marginBottom: `${theme.spacing.line}px`,
+              letterSpacing: '-0.005em',
             }}
           >
             个人贡献
@@ -272,18 +287,14 @@ const ProjectItem: React.FC<ProjectItemProps> = props => {
 
       {/* 项目成果 */}
       {achievements && (
-        <div
-          style={{
-            paddingLeft: `${theme.spacing.paragraph}px`,
-            borderLeft: `3px solid ${theme.color.border.normal}`,
-          }}
-        >
+        <div style={{ marginTop: `${theme.spacing.line}px` }}>
           <div
             style={{
-              fontSize: `${theme.font.bodySize.small}px`,
+              fontSize: `${theme.font.bodySize.normal}px`,
               fontWeight: theme.font.weight.semibold,
               color: theme.color.text.primary,
-              marginBottom: `${theme.spacing.line - 2}px`,
+              marginBottom: `${theme.spacing.line}px`,
+              letterSpacing: '-0.005em',
             }}
           >
             项目成果

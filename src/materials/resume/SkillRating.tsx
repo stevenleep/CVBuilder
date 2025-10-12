@@ -50,31 +50,34 @@ const SkillRating: React.FC<SkillRatingProps> = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: `${theme.spacing.line}px`,
-            gap: '12px',
+            marginBottom: layout === 'list' ? `${theme.spacing.line + 1}px` : '0',
+            gap: '16px',
+            padding: layout === 'grid' ? `${theme.spacing.line - 1}px 0` : '0',
           }}
         >
           <span
             style={{
               fontSize: `${theme.font.bodySize.normal}px`,
-              color: theme.color.text.primary,
+              color: theme.color.text.secondary,
               fontWeight: theme.font.weight.medium,
+              letterSpacing: '-0.005em',
             }}
           >
             {skill.name}
           </span>
 
           {showDots && (
-            <div style={{ display: 'flex', gap: '4px' }}>
+            <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
               {Array.from({ length: maxLevel }).map((_, i) => (
                 <div
                   key={i}
                   style={{
-                    width: '6px',
-                    height: '6px',
+                    width: '7px',
+                    height: '7px',
                     borderRadius: '50%',
                     backgroundColor:
-                      i < skill.level ? theme.color.text.primary : theme.color.border.normal,
+                      i < skill.level ? theme.color.text.primary : theme.color.border.light,
+                    transition: 'all 0.2s',
                   }}
                 />
               ))}

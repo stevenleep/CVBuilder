@@ -40,11 +40,13 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         zIndex: 10000,
+        paddingTop: '80px',
+        backdropFilter: 'blur(2px)',
       }}
       onClick={onClose}
     >
@@ -55,33 +57,38 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
           padding: '24px',
           width: '400px',
           maxWidth: '90vw',
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.2)',
+          border: '1px solid #e0e0e0',
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
-        <h3 style={{
-          fontSize: '16px',
-          fontWeight: '600',
-          marginBottom: '20px',
-          color: '#000',
-        }}>
+        <h3
+          style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            marginBottom: '20px',
+            color: '#000',
+          }}
+        >
           {existingTemplateId ? '更新模板' : '保存为模板'}
         </h3>
 
         <div style={{ marginBottom: '16px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '12px',
-            fontWeight: '500',
-            marginBottom: '6px',
-            color: '#666',
-          }}>
+          <label
+            style={{
+              display: 'block',
+              fontSize: '12px',
+              fontWeight: '500',
+              marginBottom: '6px',
+              color: '#666',
+            }}
+          >
             模板名称 *
           </label>
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={e => setName(e.target.value)}
             placeholder="如：工作经历模板"
             autoFocus
             style={{
@@ -97,18 +104,20 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
         </div>
 
         <div style={{ marginBottom: '16px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '12px',
-            fontWeight: '500',
-            marginBottom: '6px',
-            color: '#666',
-          }}>
+          <label
+            style={{
+              display: 'block',
+              fontSize: '12px',
+              fontWeight: '500',
+              marginBottom: '6px',
+              color: '#666',
+            }}
+          >
             描述
           </label>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={e => setDescription(e.target.value)}
             placeholder="模板说明..."
             rows={3}
             style={{
@@ -125,18 +134,20 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '12px',
-            fontWeight: '500',
-            marginBottom: '6px',
-            color: '#666',
-          }}>
+          <label
+            style={{
+              display: 'block',
+              fontSize: '12px',
+              fontWeight: '500',
+              marginBottom: '6px',
+              color: '#666',
+            }}
+          >
             分类
           </label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={e => setCategory(e.target.value)}
             style={{
               width: '100%',
               height: '32px',
@@ -189,16 +200,18 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
             {existingTemplateId ? '更新' : '保存'}
           </button>
         </div>
-        
+
         {existingTemplateId && (
-          <div style={{
-            marginTop: '12px',
-            padding: '8px',
-            backgroundColor: '#fffbeb',
-            borderRadius: '4px',
-            fontSize: '11px',
-            color: '#92400e',
-          }}>
+          <div
+            style={{
+              marginTop: '12px',
+              padding: '8px',
+              backgroundColor: '#fffbeb',
+              borderRadius: '4px',
+              fontSize: '11px',
+              color: '#92400e',
+            }}
+          >
             💡 提示：更新后，所有使用此模板的地方不会自动更新
           </div>
         )}
@@ -206,4 +219,3 @@ export const SaveAsTemplateDialog: React.FC<SaveAsTemplateDialogProps> = ({
     </div>
   )
 }
-

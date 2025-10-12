@@ -85,23 +85,25 @@ const EducationItem: React.FC<EducationItemProps> = props => {
         ...style,
       }}
     >
-      {/* 标题行 */}
-      <div style={{ marginBottom: `${theme.spacing.line}px` }}>
+      {/* 标题行 - 优化层次 */}
+      <div style={{ marginBottom: `${theme.spacing.paragraph}px` }}>
+        {/* 学校名与时间 */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'baseline',
-            gap: '16px',
-            marginBottom: '2px',
+            gap: '20px',
+            marginBottom: `${theme.spacing.line - 1}px`,
           }}
         >
           <div style={{ flex: 1 }}>
             <span
               style={{
                 fontSize: `${theme.font.titleSize.h3}px`,
-                fontWeight: theme.font.weight.semibold,
+                fontWeight: theme.font.weight.bold,
                 color: theme.color.text.primary,
+                letterSpacing: '-0.01em',
               }}
             >
               {school}
@@ -111,10 +113,10 @@ const EducationItem: React.FC<EducationItemProps> = props => {
                 style={{
                   fontSize: `${theme.font.bodySize.small}px`,
                   color: theme.color.text.tertiary,
-                  marginLeft: `${theme.spacing.line + 4}px`,
+                  marginLeft: `${theme.spacing.paragraph}px`,
                 }}
               >
-                · {schoolDetails.join(' · ')}
+                {schoolDetails.join(' · ')}
               </span>
             )}
           </div>
@@ -130,21 +132,30 @@ const EducationItem: React.FC<EducationItemProps> = props => {
           </span>
         </div>
 
-        {/* 专业信息 */}
+        {/* 专业信息 - 加强视觉权重 */}
         <div
           style={{
-            fontSize: `${theme.font.bodySize.normal}px`,
+            fontSize: `${theme.font.bodySize.large}px`,
+            fontWeight: theme.font.weight.medium,
             color: theme.color.text.secondary,
+            letterSpacing: '-0.005em',
           }}
         >
           {major}
-          {majorDetails.length > 0 && (
-            <span style={{ color: theme.color.text.tertiary }}>
-              {' · '}
-              {majorDetails.join(' · ')}
-            </span>
-          )}
         </div>
+
+        {/* 专业详情 - 独立一行 */}
+        {majorDetails.length > 0 && (
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              marginTop: `${theme.spacing.line - 2}px`,
+            }}
+          >
+            {majorDetails.join(' · ')}
+          </div>
+        )}
       </div>
 
       {/* 转学信息 */}
@@ -166,11 +177,11 @@ const EducationItem: React.FC<EducationItemProps> = props => {
           style={{
             fontSize: `${theme.font.bodySize.small}px`,
             color: theme.color.text.tertiary,
-            marginBottom: `${theme.spacing.line}px`,
-            fontStyle: 'italic',
+            marginBottom: `${theme.spacing.paragraph - 1}px`,
           }}
         >
-          主修课程：{courses}
+          <span style={{ fontWeight: theme.font.weight.medium }}>主修课程：</span>
+          {courses}
         </div>
       )}
 
@@ -196,10 +207,11 @@ const EducationItem: React.FC<EducationItemProps> = props => {
           style={{
             fontSize: `${theme.font.bodySize.normal}px`,
             color: theme.color.text.secondary,
-            marginBottom: `${theme.spacing.line}px`,
+            marginBottom: `${theme.spacing.paragraph - 1}px`,
           }}
         >
-          奖学金：{scholarships}
+          <span style={{ fontWeight: theme.font.weight.medium }}>奖学金：</span>
+          {scholarships}
         </div>
       )}
 

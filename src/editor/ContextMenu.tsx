@@ -95,7 +95,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, items, onClose, 
       onClick={e => e.stopPropagation()}
       onContextMenu={e => e.preventDefault()}
     >
-      {items.map((item) => (
+      {items.map(item => (
         <React.Fragment key={item.id}>
           {item.divider ? (
             <div

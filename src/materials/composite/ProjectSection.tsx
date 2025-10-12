@@ -25,8 +25,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ children, style, title 
           fontWeight: theme.font.weight.bold,
           margin: `0 0 ${theme.spacing.paragraph - 2}px 0`,
           color: theme.color.text.primary,
-          letterSpacing: '0.05em',
-          textTransform: 'uppercase',
+          letterSpacing: '0.02em',
         }}
       >
         {title}

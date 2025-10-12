@@ -5,12 +5,23 @@
  */
 
 import React from 'react'
-import { GripVertical, Copy, Trash2, ChevronUp, ChevronDown, Plus, Save } from 'lucide-react'
+import {
+  GripVertical,
+  Copy,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  Plus,
+  Save,
+  Eye,
+  EyeOff,
+} from 'lucide-react'
 import { IMaterialAction } from '@/core'
 
 interface NodeToolbarProps {
   nodeId: string
   actions?: IMaterialAction[]
+  isHidden?: boolean
   onCopy?: () => void
   onDelete?: () => void
   onMoveUp?: () => void
@@ -18,6 +29,7 @@ interface NodeToolbarProps {
   onAddBefore?: () => void
   onAddAfter?: () => void
   onSaveAsTemplate?: () => void
+  onToggleVisibility?: () => void
   onCustomAction?: (actionId: string) => void
   capabilities?: {
     copyable?: boolean
@@ -28,11 +40,13 @@ interface NodeToolbarProps {
 
 export const NodeToolbar: React.FC<NodeToolbarProps> = ({
   actions = [],
+  isHidden = false,
   onCopy,
   onDelete,
   onMoveUp,
   onMoveDown,
   onSaveAsTemplate,
+  onToggleVisibility,
   onCustomAction,
   capabilities = {},
 }) => {
@@ -94,6 +108,24 @@ export const NodeToolbar: React.FC<NodeToolbarProps> = ({
       {/* 保存为模板 */}
       {onSaveAsTemplate && (
         <ToolButton icon={<Save size={13} />} tooltip="保存为模板" onClick={onSaveAsTemplate} />
+      )}
+
+      <div
+        style={{
+          width: '1px',
+          height: '16px',
+          backgroundColor: 'rgba(255, 255, 255, 0.12)',
+          margin: '0 3px',
+        }}
+      />
+
+      {/* 显示/隐藏 */}
+      {onToggleVisibility && (
+        <ToolButton
+          icon={isHidden ? <EyeOff size={13} /> : <Eye size={13} />}
+          tooltip={isHidden ? '显示' : '隐藏'}
+          onClick={onToggleVisibility}
+        />
       )}
 
       {/* 删除 */}

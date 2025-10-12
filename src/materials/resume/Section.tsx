@@ -23,10 +23,9 @@ const Section: React.FC<SectionProps> = ({ children, style, title = '章节标�
         style={{
           fontSize: `${theme.font.titleSize.h2}px`,
           fontWeight: theme.font.weight.bold,
-          margin: `0 0 ${theme.spacing.paragraph - 2}px 0`,
+          margin: `0 0 ${theme.spacing.paragraph}px 0`,
           color: theme.color.text.primary,
-          letterSpacing: '0.05em',
-          textTransform: 'uppercase',
+          letterSpacing: '0.02em',
         }}
       >
         {title}

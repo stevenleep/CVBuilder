@@ -96,23 +96,25 @@ const ExperienceItem: React.FC<ExperienceItemProps> = props => {
         ...style,
       }}
     >
-      {/* 标题行 */}
-      <div style={{ marginBottom: `${theme.spacing.line}px` }}>
+      {/* 标题行 - 优化视觉层次 */}
+      <div style={{ marginBottom: `${theme.spacing.paragraph}px` }}>
+        {/* 公司名与时间 */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'baseline',
-            gap: '16px',
-            marginBottom: '2px',
+            gap: '20px',
+            marginBottom: `${theme.spacing.line - 1}px`,
           }}
         >
           <div style={{ flex: 1 }}>
             <span
               style={{
                 fontSize: `${theme.font.titleSize.h3}px`,
-                fontWeight: theme.font.weight.semibold,
+                fontWeight: theme.font.weight.bold,
                 color: theme.color.text.primary,
+                letterSpacing: '-0.01em',
               }}
             >
               {company}
@@ -122,10 +124,11 @@ const ExperienceItem: React.FC<ExperienceItemProps> = props => {
                 style={{
                   fontSize: `${theme.font.bodySize.small}px`,
                   color: theme.color.text.tertiary,
-                  marginLeft: `${theme.spacing.line + 4}px`,
+                  marginLeft: `${theme.spacing.paragraph}px`,
+                  fontWeight: theme.font.weight.normal,
                 }}
               >
-                · {companyInfo.join(' · ')}
+                {companyInfo.join(' · ')}
               </span>
             )}
           </div>
@@ -135,27 +138,37 @@ const ExperienceItem: React.FC<ExperienceItemProps> = props => {
               fontSize: `${theme.font.bodySize.small}px`,
               color: theme.color.text.tertiary,
               whiteSpace: 'nowrap',
+              fontWeight: theme.font.weight.normal,
             }}
           >
             {startDate} - {endDate === 'present' ? '至今' : endDate}
           </span>
         </div>
 
-        {/* 职位信息 */}
+        {/* 职位信息 - 加强视觉权重 */}
         <div
           style={{
-            fontSize: `${theme.font.bodySize.normal}px`,
+            fontSize: `${theme.font.bodySize.large}px`,
+            fontWeight: theme.font.weight.medium,
             color: theme.color.text.secondary,
+            letterSpacing: '-0.005em',
           }}
         >
           {position}
-          {positionDetails.length > 0 && (
-            <span style={{ color: theme.color.text.tertiary }}>
-              {' · '}
-              {positionDetails.join(' · ')}
-            </span>
-          )}
         </div>
+
+        {/* 职位详情 - 独立一行，更清晰 */}
+        {positionDetails.length > 0 && (
+          <div
+            style={{
+              fontSize: `${theme.font.bodySize.small}px`,
+              color: theme.color.text.tertiary,
+              marginTop: `${theme.spacing.line - 2}px`,
+            }}
+          >
+            {positionDetails.join(' · ')}
+          </div>
+        )}
       </div>
 
       {/* 汇报关系 */}
@@ -177,11 +190,12 @@ const ExperienceItem: React.FC<ExperienceItemProps> = props => {
           style={{
             fontSize: `${theme.font.bodySize.small}px`,
             color: theme.color.text.tertiary,
-            marginBottom: `${theme.spacing.line}px`,
-            fontStyle: 'italic',
+            marginBottom: `${theme.spacing.paragraph}px`,
+            padding: `${theme.spacing.line - 1}px 0`,
           }}
         >
-          技术栈：{techStack}
+          <span style={{ fontWeight: theme.font.weight.medium }}>技术栈：</span>
+          {techStack}
         </div>
       )}
 
@@ -208,25 +222,21 @@ const ExperienceItem: React.FC<ExperienceItemProps> = props => {
             fontSize: `${theme.font.bodySize.normal}px`,
             color: theme.color.text.secondary,
             lineHeight: theme.layout.lineHeight,
-            marginBottom: achievements ? `${theme.spacing.line}px` : '0',
+            marginBottom: achievements ? `${theme.spacing.paragraph}px` : '0',
           }}
         />
       )}
 
       {/* 核心成就 */}
       {achievements && (
-        <div
-          style={{
-            paddingLeft: `${theme.spacing.paragraph}px`,
-            borderLeft: `3px solid ${theme.color.border.normal}`,
-          }}
-        >
+        <div style={{ marginTop: `${theme.spacing.line}px` }}>
           <div
             style={{
-              fontSize: `${theme.font.bodySize.small}px`,
+              fontSize: `${theme.font.bodySize.normal}px`,
               fontWeight: theme.font.weight.semibold,
               color: theme.color.text.primary,
-              marginBottom: `${theme.spacing.line - 2}px`,
+              marginBottom: `${theme.spacing.line}px`,
+              letterSpacing: '-0.005em',
             }}
           >
             核心成就

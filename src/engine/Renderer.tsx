@@ -52,7 +52,8 @@ export const Renderer: React.FC<RendererProps> = ({
   const { id, type, props = {}, style = {}, children = [], hidden } = schema
 
   // 获取编辑器操作方法
-  const { duplicateNode, deleteNode, pageSchema, moveNodeUp, moveNodeDown } = useEditorStore()
+  const { duplicateNode, deleteNode, pageSchema, moveNodeUp, moveNodeDown, toggleNodeVisibility } =
+    useEditorStore()
 
   // 获取物料定义（必须在所有Hooks之前）
   const materialDef = materialRegistry.get(type)
@@ -261,10 +262,15 @@ export const Renderer: React.FC<RendererProps> = ({
     })
   }
 
+  // 如果节点被隐藏，完全不渲染
+  if (hidden) {
+    return null
+  }
+
   // 编辑模式包装器样式 - 简洁版
   const wrapperStyle: React.CSSProperties = {
     position: 'relative',
-    opacity: isDragging ? 0.3 : hidden ? 0.3 : 1,
+    opacity: isDragging ? 0.3 : 1,
     ...(isEditMode && isSelected
       ? {
           outline: '1px dashed #2d2d2d',
@@ -277,11 +283,6 @@ export const Renderer: React.FC<RendererProps> = ({
           outline: '1px dashed #d0d0d0',
           outlineOffset: '-1px',
           borderRadius: '2px',
-        }
-      : {}),
-    ...(hidden && isEditMode
-      ? {
-          filter: 'grayscale(0.7) opacity(0.6)',
         }
       : {}),
     transition: 'all 0.15s ease',
@@ -354,11 +355,13 @@ export const Renderer: React.FC<RendererProps> = ({
             <NodeToolbar
               nodeId={id}
               actions={materialDef.actions}
+              isHidden={hidden}
               onCopy={handleCopy}
               onDelete={handleDelete}
               onMoveUp={handleMoveUp}
               onMoveDown={handleMoveDown}
               onSaveAsTemplate={handleSaveAsTemplate}
+              onToggleVisibility={() => toggleNodeVisibility(id)}
               onCustomAction={handleCustomAction}
               capabilities={materialDef.capabilities}
             />

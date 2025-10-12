@@ -25,6 +25,17 @@ export const MaterialPanel: React.FC = () => {
   // 加载模板
   useEffect(() => {
     loadTemplates()
+
+    // 监听模板保存事件，自动刷新
+    const handleTemplateSaved = () => {
+      loadTemplates()
+    }
+
+    window.addEventListener('template-saved', handleTemplateSaved)
+
+    return () => {
+      window.removeEventListener('template-saved', handleTemplateSaved)
+    }
   }, [])
 
   const loadTemplates = () => {

@@ -47,7 +47,10 @@ const MetricsCard: React.FC<MetricsCardProps> = ({
           style={{
             flex: layout === 'horizontal' ? 1 : undefined,
             minWidth: layout === 'horizontal' ? '100px' : undefined,
-            padding: `${theme.spacing.line}px ${theme.spacing.paragraph}px`,
+            padding:
+              cardStyle === 'minimal'
+                ? `${theme.spacing.paragraph - 2}px 0`
+                : `${theme.spacing.paragraph}px ${theme.spacing.paragraph + 2}px`,
             backgroundColor:
               cardStyle === 'filled'
                 ? theme.color.background.section
@@ -66,10 +69,11 @@ const MetricsCard: React.FC<MetricsCardProps> = ({
         >
           <div
             style={{
-              fontSize: `${theme.font.titleSize.h3}px`,
+              fontSize: `${theme.font.titleSize.h2}px`,
               fontWeight: theme.font.weight.bold,
               color: theme.color.text.primary,
-              marginBottom: '2px',
+              marginBottom: `${theme.spacing.line - 1}px`,
+              letterSpacing: '-0.02em',
             }}
           >
             {metric.value}
@@ -78,6 +82,7 @@ const MetricsCard: React.FC<MetricsCardProps> = ({
             style={{
               fontSize: `${theme.font.bodySize.small}px`,
               color: theme.color.text.tertiary,
+              fontWeight: theme.font.weight.normal,
             }}
           >
             {metric.label}

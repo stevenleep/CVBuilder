@@ -48,19 +48,45 @@ const LanguageSkills: React.FC<LanguageSkillsProps> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            marginBottom: layout === 'list' ? `${theme.spacing.line - 2}px` : '0',
+            gap: layout === 'inline' ? '6px' : '10px',
+            marginBottom: layout === 'list' ? `${theme.spacing.line + 1}px` : '0',
             fontSize: `${theme.font.bodySize.normal}px`,
             color: theme.color.text.secondary,
             lineHeight: theme.layout.lineHeight,
-            padding: layout === 'inline' ? '4px 12px' : '0',
+            padding:
+              layout === 'inline'
+                ? `${theme.spacing.line - 1}px ${theme.spacing.paragraph}px`
+                : layout === 'grid'
+                  ? `${theme.spacing.line - 1}px 0`
+                  : '0',
             backgroundColor: layout === 'inline' ? theme.color.background.section : 'transparent',
             borderRadius: layout === 'inline' ? '4px' : '0',
           }}
         >
-          <span style={{ fontWeight: theme.font.weight.medium }}>{item.language}</span>
-          <span style={{ color: theme.color.text.tertiary }}>-</span>
-          <span style={{ color: theme.color.text.tertiary }}>{item.level}</span>
+          <span
+            style={{
+              fontWeight: theme.font.weight.medium,
+              letterSpacing: '-0.005em',
+            }}
+          >
+            {item.language}
+          </span>
+          <span
+            style={{
+              color: theme.color.text.tertiary,
+              fontSize: layout === 'inline' ? '10px' : '11px',
+            }}
+          >
+            {layout === 'inline' ? '·' : '-'}
+          </span>
+          <span
+            style={{
+              color: theme.color.text.tertiary,
+              fontSize: `${theme.font.bodySize.small}px`,
+            }}
+          >
+            {item.level}
+          </span>
         </div>
       ))}
     </div>

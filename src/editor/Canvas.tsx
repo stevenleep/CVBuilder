@@ -9,8 +9,21 @@ import { Renderer } from '@engine/Renderer'
 import { useEditorStore } from '@store/editorStore'
 import { SelectionBox } from './SelectionBox'
 import { ContextMenu, ContextMenuItem } from './ContextMenu'
-import { Copy, Trash2, Clipboard, Scissors, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react'
+import {
+  Copy,
+  Trash2,
+  Clipboard,
+  Scissors,
+  ArrowUp,
+  ArrowDown,
+  Eye,
+  EyeOff,
+  Save,
+} from 'lucide-react'
 import { findNode } from '@utils/schema'
+import { templateManager } from '@/core/services/TemplateManager'
+import { notification } from '@/utils/notification'
+import { SaveAsTemplateDialog } from './SaveAsTemplateDialog'
 
 export const Canvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -39,18 +52,29 @@ export const Canvas: React.FC = () => {
     y: number
     nodeId: string | null
   } | null>(null)
+  const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
+  const [templateNodeId, setTemplateNodeId] = useState<string | null>(null)
 
   const handleNodeClick = (nodeId: string, event: React.MouseEvent) => {
     event.stopPropagation()
     const isMultiSelect = event.metaKey || event.ctrlKey
     selectNode(nodeId, isMultiSelect)
+    // 切换节点时关闭右键菜单
+    setContextMenu(null)
   }
 
   const handleNodeHover = (nodeId: string | null) => {
     setHoveredNode(nodeId)
+    // hover 到其他节点时关闭右键菜单
+    if (nodeId && contextMenu && contextMenu.nodeId !== nodeId) {
+      setContextMenu(null)
+    }
   }
 
   const handleCanvasClick = (e: React.MouseEvent) => {
+    // 关闭右键菜单
+    setContextMenu(null)
+
     // 只有点击画布本身（而非子元素）时才取消选中
     if (e.target === e.currentTarget && selectedNodeIds.length > 0) {
       // 如果没有按 Ctrl/Cmd，才清除选择
@@ -132,6 +156,12 @@ export const Canvas: React.FC = () => {
       items.push(
         { id: 'divider-1', label: '', divider: true },
         {
+          id: 'save-as-template',
+          label: '保存为模板',
+          icon: <Save size={16} />,
+        },
+        { id: 'divider-2', label: '', divider: true },
+        {
           id: 'move-up',
           label: '上移一层',
           icon: <ArrowUp size={16} />,
@@ -141,13 +171,13 @@ export const Canvas: React.FC = () => {
           label: '下移一层',
           icon: <ArrowDown size={16} />,
         },
-        { id: 'divider-2', label: '', divider: true },
+        { id: 'divider-3', label: '', divider: true },
         {
           id: 'toggle-visibility',
           label: isHidden ? '显示' : '隐藏',
           icon: isHidden ? <Eye size={16} /> : <EyeOff size={16} />,
         },
-        { id: 'divider-3', label: '', divider: true },
+        { id: 'divider-4', label: '', divider: true },
         {
           id: 'delete',
           label: '删除',
@@ -197,7 +227,28 @@ export const Canvas: React.FC = () => {
       case 'toggle-visibility':
         if (nodeId) toggleNodeVisibility(nodeId)
         break
+      case 'save-as-template':
+        if (nodeId) {
+          setTemplateNodeId(nodeId)
+          setShowSaveTemplateDialog(true)
+        }
+        break
     }
+  }
+
+  const handleSaveTemplate = (name: string, description: string, category: string) => {
+    if (templateNodeId) {
+      const node = findNode(pageSchema.root, templateNodeId)
+      if (node) {
+        templateManager.saveAsTemplate(node, name, description, category)
+        notification.success('模板已保存！')
+
+        // 触发模板列表刷新事件
+        window.dispatchEvent(new CustomEvent('template-saved'))
+      }
+    }
+    setShowSaveTemplateDialog(false)
+    setTemplateNodeId(null)
   }
 
   return (
@@ -247,6 +298,17 @@ export const Canvas: React.FC = () => {
           items={getContextMenuItems()}
           onClose={() => setContextMenu(null)}
           onAction={handleContextMenuAction}
+        />
+      )}
+
+      {/* 保存为模板对话框 */}
+      {showSaveTemplateDialog && (
+        <SaveAsTemplateDialog
+          onSave={handleSaveTemplate}
+          onClose={() => {
+            setShowSaveTemplateDialog(false)
+            setTemplateNodeId(null)
+          }}
         />
       )}
     </div>

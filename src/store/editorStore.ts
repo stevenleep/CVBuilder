@@ -244,12 +244,19 @@ export const useEditorStore = create<EditorState>()(
     // 切换节点显示/隐藏
     toggleNodeVisibility: nodeId => {
       set(state => {
-        const node = findNode(state.pageSchema.root, nodeId)
-        if (node) {
-          state.pageSchema.root = updateNodeProps(state.pageSchema.root, nodeId, {
-            hidden: !node.hidden,
-          })
+        const toggleHidden = (node: NodeSchema): NodeSchema => {
+          if (node.id === nodeId) {
+            return { ...node, hidden: !node.hidden }
+          }
+          if (node.children) {
+            return {
+              ...node,
+              children: node.children.map(toggleHidden),
+            }
+          }
+          return node
         }
+        state.pageSchema.root = toggleHidden(state.pageSchema.root)
       })
       addHistory(set)
     },
