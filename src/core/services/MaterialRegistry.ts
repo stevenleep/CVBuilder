@@ -7,8 +7,25 @@
 import { IMaterialRegistry, IMaterialDefinition } from '../protocols/IMaterialProtocol'
 import { IEventBus, EditorEventType } from '../protocols/IEventProtocol'
 
+interface IMaterialVersion {
+  version: string
+  definition: IMaterialDefinition
+  registeredAt: number
+}
+
+interface IMaterialUpdate {
+  type: string
+  currentVersion: string
+  latestVersion: string
+  changelog?: string
+}
+
 export class MaterialRegistry implements IMaterialRegistry {
   private materials: Map<string, IMaterialDefinition> = new Map()
+  // 版本管理：type -> version -> definition
+  private materialVersions: Map<string, Map<string, IMaterialVersion>> = new Map()
+  // 依赖关系：type -> dependencies[]
+  private dependencies: Map<string, string[]> = new Map()
   private eventBus?: IEventBus
 
   constructor(eventBus?: IEventBus) {
@@ -16,25 +33,50 @@ export class MaterialRegistry implements IMaterialRegistry {
   }
 
   /**
-   * 注册物料
+   * 注册物料（支持版本）
    */
-  public register(definition: IMaterialDefinition): void {
+  public register(definition: IMaterialDefinition, version?: string): void {
     const { type } = definition.meta
 
     // 验证物料定义
     this.validateMaterialDefinition(definition)
 
+    const materialVersion = version || definition.meta.version || '1.0.0'
     const existingMaterial = this.materials.get(type)
 
-    this.materials.set(type, definition)
+    // 存储所有版本
+    if (!this.materialVersions.has(type)) {
+      this.materialVersions.set(type, new Map())
+    }
+
+    const versionMap = this.materialVersions.get(type)!
+    versionMap.set(materialVersion, {
+      version: materialVersion,
+      definition,
+      registeredAt: Date.now(),
+    })
+
+    // 当前版本指向最新版本
+    const existingVersions = Array.from(versionMap.keys())
+    const latestVersion = this.getLatestVersion(existingVersions)
+
+    if (materialVersion === latestVersion) {
+      this.materials.set(type, definition)
+    }
+
+    // 记录依赖关系（如果定义中有 dependencies 字段）
+    const deps = (definition.meta as any).dependencies
+    if (deps && Array.isArray(deps)) {
+      this.dependencies.set(type, deps)
+    }
 
     // 发送注册事件
-    if (!existingMaterial) {
-      this.eventBus?.emit(EditorEventType.MATERIAL_REGISTERED, {
-        materialType: type,
-        definition,
-      })
-    }
+    this.eventBus?.emit(EditorEventType.MATERIAL_REGISTERED, {
+      materialType: type,
+      version: materialVersion,
+      definition,
+      isUpdate: !!existingMaterial,
+    })
   }
 
   /**
@@ -104,6 +146,134 @@ export class MaterialRegistry implements IMaterialRegistry {
     const categories = new Set<string>()
     this.getAll().forEach(def => categories.add(def.meta.category))
     return Array.from(categories)
+  }
+
+  /**
+   * 获取物料的指定版本
+   */
+  public getVersion(type: string, version: string): IMaterialDefinition | undefined {
+    const versionMap = this.materialVersions.get(type)
+    if (!versionMap) return undefined
+
+    const materialVersion = versionMap.get(version)
+    return materialVersion?.definition
+  }
+
+  /**
+   * 获取物料的所有版本
+   */
+  public getAllVersions(type: string): string[] {
+    const versionMap = this.materialVersions.get(type)
+    if (!versionMap) return []
+
+    return Array.from(versionMap.keys()).sort(this.compareVersions.bind(this))
+  }
+
+  /**
+   * 获取物料的最新版本号
+   */
+  public getLatestVersionNumber(type: string): string | undefined {
+    const versions = this.getAllVersions(type)
+    return versions.length > 0 ? versions[versions.length - 1] : undefined
+  }
+
+  /**
+   * 检查是否有更新
+   */
+  public checkForUpdates(): IMaterialUpdate[] {
+    const updates: IMaterialUpdate[] = []
+
+    for (const [type, versionMap] of this.materialVersions.entries()) {
+      const versions = Array.from(versionMap.keys()).sort(this.compareVersions.bind(this))
+      if (versions.length > 1) {
+        const current = this.materials.get(type)
+        const currentVersion = current?.meta.version || '1.0.0'
+        const latestVersion = versions[versions.length - 1]
+
+        if (currentVersion !== latestVersion) {
+          updates.push({
+            type,
+            currentVersion,
+            latestVersion,
+          })
+        }
+      }
+    }
+
+    return updates
+  }
+
+  /**
+   * 获取物料的依赖
+   */
+  public getDependencies(type: string): string[] {
+    return this.dependencies.get(type) || []
+  }
+
+  /**
+   * 获取依赖此物料的其他物料
+   */
+  public getDependents(type: string): string[] {
+    const dependents: string[] = []
+
+    for (const [materialType, deps] of this.dependencies.entries()) {
+      if (deps.includes(type)) {
+        dependents.push(materialType)
+      }
+    }
+
+    return dependents
+  }
+
+  /**
+   * 检查依赖是否满足
+   */
+  public checkDependencies(type: string): { satisfied: boolean; missing: string[] } {
+    const deps = this.getDependencies(type)
+    const missing = deps.filter(dep => !this.has(dep))
+
+    return {
+      satisfied: missing.length === 0,
+      missing,
+    }
+  }
+
+  /**
+   * 获取版本历史
+   */
+  public getVersionHistory(type: string): IMaterialVersion[] {
+    const versionMap = this.materialVersions.get(type)
+    if (!versionMap) return []
+
+    return Array.from(versionMap.values()).sort((a, b) => {
+      return this.compareVersions(a.version, b.version)
+    })
+  }
+
+  /**
+   * 比较版本号
+   */
+  private compareVersions(v1: string, v2: string): number {
+    const parts1 = v1.split('.').map(Number)
+    const parts2 = v2.split('.').map(Number)
+
+    for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+      const part1 = parts1[i] || 0
+      const part2 = parts2[i] || 0
+
+      if (part1 < part2) return -1
+      if (part1 > part2) return 1
+    }
+
+    return 0
+  }
+
+  /**
+   * 获取最新版本
+   */
+  private getLatestVersion(versions: string[]): string {
+    if (versions.length === 0) return '1.0.0'
+    return versions.sort(this.compareVersions.bind(this))[versions.length - 1]
   }
 
   /**

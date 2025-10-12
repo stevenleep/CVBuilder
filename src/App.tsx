@@ -25,16 +25,12 @@ function App() {
   const [isInitialized, setIsInitialized] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false)
 
-  // 初始化编辑器上下文（只初始化一次）
   const editorContext = useMemo(() => {
     const context = bootstrapEditor({
-      debug: false,
       autoSaveInterval: 30000,
       maxHistorySize: 50,
-      enablePlugins: true,
     })
 
-    // 立即注册所有物料
     registerAllMaterials(context.materialRegistry)
 
     return context

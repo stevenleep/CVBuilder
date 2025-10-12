@@ -1,10 +1,11 @@
 /**
  * 插件协议接口
- * 
+ *
  * 定义插件系统的完整协议，支持编辑器功能扩展
  */
 
 import { IMaterialDefinition } from './IMaterialProtocol'
+import { ICommand } from './ICommandProtocol'
 
 /**
  * 插件元数据
@@ -60,35 +61,8 @@ export interface IPlugin {
   deactivate?: () => void | Promise<void>
 }
 
-/**
- * 命令接口
- */
-export interface ICommand {
-  /** 命令ID */
-  id: string
-  /** 命令名称 */
-  name: string
-  /** 命令描述 */
-  description?: string
-  /** 命令图标 */
-  icon?: string
-  /** 执行命令 */
-  execute: (context: ICommandContext) => void | Promise<void>
-  /** 是否可用 */
-  canExecute?: (context: ICommandContext) => boolean
-}
-
-/**
- * 命令上下文
- */
-export interface ICommandContext {
-  /** 选中的节点IDs */
-  selectedNodeIds: string[]
-  /** 当前页面Schema */
-  pageSchema: any
-  /** 编辑器API */
-  editorAPI: any
-}
+// 命令相关类型从 ICommandProtocol 导出
+export type { ICommand } from './ICommandProtocol'
 
 /**
  * 快捷键接口
@@ -163,4 +137,3 @@ export interface IPluginManager {
   /** 检查插件是否激活 */
   isActive(pluginId: string): boolean
 }
-

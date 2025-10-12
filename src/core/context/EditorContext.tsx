@@ -1,27 +1,22 @@
 /**
  * 编辑器上下文
  *
- * 提供编辑器的全局上下文和依赖注入
+ * 提供编辑器的全局上下文和依赖注入（包含所有核心服务）
  */
 
 import React, { createContext, useContext, ReactNode } from 'react'
 import { IMaterialRegistry } from '../protocols/IMaterialProtocol'
 import { IEventBus } from '../protocols/IEventProtocol'
 import { IPluginManager } from '../protocols/IPluginProtocol'
-
-/**
- * 编辑器上下文接口
- */
-export interface IEditorContext {
-  /** 物料注册表 */
-  materialRegistry: IMaterialRegistry
-  /** 事件总线 */
-  eventBus: IEventBus
-  /** 插件管理器 */
-  pluginManager: IPluginManager
-  /** 编辑器配置 */
-  config: IEditorConfig
-}
+import { CommandService } from '../services/CommandService'
+import { HistoryService } from '../services/HistoryService'
+import { NotificationService } from '../services/NotificationService'
+import { ValidationService } from '../services/ValidationService'
+import { ExtensionService } from '../services/ExtensionService'
+import { HookService } from '../services/HookService'
+import { MiddlewareService } from '../services/MiddlewareService'
+import { ActionService } from '../services/ActionService'
+import { ShortcutService } from '../services/ShortcutService'
 
 /**
  * 编辑器配置
@@ -35,6 +30,47 @@ export interface IEditorConfig {
   maxHistorySize?: number
   /** 是否启用插件系统 */
   enablePlugins?: boolean
+  // 核心服务开关
+  enableCommands?: boolean
+  enableHistory?: boolean
+  enableNotifications?: boolean
+  enableValidation?: boolean
+  enableExtensions?: boolean
+  enableHooks?: boolean
+  enableMiddleware?: boolean
+  enableShortcuts?: boolean
+}
+
+/**
+ * 编辑器上下文接口（包含所有核心服务）
+ */
+export interface IEditorContext {
+  /** 物料注册表 */
+  materialRegistry: IMaterialRegistry
+  /** 事件总线 */
+  eventBus: IEventBus
+  /** 插件管理器 */
+  pluginManager: IPluginManager
+  /** 命令服务 */
+  commandService: CommandService
+  /** 历史服务 */
+  historyService: HistoryService
+  /** 通知服务 */
+  notificationService: NotificationService
+  /** 验证服务 */
+  validationService: ValidationService
+  /** 扩展服务 */
+  extensionService: ExtensionService
+  /** 钩子服务 */
+  hookService: HookService
+  /** 中间件服务 */
+  middlewareService: MiddlewareService
+  /** 行为服务 */
+  actionService: ActionService
+  /** 快捷键服务 */
+  shortcutService: ShortcutService
+  /** 编辑器配置 */
+  config: IEditorConfig
 }
 
 const EditorContext = createContext<IEditorContext | null>(null)
@@ -88,6 +124,42 @@ export function useEventBus(): IEventBus {
 export function usePluginManager(): IPluginManager {
   const { pluginManager } = useEditorContext()
   return pluginManager
+}
+
+/**
+ * 使用命令服务的Hook
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function useCommandService(): CommandService {
+  const { commandService } = useEditorContext()
+  return commandService
+}
+
+/**
+ * 使用历史服务的Hook
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function useHistoryService(): HistoryService {
+  const { historyService } = useEditorContext()
+  return historyService
+}
+
+/**
+ * 使用通知服务的Hook
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function useNotificationService(): NotificationService {
+  const { notificationService } = useEditorContext()
+  return notificationService
+}
+
+/**
+ * 使用验证服务的Hook
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function useValidationService(): ValidationService {
+  const { validationService } = useEditorContext()
+  return validationService
 }
 
 /**

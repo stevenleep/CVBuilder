@@ -13,6 +13,14 @@ export interface ServiceFactory<T = any> {
   (...deps: any[]): T
 }
 
+// 服务生命周期接口
+export interface ILifecycle {
+  /** 初始化方法 */
+  initialize?(): void | Promise<void>
+  /** 销毁方法 */
+  dispose?(): void | Promise<void>
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ServiceDescriptor<T = any> {
   identifier: ServiceIdentifier<T>
@@ -20,6 +28,10 @@ export interface ServiceDescriptor<T = any> {
   dependencies?: ServiceIdentifier[]
   singleton?: boolean
   instance?: T
+  /** 是否支持生命周期 */
+  lifecycle?: boolean
+  /** 初始化优先级（越大越先初始化） */
+  initPriority?: number
 }
 
 export class DIContainer {
@@ -27,6 +39,11 @@ export class DIContainer {
   private services: Map<ServiceIdentifier, ServiceDescriptor> = new Map()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private singletonCache: Map<ServiceIdentifier, any> = new Map()
+  // 生命周期服务列表
+  private lifecycleServices: Set<any> = new Set()
+  // 初始化状态
+  private initialized: boolean = false
+  private initializing: boolean = false
 
   private constructor() {}
 
@@ -46,6 +63,8 @@ export class DIContainer {
     options: {
       dependencies?: ServiceIdentifier[]
       singleton?: boolean
+      lifecycle?: boolean
+      initPriority?: number
     } = {}
   ): this {
     this.services.set(identifier, {
@@ -53,6 +72,8 @@ export class DIContainer {
       factory,
       dependencies: options.dependencies || [],
       singleton: options.singleton !== false, // 默认为单例
+      lifecycle: options.lifecycle || false,
+      initPriority: options.initPriority || 0,
     })
     return this
   }
@@ -82,7 +103,74 @@ export class DIContainer {
       this.singletonCache.set(identifier, instance)
     }
 
+    // 如果支持生命周期，记录服务
+    if (descriptor.lifecycle && this.hasLifecycleMethods(instance)) {
+      this.lifecycleServices.add(instance)
+    }
+
     return instance
+  }
+
+  /**
+   * 初始化所有生命周期服务
+   */
+  public async initialize(): Promise<void> {
+    if (this.initialized || this.initializing) {
+      return
+    }
+
+    this.initializing = true
+
+    try {
+      // 按优先级排序初始化
+      const servicesWithPriority = Array.from(this.services.entries())
+        .filter(([, descriptor]) => descriptor.lifecycle)
+        .sort((a, b) => (b[1].initPriority || 0) - (a[1].initPriority || 0))
+
+      // 预先解析所有生命周期服务
+      for (const [identifier] of servicesWithPriority) {
+        this.resolve(identifier)
+      }
+
+      // 按顺序初始化
+      for (const service of this.lifecycleServices) {
+        if (service.initialize) {
+          await service.initialize()
+        }
+      }
+
+      this.initialized = true
+    } finally {
+      this.initializing = false
+    }
+  }
+
+  /**
+   * 销毁所有生命周期服务
+   */
+  public async dispose(): Promise<void> {
+    // 逆序销毁
+    const services = Array.from(this.lifecycleServices).reverse()
+
+    for (const service of services) {
+      try {
+        if (service.dispose) {
+          await service.dispose()
+        }
+      } catch (error) {
+        console.error('[DIContainer] 服务销毁失败:', error)
+      }
+    }
+
+    this.lifecycleServices.clear()
+    this.initialized = false
+  }
+
+  /**
+   * 检查对象是否具有生命周期方法
+   */
+  private hasLifecycleMethods(obj: any): boolean {
+    return typeof obj.initialize === 'function' || typeof obj.dispose === 'function'
   }
 
   /**

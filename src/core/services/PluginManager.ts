@@ -15,20 +15,21 @@ import {
 } from '../protocols/IPluginProtocol'
 import { IMaterialDefinition } from '../protocols/IMaterialProtocol'
 import { IEventBus } from '../protocols/IEventProtocol'
+import { ICommandService } from '../protocols/ICommandProtocol'
 
 export class PluginManager implements IPluginManager {
   private plugins: Map<string, IPlugin> = new Map()
   private activePlugins: Set<string> = new Set()
   private pluginContext: IPluginContext
 
-  // 命令、快捷键、面板、中间件的注册表
-  private commands: Map<string, ICommand> = new Map()
+  // 快捷键、面板、中间件的注册表（命令已由 CommandService 管理）
   private shortcuts: Map<string, IShortcut> = new Map()
   private panels: Map<string, IPanel> = new Map()
   private middlewares: IMiddleware[] = []
 
   constructor(
     private materialRegistry: any,
+    private commandService: ICommandService,
     private eventBus: IEventBus,
     private getEditorState: () => any,
     private setEditorState: (updater: (state: any) => void) => void
@@ -132,39 +133,24 @@ export class PluginManager implements IPluginManager {
   }
 
   /**
-   * 获取所有已注册的命令
+   * 获取所有已注册的命令（委托给 CommandService）
    */
   public getCommands(): ICommand[] {
-    return Array.from(this.commands.values())
+    return this.commandService.getAll()
   }
 
   /**
-   * 获取指定命令
+   * 获取指定命令（委托给 CommandService）
    */
   public getCommand(commandId: string): ICommand | undefined {
-    return this.commands.get(commandId)
+    return this.commandService.get(commandId)
   }
 
   /**
-   * 执行命令
+   * 执行命令（委托给 CommandService）
    */
-  public async executeCommand(commandId: string): Promise<void> {
-    const command = this.commands.get(commandId)
-    if (!command) {
-      throw new Error(`[PluginManager] 命令 "${commandId}" 未找到`)
-    }
-
-    const context = {
-      selectedNodeIds: this.getEditorState().selectedNodeIds || [],
-      pageSchema: this.getEditorState().pageSchema,
-      editorAPI: this.getEditorState(),
-    }
-
-    if (command.canExecute && !command.canExecute(context)) {
-      return
-    }
-
-    await command.execute(context)
+  public async executeCommand(commandId: string, args?: any): Promise<void> {
+    await this.commandService.execute(commandId, args)
   }
 
   /**
@@ -236,17 +222,15 @@ export class PluginManager implements IPluginManager {
         this.materialRegistry.register(material)
       },
       registerCommand: (command: ICommand) => {
-        if (this.commands.has(command.id)) {
-          throw new Error(`[PluginManager] 命令 "${command.id}" 已存在`)
-        }
-        this.commands.set(command.id, command)
-        this.eventBus.emit('command:registered', { command })
+        // 委托给 CommandService
+        this.commandService.register(command)
       },
       registerShortcut: (shortcut: IShortcut) => {
         if (this.shortcuts.has(shortcut.key)) {
           throw new Error(`[PluginManager] 快捷键 "${shortcut.key}" 已被占用`)
         }
-        if (!this.commands.has(shortcut.commandId)) {
+        // 检查命令是否存在（使用 CommandService）
+        if (!this.commandService.get(shortcut.commandId)) {
           throw new Error(`[PluginManager] 快捷键关联的命令 "${shortcut.commandId}" 不存在`)
         }
         this.shortcuts.set(shortcut.key, shortcut)
