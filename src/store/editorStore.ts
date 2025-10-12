@@ -244,6 +244,12 @@ export const useEditorStore = create<EditorState>()(
     // 切换节点显示/隐藏
     toggleNodeVisibility: nodeId => {
       set(state => {
+        // 不允许隐藏 Page 根容器
+        const node = findNode(state.pageSchema.root, nodeId)
+        if (node?.type === 'Page') {
+          return // 直接返回，不做任何操作
+        }
+
         const toggleHidden = (node: NodeSchema): NodeSchema => {
           if (node.id === nodeId) {
             return { ...node, hidden: !node.hidden }

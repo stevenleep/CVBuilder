@@ -153,29 +153,36 @@ export const Canvas: React.FC = () => {
         })
       }
 
+      // 不允许对 Page 进行某些操作
+      const isPageNode = node?.type === 'Page'
+
       items.push(
         { id: 'divider-1', label: '', divider: true },
         {
           id: 'save-as-template',
           label: '保存为模板',
           icon: <Save size={16} />,
+          disabled: isPageNode,
         },
         { id: 'divider-2', label: '', divider: true },
         {
           id: 'move-up',
           label: '上移一层',
           icon: <ArrowUp size={16} />,
+          disabled: isPageNode,
         },
         {
           id: 'move-down',
           label: '下移一层',
           icon: <ArrowDown size={16} />,
+          disabled: isPageNode,
         },
         { id: 'divider-3', label: '', divider: true },
         {
           id: 'toggle-visibility',
           label: isHidden ? '显示' : '隐藏',
           icon: isHidden ? <Eye size={16} /> : <EyeOff size={16} />,
+          disabled: isPageNode, // Page 不允许隐藏
         },
         { id: 'divider-4', label: '', divider: true },
         {
@@ -184,6 +191,7 @@ export const Canvas: React.FC = () => {
           icon: <Trash2 size={16} />,
           shortcut: 'Del',
           danger: true,
+          disabled: isPageNode,
         }
       )
     } else if (clipboard) {

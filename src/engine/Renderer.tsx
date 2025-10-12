@@ -361,7 +361,7 @@ export const Renderer: React.FC<RendererProps> = ({
               onMoveUp={handleMoveUp}
               onMoveDown={handleMoveDown}
               onSaveAsTemplate={handleSaveAsTemplate}
-              onToggleVisibility={() => toggleNodeVisibility(id)}
+              onToggleVisibility={type !== 'Page' ? () => toggleNodeVisibility(id) : undefined}
               onCustomAction={handleCustomAction}
               capabilities={materialDef.capabilities}
             />
