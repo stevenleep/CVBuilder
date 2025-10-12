@@ -12,6 +12,7 @@ import { ThemeProvider } from './core/context/ThemeContext'
 import { DndProvider } from './editor/DndProvider'
 import { NotificationProvider } from './components/NotificationProvider'
 import { WelcomeGuide } from './components/WelcomeGuide'
+import { Logo } from './components/Logo'
 import { HomePage } from './pages/HomePage'
 import { EditorPage } from './pages/EditorPage'
 import { TemplatesPage } from './pages/TemplatesPage'
@@ -80,10 +81,9 @@ function App() {
         }}
       >
         <div style={{ textAlign: 'center' }}>
-          <svg width="64" height="64" viewBox="0 0 64 64" style={{ margin: '0 auto 20px' }}>
-            <rect width="64" height="64" rx="14" fill="#2d2d2d" />
-            <path d="M20 18h24v3H20zm0 10h24v3H20zm0 10h16v3H20z" fill="white" />
-          </svg>
+          <div style={{ margin: '0 auto 20px', display: 'flex', justifyContent: 'center' }}>
+            <Logo size={64} />
+          </div>
           <div
             style={{
               fontSize: '22px',

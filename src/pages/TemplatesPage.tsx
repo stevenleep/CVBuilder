@@ -5,6 +5,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, FileText, Eye, Check, Settings, Trash2 } from 'lucide-react'
+import { Logo } from '@/components/Logo'
 import { resumeTemplateManager } from '@/core/services/ResumeTemplateManager'
 import { notification } from '@/utils/notification'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
@@ -90,10 +91,7 @@ export const TemplatesPage: React.FC = () => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <svg width="40" height="40" viewBox="0 0 40 40">
-            <rect width="40" height="40" rx="8" fill="#2d2d2d" />
-            <path d="M12 10h16v2H12zm0 6h16v2H12zm0 6h12v2H12z" fill="white" />
-          </svg>
+          <Logo size={40} />
           <div>
             <div style={{ fontSize: '16px', fontWeight: '700', color: '#2d2d2d' }}>模板库</div>
             <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>CVKit</div>

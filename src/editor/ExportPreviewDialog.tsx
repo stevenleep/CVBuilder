@@ -1,11 +1,9 @@
 /**
- * 导出预览对话框
- * 
- * 在导出前提供预览和配置选项
+ * 导出对话框 - 极简版
  */
 
 import React, { useState } from 'react'
-import { X, FileImage, FileText, FileDown, Settings } from 'lucide-react'
+import { X } from 'lucide-react'
 
 export interface ExportOptions {
   format: 'pdf' | 'png' | 'json'
@@ -19,21 +17,15 @@ interface ExportPreviewDialogProps {
   onClose: () => void
 }
 
-export const ExportPreviewDialog: React.FC<ExportPreviewDialogProps> = ({
-  onExport,
-  onClose,
-}) => {
+export const ExportPreviewDialog: React.FC<ExportPreviewDialogProps> = ({ onExport, onClose }) => {
   const [format, setFormat] = useState<'pdf' | 'png' | 'json'>('pdf')
-  const [quality, setQuality] = useState(90)
-  const [scale, setScale] = useState(2)
-  const [pageSize, setPageSize] = useState<'a4' | 'letter'>('a4')
 
   const handleExport = () => {
     onExport({
       format,
-      quality,
-      scale,
-      pageSize,
+      quality: 90,
+      scale: 2,
+      pageSize: 'a4',
     })
   }
 
@@ -41,370 +33,143 @@ export const ExportPreviewDialog: React.FC<ExportPreviewDialogProps> = ({
     <div
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        inset: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 100001,
-        padding: '20px',
-        animation: 'fadeIn 0.2s ease-out',
+        backdropFilter: 'blur(4px)',
       }}
       onClick={onClose}
     >
       <div
         style={{
-          backgroundColor: '#2d2d2d',
-          borderRadius: '12px',
-          padding: '0',
-          maxWidth: '580px',
-          width: '100%',
-          maxHeight: '85vh',
+          backgroundColor: '#fff',
+          borderRadius: '16px',
+          width: '420px',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)',
           overflow: 'hidden',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
-          border: '1px solid #4a4a4a',
-          display: 'flex',
-          flexDirection: 'column',
-          animation: 'scaleIn 0.2s ease-out',
         }}
         onClick={e => e.stopPropagation()}
       >
         {/* 头部 */}
         <div
           style={{
-            padding: '24px 28px',
-            borderBottom: '1px solid #444',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            padding: '24px',
+            borderBottom: '1px solid #f0f0f0',
           }}
         >
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h2
               style={{
-                fontSize: '20px',
+                fontSize: '18px',
                 fontWeight: '700',
-                color: '#fff',
-                marginBottom: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
+                color: '#2d2d2d',
+                margin: 0,
               }}
             >
-              <FileDown size={22} />
               导出简历
             </h2>
-            <p style={{ fontSize: '13px', color: '#aaa', margin: 0 }}>
-              选择导出格式和配置选项
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            style={{
-              width: '32px',
-              height: '32px',
-              border: 'none',
-              borderRadius: '6px',
-              background: 'transparent',
-              color: '#999',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = '#3d3d3d'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.backgroundColor = 'transparent'
-            }}
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* 内容 */}
-        <div style={{ padding: '24px 28px', flex: 1, overflow: 'auto' }}>
-          {/* 格式选择 */}
-          <div style={{ marginBottom: '28px' }}>
-            <label
+            <button
+              onClick={onClose}
               style={{
-                display: 'block',
-                fontSize: '14px',
-                fontWeight: '600',
-                color: '#fff',
-                marginBottom: '14px',
+                width: '32px',
+                height: '32px',
+                border: 'none',
+                borderRadius: '8px',
+                background: 'transparent',
+                color: '#999',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#f5f5f5'
+                e.currentTarget.style.color = '#666'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+                e.currentTarget.style.color = '#999'
               }}
             >
-              导出格式
-            </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-              <FormatOption
-                icon={<FileText size={24} />}
-                label="PDF"
-                description="适合打印"
-                active={format === 'pdf'}
-                onClick={() => setFormat('pdf')}
-              />
-              <FormatOption
-                icon={<FileImage size={24} />}
-                label="PNG"
-                description="高清图片"
-                active={format === 'png'}
-                onClick={() => setFormat('png')}
-              />
-              <FormatOption
-                icon={<Settings size={24} />}
-                label="JSON"
-                description="数据备份"
-                active={format === 'json'}
-                onClick={() => setFormat('json')}
-              />
-            </div>
-          </div>
-
-          {/* 格式特定选项 */}
-          {(format === 'pdf' || format === 'png') && (
-            <>
-              {/* 质量设置 */}
-              <div style={{ marginBottom: '24px' }}>
-                <label
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#fff',
-                    marginBottom: '12px',
-                  }}
-                >
-                  <span>图片质量</span>
-                  <span style={{ fontSize: '15px', fontWeight: '700', color: '#fff' }}>
-                    {quality}%
-                  </span>
-                </label>
-                <input
-                  type="range"
-                  min="50"
-                  max="100"
-                  value={quality}
-                  onChange={e => setQuality(Number(e.target.value))}
-                  style={{
-                    width: '100%',
-                    height: '8px',
-                    borderRadius: '4px',
-                    accentColor: '#3b82f6',
-                    cursor: 'pointer',
-                  }}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontSize: '11px',
-                    color: '#999',
-                    marginTop: '8px',
-                  }}
-                >
-                  <span>较小文件</span>
-                  <span>高质量</span>
-                </div>
-              </div>
-
-              {/* 缩放比例 */}
-              <div style={{ marginBottom: '24px' }}>
-                <label
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#fff',
-                    marginBottom: '12px',
-                  }}
-                >
-                  <span>清晰度</span>
-                  <span style={{ fontSize: '15px', fontWeight: '700', color: '#fff' }}>
-                    {scale}x
-                  </span>
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="4"
-                  step="0.5"
-                  value={scale}
-                  onChange={e => setScale(Number(e.target.value))}
-                  style={{
-                    width: '100%',
-                    height: '8px',
-                    borderRadius: '4px',
-                    accentColor: '#3b82f6',
-                    cursor: 'pointer',
-                  }}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontSize: '11px',
-                    color: '#999',
-                    marginTop: '8px',
-                  }}
-                >
-                  <span>标准</span>
-                  <span>超清</span>
-                </div>
-              </div>
-            </>
-          )}
-
-          {format === 'pdf' && (
-            <div style={{ marginBottom: '24px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#fff',
-                  marginBottom: '12px',
-                }}
-              >
-                页面尺寸
-              </label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                <PageSizeOption
-                  label="A4"
-                  size="210 × 297 mm"
-                  active={pageSize === 'a4'}
-                  onClick={() => setPageSize('a4')}
-                />
-                <PageSizeOption
-                  label="Letter"
-                  size="8.5 × 11 in"
-                  active={pageSize === 'letter'}
-                  onClick={() => setPageSize('letter')}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* 提示信息 */}
-          <div
-            style={{
-              padding: '16px',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-            }}
-          >
-            <div style={{ fontSize: '13px', fontWeight: '600', color: '#fff', marginBottom: '6px' }}>
-              💡 温馨提示
-            </div>
-            <div style={{ fontSize: '12px', color: '#bbb', lineHeight: '1.6' }}>
-              {format === 'pdf' && '导出PDF适合打印和正式投递，会保持最佳的排版效果'}
-              {format === 'png' && '导出PNG图片适合在线预览和社交媒体分享'}
-              {format === 'json' && '导出JSON数据可以备份简历内容，稍后重新导入'}
-            </div>
+              <X size={20} />
+            </button>
           </div>
         </div>
 
-        {/* 底部按钮 */}
-        <div
-          style={{
-            padding: '20px 28px',
-            borderTop: '1px solid #444',
-            display: 'flex',
-            gap: '12px',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <button
-            onClick={onClose}
-            style={{
-              padding: '10px 24px',
-              border: '1px solid #555',
-              borderRadius: '6px',
-              backgroundColor: '#3a3a3a',
-              color: '#ccc',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '600',
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = '#4a4a4a'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.backgroundColor = '#3a3a3a'
-            }}
-          >
-            取消
-          </button>
+        {/* 格式选择 */}
+        <div style={{ padding: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <FormatOption
+              label="PDF 文档"
+              description="适合打印和正式投递，支持多页"
+              emoji="📄"
+              active={format === 'pdf'}
+              onClick={() => setFormat('pdf')}
+            />
+            <FormatOption
+              label="PNG 图片"
+              description="导出高清图片，适合在线预览"
+              emoji="🖼️"
+              active={format === 'png'}
+              onClick={() => setFormat('png')}
+            />
+            <FormatOption
+              label="JSON 数据"
+              description="备份简历数据，可重新导入"
+              emoji="💾"
+              active={format === 'json'}
+              onClick={() => setFormat('json')}
+            />
+          </div>
+
+          {/* 导出按钮 */}
           <button
             onClick={handleExport}
             style={{
-              padding: '10px 32px',
+              width: '100%',
+              marginTop: '24px',
+              padding: '14px',
               border: 'none',
-              borderRadius: '6px',
-              backgroundColor: '#fff',
-              color: '#2d2d2d',
+              borderRadius: '10px',
+              backgroundColor: '#2d2d2d',
+              color: '#fff',
               cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              transition: 'all 0.15s',
+              fontSize: '15px',
+              fontWeight: '700',
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 12px rgba(45, 45, 45, 0.2)',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = '#f0f0f0'
+              e.currentTarget.style.backgroundColor = '#1a1a1a'
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(45, 45, 45, 0.3)'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.backgroundColor = '#fff'
+              e.currentTarget.style.backgroundColor = '#2d2d2d'
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(45, 45, 45, 0.2)'
             }}
           >
-            <FileDown size={18} />
             开始导出
           </button>
         </div>
       </div>
-
-      <style>
-        {`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes scaleIn {
-            from {
-              transform: scale(0.95);
-              opacity: 0;
-            }
-            to {
-              transform: scale(1);
-              opacity: 1;
-            }
-          }
-        `}
-      </style>
     </div>
   )
 }
 
+// 格式选项
 const FormatOption: React.FC<{
-  icon: React.ReactNode
   label: string
   description: string
+  emoji: string
   active: boolean
   onClick: () => void
-}> = ({ icon, label, description, active, onClick }) => {
+}> = ({ label, description, emoji, active, onClick }) => {
   const [hover, setHover] = useState(false)
 
   return (
@@ -413,79 +178,65 @@ const FormatOption: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        height: '120px',
-        padding: '18px 12px',
-        border: '2px solid #555',
-        borderRadius: '10px',
-        backgroundColor: active ? '#3a3a3a' : hover ? '#2a2a2a' : '#1a1a1a',
+        width: '100%',
+        padding: '18px 20px',
+        border: `2px solid ${active ? '#2d2d2d' : hover ? '#e0e0e0' : '#f0f0f0'}`,
+        borderRadius: '12px',
+        backgroundColor: active ? '#fafafa' : hover ? '#f8f9fa' : '#fff',
         cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        boxShadow: active
-          ? '0 0 0 2px rgba(255, 255, 255, 0.3), 0 4px 12px rgba(255, 255, 255, 0.1)'
-          : 'none',
-      }}
-    >
-      <div style={{ color: active ? '#fff' : '#888', marginBottom: '10px' }}>{icon}</div>
-      <div
-        style={{
-          fontSize: '15px',
-          fontWeight: '700',
-          color: active ? '#fff' : '#ccc',
-          marginBottom: '4px',
-        }}
-      >
-        {label}
-      </div>
-      <div style={{ fontSize: '11px', color: active ? '#bbb' : '#666' }}>{description}</div>
-    </button>
-  )
-}
-
-const PageSizeOption: React.FC<{
-  label: string
-  size: string
-  active: boolean
-  onClick: () => void
-}> = ({ label, size, active, onClick }) => {
-  const [hover, setHover] = useState(false)
-
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        height: '72px',
-        padding: '14px 16px',
-        border: '2px solid #555',
-        borderRadius: '8px',
-        backgroundColor: active ? '#3a3a3a' : hover ? '#2a2a2a' : '#1a1a1a',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
+        transition: 'all 0.2s',
         textAlign: 'left',
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        boxShadow: active ? '0 0 0 2px rgba(255, 255, 255, 0.3)' : 'none',
+        alignItems: 'center',
+        gap: '16px',
+        boxShadow: active ? '0 4px 12px rgba(45, 45, 45, 0.06)' : 'none',
       }}
     >
       <div
         style={{
-          fontSize: '15px',
-          fontWeight: '700',
-          color: active ? '#fff' : '#ccc',
-          marginBottom: '4px',
+          fontSize: '32px',
+          lineHeight: 1,
+          flexShrink: 0,
         }}
       >
-        {label}
+        {emoji}
       </div>
-      <div style={{ fontSize: '12px', color: active ? '#aaa' : '#666' }}>{size}</div>
+      <div style={{ flex: 1 }}>
+        <div
+          style={{
+            fontSize: '15px',
+            fontWeight: '700',
+            color: '#2d2d2d',
+            marginBottom: '4px',
+          }}
+        >
+          {label}
+        </div>
+        <div style={{ fontSize: '13px', color: '#999', lineHeight: 1.4 }}>{description}</div>
+      </div>
+      {active && (
+        <div
+          style={{
+            width: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            backgroundColor: '#2d2d2d',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <div
+            style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: '#fff',
+            }}
+          />
+        </div>
+      )}
     </button>
   )
 }
-

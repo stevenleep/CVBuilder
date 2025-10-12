@@ -1,11 +1,12 @@
 /**
- * 工具栏组件 - 现代扁平化设计
+ * 工具栏组件 - 精简版
  */
 
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEditorStore } from '@store/editorStore'
 import { notification } from '@/utils/notification'
+import { LogoIcon } from '@/components/Logo'
 import {
   Undo,
   Redo,
@@ -16,6 +17,8 @@ import {
   HelpCircle,
   ChevronDown,
   Home,
+  Save,
+  Download,
 } from 'lucide-react'
 import { SaveResumeDialog } from './SaveResumeDialog'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
@@ -26,7 +29,6 @@ import { nanoid } from 'nanoid'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 import { useTheme } from '@/core/context/ThemeContext'
-import { generateThumbnail } from '@/utils/thumbnailGenerator'
 
 export const Toolbar: React.FC = () => {
   const navigate = useNavigate()
@@ -39,18 +41,17 @@ export const Toolbar: React.FC = () => {
     redo,
     setMode,
     updateCanvasConfig,
-    pageSchema,
     currentResumeId,
+    setCurrentResumeId,
   } = useEditorStore()
 
-  const { theme, setTheme } = useTheme()
+  const { theme } = useTheme()
 
   const [showSaveMenu, setShowSaveMenu] = useState(false)
-  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [showNewResumeDialog, setShowNewResumeDialog] = useState(false)
   const [showSaveAsDialog, setShowSaveAsDialog] = useState(false)
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
-  const [showExportMenu, setShowExportMenu] = useState(false)
   const [showExportPreview, setShowExportPreview] = useState(false)
 
   // 监听快捷键保存事件
@@ -73,10 +74,13 @@ export const Toolbar: React.FC = () => {
     updateCanvasConfig({ scale: newScale })
   }
 
+  const handleZoomReset = () => {
+    updateCanvasConfig({ scale: 1 })
+  }
+
   const handleExportJSON = () => {
     const state = useEditorStore.getState()
 
-    // 导出完整数据，包含主题配置
     const exportData = {
       version: '1.0.0',
       exportTime: Date.now(),
@@ -93,419 +97,69 @@ export const Toolbar: React.FC = () => {
     linkElement.setAttribute('href', dataUri)
     linkElement.setAttribute('download', exportFileDefaultName)
     linkElement.click()
-    setShowExportMenu(false)
     notification.success('JSON 导出成功！')
   }
 
-  const handleImportJSON = () => {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = '.json'
-
-    input.onchange = async (e: Event) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
-      if (!file) return
-
-      try {
-        const text = await file.text()
-        const data = JSON.parse(text)
-
-        // 检查数据格式
-        if (!data.pageSchema) {
-          notification.error('无效的数据格式')
-          return
-        }
-
-        // 导入页面数据
-        useEditorStore.setState({
-          pageSchema: data.pageSchema,
-          selectedNodeIds: [],
-        })
-
-        // 导入主题配置（如果有）
-        if (data.theme) {
-          setTheme(data.theme)
-        }
-
-        // 导入画布配置（如果有）
-        if (data.canvasConfig) {
-          useEditorStore.setState({
-            canvasConfig: data.canvasConfig,
-          })
-        }
-
-        notification.success('导入成功！')
-        setShowExportMenu(false)
-      } catch (error) {
-        console.error('Import error:', error)
-        notification.error('导入失败，请检查文件格式')
-      }
-    }
-
-    input.click()
-  }
-
-  const handleExportWithOptions = async (options: ExportOptions) => {
-    setShowExportPreview(false)
-    
-    if (options.format === 'json') {
-      handleExportJSON()
-      return
-    }
-
-    if (options.format === 'png') {
-      await handleExportPNG(options.scale, options.quality)
-      return
-    }
-
-    if (options.format === 'pdf') {
-      await handleExportPDF(options.scale, options.quality)
-      return
-    }
-  }
-
-  const handleExportPNG = async (scale = 4, quality = 0.98) => {
-    try {
-      // 切换到预览模式
-      const originalMode = mode
-      const originalScale = canvasConfig.scale
-
-      if (mode !== 'preview') {
-        setMode('preview')
-        await new Promise(resolve => setTimeout(resolve, 100))
-      }
-
-      // 重置缩放为100%以确保正确导出
-      if (canvasConfig.scale !== 1) {
-        updateCanvasConfig({ scale: 1 })
-        await new Promise(resolve => setTimeout(resolve, 300))
-      }
-
-      // 获取所有页面元素
-      const pageElements = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
-      if (pageElements.length === 0) {
-        notification.error('未找到页面元素')
-        return
-      }
-
-      notification.info(`正在生成 ${pageElements.length} 张高清图片，请稍候...`)
-
-      // 如果只有一页，直接导出PNG
-      if (pageElements.length === 1) {
-        const canvas = await html2canvas(pageElements[0], {
-          scale,
-          useCORS: true,
-          allowTaint: false,
-          backgroundColor: null,
-          logging: false,
-          imageTimeout: 0,
-          removeContainer: false,
-          foreignObjectRendering: false,
-          onclone: clonedDoc => {
-            const noprint = clonedDoc.querySelectorAll('[data-no-print]')
-            noprint.forEach(el => el.remove())
-          },
-        })
-
-        canvas.toBlob(
-          blob => {
-            if (blob) {
-              const url = URL.createObjectURL(blob)
-              const link = document.createElement('a')
-              link.href = url
-              link.download = `resume-${Date.now()}.png`
-              link.click()
-              URL.revokeObjectURL(url)
-              notification.success('图片导出成功！')
-            }
-          },
-          'image/png',
-          quality / 100
-        )
-      } else {
-        // 多页：打包为zip
-        const JSZip = (await import('jszip')).default
-        const zip = new JSZip()
-
-        for (let i = 0; i < pageElements.length; i++) {
-          const canvas = await html2canvas(pageElements[i], {
-            scale,
-            useCORS: true,
-            allowTaint: false,
-            backgroundColor: null,
-            logging: false,
-            imageTimeout: 0,
-            removeContainer: false,
-            foreignObjectRendering: false,
-            onclone: clonedDoc => {
-              const noprint = clonedDoc.querySelectorAll('[data-no-print]')
-              noprint.forEach(el => el.remove())
-            },
-          })
-
-          const blob = await new Promise<Blob | null>(resolve => {
-            canvas.toBlob(resolve, 'image/png', quality / 100)
-          })
-
-          if (blob) {
-            zip.file(`resume-page-${i + 1}.png`, blob)
-          }
-        }
-
-        const zipBlob = await zip.generateAsync({ type: 'blob' })
-        const url = URL.createObjectURL(zipBlob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `resume-${Date.now()}.zip`
-        link.click()
-        URL.revokeObjectURL(url)
-
-        notification.success(`已导出 ${pageElements.length} 张图片（ZIP格式）！`)
-      }
-
-      // 恢复原始模式和缩放
-      if (originalMode !== mode) {
-        setMode(originalMode)
-      }
-      if (originalScale !== canvasConfig.scale) {
-        updateCanvasConfig({ scale: originalScale })
-      }
-
-      setShowExportMenu(false)
-    } catch (error) {
-      notification.error('图片导出失败')
-      console.error('PNG export error:', error)
-    }
-  }
-
-  const handleExportPDF = async (scale = 3, quality = 0.98) => {
-    try {
-      // 切换到预览模式
-      const originalMode = mode
-      const originalScale = canvasConfig.scale
-
-      if (mode !== 'preview') {
-        setMode('preview')
-        await new Promise(resolve => setTimeout(resolve, 100))
-      }
-
-      // 重置缩放为100%以确保正确导出
-      if (canvasConfig.scale !== 1) {
-        updateCanvasConfig({ scale: 1 })
-        await new Promise(resolve => setTimeout(resolve, 300))
-      }
-
-      // 获取所有页面元素
-      const pageElements = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
-      if (pageElements.length === 0) {
-        notification.error('未找到页面元素')
-        return
-      }
-
-      notification.info(`正在生成 ${pageElements.length} 页 PDF，请稍候...`)
-
-      // 创建 PDF
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true,
-      })
-
-      // A4 尺寸
-      const a4Width = 210
-      const a4Height = 297
-
-      // 逐页截图并添加到PDF
-      for (let i = 0; i < pageElements.length; i++) {
-        const pageElement = pageElements[i]
-
-        const canvas = await html2canvas(pageElement, {
-          scale,
-          useCORS: true,
-          allowTaint: false,
-          backgroundColor: null,
-          logging: false,
-          imageTimeout: 0,
-          removeContainer: false,
-          foreignObjectRendering: false,
-          onclone: clonedDoc => {
-            const noprint = clonedDoc.querySelectorAll('[data-no-print]')
-            noprint.forEach(el => el.remove())
-          },
-        })
-
-        const imgData = canvas.toDataURL('image/jpeg', quality / 100)
-
-        if (i > 0) {
-          pdf.addPage()
-        }
-
-        const imgWidth = a4Width
-        const imgHeight = (canvas.height * imgWidth) / canvas.width
-
-        if (imgHeight > a4Height) {
-          const scale = a4Height / imgHeight
-          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth * scale, a4Height)
-        } else {
-          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight)
-        }
-      }
-
-      pdf.save(`resume-${Date.now()}.pdf`)
-
-      // 恢复原始模式和缩放
-      if (originalMode !== mode) {
-        setMode(originalMode)
-      }
-      if (originalScale !== canvasConfig.scale) {
-        updateCanvasConfig({ scale: originalScale })
-      }
-
-      setShowExportMenu(false)
-      notification.success(`PDF 导出成功！共 ${pageElements.length} 页`)
-    } catch (error) {
-      notification.error('PDF 导出失败')
-      console.error('PDF export error:', error)
-    }
-  }
-
-  // const handlePrintPDF = () => {
-  //   const originalMode = mode
-
-  //   // 切换到预览模式
-  //   if (mode !== 'preview') {
-  //     setMode('preview')
-  //   }
-
-  //   setShowExportMenu(false)
-
-  //   // 延迟一下让模式切换完成
-  //   setTimeout(() => {
-  //     // 使用浏览器打印功能（最高质量的PDF导出）
-  //     window.print()
-
-  //     // 打印对话框关闭后恢复模式
-  //     setTimeout(() => {
-  //       if (originalMode !== mode) {
-  //         setMode(originalMode)
-  //       }
-  //     }, 100)
-  //   }, 200)
-
-  //   notification.info('请在打印对话框中选择"另存为PDF"')
-  // }
-
-  // 生成缩略图
-  const generateResumeThumbnail = async (resumeId: string): Promise<void> => {
-    try {
-      // 查找页面元素
-      const pageElement = document.querySelector('.page-sheet') as HTMLElement
-      if (!pageElement) {
-        console.warn('未找到页面元素，跳过缩略图生成')
-        return
-      }
-
-      // 生成缩略图
-      const thumbnail = await generateThumbnail(pageElement, {
-        width: 300,
-        height: 400,
-        quality: 0.85,
-        scale: 2,
-      })
-
-      // 保存缩略图
-      await indexedDBService.setItem(STORES.THUMBNAILS, `resume-${resumeId}`, thumbnail)
-    } catch (error) {
-      console.error('生成缩略图失败:', error)
-      // 不阻塞保存流程
-    }
-  }
-
-  // 保存简历（更新/新建）
   const handleSave = async (name?: string, description?: string) => {
     try {
-      if (currentResumeId) {
-        // 更新现有简历
-        const existing = await indexedDBService.getItem(STORES.RESUMES, currentResumeId)
-        if (existing) {
-          const updated = {
-            ...existing,
-            schema: pageSchema,
-            updatedAt: new Date().toISOString(),
-          }
-          await indexedDBService.setItem(STORES.RESUMES, currentResumeId, updated)
-          
-          // 生成缩略图（异步，不阻塞）
-          generateResumeThumbnail(currentResumeId)
-          
-          notification.success('简历已更新！')
+      const state = useEditorStore.getState()
+      const resumeId = currentResumeId || nanoid()
 
-          // 触发简历列表刷新事件
-          window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
-        }
-      } else {
-        // 新建简历 - 需要名称
-        if (!name) {
-          setShowSaveDialog(true)
-          return
-        }
-
-        const newId = nanoid()
-        const resumeData = {
-          id: newId,
-          name,
-          description: description || '',
-          schema: pageSchema,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }
-
-        await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
-        useEditorStore.getState().setCurrentResumeId(newId)
-        
-        // 生成缩略图（异步，不阻塞）
-        generateResumeThumbnail(newId)
-        
-        notification.success('简历已保存！')
-
-        // 更新URL为带ID的形式
-        window.history.replaceState(null, '', `/editor/${newId}`)
-
-        // 触发简历列表刷新事件
-        window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
+      if (!currentResumeId && !name) {
+        setShowNewResumeDialog(true)
+        return
       }
+
+      const resumeData = {
+        id: resumeId,
+        name: name || `简历 ${new Date().toLocaleDateString()}`,
+        description: description || '',
+        schema: state.pageSchema,
+        theme: theme,
+        canvasConfig: state.canvasConfig,
+        thumbnail: '',
+        createdAt: currentResumeId
+          ? (await indexedDBService.getItem(STORES.RESUMES, currentResumeId))?.createdAt ||
+            new Date().toISOString()
+          : new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+
+      await indexedDBService.setItem(STORES.RESUMES, resumeId, resumeData)
+
+      if (!currentResumeId) {
+        setCurrentResumeId(resumeId)
+      }
+
+      notification.success('保存成功！')
+      window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
     } catch (error) {
       notification.error('保存失败')
       console.error('Save error:', error)
     }
   }
 
-  // 另存为（复制一份新的）
   const handleSaveAs = async (name: string, description: string) => {
     try {
+      const state = useEditorStore.getState()
       const newId = nanoid()
+
       const resumeData = {
         id: newId,
         name,
         description,
-        schema: pageSchema,
+        schema: state.pageSchema,
+        theme: theme,
+        canvasConfig: state.canvasConfig,
+        thumbnail: '',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       }
 
       await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
-      useEditorStore.getState().setCurrentResumeId(newId)
-      
-      // 生成缩略图（异步，不阻塞）
-      generateResumeThumbnail(newId)
-      
-      notification.success('已另存为新简历！')
+      setCurrentResumeId(newId)
 
-      // 更新URL
-      window.history.replaceState(null, '', `/editor/${newId}`)
-
-      // 触发简历列表刷新事件
+      notification.success('另存为成功！')
       window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
     } catch (error) {
       notification.error('另存为失败')
@@ -513,38 +167,88 @@ export const Toolbar: React.FC = () => {
     }
   }
 
-  // 保存为模板
-  const handleSaveAsTemplate = async (name: string, description: string) => {
+  const handleExportWithOptions = async (options: ExportOptions) => {
     try {
-      const templateId = nanoid()
-      const templateData = {
-        id: templateId,
-        name,
-        description,
-        schema: pageSchema,
-        category: 'custom',
-        createdAt: new Date().toISOString(),
+      // 查找所有页面元素
+      const pages = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
+
+      if (!pages || pages.length === 0) {
+        notification.error('未找到简历页面')
+        return
       }
 
-      await indexedDBService.setItem(STORES.RESUME_TEMPLATES, templateId, templateData)
-      
-      // 生成缩略图（异步，不阻塞）
-      try {
-        const pageElement = document.querySelector('.page-sheet') as HTMLElement
-        if (pageElement) {
-          const thumbnail = await generateThumbnail(pageElement, {
-            width: 300,
-            height: 400,
-            quality: 0.85,
-            scale: 2,
+      notification.info('正在生成导出文件...')
+
+      if (options.format === 'pdf') {
+        // PDF 导出 - 支持多页
+        const pdf = new jsPDF({
+          orientation: options.pageSize === 'a4' ? 'portrait' : 'landscape',
+          unit: 'mm',
+          format: options.pageSize || 'a4',
+        })
+
+        const scale = options.scale || 2
+
+        for (let i = 0; i < pages.length; i++) {
+          const page = pages[i]
+
+          const canvas = await html2canvas(page, {
+            scale,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
           })
-          await indexedDBService.setItem(STORES.THUMBNAILS, `template-${templateId}`, thumbnail)
+
+          const imgData = canvas.toDataURL('image/jpeg', (options.quality || 90) / 100)
+
+          if (i > 0) {
+            pdf.addPage()
+          }
+
+          const pdfWidth = pdf.internal.pageSize.getWidth()
+          const pdfHeight = pdf.internal.pageSize.getHeight()
+          pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight)
         }
-      } catch (err) {
-        console.error('生成模板缩略图失败:', err)
+
+        pdf.save('resume.pdf')
+        notification.success('PDF 导出成功！')
+      } else if (options.format === 'png') {
+        // PNG 导出 - 只导出第一页
+        const scale = options.scale || 2
+
+        const canvas = await html2canvas(pages[0], {
+          scale,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+        })
+
+        const link = document.createElement('a')
+        link.download = 'resume.png'
+        link.href = canvas.toDataURL('image/png')
+        link.click()
+        notification.success('PNG 导出成功！')
+      } else if (options.format === 'json') {
+        // JSON 导出
+        handleExportJSON()
+        return
       }
-      
-      notification.success('已保存为模板！')
+
+      setShowExportPreview(false)
+    } catch (error) {
+      notification.error('导出失败')
+      console.error('Export error:', error)
+    }
+  }
+
+  const handleSaveAsTemplate = async (name: string, description: string) => {
+    try {
+      const state = useEditorStore.getState()
+
+      const { resumeTemplateManager } = await import('@/core/services/ResumeTemplateManager')
+      resumeTemplateManager.saveAsTemplate(state.pageSchema, name, description)
+
+      notification.success('模板保存成功！')
     } catch (error) {
       notification.error('保存模板失败')
       console.error('Save template error:', error)
@@ -554,76 +258,59 @@ export const Toolbar: React.FC = () => {
   return (
     <div
       style={{
-        height: '50px',
+        height: '48px',
         borderBottom: '1px solid #e8e8e8',
         display: 'flex',
         alignItems: 'center',
         padding: '0 16px',
-        gap: '10px',
+        gap: '12px',
         backgroundColor: '#ffffff',
         boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
       }}
     >
-      {/* 品牌Logo */}
-      {/* <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginRight: '16px' }}>
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-          <rect width="36" height="36" rx="8" fill="#2d2d2d" />
-          <path d="M12 10h12v2H12zm0 6h12v2H12zm0 6h8v2h-8z" fill="white" />
-        </svg>
-        <div
-          style={{
-            fontSize: '17px',
-            fontWeight: '700',
-            color: '#2d2d2d',
-            letterSpacing: '0.3px',
-          }}
-        >
-          CVKit
-        </div>
-      </div> */}
+      {/* Logo */}
+      <LogoIcon size={28} />
 
-      {/* 返回首页 */}
+      {/* 返回 */}
       <IconButton icon={<Home size={16} />} tooltip="返回首页" onClick={() => navigate('/')} />
 
       <Divider />
 
-      {/* 历史操作组 */}
+      {/* 撤销/重做 */}
       <div style={{ display: 'flex', gap: '4px' }}>
         <IconButton
           icon={<Undo size={16} />}
-          tooltip="撤销 (Ctrl+Z)"
-          onClick={undo}
+          tooltip="撤销"
+          onClick={() => undo()}
           disabled={!canUndo()}
         />
         <IconButton
           icon={<Redo size={16} />}
-          tooltip="重做 (Ctrl+Shift+Z)"
-          onClick={redo}
+          tooltip="重做"
+          onClick={() => redo()}
           disabled={!canRedo()}
         />
       </div>
 
       <Divider />
 
-      {/* 模式切换组 */}
+      {/* 模式切换 */}
       <div
         style={{
           display: 'flex',
-          gap: '4px',
-          backgroundColor: '#f8f9fa',
+          gap: '2px',
+          backgroundColor: '#f5f5f5',
           padding: '3px',
           borderRadius: '6px',
         }}
       >
         <ModeButton
-          icon={<Edit3 size={15} />}
-          label="编辑"
+          icon={<Edit3 size={14} />}
           active={mode === 'edit'}
           onClick={() => setMode('edit')}
         />
         <ModeButton
-          icon={<Eye size={15} />}
-          label="预览"
+          icon={<Eye size={14} />}
           active={mode === 'preview'}
           onClick={() => setMode('preview')}
         />
@@ -631,160 +318,110 @@ export const Toolbar: React.FC = () => {
 
       <Divider />
 
-      {/* 视图控制组 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <IconButton icon={<ZoomOut size={15} />} tooltip="缩小" onClick={handleZoomOut} />
-        <span
+      {/* 缩放 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+        <IconButton icon={<ZoomOut size={14} />} tooltip="缩小" onClick={() => handleZoomOut()} />
+        <button
+          onClick={handleZoomReset}
+          title="重置缩放"
           style={{
-            minWidth: '50px',
+            minWidth: '52px',
+            height: '28px',
+            padding: '0 6px',
             fontSize: '12px',
-            color: '#666',
-            textAlign: 'center',
-            fontVariantNumeric: 'tabular-nums',
             fontWeight: '600',
+            color: '#666',
+            backgroundColor: 'transparent',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontVariantNumeric: 'tabular-nums',
+            transition: 'all 0.15s',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.backgroundColor = '#f5f5f5'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.backgroundColor = 'transparent'
           }}
         >
           {Math.round(canvasConfig.scale * 100)}%
-        </span>
-        <IconButton icon={<ZoomIn size={15} />} tooltip="放大" onClick={handleZoomIn} />
+        </button>
+        <IconButton icon={<ZoomIn size={14} />} tooltip="放大" onClick={() => handleZoomIn()} />
       </div>
 
       <div style={{ flex: 1 }} />
 
-      {/* 自动保存状态 */}
+      {/* 自动保存 */}
       <AutoSaveIndicator />
 
-      <Divider />
-
+      {/* 帮助 */}
       <IconButton
         icon={<HelpCircle size={16} />}
-        tooltip="快捷键帮助 (?)"
+        tooltip="快捷键"
         onClick={() => setShowShortcutsHelp(true)}
       />
 
       <Divider />
 
-      {/* 导出菜单 */}
+      {/* 导出 */}
+      <TextButton onClick={() => setShowExportPreview(true)}>
+        <Download size={14} />
+        导出
+      </TextButton>
+
+      {showExportPreview && (
+        <ExportPreviewDialog
+          onExport={handleExportWithOptions}
+          onClose={() => setShowExportPreview(false)}
+        />
+      )}
+
+      {/* 保存 - 分割按钮 */}
       <div style={{ position: 'relative' }}>
-        <TextButton
-          onClick={() => setShowExportMenu(!showExportMenu)}
-          style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+        <SplitButton
+          onMainClick={() => handleSave()}
+          onMenuClick={() => setShowSaveMenu(!showSaveMenu)}
         >
-          导出
-          <ChevronDown size={14} />
-        </TextButton>
-
-          {showExportMenu && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '36px',
-              right: 0,
-              backgroundColor: '#fff',
-              border: '1px solid #e5e5e5',
-              borderRadius: '6px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              minWidth: '180px',
-              zIndex: 1000,
-            }}
-          >
-            <MenuButton onClick={() => {
-              setShowExportPreview(true)
-              setShowExportMenu(false)
-            }}>
-              导出简历...
-            </MenuButton>
-            <div
-              style={{
-                height: '1px',
-                backgroundColor: '#e5e5e5',
-                margin: '4px 0',
-              }}
-            />
-            <MenuButton onClick={handleImportJSON}>导入数据</MenuButton>
-          </div>
-        )}
-
-        {/* 导出预览对话框 */}
-        {showExportPreview && (
-          <ExportPreviewDialog
-            onExport={handleExportWithOptions}
-            onClose={() => setShowExportPreview(false)}
-          />
-        )}
-      </div>
-
-      {/* 保存菜单 */}
-      <div style={{ position: 'relative' }}>
-        <TextButton
-          onClick={() => setShowSaveMenu(!showSaveMenu)}
-          style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-        >
+          <Save size={14} />
           保存
-          <ChevronDown size={14} />
-        </TextButton>
+        </SplitButton>
 
-        {/* 保存下拉菜单 */}
         {showSaveMenu && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '100%',
-              right: 0,
-              marginTop: '8px',
-              minWidth: '200px',
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-              border: '1px solid #e8e8e8',
-              padding: '6px',
-              zIndex: 1000,
-            }}
-          >
-            <MenuButton
-              onClick={() => {
-                handleSave()
-                setShowSaveMenu(false)
-              }}
-            >
-              {currentResumeId ? '保存' : '保存简历'}
-            </MenuButton>
-            <MenuButton
+          <Menu onClose={() => setShowSaveMenu(false)} align="right">
+            <MenuItem
               onClick={() => {
                 setShowSaveAsDialog(true)
                 setShowSaveMenu(false)
               }}
             >
               另存为...
-            </MenuButton>
-            <div style={{ height: '1px', backgroundColor: '#f0f0f0', margin: '6px 0' }} />
-            <MenuButton
+            </MenuItem>
+            <MenuItem
               onClick={() => {
                 setShowSaveTemplateDialog(true)
                 setShowSaveMenu(false)
               }}
             >
               保存为模板
-            </MenuButton>
-          </div>
+            </MenuItem>
+          </Menu>
         )}
       </div>
 
-      {/* 快捷键帮助 */}
+      {/* 对话框 */}
       {showShortcutsHelp && <KeyboardShortcutsHelp onClose={() => setShowShortcutsHelp(false)} />}
 
-      {/* 保存简历对话框（仅新建时需要输入名称） */}
-      {showSaveDialog && (
+      {showNewResumeDialog && (
         <SaveResumeDialog
           onSave={(name, description) => {
             handleSave(name, description)
-            setShowSaveDialog(false)
+            setShowNewResumeDialog(false)
           }}
-          onClose={() => setShowSaveDialog(false)}
+          onClose={() => setShowNewResumeDialog(false)}
         />
       )}
 
-      {/* 另存为对话框 */}
       {showSaveAsDialog && (
         <SaveResumeDialog
           onSave={(name, description) => {
@@ -795,7 +432,6 @@ export const Toolbar: React.FC = () => {
         />
       )}
 
-      {/* 保存为模板对话框 */}
       {showSaveTemplateDialog && (
         <SaveResumeDialog
           onSave={(name, description) => {
@@ -813,10 +449,9 @@ export const Toolbar: React.FC = () => {
 const IconButton: React.FC<{
   icon: React.ReactNode
   tooltip: string
-  onClick: () => void
+  onClick: (e?: React.MouseEvent) => void
   disabled?: boolean
-  active?: boolean
-}> = ({ icon, tooltip, onClick, disabled = false, active = false }) => {
+}> = ({ icon, tooltip, onClick, disabled = false }) => {
   const [hover, setHover] = React.useState(false)
 
   return (
@@ -827,18 +462,17 @@ const IconButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        width: '32px',
-        height: '32px',
+        width: '28px',
+        height: '28px',
         border: 'none',
         borderRadius: '6px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         cursor: disabled ? 'not-allowed' : 'pointer',
-        backgroundColor: active ? '#f0f0f0' : hover && !disabled ? '#f8f9fa' : 'transparent',
-        color: disabled ? '#d0d0d0' : active ? '#2d2d2d' : hover ? '#2d2d2d' : '#666',
-        transition: 'all 0.12s',
-        boxShadow: active ? '0 1px 2px rgba(0,0,0,0.04)' : 'none',
+        backgroundColor: hover && !disabled ? '#f5f5f5' : 'transparent',
+        color: disabled ? '#d0d0d0' : hover ? '#2d2d2d' : '#666',
+        transition: 'all 0.15s',
       }}
     >
       {icon}
@@ -850,8 +484,7 @@ const IconButton: React.FC<{
 const TextButton: React.FC<{
   onClick: () => void
   children: React.ReactNode
-  style?: React.CSSProperties
-}> = ({ onClick, children, style }) => {
+}> = ({ onClick, children }) => {
   const [hover, setHover] = React.useState(false)
 
   return (
@@ -860,17 +493,19 @@ const TextButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        height: '32px',
-        padding: '0 12px',
+        height: '28px',
+        padding: '0 10px',
         border: 'none',
-        borderRadius: '4px',
+        borderRadius: '6px',
         fontSize: '13px',
-        fontWeight: '500',
+        fontWeight: '600',
         cursor: 'pointer',
-        backgroundColor: hover ? '#fafafa' : 'transparent',
+        backgroundColor: hover ? '#f5f5f5' : 'transparent',
         color: '#666',
-        transition: 'all 0.1s',
-        ...style,
+        transition: 'all 0.15s',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
       }}
     >
       {children}
@@ -878,54 +513,170 @@ const TextButton: React.FC<{
   )
 }
 
-// 主按钮
+// 分割按钮 - 保存按钮专用
+const SplitButton: React.FC<{
+  onMainClick: () => void
+  onMenuClick: (e: React.MouseEvent) => void
+  children: React.ReactNode
+}> = ({ onMainClick, onMenuClick, children }) => {
+  const [mainHover, setMainHover] = React.useState(false)
+  const [menuHover, setMenuHover] = React.useState(false)
+
+  return (
+    <div
+      style={{
+        height: '28px',
+        display: 'flex',
+        backgroundColor: '#2d2d2d',
+        borderRadius: '6px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        overflow: 'hidden',
+      }}
+    >
+      {/* 主按钮区域 */}
+      <button
+        onClick={onMainClick}
+        onMouseEnter={() => setMainHover(true)}
+        onMouseLeave={() => setMainHover(false)}
+        style={{
+          height: '28px',
+          padding: '0 12px',
+          border: 'none',
+          background: 'transparent',
+          fontSize: '13px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          backgroundColor: mainHover ? '#1a1a1a' : 'transparent',
+          color: '#fff',
+          transition: 'all 0.15s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+        }}
+      >
+        {children}
+      </button>
+
+      {/* 分隔线 */}
+      <div
+        style={{
+          width: '1px',
+          height: '16px',
+          backgroundColor: 'rgba(255,255,255,0.15)',
+          alignSelf: 'center',
+        }}
+      />
+
+      {/* 下拉按钮区域 */}
+      <button
+        onClick={e => {
+          e.stopPropagation()
+          onMenuClick(e)
+        }}
+        onMouseEnter={() => setMenuHover(true)}
+        onMouseLeave={() => setMenuHover(false)}
+        title="更多保存选项"
+        style={{
+          width: '24px',
+          height: '28px',
+          border: 'none',
+          background: 'transparent',
+          cursor: 'pointer',
+          backgroundColor: menuHover ? '#1a1a1a' : 'transparent',
+          color: '#fff',
+          transition: 'all 0.15s',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <ChevronDown size={12} />
+      </button>
+    </div>
+  )
+}
 
 // 分隔线
 const Divider = () => (
   <div
     style={{
       width: '1px',
-      height: '20px',
+      height: '16px',
       backgroundColor: '#e8e8e8',
-      margin: '0 4px',
     }}
   />
 )
 
-// 模式切换按钮
+// 模式按钮
 const ModeButton: React.FC<{
   icon: React.ReactNode
-  label: string
   active: boolean
   onClick: () => void
-}> = ({ icon, label, active, onClick }) => {
+}> = ({ icon, active, onClick }) => {
   return (
     <button
       onClick={onClick}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '5px',
-        padding: '5px 10px',
+        width: '28px',
+        height: '22px',
         border: 'none',
-        borderRadius: '5px',
+        borderRadius: '4px',
         backgroundColor: active ? '#fff' : 'transparent',
         color: active ? '#2d2d2d' : '#999',
         cursor: 'pointer',
-        fontSize: '12px',
-        fontWeight: '600',
-        transition: 'all 0.12s',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'all 0.15s',
         boxShadow: active ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
       }}
     >
       {icon}
-      <span>{label}</span>
     </button>
   )
 }
 
-// 菜单按钮
-const MenuButton: React.FC<{
+// 菜单
+const Menu: React.FC<{
+  children: React.ReactNode
+  onClose: () => void
+  align?: 'left' | 'right'
+}> = ({ children, onClose, align = 'left' }) => {
+  React.useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('[data-menu]')) {
+        onClose()
+      }
+    }
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [onClose])
+
+  return (
+    <div
+      data-menu
+      style={{
+        position: 'absolute',
+        top: '100%',
+        [align]: 0,
+        marginTop: '6px',
+        minWidth: '180px',
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)',
+        border: '1px solid #e8e8e8',
+        padding: '4px',
+        zIndex: 1000,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+// 菜单项
+const MenuItem: React.FC<{
   onClick: () => void
   children: React.ReactNode
 }> = ({ onClick, children }) => {
@@ -938,10 +689,10 @@ const MenuButton: React.FC<{
       onMouseLeave={() => setHover(false)}
       style={{
         width: '100%',
-        height: '38px',
-        padding: '0 16px',
+        height: '32px',
+        padding: '0 12px',
         border: 'none',
-        background: hover ? '#f8f9fa' : 'transparent',
+        background: hover ? '#f5f5f5' : 'transparent',
         fontSize: '13px',
         fontWeight: '500',
         color: '#2d2d2d',

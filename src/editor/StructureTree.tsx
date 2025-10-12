@@ -13,6 +13,37 @@ import { useDrag, useDrop } from 'react-dnd'
 import { DragItemTypes } from './DndProvider'
 import { notification } from '@/utils/notification'
 
+/**
+ * 滚动到指定节点
+ */
+const scrollToNode = (nodeId: string) => {
+  // 查找画布中的节点元素
+  const element = document.querySelector(`[data-node-id="${nodeId}"]`) as HTMLElement
+
+  if (element) {
+    // 滚动到元素位置
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest',
+    })
+
+    // 添加短暂的高亮效果
+    const originalTransition = element.style.transition
+    const originalBoxShadow = element.style.boxShadow
+
+    element.style.transition = 'box-shadow 0.3s ease'
+    element.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.5)'
+
+    setTimeout(() => {
+      element.style.boxShadow = originalBoxShadow
+      setTimeout(() => {
+        element.style.transition = originalTransition
+      }, 300)
+    }, 600)
+  }
+}
+
 interface StructureTreeProps {
   schema: NodeSchema
   level?: number
@@ -136,6 +167,9 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
               onSelectNode(schema.id)
             }
           }
+
+          // 滚动到对应的画布元素
+          scrollToNode(schema.id)
         }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}

@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, FileText, Trash2, Edit, Calendar } from 'lucide-react'
+import { Logo } from '@/components/Logo'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { notification } from '@/utils/notification'
 
@@ -105,10 +106,7 @@ export const ResumesPage: React.FC = () => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <svg width="40" height="40" viewBox="0 0 40 40">
-            <rect width="40" height="40" rx="8" fill="#2d2d2d" />
-            <path d="M12 10h16v2H12zm0 6h16v2H12zm0 6h12v2H12z" fill="white" />
-          </svg>
+          <Logo size={40} />
           <div>
             <div style={{ fontSize: '16px', fontWeight: '700', color: '#2d2d2d' }}>我的简历</div>
             <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>CVKit</div>

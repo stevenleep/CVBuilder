@@ -4,7 +4,7 @@
  * 专业的富文本编辑体验，支持丰富的格式化选项
  */
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import ReactQuill from 'react-quill'
 import 'quill/dist/quill.snow.css'
 
@@ -23,6 +23,8 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
   minHeight = 100,
   simple = false,
 }) => {
+  const quillRef = useRef<ReactQuill>(null)
+
   // 工具栏配置
   const modules = useMemo(
     () => ({
@@ -66,6 +68,7 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
       }}
     >
       <ReactQuill
+        ref={quillRef}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
