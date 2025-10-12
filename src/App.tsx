@@ -14,6 +14,7 @@ import { NotificationProvider } from './components/NotificationProvider'
 import { WelcomeGuide } from './components/WelcomeGuide'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { Logo } from './components/Logo'
+import { PWAInstallPrompt } from './components/PWAInstallPrompt'
 import { HomePage } from './pages/HomePage'
 import { EditorPage } from './pages/EditorPage'
 import { TemplatesPage } from './pages/TemplatesPage'
@@ -103,6 +104,7 @@ function App() {
       <NotificationProvider>
         <EditorProvider value={editorContext}>
           <ThemeProvider>
+            {/* basename 会自动使用 vite.config.ts 中的 base 值 */}
             <BrowserRouter basename={import.meta.env.BASE_URL}>
               <Routes>
                 {/* 首页 */}
@@ -158,6 +160,9 @@ function App() {
                 {/* 默认重定向到首页 */}
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
+
+              {/* PWA 安装提示 */}
+              <PWAInstallPrompt />
             </BrowserRouter>
           </ThemeProvider>
         </EditorProvider>
