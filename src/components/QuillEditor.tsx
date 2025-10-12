@@ -24,44 +24,37 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
   simple = false,
 }) => {
   const quillRef = useRef<ReactQuill>(null)
-  const previousValueRef = useRef<string>(value)
 
-  // 监听内容变化，当内容被清空时重置格式
+  // 自定义标题选择器的文本标签
   useEffect(() => {
-    const editor = quillRef.current?.getEditor()
-    if (!editor) return
-
-    const currentText = editor.getText().trim()
-    const previousText = previousValueRef.current.replace(/<[^>]*>/g, '').trim()
-
-    // 当内容从有到无（被全部删除）时，重置所有格式
-    if (previousText && !currentText) {
-      // 清除所有格式
-      editor.removeFormat(0, editor.getLength())
-
-      // 重置选区到开始位置
-      setTimeout(() => {
-        editor.setSelection(0, 0)
-      }, 0)
+    const globalWindow = window as typeof window & {
+      Quill?: { import: (name: string) => { whitelist?: (number | boolean)[] } }
     }
-
-    previousValueRef.current = value
-  }, [value])
+    const Quill = globalWindow.Quill
+    if (Quill) {
+      const HeaderClass = Quill.import('formats/header')
+      // 自定义标题下拉菜单的文本
+      HeaderClass.whitelist = [1, 2, 3, false]
+    }
+  }, [])
 
   // 工具栏配置
   const modules = useMemo(
     () => ({
-      toolbar: simple
-        ? [['bold', 'italic', 'underline'], [{ list: 'ordered' }, { list: 'bullet' }], ['clean']]
-        : [
-            [{ header: [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            [{ indent: '-1' }, { indent: '+1' }],
-            ['link'],
-            [{ color: [] }, { background: [] }],
-            ['clean'],
-          ],
+      toolbar: {
+        container: simple
+          ? [['bold', 'italic', 'underline'], [{ list: 'ordered' }, { list: 'bullet' }], ['clean']]
+          : [
+              [{ header: [1, 2, 3, false] }],
+              ['bold', 'italic', 'underline', 'strike'],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              [{ indent: '-1' }, { indent: '+1' }],
+              ['link'],
+              [{ color: [] }, { background: [] }],
+              ['clean'],
+            ],
+        handlers: {},
+      },
     }),
     [simple]
   )
@@ -80,7 +73,7 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
     'background',
   ]
 
-  // 自定义 onChange 处理，确保内容清空时也清除格式
+  // 简化的 onChange 处理
   const handleChange = (content: string) => {
     const editor = quillRef.current?.getEditor()
     if (!editor) {
@@ -88,24 +81,21 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
       return
     }
 
-    // 检查是否内容被清空
+    // 获取纯文本内容
     const text = editor.getText().trim()
 
-    if (!text || text === '') {
-      // 内容为空时，清除所有格式并更新为空字符串
+    // 如果内容为空，返回空字符串
+    // Quill 的空内容通常是 '<p><br></p>' 或类似格式
+    if (!text || text.length === 0) {
       onChange('')
-      // 延迟清除格式，确保编辑器已更新
-      setTimeout(() => {
-        if (editor) {
-          editor.removeFormat(0, editor.getLength())
-          // 确保光标在正确位置
-          editor.setSelection(0, 0)
-        }
-      }, 0)
     } else {
+      // 否则返回完整的 HTML 内容
       onChange(content)
     }
   }
+
+  // 当 value 为空字符串时，使用 Quill 的标准空内容
+  const displayValue = value === '' ? '' : value
 
   return (
     <div
@@ -119,7 +109,7 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
     >
       <ReactQuill
         ref={quillRef}
-        value={value}
+        value={displayValue}
         onChange={handleChange}
         placeholder={placeholder}
         modules={modules}
@@ -144,6 +134,32 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
             border: none !important;
             font-size: 13px !important;
             font-family: inherit !important;
+          }
+
+          /* 标题选择器的中文标签 */
+          .quill-wrapper .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+          .quill-wrapper .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+            content: '标题 1' !important;
+          }
+
+          .quill-wrapper .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+          .quill-wrapper .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+            content: '标题 2' !important;
+          }
+
+          .quill-wrapper .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+          .quill-wrapper .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+            content: '标题 3' !important;
+          }
+
+          .quill-wrapper .ql-picker.ql-header .ql-picker-label:not([data-value])::before,
+          .quill-wrapper .ql-picker.ql-header .ql-picker-item:not([data-value])::before {
+            content: '正文' !important;
+          }
+
+          .quill-wrapper .ql-picker.ql-header .ql-picker-label::before,
+          .quill-wrapper .ql-picker.ql-header .ql-picker-item::before {
+            font-size: 13px !important;
           }
 
           /* 编辑区样式 - 和实际渲染保持一致 */
@@ -252,13 +268,17 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
             text-decoration: line-through !important;
           }
 
+          /* 正文样式 */
           .quill-wrapper .ql-editor p {
             margin: 0 !important;
             padding: 0 !important;
+            font-size: 13px !important;
+            line-height: 1.6 !important;
+            color: #2d2d2d !important;
           }
 
           .quill-wrapper .ql-editor p + p {
-            margin-top: 0 !important;
+            margin-top: 6px !important;
           }
 
           .quill-wrapper .ql-editor br {

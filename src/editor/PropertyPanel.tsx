@@ -62,6 +62,7 @@ export const PropertyPanel: React.FC = () => {
           backgroundColor: '#fafafa',
           display: 'flex',
           flexDirection: 'column',
+          overflow: 'hidden',
         }}
       >
         <div
@@ -69,6 +70,7 @@ export const PropertyPanel: React.FC = () => {
             padding: '12px',
             borderBottom: '1px solid #e8e8e8',
             backgroundColor: '#fff',
+            flexShrink: 0,
           }}
         >
           <div
@@ -86,7 +88,16 @@ export const PropertyPanel: React.FC = () => {
           </div>
         </div>
 
-        <div style={{ flex: 1, overflow: 'auto', padding: '12px', backgroundColor: '#fafafa' }}>
+        <div
+          style={{
+            flex: 1,
+            overflow: 'auto',
+            overflowX: 'hidden',
+            padding: '12px',
+            backgroundColor: '#fafafa',
+            minHeight: 0,
+          }}
+        >
           <ThemeSettings />
         </div>
       </div>
@@ -205,6 +216,7 @@ export const PropertyPanel: React.FC = () => {
         backgroundColor: '#f8f8f8',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
       }}
     >
       {/* 标题 - 紧凑版 */}
@@ -213,6 +225,7 @@ export const PropertyPanel: React.FC = () => {
           padding: '12px',
           borderBottom: '1px solid #e0e0e0',
           backgroundColor: '#fff',
+          flexShrink: 0,
         }}
       >
         <div
@@ -255,8 +268,10 @@ export const PropertyPanel: React.FC = () => {
         style={{
           flex: 1,
           overflow: 'auto',
+          overflowX: 'hidden',
           padding: '12px',
           backgroundColor: '#f8f8f8',
+          minHeight: 0,
         }}
       >
         {isPersonalInfo && currentTab === 'appearance' ? (

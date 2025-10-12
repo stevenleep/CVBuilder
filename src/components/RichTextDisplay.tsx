@@ -82,13 +82,14 @@ export const RichTextDisplay: React.FC<RichTextDisplayProps> = ({ html, style })
           text-decoration: line-through;
         }
         
-        /* 段落样式 */
+        /* 正文段落样式 */
         .rich-text-content p {
           margin: 0;
+          line-height: 1.6;
         }
 
         .rich-text-content p + p {
-          margin-top: 0;
+          margin-top: 6px;
         }
         
         .rich-text-content br {

@@ -1,6 +1,6 @@
 /**
  * 可调整宽度的面板
- * 
+ *
  * Figma风格的拖拽调整
  */
 
@@ -32,7 +32,7 @@ export const ResizablePanel: React.FC<ResizablePanelProps> = ({
       if (!panelRef.current) return
 
       const panelRect = panelRef.current.getBoundingClientRect()
-      
+
       let newWidth: number
       if (side === 'left') {
         newWidth = e.clientX - panelRect.left
@@ -71,12 +71,13 @@ export const ResizablePanel: React.FC<ResizablePanelProps> = ({
       ref={panelRef}
       style={{
         width: `${width}px`,
+        height: '100%',
         position: 'relative',
         flexShrink: 0,
       }}
     >
       {children}
-      
+
       {/* 拖拽手柄 */}
       <div
         onMouseDown={handleMouseDown}
@@ -92,27 +93,28 @@ export const ResizablePanel: React.FC<ResizablePanelProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
         }}
-        onMouseEnter={(e) => {
+        onMouseEnter={e => {
           if (!isResizing) {
             e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'
           }
         }}
-        onMouseLeave={(e) => {
+        onMouseLeave={e => {
           if (!isResizing) {
             e.currentTarget.style.backgroundColor = 'transparent'
           }
         }}
       >
         {isResizing && (
-          <div style={{
-            width: '2px',
-            height: '40px',
-            backgroundColor: '#000',
-            borderRadius: '1px',
-          }} />
+          <div
+            style={{
+              width: '2px',
+              height: '40px',
+              backgroundColor: '#000',
+              borderRadius: '1px',
+            }}
+          />
         )}
       </div>
     </div>
   )
 }
-
