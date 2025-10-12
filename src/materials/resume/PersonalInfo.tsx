@@ -93,6 +93,20 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
   const theme = useThemeConfig()
   const styleConfig = useStyleConfig()
 
+  // 判断是否使用卡片样式（背景色不同 + 有圆角）
+  const isCardStyle =
+    theme.color.background.section !== theme.color.background.page && styleConfig.borderRadius > 0
+
+  // 卡片样式
+  const cardStyle: React.CSSProperties = isCardStyle
+    ? {
+        backgroundColor: theme.color.background.section,
+        borderRadius: `${styleConfig.borderRadius}px`,
+        padding: `${theme.spacing.paragraph * 2}px ${theme.spacing.paragraph * 2.5}px`,
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
+      }
+    : {}
+
   // 基本信息行
   const basicInfo = [
     age && `${age}岁`,
@@ -127,20 +141,28 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
 
   // 经典布局（默认）
   function renderClassicLayout() {
+    // 基础样式
+    const baseLayoutStyle: React.CSSProperties = {
+      paddingBottom: isCardStyle ? '0' : `${theme.spacing.paragraph * 1.5}px`,
+      borderBottom:
+        !isCardStyle && styleConfig.showPersonalInfoDivider
+          ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
+          : 'none',
+      marginBottom: `${theme.spacing.section}px`,
+      display: showAvatar && avatar ? 'flex' : 'block',
+      gap: showAvatar && avatar ? `${theme.spacing.paragraph * 2}px` : '0',
+      alignItems: 'flex-start',
+    }
+
+    // 合并样式：基础 -> 自定义 -> 卡片（卡片优先级最高）
+    const finalStyle = {
+      ...baseLayoutStyle,
+      ...style,
+      ...cardStyle,
+    }
+
     return (
-      <div
-        style={{
-          paddingBottom: `${theme.spacing.paragraph * 1.5}px`,
-          borderBottom: styleConfig.showPersonalInfoDivider
-            ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
-            : 'none',
-          marginBottom: `${theme.spacing.section}px`,
-          display: showAvatar && avatar ? 'flex' : 'block',
-          gap: showAvatar && avatar ? `${theme.spacing.paragraph * 2}px` : '0',
-          alignItems: 'flex-start',
-          ...style,
-        }}
-      >
+      <div style={finalStyle}>
         {/* 头像 */}
         {showAvatar && avatar && (
           <div
@@ -396,18 +418,24 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
 
   // 居中简约布局
   function renderCenteredLayout() {
+    const baseLayoutStyle: React.CSSProperties = {
+      paddingBottom: isCardStyle ? '0' : `${theme.spacing.paragraph * 1.5}px`,
+      borderBottom:
+        !isCardStyle && styleConfig.showPersonalInfoDivider
+          ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
+          : 'none',
+      marginBottom: `${theme.spacing.section}px`,
+      textAlign: 'center',
+    }
+
+    const finalStyle = {
+      ...baseLayoutStyle,
+      ...style,
+      ...cardStyle,
+    }
+
     return (
-      <div
-        style={{
-          paddingBottom: `${theme.spacing.paragraph * 1.5}px`,
-          borderBottom: styleConfig.showPersonalInfoDivider
-            ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
-            : 'none',
-          marginBottom: `${theme.spacing.section}px`,
-          textAlign: 'center',
-          ...style,
-        }}
-      >
+      <div style={finalStyle}>
         {/* 姓名 */}
         <h1
           style={{
@@ -513,14 +541,19 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
 
   // 极简布局
   function renderMinimalLayout() {
+    const baseLayoutStyle: React.CSSProperties = {
+      paddingBottom: isCardStyle ? '0' : `${theme.spacing.paragraph}px`,
+      marginBottom: `${theme.spacing.section}px`,
+    }
+
+    const finalStyle = {
+      ...baseLayoutStyle,
+      ...style,
+      ...cardStyle,
+    }
+
     return (
-      <div
-        style={{
-          paddingBottom: `${theme.spacing.paragraph}px`,
-          marginBottom: `${theme.spacing.section}px`,
-          ...style,
-        }}
-      >
+      <div style={finalStyle}>
         {/* 姓名与职位 */}
         <h1
           style={{
@@ -585,17 +618,23 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
     const leftItems = allItems.slice(0, mid)
     const rightItems = allItems.slice(mid)
 
+    const baseLayoutStyle: React.CSSProperties = {
+      paddingBottom: isCardStyle ? '0' : `${theme.spacing.paragraph * 1.5}px`,
+      borderBottom:
+        !isCardStyle && styleConfig.showPersonalInfoDivider
+          ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
+          : 'none',
+      marginBottom: `${theme.spacing.section}px`,
+    }
+
+    const finalStyle = {
+      ...baseLayoutStyle,
+      ...style,
+      ...cardStyle,
+    }
+
     return (
-      <div
-        style={{
-          paddingBottom: `${theme.spacing.paragraph * 1.5}px`,
-          borderBottom: styleConfig.showPersonalInfoDivider
-            ? `${styleConfig.dividerThickness}px ${styleConfig.dividerStyle} ${theme.color.border.light}`
-            : 'none',
-          marginBottom: `${theme.spacing.section}px`,
-          ...style,
-        }}
-      >
+      <div style={finalStyle}>
         {/* 顶部：姓名和职位 */}
         <div style={{ marginBottom: `${theme.spacing.paragraph}px` }}>
           <h1

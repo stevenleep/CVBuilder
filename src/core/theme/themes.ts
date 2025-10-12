@@ -412,7 +412,261 @@ export const elegantTheme: ITheme = {
 }
 
 /**
- * 所有预设主题（精选5个）
+ * 6. 飞书文档
+ *
+ * 设计哲学：协作友好
+ * - 仿照飞书文档的排版风格
+ * - 舒适的阅读体验，适合长文档
+ * - 清晰的层次感，统一的视觉节奏
+ *
+ * 关键参数：
+ * - 正文 14px（飞书标准），行高 1.75
+ * - 页边距 50mm，舒适宽敞
+ * - 飞书配色：文字 #1f2329，次要 #646a73
+ * - 背景 #ffffff（纯白），清爽简洁
+ * - 微圆角 4px，柔和现代
+ * - 统一的间距节奏：20/14/10/7
+ */
+export const feishuTheme: ITheme = {
+  id: 'feishu',
+  name: '飞书文档',
+  description: '飞书风格排版，舒适协作',
+  font: {
+    family:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif',
+    titleSize: {
+      h1: 26, // 姓名：稍大一些，更有存在感
+      h2: 18, // 章节：飞书标准二级标题
+      h3: 15, // 条目标题：比正文大一点，层次清晰
+    },
+    bodySize: {
+      large: 15, // 副标题/职位
+      normal: 14, // 正文：飞书标准字号
+      small: 13, // 辅助信息：不要太小，保持可读性
+    },
+    weight: {
+      light: 300,
+      normal: 400,
+      medium: 500,
+      semibold: 600,
+      bold: 600, // 飞书的粗体不会太重，保持柔和
+    },
+  },
+  color: {
+    primary: '#1f2329',
+    text: {
+      primary: '#1f2329', // 飞书主文字色
+      secondary: '#646a73', // 飞书次要文字色
+      tertiary: '#8f959e', // 飞书辅助文字色
+      link: '#3370ff', // 飞书链接蓝
+    },
+    background: {
+      page: '#ffffff', // 纯白背景，简洁清爽
+      section: '#fafbfc', // 极浅的灰色，微妙区分区块
+    },
+    border: {
+      light: '#f2f3f5', // 飞书浅边框
+      normal: '#e5e6eb', // 飞书标准边框
+      dark: '#c9cdd4', // 飞书深边框
+    },
+    accent: '#3370ff', // 飞书品牌色
+  },
+  spacing: {
+    page: 50, // 舒适宽敞的页边距
+    section: 20, // 章节间距：统一节奏
+    item: 14, // 条目间距：清晰分隔
+    paragraph: 10, // 段落间距
+    line: 7, // 行间距
+  },
+  layout: {
+    pageWidth: 210,
+    pageMinHeight: 297,
+    columnGap: 18,
+    lineHeight: 1.75, // 飞书舒适行高，适合长文档阅读
+  },
+  style: {
+    showSectionDivider: true,
+    dividerStyle: 'solid',
+    dividerThickness: 1,
+    showPersonalInfoDivider: false,
+    borderRadius: 4, // 飞书微圆角
+    useEmojiIcons: false,
+  },
+}
+
+/**
+ * 7. 设计师风格（极致版）
+ *
+ * 设计哲学：极致的视觉体验
+ * - 受包豪斯和瑞士设计风格影响
+ * - 极致的字体层级对比（黄金比例 1:1.618）
+ * - 精准的间距节奏系统（基于8px网格）
+ * - 超大留白，营造呼吸感和专注力
+ * - 极细线条和微妙的视觉引导
+ * - 字间距和行高经过精心调校
+ *
+ * 关键参数：
+ * - 正文 12.5px，行高 1.8（极致阅读体验）
+ * - 页边距 62mm（黄金比例留白）
+ * - 字号对比：h1=36px（震撼）, h2=18px（1:2比例）
+ * - 极细分割线：0.5px + 上下留白
+ * - 纯黑 #000 + 灰度层级分明
+ * - 字间距微调：-0.02em ~ 0.05em
+ */
+export const designerTheme: ITheme = {
+  id: 'designer',
+  name: '设计师风格',
+  description: '极致设计，完美阅读体验',
+  font: {
+    family:
+      '"SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Arial", "PingFang SC", sans-serif',
+    titleSize: {
+      h1: 36, // 姓名：震撼的视觉冲击，黄金比例
+      h2: 18, // 章节：精确的 1:2 比例
+      h3: 14, // 条目：比正文略大，层次清晰
+    },
+    bodySize: {
+      large: 14, // 职位等关键信息
+      normal: 12.5, // 正文：最佳阅读字号
+      small: 11.5, // 辅助信息：不会太小
+    },
+    weight: {
+      light: 200, // 极细，用于装饰性文字
+      normal: 300, // 细体，主要正文
+      medium: 400, // 中等，强调内容
+      semibold: 500, // 半粗，小标题
+      bold: 600, // 粗体，标题专用（克制）
+    },
+  },
+  color: {
+    primary: '#000000',
+    text: {
+      primary: '#000000', // 纯黑，最高对比度
+      secondary: '#2a2a2a', // 深灰，明确层级
+      tertiary: '#969696', // 中灰，辅助信息
+      link: '#000000',
+    },
+    background: {
+      page: '#ffffff', // 纯白，极简
+      section: '#ffffff', // 无装饰背景
+    },
+    border: {
+      light: '#f8f8f8', // 极浅
+      normal: '#e0e0e0', // 浅灰，清晰但不突兀
+      dark: '#c8c8c8', // 中灰
+    },
+    accent: '#000000', // 纯黑强调
+  },
+  spacing: {
+    page: 62, // 黄金比例页边距（基于 A4 宽度的 0.296）
+    section: 32, // 8px网格 x 4，章节间强烈区隔
+    item: 18, // 8px网格 x 2.25，条目清晰分隔
+    paragraph: 14, // 8px网格 x 1.75，段落舒适间距
+    line: 10, // 8px网格 x 1.25，行间呼吸感
+  },
+  layout: {
+    pageWidth: 210,
+    pageMinHeight: 297,
+    columnGap: 28, // 宽松的栏间距
+    lineHeight: 1.8, // 黄金比例行高，极致阅读体验
+  },
+  style: {
+    showSectionDivider: true,
+    dividerStyle: 'solid',
+    dividerThickness: 0.5, // 极细线条，精致克制
+    showPersonalInfoDivider: true, // 显示个人信息分割线
+    borderRadius: 0, // 无圆角，锐利现代
+    useEmojiIcons: false, // 无emoji，纯粹文字
+  },
+}
+
+/**
+ * 8. 破局尝试
+ *
+ * 设计哲学：突破传统，拥抱创新
+ * - 打破传统简历的扁平呆板
+ * - 卡片式设计，层次丰富立体
+ * - 毛玻璃质感，现代时尚
+ * - 柔和阴影，空间感强
+ * - 适度圆角，友好亲和
+ *
+ * 关键参数：
+ * - 正文 13px，行高 1.6（清晰流畅）
+ * - 页边距 48mm（舒适）
+ * - 背景：浅灰 #f5f7fa（衬托卡片）
+ * - 卡片：白色 + 阴影 + 圆角 8px
+ * - 现代蓝色 #1a73e8（活力点缀）
+ * - 无分割线（卡片本身就是分隔）
+ */
+export const breakthroughTheme: ITheme = {
+  id: 'breakthrough',
+  name: '创意破局',
+  description: '卡片设计，现代时尚',
+  font: {
+    family:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
+    titleSize: {
+      h1: 28, // 姓名：大气现代
+      h2: 17, // 章节：清晰醒目
+      h3: 14, // 条目：适中
+    },
+    bodySize: {
+      large: 14, // 职位信息
+      normal: 13, // 正文：清晰易读
+      small: 12, // 辅助信息
+    },
+    weight: {
+      light: 300,
+      normal: 400,
+      medium: 500,
+      semibold: 600,
+      bold: 700,
+    },
+  },
+  color: {
+    primary: '#1a73e8', // Google 蓝，现代活力
+    text: {
+      primary: '#202124', // 深灰黑，舒适阅读
+      secondary: '#5f6368', // 中灰，层次分明
+      tertiary: '#9aa0a6', // 浅灰，辅助信息
+      link: '#1a73e8', // 蓝色链接
+    },
+    background: {
+      page: '#f5f7fa', // 浅灰背景，衬托白色卡片
+      section: '#ffffff', // 纯白卡片，毛玻璃基底
+    },
+    border: {
+      light: '#e8eaed', // 极浅边框
+      normal: '#dadce0', // 标准边框
+      dark: '#bdc1c6', // 深边框
+    },
+    accent: '#1a73e8', // 蓝色强调
+  },
+  spacing: {
+    page: 48, // 舒适页边距
+    section: 20, // 卡片间距，营造漂浮感
+    item: 14, // 条目间距
+    paragraph: 10, // 段落间距
+    line: 6, // 行间距
+  },
+  layout: {
+    pageWidth: 210,
+    pageMinHeight: 297,
+    columnGap: 20,
+    lineHeight: 1.6, // 流畅舒适的行高
+  },
+  style: {
+    showSectionDivider: false, // 无分割线，卡片本身就是分隔
+    dividerStyle: 'solid',
+    dividerThickness: 0,
+    showPersonalInfoDivider: false, // 无分割线
+    borderRadius: 8, // 柔和圆角，现代友好
+    useEmojiIcons: false,
+  },
+}
+
+/**
+ * 所有预设主题（精选8个）
  *
  * 推荐优先级：
  * 1. 经典优雅 - 默认选择，平衡完美
@@ -420,12 +674,18 @@ export const elegantTheme: ITheme = {
  * 3. 紧凑专业 - 内容丰富
  * 4. 现代清新 - 互联网风
  * 5. 典雅书卷 - 传统优雅
+ * 6. 飞书文档 - 协作友好
+ * 7. 设计师风格 - 极简大气
+ * 8. 破局尝试 - 卡片设计
  */
 export const presetThemes: ITheme[] = [
-  classicTheme,
-  minimalTheme,
-  compactTheme,
+  // classicTheme,
+  // minimalTheme,
   modernTheme,
+  feishuTheme,
+  designerTheme,
+  breakthroughTheme,
+  compactTheme,
   elegantTheme,
 ]
 

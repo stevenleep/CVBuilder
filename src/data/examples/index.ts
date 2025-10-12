@@ -1,6 +1,6 @@
 /**
  * 示例简历索引
- * 
+ *
  * 汇总所有行业的示例简历
  */
 
@@ -16,6 +16,7 @@ import { salesManagerExample } from './salesManager'
 import { operationsManagerExample } from './operationsManager'
 import { contentWriterExample } from './contentWriter'
 import { projectManagerExample } from './projectManager'
+import { feishuStyleExample } from './feishuStyle'
 
 // 导出所有示例简历
 export const exampleResumes: ExampleResume[] = [
@@ -30,6 +31,7 @@ export const exampleResumes: ExampleResume[] = [
   contentWriterExample,
   hrManagerExample,
   projectManagerExample,
+  feishuStyleExample,
 ]
 
 // 根据分类获取示例
