@@ -11,6 +11,7 @@ import { StructurePanel } from './StructureTree'
 import { templateManager, CustomTemplate } from '@/core/services/TemplateManager'
 import { systemTemplateManager, SystemTemplate } from '@/core/services/SystemTemplateManager'
 import { notification } from '@/utils/notification'
+import { EditTemplateDialog } from './EditTemplateDialog'
 
 export const MaterialPanel: React.FC = () => {
   const { addNode, pageSchema } = useEditorStore()
@@ -19,6 +20,7 @@ export const MaterialPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [customTemplates, setCustomTemplates] = useState<CustomTemplate[]>([])
   const [systemTemplates, setSystemTemplates] = useState<SystemTemplate[]>([])
+  const [editingTemplate, setEditingTemplate] = useState<CustomTemplate | null>(null)
 
   const allMaterials = useAllMaterials()
 
@@ -121,17 +123,19 @@ export const MaterialPanel: React.FC = () => {
 
   const handleEditTemplate = async (template: CustomTemplate, e: React.MouseEvent) => {
     e.stopPropagation()
-    const newName = await notification.prompt({
-      title: '修改模板名称',
-      message: '请输入新的模板名称',
-      defaultValue: template.name,
-    })
-    if (newName && newName.trim()) {
-      templateManager.updateTemplateInfo(template.id, {
-        name: newName.trim(),
+    setEditingTemplate(template)
+  }
+
+  const handleSaveTemplate = (name: string, description: string, category: string) => {
+    if (editingTemplate) {
+      templateManager.updateTemplateInfo(editingTemplate.id, {
+        name,
+        description,
+        category,
       })
       loadTemplates()
-      notification.success('模板名称已更新')
+      setEditingTemplate(null)
+      notification.success('模板已更新')
     }
   }
 
@@ -481,6 +485,15 @@ export const MaterialPanel: React.FC = () => {
             )}
           </div>
         </>
+      )}
+
+      {/* 模板编辑对话框 */}
+      {editingTemplate && (
+        <EditTemplateDialog
+          template={editingTemplate}
+          onSave={handleSaveTemplate}
+          onClose={() => setEditingTemplate(null)}
+        />
       )}
     </div>
   )
