@@ -64,51 +64,67 @@ export const DraggableMaterial: React.FC<DraggableMaterialProps> = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
-          padding: '7px 8px',
-          borderRadius: '5px',
+          padding: '10px 12px',
+          borderRadius: '6px',
           cursor: isDragging ? 'grabbing' : 'grab',
           backgroundColor: hover ? '#fff' : 'transparent',
-          border: `1px solid ${hover ? '#e0e0e0' : 'transparent'}`,
+          border: `0.5px dashed ${hover ? '#000000' : 'transparent'}`,
           opacity: isDragging ? 0.5 : 1,
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          transition: 'all 0.12s',
-          boxShadow: hover ? '0 2px 4px rgba(0,0,0,0.04)' : 'none',
+          gap: '10px',
+          transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: hover ? '0 3px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)' : 'none',
+          transform: hover ? 'translateX(2px)' : 'translateX(0)',
         }}
       >
         {/* 拖动手柄 */}
         <div
           style={{
-            width: '12px',
-            height: '12px',
+            width: '16px',
+            height: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: hover ? '#666' : '#d0d0d0',
             flexShrink: 0,
-            transition: 'color 0.12s',
+            transition: 'color 0.15s',
           }}
         >
-          <GripVertical size={11} strokeWidth={2.5} />
+          <GripVertical size={14} strokeWidth={2.5} />
         </div>
 
-        {/* 内容 - 简化版 */}
+        {/* 内容 */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontSize: '11px',
+              fontSize: '12.5px',
               color: '#2d2d2d',
               fontWeight: '600',
-              lineHeight: '1.2',
+              lineHeight: '1.4',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              letterSpacing: '-0.01em',
             }}
           >
             {title}
           </div>
         </div>
+
+        {/* Hover 指示器 */}
+        {hover && (
+          <div
+            style={{
+              width: '4px',
+              height: '4px',
+              borderRadius: '50%',
+              backgroundColor: '#3b82f6',
+              flexShrink: 0,
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }}
+          />
+        )}
       </div>
 
       {/* Tooltip提示框 */}
@@ -178,6 +194,17 @@ export const DraggableMaterial: React.FC<DraggableMaterialProps> = ({
           to {
             opacity: 1;
             transform: translateX(0);
+          }
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.6;
+            transform: scale(1.2);
           }
         }
       `}</style>

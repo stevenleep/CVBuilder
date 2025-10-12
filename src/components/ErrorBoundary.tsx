@@ -6,7 +6,6 @@
 
 import React from 'react'
 import { AlertCircle, RefreshCw, Home } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
@@ -69,7 +68,10 @@ const ErrorFallback: React.FC<{ error: Error | null; onReset: () => void }> = ({
   error,
   onReset,
 }) => {
-  const navigate = useNavigate()
+  const handleGoHome = () => {
+    // 使用原生导航，避免依赖 Router 上下文
+    window.location.href = '/'
+  }
 
   return (
     <div
@@ -174,7 +176,7 @@ const ErrorFallback: React.FC<{ error: Error | null; onReset: () => void }> = ({
           </button>
 
           <button
-            onClick={() => navigate('/')}
+            onClick={handleGoHome}
             style={{
               padding: '10px 20px',
               border: '1px solid #e0e0e0',

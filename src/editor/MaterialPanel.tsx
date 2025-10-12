@@ -30,7 +30,7 @@ import { DragItemTypes, TemplateDragItem } from './DndProvider'
 export const MaterialPanel: React.FC = () => {
   const { addNode, pageSchema } = useEditorStore()
   const [activeTab, setActiveTab] = useState<'components' | 'structure'>('components')
-  const [activeCategory, setActiveCategory] = useState<string>('resume')
+  const [activeCategory, setActiveCategory] = useState<string>('my-templates')
   const [searchTerm, setSearchTerm] = useState('')
   const [customTemplates, setCustomTemplates] = useState<CustomTemplate[]>([])
   const [systemTemplates, setSystemTemplates] = useState<SystemTemplate[]>([])
@@ -109,8 +109,8 @@ export const MaterialPanel: React.FC = () => {
 
   // 按指定顺序排列分类
   const categoryList = [
-    { id: 'resume', name: '简历', icon: <FileText size={12} /> },
     { id: 'my-templates', name: '模板', icon: <Layout size={12} /> },
+    { id: 'resume', name: '简历', icon: <FileText size={12} /> },
     { id: 'base', name: '基础', icon: <Package size={12} /> },
     { id: 'all', name: '全部', icon: <LayoutGrid size={12} /> },
   ]
@@ -169,20 +169,20 @@ export const MaterialPanel: React.FC = () => {
         style={{
           display: 'flex',
           gap: '4px',
-          padding: '10px',
+          padding: '8px',
           borderBottom: '1px solid #e8e8e8',
           backgroundColor: '#fff',
           alignItems: 'center',
         }}
       >
         <TabButton
-          icon={<Grid3x3 size={14} />}
+          icon={<Grid3x3 size={12} />}
           label="物料库"
           active={activeTab === 'components'}
           onClick={() => setActiveTab('components')}
         />
         <TabButton
-          icon={<Layers size={14} />}
+          icon={<Layers size={12} />}
           label="结构树"
           active={activeTab === 'structure'}
           onClick={() => setActiveTab('structure')}
@@ -192,9 +192,9 @@ export const MaterialPanel: React.FC = () => {
         <div
           style={{
             width: '1px',
-            height: '20px',
+            height: '16px',
             backgroundColor: '#e8e8e8',
-            margin: '0 4px',
+            margin: '0 2px',
           }}
         />
 
@@ -209,10 +209,10 @@ export const MaterialPanel: React.FC = () => {
             }}
           >
             <Search
-              size={13}
+              size={11}
               style={{
                 position: 'absolute',
-                left: '10px',
+                left: '8px',
                 color: '#999',
                 pointerEvents: 'none',
               }}
@@ -224,11 +224,11 @@ export const MaterialPanel: React.FC = () => {
               onChange={e => setSearchTerm(e.target.value)}
               style={{
                 width: '100%',
-                height: '32px',
-                padding: '0 32px 0 32px',
+                height: '28px',
+                padding: '0 28px 0 28px',
                 border: '1px solid #e8e8e8',
-                borderRadius: '6px',
-                fontSize: '12px',
+                borderRadius: '5px',
+                fontSize: '11.5px',
                 outline: 'none',
                 backgroundColor: '#fafafa',
                 transition: 'all 0.12s',
@@ -250,9 +250,9 @@ export const MaterialPanel: React.FC = () => {
                 onClick={() => setSearchTerm('')}
                 style={{
                   position: 'absolute',
-                  right: '8px',
-                  width: '20px',
-                  height: '20px',
+                  right: '6px',
+                  width: '18px',
+                  height: '18px',
                   border: 'none',
                   borderRadius: '50%',
                   backgroundColor: 'transparent',
@@ -272,7 +272,7 @@ export const MaterialPanel: React.FC = () => {
                   e.currentTarget.style.color = '#999'
                 }}
               >
-                <X size={12} />
+                <X size={10} />
               </button>
             )}
           </div>
@@ -294,71 +294,14 @@ export const MaterialPanel: React.FC = () => {
               borderBottom: '1px solid #e8e8e8',
             }}
           >
-            {categoryList.map(category => {
-              const isActive = activeCategory === category.id
-              const [hover, setHover] = React.useState(false)
-
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => setActiveCategory(category.id)}
-                  onMouseEnter={() => setHover(true)}
-                  onMouseLeave={() => setHover(false)}
-                  style={{
-                    position: 'relative',
-                    height: '26px',
-                    padding: '0 9px',
-                    border: 'none',
-                    borderRadius: '5px',
-                    fontSize: '10.5px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    backgroundColor: isActive ? '#2d2d2d' : hover ? '#f5f5f5' : 'transparent',
-                    color: isActive ? '#fff' : hover ? '#2d2d2d' : '#666',
-                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '5px',
-                    lineHeight: 1,
-                    transform: hover && !isActive ? 'translateY(-1px)' : 'translateY(0)',
-                    boxShadow: isActive
-                      ? '0 2px 8px rgba(45, 45, 45, 0.15)'
-                      : hover
-                        ? '0 1px 4px rgba(0, 0, 0, 0.08)'
-                        : 'none',
-                  }}
-                >
-                  {/* 活跃指示器 */}
-                  {isActive && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: '0',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '3px',
-                        height: '14px',
-                        backgroundColor: '#fff',
-                        borderRadius: '0 2px 2px 0',
-                      }}
-                    />
-                  )}
-                  <span
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      fontSize: '13px',
-                      transition: 'transform 0.2s',
-                      transform: hover ? 'scale(1.08)' : 'scale(1)',
-                    }}
-                  >
-                    {category.icon}
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center' }}>{category.name}</span>
-                </button>
-              )
-            })}
+            {categoryList.map(category => (
+              <CategoryButton
+                key={category.id}
+                category={category}
+                isActive={activeCategory === category.id}
+                onClick={() => setActiveCategory(category.id)}
+              />
+            ))}
           </div>
 
           {/* 搜索结果数量 */}
@@ -411,7 +354,7 @@ export const MaterialPanel: React.FC = () => {
                     >
                       系统模板
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       {systemTemplates.map(template => (
                         <SystemTemplateCard key={template.id} template={template} />
                       ))}
@@ -452,7 +395,7 @@ export const MaterialPanel: React.FC = () => {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       {customTemplates.map(template => (
                         <TemplateCard
                           key={template.id}
@@ -574,7 +517,7 @@ export const MaterialPanel: React.FC = () => {
                               >
                                 {getSubcategoryName(subcategory)}
                               </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 {subMaterials.map(material => (
                                   <DraggableMaterial
                                     key={material.meta.type}
@@ -590,7 +533,7 @@ export const MaterialPanel: React.FC = () => {
                         )}
                       </div>
                     ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         {materials.map(material => (
                           <DraggableMaterial
                             key={material.meta.type}
@@ -622,7 +565,7 @@ export const MaterialPanel: React.FC = () => {
                       >
                         {getSubcategoryName(subcategory)}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         {materials.map(material => (
                           <DraggableMaterial
                             key={material.meta.type}
@@ -639,7 +582,7 @@ export const MaterialPanel: React.FC = () => {
               </div>
             ) : (
               // 其他分类：直接列表
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {filteredMaterials.map(material => (
                   <DraggableMaterial
                     key={material.meta.type}
@@ -682,14 +625,14 @@ const TabButton: React.FC<{
       onMouseLeave={() => setHover(false)}
       title={label}
       style={{
-        width: '32px',
-        height: '32px',
+        width: '28px',
+        height: '28px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 0,
         border: 'none',
-        borderRadius: '6px',
+        borderRadius: '5px',
         cursor: 'pointer',
         backgroundColor: active ? '#2d2d2d' : hover ? '#f0f0f0' : 'transparent',
         color: active ? '#fff' : '#666',
@@ -786,46 +729,48 @@ const TemplateCard: React.FC<{
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
-          padding: '7px 8px',
-          border: `1px solid ${hover ? '#e0e0e0' : 'transparent'}`,
-          borderRadius: '5px',
+          padding: '10px 12px',
+          border: `1.5px solid ${hover ? '#d0d0d0' : 'transparent'}`,
+          borderRadius: '6px',
           cursor: isDragging ? 'grabbing' : 'grab',
           backgroundColor: hover ? '#fff' : 'transparent',
-          transition: 'all 0.12s',
+          transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          boxShadow: hover ? '0 2px 4px rgba(0,0,0,0.04)' : 'none',
+          gap: '10px',
+          boxShadow: hover ? '0 3px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)' : 'none',
           opacity: isDragging ? 0.5 : 1,
+          transform: hover ? 'translateX(2px)' : 'translateX(0)',
         }}
       >
         {/* 拖动手柄 */}
         <div
           style={{
-            width: '12px',
-            height: '12px',
+            width: '16px',
+            height: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: hover ? '#666' : '#d0d0d0',
             flexShrink: 0,
-            transition: 'color 0.12s',
+            transition: 'color 0.15s',
           }}
         >
-          <GripVertical size={11} strokeWidth={2.5} />
+          <GripVertical size={14} strokeWidth={2.5} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontSize: '11px',
+              fontSize: '12.5px',
               fontWeight: '600',
               color: '#2d2d2d',
-              lineHeight: '1.2',
+              lineHeight: '1.4',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              letterSpacing: '-0.01em',
             }}
           >
             {template.name}
@@ -836,59 +781,63 @@ const TemplateCard: React.FC<{
           <div
             style={{
               display: 'flex',
-              gap: '3px',
+              gap: '5px',
               flexShrink: 0,
             }}
           >
             <button
               onClick={onEdit}
               style={{
-                width: '20px',
-                height: '20px',
+                width: '24px',
+                height: '24px',
                 border: 'none',
-                borderRadius: '4px',
+                borderRadius: '5px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
                 backgroundColor: '#f0f0f0',
                 color: '#666',
-                transition: 'all 0.12s',
+                transition: 'all 0.15s',
               }}
               title="编辑"
               onMouseEnter={e => {
                 e.currentTarget.style.backgroundColor = '#e0e0e0'
+                e.currentTarget.style.transform = 'scale(1.05)'
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.backgroundColor = '#f0f0f0'
+                e.currentTarget.style.transform = 'scale(1)'
               }}
             >
-              <Edit2 size={11} />
+              <Edit2 size={12} />
             </button>
             <button
               onClick={onDelete}
               style={{
-                width: '20px',
-                height: '20px',
+                width: '24px',
+                height: '24px',
                 border: 'none',
-                borderRadius: '4px',
+                borderRadius: '5px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
                 backgroundColor: '#fef2f2',
                 color: '#ef4444',
-                transition: 'all 0.12s',
+                transition: 'all 0.15s',
               }}
               title="删除"
               onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#fee'
+                e.currentTarget.style.backgroundColor = '#fee2e2'
+                e.currentTarget.style.transform = 'scale(1.05)'
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.backgroundColor = '#fef2f2'
+                e.currentTarget.style.transform = 'scale(1)'
               }}
             >
-              <Trash2 size={11} />
+              <Trash2 size={12} />
             </button>
           </div>
         )}
@@ -1020,50 +969,66 @@ const SystemTemplateCard: React.FC<{
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
-          padding: '7px 8px',
-          border: `1px solid ${hover ? '#e0e0e0' : 'transparent'}`,
-          borderRadius: '5px',
+          padding: '10px 12px',
+          border: `1.5px solid ${hover ? '#d0d0d0' : 'transparent'}`,
+          borderRadius: '6px',
           cursor: isDragging ? 'grabbing' : 'grab',
           backgroundColor: hover ? '#fff' : 'transparent',
-          transition: 'all 0.12s',
+          transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          boxShadow: hover ? '0 2px 4px rgba(0,0,0,0.04)' : 'none',
+          gap: '10px',
+          boxShadow: hover ? '0 3px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)' : 'none',
           opacity: isDragging ? 0.5 : 1,
+          transform: hover ? 'translateX(2px)' : 'translateX(0)',
         }}
       >
         {/* 拖动手柄 */}
         <div
           style={{
-            width: '12px',
-            height: '12px',
+            width: '16px',
+            height: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: hover ? '#666' : '#d0d0d0',
             flexShrink: 0,
-            transition: 'color 0.12s',
+            transition: 'color 0.15s',
           }}
         >
-          <GripVertical size={11} strokeWidth={2.5} />
+          <GripVertical size={14} strokeWidth={2.5} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontSize: '11px',
+              fontSize: '12.5px',
               fontWeight: '600',
               color: '#2d2d2d',
-              lineHeight: '1.2',
+              lineHeight: '1.4',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              letterSpacing: '-0.01em',
             }}
           >
             {template.name}
           </div>
         </div>
+
+        {/* Hover 指示器 */}
+        {hover && (
+          <div
+            style={{
+              width: '4px',
+              height: '4px',
+              borderRadius: '50%',
+              backgroundColor: '#3b82f6',
+              flexShrink: 0,
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }}
+          />
+        )}
       </div>
 
       {/* Tooltip提示框 */}
@@ -1111,4 +1076,80 @@ const SystemTemplateCard: React.FC<{
       )}
     </>
   )
+}
+
+// 分类按钮组件 - 独立提取以避免在循环中使用 hooks
+const CategoryButton: React.FC<{
+  category: { id: string; name: string; icon: React.ReactNode }
+  isActive: boolean
+  onClick: () => void
+}> = ({ category, isActive, onClick }) => {
+  const [hover, setHover] = React.useState(false)
+
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        position: 'relative',
+        height: '26px',
+        padding: '0 9px',
+        border: 'none',
+        borderRadius: '5px',
+        fontSize: '10.5px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        backgroundColor: isActive ? '#2d2d2d' : hover ? '#f5f5f5' : 'transparent',
+        color: isActive ? '#fff' : hover ? '#2d2d2d' : '#666',
+        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '5px',
+        lineHeight: 1,
+        transform: hover && !isActive ? 'translateY(-1px)' : 'translateY(0)',
+        boxShadow: isActive
+          ? '0 2px 8px rgba(45, 45, 45, 0.15)'
+          : hover
+            ? '0 1px 4px rgba(0, 0, 0, 0.08)'
+            : 'none',
+      }}
+    >
+      <span
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: '13px',
+          transition: 'transform 0.2s',
+          transform: hover ? 'scale(1.08)' : 'scale(1)',
+        }}
+      >
+        {category.icon}
+      </span>
+      <span style={{ display: 'flex', alignItems: 'center' }}>{category.name}</span>
+    </button>
+  )
+}
+
+// 添加全局动画样式
+if (typeof document !== 'undefined') {
+  const styleId = 'material-panel-animations'
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement('style')
+    style.id = styleId
+    style.textContent = `
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(1.2);
+        }
+      }
+    `
+    document.head.appendChild(style)
+  }
 }

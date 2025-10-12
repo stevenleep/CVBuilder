@@ -21,6 +21,7 @@ import {
   Download,
   Upload,
   MoreVertical,
+  Globe,
 } from 'lucide-react'
 import { SaveResumeDialog } from './SaveResumeDialog'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
@@ -30,6 +31,7 @@ import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
+import { exportHTML } from '@/utils/htmlExporter'
 import { useTheme } from '@/core/context/ThemeContext'
 import { useIsMobile, useIsSmallScreen } from '@/hooks/useMediaQuery'
 
@@ -58,6 +60,9 @@ export const Toolbar: React.FC = () => {
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
   const [showExportPreview, setShowExportPreview] = useState(false)
+  const [exportInitialFormat, setExportInitialFormat] = useState<'pdf' | 'png' | 'json' | 'html'>(
+    'pdf'
+  )
   const [showMoreMenu, setShowMoreMenu] = useState(false)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
@@ -278,6 +283,14 @@ export const Toolbar: React.FC = () => {
         link.href = canvas.toDataURL('image/png')
         link.click()
         notification.success('PNG 导出成功！')
+      } else if (options.format === 'html') {
+        // HTML 导出 - 使用独立导出模块
+        const state = useEditorStore.getState()
+        await exportHTML({
+          version: options.htmlVersion || 'html5',
+          pageSchema: state.pageSchema,
+        })
+        notification.success('网页导出成功！')
       } else if (options.format === 'json') {
         // JSON 导出
         handleExportJSON()
@@ -312,8 +325,8 @@ export const Toolbar: React.FC = () => {
         borderBottom: '1px solid #e8e8e8',
         display: 'flex',
         alignItems: 'center',
-        padding: isMobile ? '0 8px' : '0 16px',
-        gap: isMobile ? '6px' : '12px',
+        padding: isMobile ? '0 8px' : '0 14px',
+        gap: isMobile ? '5px' : '8px',
         backgroundColor: '#ffffff',
         boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
       }}
@@ -323,16 +336,16 @@ export const Toolbar: React.FC = () => {
 
       {!isSmallScreen && (
         <>
-          <div style={{ display: 'flex', gap: '6px' }}>
+          <div style={{ display: 'flex', gap: '4px' }}>
             {/* 返回首页 */}
             <TextButton onClick={() => navigate('/')}>
-              <Home size={14} />
+              <Home size={13} />
               首页
             </TextButton>
 
             {/* 导入 */}
             <TextButton onClick={handleImportJSON}>
-              <Upload size={14} />
+              <Upload size={13} />
               导入
             </TextButton>
           </div>
@@ -340,15 +353,15 @@ export const Toolbar: React.FC = () => {
           <Divider />
 
           {/* 模式切换 - 带文字的按钮组 */}
-          <div style={{ display: 'flex', gap: '4px' }}>
+          <div style={{ display: 'flex', gap: '3px' }}>
             <ModeButton
-              icon={<Edit3 size={14} />}
+              icon={<Edit3 size={13} />}
               label="编辑"
               active={mode === 'edit'}
               onClick={() => setMode('edit')}
             />
             <ModeButton
-              icon={<Eye size={14} />}
+              icon={<Eye size={13} />}
               label="预览"
               active={mode === 'preview'}
               onClick={() => setMode('preview')}
@@ -362,21 +375,21 @@ export const Toolbar: React.FC = () => {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: isMobile ? '6px' : '12px',
+          gap: isMobile ? '5px' : '8px',
           flex: 1,
           justifyContent: 'center',
         }}
       >
         {/* 撤销/重做 */}
-        <div style={{ display: 'flex', gap: '4px' }}>
+        <div style={{ display: 'flex', gap: '3px' }}>
           <IconButton
-            icon={<Undo size={16} />}
+            icon={<Undo size={13} />}
             tooltip="撤销"
             onClick={() => undo()}
             disabled={!canUndo()}
           />
           <IconButton
-            icon={<Redo size={16} />}
+            icon={<Redo size={13} />}
             tooltip="重做"
             onClick={() => redo()}
             disabled={!canRedo()}
@@ -387,14 +400,14 @@ export const Toolbar: React.FC = () => {
         {isMobile && (
           <>
             <Divider />
-            <div style={{ display: 'flex', gap: '4px' }}>
+            <div style={{ display: 'flex', gap: '3px' }}>
               <IconButton
-                icon={<Edit3 size={16} />}
+                icon={<Edit3 size={13} />}
                 tooltip="编辑模式"
                 onClick={() => setMode('edit')}
               />
               <IconButton
-                icon={<Eye size={16} />}
+                icon={<Eye size={13} />}
                 tooltip="预览模式"
                 onClick={() => setMode('preview')}
               />
@@ -406,7 +419,7 @@ export const Toolbar: React.FC = () => {
           <>
             <Divider />
             {/* 缩放控制 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
               <IconButton
                 icon={<ZoomOut size={14} />}
                 tooltip="缩小"
@@ -416,15 +429,15 @@ export const Toolbar: React.FC = () => {
                 onClick={handleZoomReset}
                 title="重置缩放"
                 style={{
-                  minWidth: '56px',
-                  height: '28px',
+                  minWidth: '52px',
+                  height: '26px',
                   padding: '0 8px',
                   fontSize: '11px',
                   fontWeight: '700',
                   color: '#2d2d2d',
                   backgroundColor: 'transparent',
                   border: 'none',
-                  borderRadius: '6px',
+                  borderRadius: '5px',
                   cursor: 'pointer',
                   fontVariantNumeric: 'tabular-nums',
                   transition: 'all 0.15s',
@@ -449,7 +462,7 @@ export const Toolbar: React.FC = () => {
       </div>
 
       {/* 右侧区域 - 文档操作 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} />
 
       {!isSmallScreen && (
         <>
@@ -463,7 +476,7 @@ export const Toolbar: React.FC = () => {
             }}
           >
             <IconButton
-              icon={<HelpCircle size={16} />}
+              icon={<HelpCircle size={13} />}
               tooltip="快捷键帮助 (按 ? 查看)"
               onClick={() => setShowShortcutsHelp(true)}
             />
@@ -484,9 +497,25 @@ export const Toolbar: React.FC = () => {
 
           <Divider />
 
+          {/* HTML 快捷导出 */}
+          <TextButton
+            onClick={() => {
+              setExportInitialFormat('html')
+              setShowExportPreview(true)
+            }}
+          >
+            <Globe size={13} />
+            网页
+          </TextButton>
+
           {/* 导出 */}
-          <TextButton onClick={() => setShowExportPreview(true)}>
-            <Download size={14} />
+          <TextButton
+            onClick={() => {
+              setExportInitialFormat('pdf')
+              setShowExportPreview(true)
+            }}
+          >
+            <Download size={13} />
             导出
           </TextButton>
 
@@ -496,7 +525,7 @@ export const Toolbar: React.FC = () => {
               onMainClick={() => handleSave()}
               onMenuClick={() => setShowSaveMenu(!showSaveMenu)}
             >
-              <Save size={14} />
+              <Save size={13} />
               保存
             </SplitButton>
 
@@ -527,11 +556,24 @@ export const Toolbar: React.FC = () => {
       {/* 移动端/平板：紧凑操作按钮 */}
       {isSmallScreen && (
         <>
+          {/* HTML 快捷导出 - 仅图标 */}
+          <IconButton
+            icon={<Globe size={isMobile ? 14 : 16} />}
+            tooltip="导出网页"
+            onClick={() => {
+              setExportInitialFormat('html')
+              setShowExportPreview(true)
+            }}
+          />
+
           {/* 导出按钮 - 仅图标 */}
           <IconButton
             icon={<Download size={isMobile ? 14 : 16} />}
             tooltip="导出"
-            onClick={() => setShowExportPreview(true)}
+            onClick={() => {
+              setExportInitialFormat('pdf')
+              setShowExportPreview(true)
+            }}
           />
 
           {/* 保存按钮 - 仅图标 */}
@@ -553,7 +595,7 @@ export const Toolbar: React.FC = () => {
               <Menu onClose={() => setShowMoreMenu(false)} align="right">
                 <MenuItem onClick={() => navigate('/')}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Home size={14} />
+                    <Home size={13} />
                     返回首页
                   </div>
                 </MenuItem>
@@ -564,7 +606,7 @@ export const Toolbar: React.FC = () => {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Upload size={14} />
+                    <Upload size={13} />
                     导入JSON
                   </div>
                 </MenuItem>
@@ -591,7 +633,7 @@ export const Toolbar: React.FC = () => {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <HelpCircle size={14} />
+                    <HelpCircle size={13} />
                     快捷键帮助
                   </div>
                 </MenuItem>
@@ -605,6 +647,7 @@ export const Toolbar: React.FC = () => {
         <ExportPreviewDialog
           onExport={handleExportWithOptions}
           onClose={() => setShowExportPreview(false)}
+          initialFormat={exportInitialFormat}
         />
       )}
 
@@ -682,10 +725,10 @@ const IconButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        width: '28px',
-        height: '28px',
+        width: '26px',
+        height: '26px',
         border: 'none',
-        borderRadius: '6px',
+        borderRadius: '5px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -714,11 +757,11 @@ const TextButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        height: '28px',
-        padding: '0 12px',
+        height: '26px',
+        padding: '0 10px',
         border: hover ? '1px solid #e8e8e8' : '1px solid transparent',
-        borderRadius: '6px',
-        fontSize: '13px',
+        borderRadius: '5px',
+        fontSize: '12px',
         fontWeight: '600',
         cursor: 'pointer',
         backgroundColor: hover ? '#f8f8f8' : 'transparent',
@@ -726,7 +769,7 @@ const TextButton: React.FC<{
         transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         alignItems: 'center',
-        gap: '5px',
+        gap: '4px',
         transform: hover ? 'translateY(-1px)' : 'translateY(0)',
         boxShadow: hover ? '0 2px 4px rgba(0,0,0,0.04)' : 'none',
       }}
@@ -751,10 +794,10 @@ const SplitButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        height: '28px',
+        height: '26px',
         display: 'flex',
         backgroundColor: '#2d2d2d',
-        borderRadius: '6px',
+        borderRadius: '5px',
         boxShadow: hover ? '0 2px 6px rgba(0,0,0,0.15)' : '0 1px 3px rgba(0,0,0,0.1)',
         overflow: 'hidden',
         transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -767,11 +810,11 @@ const SplitButton: React.FC<{
         onMouseEnter={() => setMainHover(true)}
         onMouseLeave={() => setMainHover(false)}
         style={{
-          height: '28px',
-          padding: '0 14px',
+          height: '26px',
+          padding: '0 12px',
           border: 'none',
           background: 'transparent',
-          fontSize: '13px',
+          fontSize: '12px',
           fontWeight: '600',
           cursor: 'pointer',
           backgroundColor: mainHover ? '#1a1a1a' : 'transparent',
@@ -779,7 +822,7 @@ const SplitButton: React.FC<{
           transition: 'all 0.15s',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
+          gap: '5px',
         }}
       >
         {children}
@@ -805,8 +848,8 @@ const SplitButton: React.FC<{
         onMouseLeave={() => setMenuHover(false)}
         title="更多保存选项"
         style={{
-          width: '26px',
-          height: '28px',
+          width: '24px',
+          height: '26px',
           border: 'none',
           background: 'transparent',
           cursor: 'pointer',
@@ -818,7 +861,7 @@ const SplitButton: React.FC<{
           justifyContent: 'center',
         }}
       >
-        <ChevronDown size={13} />
+        <ChevronDown size={12} />
       </button>
     </div>
   )
@@ -851,18 +894,18 @@ const ModeButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        minWidth: compact ? '24px' : 'auto',
-        height: '28px',
-        padding: compact ? '0' : '0 12px',
+        minWidth: compact ? '22px' : 'auto',
+        height: '26px',
+        padding: compact ? '0' : '0 10px',
         border: '1px solid transparent',
-        borderRadius: '6px',
+        borderRadius: '5px',
         backgroundColor: active ? '#2d2d2d' : hover ? '#f5f5f5' : 'transparent',
         color: active ? '#fff' : hover ? '#2d2d2d' : '#666',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '5px',
+        gap: '4px',
         transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
         fontSize: '12px',
         fontWeight: '600',

@@ -71,6 +71,23 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
   onSelectNode,
   selectedNodeIds = [],
 }) => {
+  // 跳过Page根节点 - 必须在所有 hooks 之前判断
+  if (schema.type === 'Page' && level === 0) {
+    return (
+      <>
+        {schema.children?.map(child => (
+          <StructureTree
+            key={child.id}
+            schema={child}
+            level={0}
+            onSelectNode={onSelectNode}
+            selectedNodeIds={selectedNodeIds}
+          />
+        ))}
+      </>
+    )
+  }
+
   const [collapsed, setCollapsed] = useState(false)
   const [hover, setHover] = useState(false)
   const materialDef = useMaterial(schema.type)
@@ -114,23 +131,6 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
   const combineRefs = (el: HTMLDivElement | null) => {
     drag(el)
     drop(el)
-  }
-
-  // 跳过Page根节点
-  if (schema.type === 'Page' && level === 0) {
-    return (
-      <>
-        {schema.children?.map(child => (
-          <StructureTree
-            key={child.id}
-            schema={child}
-            level={0}
-            onSelectNode={onSelectNode}
-            selectedNodeIds={selectedNodeIds}
-          />
-        ))}
-      </>
-    )
   }
 
   const handleToggleVisibility = (e: React.MouseEvent) => {
