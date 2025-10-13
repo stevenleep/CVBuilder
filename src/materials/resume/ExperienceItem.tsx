@@ -6,6 +6,7 @@ import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
+import { Info, Briefcase, FileText } from 'lucide-react'
 
 interface ExperienceItemProps {
   style?: React.CSSProperties
@@ -289,6 +290,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '公司名称',
       required: true,
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'industry',
@@ -297,6 +299,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：互联网/电子商务',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'companySize',
@@ -313,6 +316,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         { label: '10000人以上', value: '10000人以上' },
       ],
       group: '基本信息',
+      tab: 'basic',
     },
 
     // 职位信息
@@ -323,6 +327,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '职位名称',
       required: true,
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'department',
@@ -330,6 +335,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'level',
@@ -338,6 +344,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：P7、M2',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'jobType',
@@ -352,6 +359,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         { label: '其他', value: 'other' },
       ],
       group: '基本信息',
+      tab: 'basic',
     },
 
     // 时间地点
@@ -361,6 +369,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '2020.01',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'endDate',
@@ -369,6 +378,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '2023.12',
       description: '填"present"表示至今',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'location',
@@ -376,6 +386,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '北京',
       group: '基本信息',
+      tab: 'basic',
     },
 
     // 工作性质
@@ -392,6 +403,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         { label: '外包', value: '外包' },
       ],
       group: '工作性质',
+      tab: 'basic',
     },
     {
       name: 'workMode',
@@ -405,6 +417,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         { label: '混合办公', value: '混合' },
       ],
       group: '工作性质',
+      tab: 'basic',
     },
 
     // 技术信息
@@ -415,6 +428,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: 'React, TypeScript, Node.js',
       description: '仅技术岗显示',
       group: '技术信息',
+      tab: 'details',
       visibleWhen: props => props.jobType === 'tech',
     },
 
@@ -426,6 +440,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：10',
       group: '详细信息',
+      tab: 'details',
     },
     {
       name: 'reportTo',
@@ -434,6 +449,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：技术总监',
       group: '详细信息',
+      tab: 'details',
     },
     {
       name: 'subordinates',
@@ -441,6 +457,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '详细信息',
+      tab: 'details',
     },
 
     // 薪资信息
@@ -451,6 +468,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：15K',
       group: '薪资',
+      tab: 'details',
     },
     {
       name: 'endSalary',
@@ -459,6 +477,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：25K',
       group: '薪资',
+      tab: 'details',
     },
 
     // 工作内容
@@ -470,6 +489,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         '<ul><li>负责前端架构设计和核心功能开发</li><li>优化系统性能，提升用户体验</li><li>带领团队完成多个重要项目交付</li></ul>',
       description: '日常工作职责',
       group: '内容',
+      tab: 'content',
       minHeight: 120,
     },
     {
@@ -479,6 +499,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '可量化的业绩和亮点',
       group: '内容',
+      tab: 'content',
       minHeight: 80,
     },
     {
@@ -488,6 +509,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '可选填写',
       group: '其他',
+      tab: 'content',
     },
   ],
   defaultProps: {
@@ -520,4 +542,21 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
     moveable: true,
     canBeChild: true,
   },
+  propertyTabs: [
+    {
+      id: 'basic',
+      label: '基本信息',
+      icon: <Info size={12} />,
+    },
+    {
+      id: 'details',
+      label: '详细信息',
+      icon: <Briefcase size={12} />,
+    },
+    {
+      id: 'content',
+      label: '工作内容',
+      icon: <FileText size={12} />,
+    },
+  ],
 }

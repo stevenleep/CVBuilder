@@ -4,7 +4,6 @@
 
 import React from 'react'
 import { useEditorStore } from '@store/editorStore'
-import { findNode } from '@utils/schema'
 import type { PropValue } from '../types/material'
 import {
   ChevronDown,
@@ -29,24 +28,16 @@ import { imageStorageManager } from '@/utils/imageStorage'
 import { notification } from '@/utils/notification'
 
 export const PropertyPanel: React.FC = () => {
-  const { selectedNodeIds, pageSchema, updateNodeProps } = useEditorStore()
-  const [currentTab, setCurrentTab] = React.useState<
-    'basic' | 'details' | 'content' | 'appearance'
-  >('basic')
+  const { getLastSelectedNode, updateNodeProps } = useEditorStore()
+  const [currentTab, setCurrentTab] = React.useState<string>('basic')
 
-  const nodeId = selectedNodeIds.length > 0 ? selectedNodeIds[0] : null
-  const node = nodeId ? findNode(pageSchema.root, nodeId) : null
+  // 性能优化：直接获取最后选中的节点（焦点节点），完全无需查找（O(1)）
+  const node = getLastSelectedNode()
   const materialDef = useMaterial(node?.type || '')
 
-  // 检查组件类型
-  const nodeType = node?.type || ''
-  const isPersonalInfo = nodeType === 'PersonalInfo'
-  const isProjectItem = nodeType === 'ProjectItem'
-  const isExperienceItem = nodeType === 'ExperienceItem'
-  const isEducationItem = nodeType === 'EducationItem'
-
-  // 判断是否需要显示 tab
-  const needsTabs = isPersonalInfo || isProjectItem || isExperienceItem || isEducationItem
+  // 从物料定义中获取 tabs 配置
+  const propertyTabs = materialDef?.propertyTabs
+  const needsTabs = propertyTabs && propertyTabs.length > 0
 
   // 未选中或选中Page时，显示主题设置
   const isPageSelected = node?.type === 'Page'
@@ -121,91 +112,32 @@ export const PropertyPanel: React.FC = () => {
   }
 
   const handlePropChange = (propName: string, value: PropValue) => {
-    updateNodeProps(nodeId!, { [propName]: value })
+    if (node) {
+      updateNodeProps(node.id, { [propName]: value })
+    }
   }
 
-  // 根据当前选中的组件类型和 tab，过滤属性
+  // 根据当前选中的 tab 过滤属性
   const groupedProps: Record<string, IPropSchema[]> = {}
 
   materialDef.propsSchema.forEach(prop => {
     if (prop.hidden) return
     if (prop.visibleWhen && !prop.visibleWhen(node.props || {})) return
 
-    // 如果需要 tab，根据当前 tab 过滤属性
-    if (needsTabs) {
-      const propGroup = prop.group || '属性'
-
-      // PersonalInfo 的 tab 映射（4个 tab）
-      if (isPersonalInfo) {
-        if (currentTab === 'basic' && propGroup !== '核心信息') return
-        if (currentTab === 'details' && !['联系方式', '在线链接'].includes(propGroup)) return
-        if (currentTab === 'content' && propGroup !== '补充信息') return
-        if (currentTab === 'appearance' && propGroup !== '外观') return
-      }
-
-      // ProjectItem 的 tab 映射
-      if (isProjectItem) {
-        if (currentTab === 'basic' && !['基本信息'].includes(propGroup)) return
-        if (currentTab === 'details' && !['项目详情'].includes(propGroup)) return
-        if (currentTab === 'content' && propGroup !== '内容') return
-      }
-
-      // ExperienceItem 的 tab 映射
-      if (isExperienceItem) {
-        if (currentTab === 'basic' && !['基本信息', '工作性质'].includes(propGroup)) return
-        if (currentTab === 'details' && !['技术信息', '详细信息', '薪资'].includes(propGroup))
-          return
-        if (currentTab === 'content' && !['内容', '其他'].includes(propGroup)) return
-      }
-
-      // EducationItem 的 tab 映射
-      if (isEducationItem) {
-        if (currentTab === 'basic' && propGroup !== '基本信息') return
-        if (currentTab === 'details' && propGroup !== '更多信息') return
-      }
+    // 如果有 tab，只渲染当前 tab 的属性
+    if (needsTabs && prop.tab && prop.tab !== currentTab) {
+      return
     }
 
-    const group = prop.group || '属性'
-    if (!groupedProps[group]) {
-      groupedProps[group] = []
+    const propGroup = prop.group || '属性'
+    if (!groupedProps[propGroup]) {
+      groupedProps[propGroup] = []
     }
-    groupedProps[group].push(prop)
+    groupedProps[propGroup].push(prop)
   })
 
-  // 获取当前组件的 tab 配置
-  const getTabs = () => {
-    if (isPersonalInfo) {
-      return [
-        { id: 'basic' as const, label: '核心信息', icon: <User size={12} /> },
-        { id: 'details' as const, label: '联系方式', icon: <Phone size={12} /> },
-        { id: 'content' as const, label: '补充信息', icon: <Info size={12} /> },
-        { id: 'appearance' as const, label: '外观', icon: <Eye size={12} /> },
-      ]
-    }
-    if (isProjectItem) {
-      return [
-        { id: 'basic' as const, label: '基本信息', icon: <Info size={12} /> },
-        { id: 'details' as const, label: '项目详情', icon: <Code size={12} /> },
-        { id: 'content' as const, label: '内容', icon: <FileText size={12} /> },
-      ]
-    }
-    if (isExperienceItem) {
-      return [
-        { id: 'basic' as const, label: '基本信息', icon: <Info size={12} /> },
-        { id: 'details' as const, label: '详细信息', icon: <Briefcase size={12} /> },
-        { id: 'content' as const, label: '工作内容', icon: <FileText size={12} /> },
-      ]
-    }
-    if (isEducationItem) {
-      return [
-        { id: 'basic' as const, label: '基本信息', icon: <Info size={12} /> },
-        { id: 'details' as const, label: '更多信息', icon: <BookOpen size={12} /> },
-      ]
-    }
-    return []
-  }
-
-  const tabs = getTabs()
+  // 直接使用物料定义中的 tabs 配置
+  const tabs = propertyTabs || []
 
   return (
     <div
@@ -274,20 +206,16 @@ export const PropertyPanel: React.FC = () => {
           minHeight: 0,
         }}
       >
-        {isPersonalInfo && currentTab === 'appearance' ? (
-          <AppearancePanel nodeProps={node.props || {}} onChange={handlePropChange} />
-        ) : (
-          Object.entries(groupedProps).map(([group, props], _index, array) => (
-            <PropertyGroup
-              key={group}
-              title={group}
-              props={props}
-              nodeProps={node.props || {}}
-              onChange={handlePropChange}
-              showCollapse={array.length > 1}
-            />
-          ))
-        )}
+        {Object.entries(groupedProps).map(([group, props], _index, array) => (
+          <PropertyGroup
+            key={group}
+            title={group}
+            props={props}
+            nodeProps={node.props || {}}
+            onChange={handlePropChange}
+            showCollapse={array.length > 1}
+          />
+        ))}
       </div>
     </div>
   )
@@ -315,7 +243,6 @@ const getGroupIcon = (title: string) => {
   return iconMap[title] || <Info size={11} />
 }
 
-// 属性分组 - 优化版
 const PropertyGroup: React.FC<{
   title: string
   props: IPropSchema[]
@@ -456,235 +383,6 @@ const TabButton: React.FC<{
         {children}
       </span>
     </button>
-  )
-}
-
-// 外观面板 - PersonalInfo 专用
-const AppearancePanel: React.FC<{
-  nodeProps: Record<string, any>
-  onChange: (name: string, value: PropValue) => void
-}> = ({ nodeProps, onChange }) => {
-  const currentPreset = (nodeProps.layoutPreset as string) || 'classic'
-
-  const presets = [
-    {
-      id: 'classic',
-      name: '经典布局',
-      description: '左对齐，完整信息，支持头像',
-    },
-    {
-      id: 'centered',
-      name: '居中简约',
-      description: '居中对齐，简洁清爽',
-    },
-    {
-      id: 'minimal',
-      name: '极简风格',
-      description: '姓名职位一行，最紧凑',
-    },
-    {
-      id: 'detailed',
-      name: '详细信息',
-      description: '两栏网格，信息分类',
-    },
-  ]
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-      {/* 板式预设选择 */}
-      <div>
-        <div
-          style={{
-            fontSize: '11px',
-            fontWeight: '700',
-            color: '#666',
-            marginBottom: '8px',
-            letterSpacing: '0.5px',
-          }}
-        >
-          板式预设
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          {presets.map(preset => (
-            <PresetCard
-              key={preset.id}
-              preset={preset}
-              isActive={currentPreset === preset.id}
-              onClick={() => onChange('layoutPreset', preset.id)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* 头像设置 */}
-      <div>
-        <div
-          style={{
-            fontSize: '11px',
-            fontWeight: '700',
-            color: '#666',
-            marginBottom: '8px',
-            letterSpacing: '0.5px',
-          }}
-        >
-          头像设置
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {/* 显示头像开关 */}
-          <div>
-            <label
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                cursor: 'pointer',
-                height: '32px',
-                padding: '0 12px',
-                backgroundColor: '#fafafa',
-                border: '1px solid #e8e8e8',
-                borderRadius: '6px',
-                transition: 'all 0.15s',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#fff'
-                e.currentTarget.style.borderColor = '#d0d0d0'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = '#fafafa'
-                e.currentTarget.style.borderColor = '#e8e8e8'
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={Boolean(nodeProps.showAvatar)}
-                onChange={e => onChange('showAvatar', e.target.checked)}
-                style={{
-                  width: '16px',
-                  height: '16px',
-                  cursor: 'pointer',
-                  accentColor: '#2d2d2d',
-                }}
-              />
-              <span style={{ fontSize: '12px', color: '#2d2d2d', fontWeight: '500' }}>
-                显示头像
-              </span>
-            </label>
-          </div>
-
-          {/* 头像上传（仅在勾选后显示） */}
-          {nodeProps.showAvatar && (
-            <div>
-              <ImageUploadInput
-                value={String(nodeProps.avatar || '')}
-                onChange={value => onChange('avatar', value)}
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 对齐方式（仅经典布局） */}
-      {currentPreset === 'classic' && (
-        <div>
-          <div
-            style={{
-              fontSize: '11px',
-              fontWeight: '700',
-              color: '#666',
-              marginBottom: '8px',
-              letterSpacing: '0.5px',
-            }}
-          >
-            对齐方式
-          </div>
-          <PropertyInput
-            schema={{
-              name: 'align',
-              label: '对齐',
-              type: 'select',
-              defaultValue: 'left',
-              options: [
-                { label: '左对齐', value: 'left' },
-                { label: '居中', value: 'center' },
-                { label: '右对齐', value: 'right' },
-              ],
-              group: '外观',
-            }}
-            value={nodeProps.align ?? 'left'}
-            onChange={value => onChange('align', value)}
-          />
-        </div>
-      )}
-
-      {/* 链接显示方式 */}
-      <div>
-        <div
-          style={{
-            fontSize: '11px',
-            fontWeight: '700',
-            color: '#666',
-            marginBottom: '8px',
-            letterSpacing: '0.5px',
-          }}
-        >
-          链接设置
-        </div>
-        <PropertyInput
-          schema={{
-            name: 'showFullLinks',
-            label: '显示完整链接',
-            type: 'boolean',
-            defaultValue: true,
-            group: '外观',
-          }}
-          value={nodeProps.showFullLinks ?? true}
-          onChange={value => onChange('showFullLinks', value)}
-        />
-      </div>
-    </div>
-  )
-}
-
-// 预设卡片 - 统一风格
-const PresetCard: React.FC<{
-  preset: { id: string; name: string; description: string }
-  isActive: boolean
-  onClick: () => void
-}> = ({ preset, isActive, onClick }) => {
-  const [hover, setHover] = React.useState(false)
-
-  return (
-    <div
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        padding: '10px 12px',
-        backgroundColor: isActive ? '#2d2d2d' : '#fafafa',
-        border: `1px solid ${isActive ? '#2d2d2d' : '#e8e8e8'}`,
-        borderRadius: '6px',
-        cursor: 'pointer',
-        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: isActive
-          ? '0 2px 8px rgba(45,45,45,0.15)'
-          : hover
-            ? '0 2px 4px rgba(0,0,0,0.06)'
-            : '0 1px 2px rgba(0,0,0,0.02)',
-        transform: hover && !isActive ? 'translateY(-1px)' : 'translateY(0)',
-      }}
-    >
-      <div
-        style={{
-          fontSize: '12px',
-          fontWeight: '600',
-          color: isActive ? '#fff' : '#2d2d2d',
-          letterSpacing: '-0.01em',
-        }}
-      >
-        {preset.name}
-      </div>
-    </div>
   )
 }
 

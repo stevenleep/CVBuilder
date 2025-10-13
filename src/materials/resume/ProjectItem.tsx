@@ -6,6 +6,7 @@ import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
+import { Info, Code, FileText } from 'lucide-react'
 
 interface ProjectItemProps {
   style?: React.CSSProperties
@@ -333,6 +334,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '项目名称',
       required: true,
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'projectType',
@@ -348,6 +350,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
         { label: '外包项目', value: '外包项目' },
       ],
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'company',
@@ -356,6 +359,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如果是公司项目',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'projectStatus',
@@ -371,6 +375,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
         { label: '已下线', value: '已下线' },
       ],
       group: '基本信息',
+      tab: 'basic',
     },
 
     // 角色与职责
@@ -381,6 +386,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '项目角色',
       required: true,
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'responsibility',
@@ -389,6 +395,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：前端负责人',
       group: '基本信息',
+      tab: 'basic',
     },
 
     // 时间
@@ -398,6 +405,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '2022.01',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'endDate',
@@ -405,6 +413,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '2023.12',
       group: '基本信息',
+      tab: 'basic',
     },
 
     // 规模信息
@@ -415,6 +424,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：5',
       group: '项目详情',
+      tab: 'details',
     },
     {
       name: 'userScale',
@@ -423,6 +433,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：100万+',
       group: '项目详情',
+      tab: 'details',
     },
     {
       name: 'dataScale',
@@ -431,6 +442,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：日均PV 1000万',
       group: '项目详情',
+      tab: 'details',
     },
 
     // 技术信息
@@ -441,6 +453,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: 'React, TypeScript, Node.js, MySQL, Redis',
       description: '使用的技术',
       group: '项目详情',
+      tab: 'details',
     },
     {
       name: 'architecture',
@@ -449,6 +462,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：微服务、前后端分离',
       group: '项目详情',
+      tab: 'details',
     },
 
     // 链接
@@ -459,6 +473,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '线上地址',
       group: '项目详情',
+      tab: 'details',
     },
     {
       name: 'githubUrl',
@@ -466,6 +481,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '项目详情',
+      tab: 'details',
     },
     {
       name: 'demoUrl',
@@ -473,6 +489,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '项目详情',
+      tab: 'details',
     },
 
     // 内容
@@ -483,6 +500,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '<ul><li>项目背景和目标</li><li>核心功能和模块</li></ul>',
       description: '项目整体介绍',
       group: '内容',
+      tab: 'content',
       minHeight: 100,
     },
     {
@@ -492,6 +510,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '个人负责的部分',
       group: '内容',
+      tab: 'content',
       minHeight: 80,
     },
     {
@@ -501,6 +520,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '量化的成果和亮点',
       group: '内容',
+      tab: 'content',
       minHeight: 80,
     },
   ],
@@ -531,4 +551,21 @@ export const ProjectItemMaterial: IMaterialDefinition = {
     moveable: true,
     canBeChild: true,
   },
+  propertyTabs: [
+    {
+      id: 'basic',
+      label: '基本信息',
+      icon: <Info size={12} />,
+    },
+    {
+      id: 'details',
+      label: '项目详情',
+      icon: <Code size={12} />,
+    },
+    {
+      id: 'content',
+      label: '内容',
+      icon: <FileText size={12} />,
+    },
+  ],
 }

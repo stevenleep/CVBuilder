@@ -7,6 +7,7 @@ import { IMaterialDefinition, IMaterialAction } from '@/core'
 import { useThemeConfig, useStyleConfig } from '@/core/context/ThemeContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
 import { notification } from '@/utils/notification'
+import { User, Phone, Info, Eye } from 'lucide-react'
 
 interface PersonalInfoProps {
   style?: React.CSSProperties
@@ -812,6 +813,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '张三',
       required: true,
       group: '核心信息',
+      tab: 'basic',
     },
     {
       name: 'title',
@@ -819,6 +821,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '前端工程师',
       group: '核心信息',
+      tab: 'basic',
     },
     {
       name: 'age',
@@ -827,6 +830,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：28',
       group: '核心信息',
+      tab: 'basic',
     },
     {
       name: 'workYears',
@@ -835,6 +839,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：5年',
       group: '核心信息',
+      tab: 'basic',
     },
     {
       name: 'education',
@@ -849,6 +854,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '博士', value: '博士' },
       ],
       group: '核心信息',
+      tab: 'basic',
     },
     {
       name: 'expectedSalary',
@@ -857,6 +863,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：15K-25K',
       group: '核心信息',
+      tab: 'basic',
     },
     {
       name: 'currentStatus',
@@ -870,6 +877,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '离职-随时到岗', value: '离职-随时到岗' },
       ],
       group: '核心信息',
+      tab: 'basic',
     },
 
     // 补充信息
@@ -884,6 +892,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '女', value: '女' },
       ],
       group: '补充信息',
+      tab: 'content',
     },
     {
       name: 'birthDate',
@@ -892,6 +901,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：1995.06',
       group: '补充信息',
+      tab: 'content',
     },
     {
       name: 'expectedPosition',
@@ -899,6 +909,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '补充信息',
+      tab: 'content',
     },
     {
       name: 'arrivalTime',
@@ -913,6 +924,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '一个月内', value: '一个月内' },
       ],
       group: '补充信息',
+      tab: 'content',
     },
     {
       name: 'maritalStatus',
@@ -925,6 +937,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '已婚', value: '已婚' },
       ],
       group: '补充信息',
+      tab: 'content',
     },
     {
       name: 'politicalStatus',
@@ -938,6 +951,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '群众', value: '群众' },
       ],
       group: '补充信息',
+      tab: 'content',
     },
     {
       name: 'nationality',
@@ -946,6 +960,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '默认不显示',
       group: '补充信息',
+      tab: 'content',
     },
     {
       name: 'summary',
@@ -964,6 +979,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '138-0000-0000',
       group: '联系方式',
+      tab: 'details',
     },
     {
       name: 'email',
@@ -971,6 +987,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: 'zhangsan@example.com',
       group: '联系方式',
+      tab: 'details',
     },
     {
       name: 'currentLocation',
@@ -978,6 +995,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '北京',
       group: '联系方式',
+      tab: 'details',
     },
     {
       name: 'wechat',
@@ -985,6 +1003,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '联系方式',
+      tab: 'details',
     },
     {
       name: 'hometown',
@@ -992,6 +1011,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '联系方式',
+      tab: 'details',
     },
     {
       name: 'qq',
@@ -999,6 +1019,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '联系方式',
+      tab: 'details',
     },
 
     // 在线链接
@@ -1009,6 +1030,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：github.com/username',
       group: '在线链接',
+      tab: 'details',
     },
     {
       name: 'blog',
@@ -1016,6 +1038,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '在线链接',
+      tab: 'details',
     },
     {
       name: 'linkedin',
@@ -1023,6 +1046,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '在线链接',
+      tab: 'details',
     },
     {
       name: 'website',
@@ -1030,6 +1054,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '在线链接',
+      tab: 'details',
     },
 
     // 外观设置
@@ -1039,6 +1064,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'boolean',
       defaultValue: false,
       group: '外观',
+      tab: 'appearance',
     },
     {
       name: 'avatar',
@@ -1081,6 +1107,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'boolean',
       defaultValue: true,
       group: '外观',
+      tab: 'appearance',
     },
   ],
   defaultProps: {
@@ -1122,6 +1149,28 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
   actions: personalInfoActions,
+  propertyTabs: [
+    {
+      id: 'basic',
+      label: '核心信息',
+      icon: <User size={12} />,
+    },
+    {
+      id: 'details',
+      label: '联系方式',
+      icon: <Phone size={12} />,
+    },
+    {
+      id: 'content',
+      label: '补充信息',
+      icon: <Info size={12} />,
+    },
+    {
+      id: 'appearance',
+      label: '外观',
+      icon: <Eye size={12} />,
+    },
+  ],
   onDoubleClick: async context => {
     const newName = await notification.prompt({
       title: '编辑姓名',

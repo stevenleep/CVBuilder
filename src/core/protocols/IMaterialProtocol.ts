@@ -66,8 +66,10 @@ export interface IPropSchema {
   description?: string
   /** 是否必填 */
   required?: boolean
-  /** 分组 */
+  /** 分组（用于在 tab 内分组显示） */
   group?: string
+  /** 所属 Tab（用于多 tab 物料） */
+  tab?: string
   /** Zod校验Schema */
   validator?: z.ZodType<any>
   /** 是否隐藏 */
@@ -208,6 +210,18 @@ export interface IMaterialShortcut {
 }
 
 /**
+ * 属性面板Tab配置
+ */
+export interface IPropertyTab {
+  /** Tab ID */
+  id: string
+  /** Tab显示标签 */
+  label: string
+  /** Tab图标（可选） */
+  icon?: React.ReactElement
+}
+
+/**
  * 物料定义协议
  */
 export interface IMaterialDefinition {
@@ -233,6 +247,8 @@ export interface IMaterialDefinition {
   customRenderer?: (props: any) => React.ReactElement
   /** 物料专属快捷键 */
   shortcuts?: IMaterialShortcut[]
+  /** 属性面板Tab配置（可选，用于复杂物料） */
+  propertyTabs?: IPropertyTab[]
 }
 
 /**

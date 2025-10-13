@@ -6,6 +6,7 @@ import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
+import { Info, BookOpen } from 'lucide-react'
 
 interface EducationItemProps {
   style?: React.CSSProperties
@@ -250,6 +251,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '大学名称',
       required: true,
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'major',
@@ -258,6 +260,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '专业名称',
       required: true,
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'degree',
@@ -277,6 +280,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
         { label: '其他', value: '其他' },
       ],
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'startDate',
@@ -284,6 +288,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '2016.09',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'endDate',
@@ -291,6 +296,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '2020.06',
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'schoolType',
@@ -306,6 +312,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
         { label: '海外名校', value: '海外名校' },
       ],
       group: '基本信息',
+      tab: 'basic',
     },
     {
       name: 'schoolLocation',
@@ -313,6 +320,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '基本信息',
+      tab: 'basic',
     },
 
     // 详细信息
@@ -323,6 +331,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：3.8/4.0',
       group: '更多信息',
+      tab: 'details',
     },
     {
       name: 'rank',
@@ -331,6 +340,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：专业前5%',
       group: '更多信息',
+      tab: 'details',
     },
     {
       name: 'scholarships',
@@ -339,6 +349,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：国家奖学金、一等奖学金',
       group: '更多信息',
+      tab: 'details',
     },
     {
       name: 'achievements',
@@ -367,6 +378,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：工学、理学',
       group: '更多信息',
+      tab: 'details',
     },
     {
       name: 'gpaScale',
@@ -375,6 +387,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：4.0（如已在GPA中填写则不需要）',
       group: '更多信息',
+      tab: 'details',
     },
     {
       name: 'eduType',
@@ -389,6 +402,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
         { label: '网络教育', value: '网教' },
       ],
       group: '更多信息',
+      tab: 'details',
     },
     {
       name: 'thesis',
@@ -396,6 +410,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '更多信息',
+      tab: 'details',
     },
     {
       name: 'thesisAdvisor',
@@ -403,6 +418,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '',
       group: '更多信息',
+      tab: 'details',
     },
     {
       name: 'transferInfo',
@@ -411,6 +427,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：大三交换至XX大学',
       group: '更多信息',
+      tab: 'details',
     },
   ],
   defaultProps: {
@@ -439,4 +456,16 @@ export const EducationItemMaterial: IMaterialDefinition = {
     moveable: true,
     canBeChild: true,
   },
+  propertyTabs: [
+    {
+      id: 'basic',
+      label: '基本信息',
+      icon: <Info size={12} />,
+    },
+    {
+      id: 'details',
+      label: '更多信息',
+      icon: <BookOpen size={12} />,
+    },
+  ],
 }
