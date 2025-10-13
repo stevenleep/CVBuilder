@@ -68,6 +68,8 @@ export interface IPropSchema {
   required?: boolean
   /** 分组（用于在 tab 内分组显示） */
   group?: string
+  /** 分组图标（可选，用于自定义分组图标） */
+  groupIcon?: React.ReactElement
   /** 所属 Tab（用于多 tab 物料） */
   tab?: string
   /** Zod校验Schema */

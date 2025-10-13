@@ -7,7 +7,7 @@ import { IMaterialDefinition, IMaterialAction } from '@/core'
 import { useThemeConfig, useStyleConfig } from '@/core/context/ThemeContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
 import { notification } from '@/utils/notification'
-import { User, Phone, Info, Eye } from 'lucide-react'
+import { User, Phone, Info, Eye, Globe } from 'lucide-react'
 
 interface PersonalInfoProps {
   style?: React.CSSProperties
@@ -813,6 +813,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '张三',
       required: true,
       group: '核心信息',
+      groupIcon: <User size={11} />,
       tab: 'basic',
     },
     {
@@ -892,6 +893,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
         { label: '女', value: '女' },
       ],
       group: '补充信息',
+      groupIcon: <Info size={11} />,
       tab: 'content',
     },
     {
@@ -979,6 +981,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'string',
       defaultValue: '138-0000-0000',
       group: '联系方式',
+      groupIcon: <Phone size={11} />,
       tab: 'details',
     },
     {
@@ -1030,6 +1033,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：github.com/username',
       group: '在线链接',
+      groupIcon: <Globe size={11} />,
       tab: 'details',
     },
     {
@@ -1064,6 +1068,7 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       type: 'boolean',
       defaultValue: false,
       group: '外观',
+      groupIcon: <Eye size={11} />,
       tab: 'appearance',
     },
     {

@@ -251,6 +251,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '大学名称',
       required: true,
       group: '基本信息',
+      groupIcon: <Info size={11} />,
       tab: 'basic',
     },
     {
@@ -331,6 +332,7 @@ export const EducationItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：3.8/4.0',
       group: '更多信息',
+      groupIcon: <BookOpen size={11} />,
       tab: 'details',
     },
     {

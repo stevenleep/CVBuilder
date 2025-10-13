@@ -334,6 +334,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '项目名称',
       required: true,
       group: '基本信息',
+      groupIcon: <Info size={11} />,
       tab: 'basic',
     },
     {
@@ -424,6 +425,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：5',
       group: '项目详情',
+      groupIcon: <Code size={11} />,
       tab: 'details',
     },
     {
@@ -500,6 +502,7 @@ export const ProjectItemMaterial: IMaterialDefinition = {
       defaultValue: '<ul><li>项目背景和目标</li><li>核心功能和模块</li></ul>',
       description: '项目整体介绍',
       group: '内容',
+      groupIcon: <FileText size={11} />,
       tab: 'content',
       minHeight: 100,
     },

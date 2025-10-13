@@ -6,7 +6,7 @@ import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
-import { Info, Briefcase, FileText } from 'lucide-react'
+import { Info, Briefcase, FileText, Code, DollarSign } from 'lucide-react'
 
 interface ExperienceItemProps {
   style?: React.CSSProperties
@@ -290,6 +290,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '公司名称',
       required: true,
       group: '基本信息',
+      groupIcon: <Info size={11} />,
       tab: 'basic',
     },
     {
@@ -403,6 +404,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         { label: '外包', value: '外包' },
       ],
       group: '工作性质',
+      groupIcon: <Briefcase size={11} />,
       tab: 'basic',
     },
     {
@@ -428,6 +430,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: 'React, TypeScript, Node.js',
       description: '仅技术岗显示',
       group: '技术信息',
+      groupIcon: <Code size={11} />,
       tab: 'details',
       visibleWhen: props => props.jobType === 'tech',
     },
@@ -440,6 +443,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：10',
       group: '详细信息',
+      groupIcon: <Info size={11} />,
       tab: 'details',
     },
     {
@@ -468,6 +472,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '如：15K',
       group: '薪资',
+      groupIcon: <DollarSign size={11} />,
       tab: 'details',
     },
     {
@@ -489,6 +494,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
         '<ul><li>负责前端架构设计和核心功能开发</li><li>优化系统性能，提升用户体验</li><li>带领团队完成多个重要项目交付</li></ul>',
       description: '日常工作职责',
       group: '内容',
+      groupIcon: <FileText size={11} />,
       tab: 'content',
       minHeight: 120,
     },
@@ -509,6 +515,7 @@ export const ExperienceItemMaterial: IMaterialDefinition = {
       defaultValue: '',
       description: '可选填写',
       group: '其他',
+      groupIcon: <Info size={11} />,
       tab: 'content',
     },
   ],

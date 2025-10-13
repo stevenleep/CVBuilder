@@ -5,22 +5,7 @@
 import React from 'react'
 import { useEditorStore } from '@store/editorStore'
 import type { PropValue } from '../types/material'
-import {
-  ChevronDown,
-  Plus,
-  X,
-  Upload,
-  Image as ImageIcon,
-  User,
-  Phone,
-  FileText,
-  Eye,
-  Briefcase,
-  Info,
-  Code,
-  BookOpen,
-  Palette,
-} from 'lucide-react'
+import { ChevronDown, Plus, X, Upload, Image as ImageIcon, Palette } from 'lucide-react'
 import { useMaterial, IPropSchema } from '@/core'
 import { ThemeSettings } from './ThemeSettings'
 import { QuillEditor, SimpleTextarea } from '@/components/QuillEditor'
@@ -117,8 +102,8 @@ export const PropertyPanel: React.FC = () => {
     }
   }
 
-  // 根据当前选中的 tab 过滤属性
-  const groupedProps: Record<string, IPropSchema[]> = {}
+  // 根据当前选中的 tab 过滤属性并分组
+  const groupedProps: Record<string, { props: IPropSchema[]; icon?: React.ReactElement }> = {}
 
   materialDef.propsSchema.forEach(prop => {
     if (prop.hidden) return
@@ -131,9 +116,9 @@ export const PropertyPanel: React.FC = () => {
 
     const propGroup = prop.group || '属性'
     if (!groupedProps[propGroup]) {
-      groupedProps[propGroup] = []
+      groupedProps[propGroup] = { props: [], icon: prop.groupIcon }
     }
-    groupedProps[propGroup].push(prop)
+    groupedProps[propGroup].props.push(prop)
   })
 
   // 直接使用物料定义中的 tabs 配置
@@ -206,11 +191,12 @@ export const PropertyPanel: React.FC = () => {
           minHeight: 0,
         }}
       >
-        {Object.entries(groupedProps).map(([group, props], _index, array) => (
+        {Object.entries(groupedProps).map(([group, groupData], _index, array) => (
           <PropertyGroup
             key={group}
             title={group}
-            props={props}
+            icon={groupData.icon}
+            props={groupData.props}
             nodeProps={node.props || {}}
             onChange={handlePropChange}
             showCollapse={array.length > 1}
@@ -221,37 +207,15 @@ export const PropertyPanel: React.FC = () => {
   )
 }
 
-// 获取分组图标
-const getGroupIcon = (title: string) => {
-  const iconMap: Record<string, React.ReactNode> = {
-    核心信息: <User size={11} />,
-    联系方式: <Phone size={11} />,
-    在线链接: <Info size={11} />,
-    补充信息: <Info size={11} />,
-    外观: <Eye size={11} />,
-    基本信息: <Info size={11} />,
-    项目详情: <Code size={11} />,
-    内容: <FileText size={11} />,
-    工作性质: <Briefcase size={11} />,
-    技术信息: <Code size={11} />,
-    详细信息: <Info size={11} />,
-    薪资: <Info size={11} />,
-    更多信息: <BookOpen size={11} />,
-    其他: <Info size={11} />,
-    属性: <Info size={11} />,
-  }
-  return iconMap[title] || <Info size={11} />
-}
-
 const PropertyGroup: React.FC<{
   title: string
+  icon?: React.ReactElement
   props: IPropSchema[]
   nodeProps: Record<string, any>
   onChange: (name: string, value: PropValue) => void
   showCollapse?: boolean
-}> = ({ title, props, nodeProps, onChange, showCollapse = true }) => {
+}> = ({ title, icon, props, nodeProps, onChange, showCollapse = true }) => {
   const [collapsed, setCollapsed] = React.useState(false)
-  const groupIcon = getGroupIcon(title)
 
   const [hover, setHover] = React.useState(false)
 
@@ -288,15 +252,17 @@ const PropertyGroup: React.FC<{
               transition: 'color 0.2s',
             }}
           >
-            <span
-              style={{
-                display: 'flex',
-                color: hover ? '#666' : '#999',
-                transition: 'color 0.2s',
-              }}
-            >
-              {groupIcon}
-            </span>
+            {icon && (
+              <span
+                style={{
+                  display: 'flex',
+                  color: hover ? '#666' : '#999',
+                  transition: 'color 0.2s',
+                }}
+              >
+                {icon}
+              </span>
+            )}
             {title}
           </div>
           <ChevronDown
