@@ -121,6 +121,22 @@ export interface EditorState {
 export const useEditorStore = create<EditorState>()(
   immer((set, get) => {
     const defaultSchema = createDefaultPageSchema()
+    // 简单校验：确保 PageSchema 结构看起来有效
+    const isValidPageSchema = (s: unknown): s is PageSchema => {
+      if (!s || typeof s !== 'object') return false
+      const v = s as Record<string, unknown>
+      try {
+        const root = v.root as Record<string, unknown> | undefined
+        return (
+          !!root &&
+          typeof root === 'object' &&
+          typeof root.id === 'string' &&
+          Array.isArray(root.children)
+        )
+      } catch (err) {
+        return false
+      }
+    }
     return {
       pageSchema: defaultSchema,
       nodeMap: buildNodeMap(defaultSchema.root),
@@ -1085,13 +1101,30 @@ export const useEditorStore = create<EditorState>()(
         return state.historyIndex < state.history.length - 1
       },
 
-      // 保存到 IndexedDB
+      // 保存到 IndexedDB，并在 localStorage 写入备份作为可靠回退
       saveToStorage: async () => {
         const state = get()
+        // 先尝试写 localStorage 备份（同步，可靠）
+        try {
+          const str = JSON.stringify(state.pageSchema)
+          try {
+            localStorage.setItem('cv-builder-backup', str)
+          } catch (e) {
+            // localStorage 可能在私密模式或 quota 限制下失败，记录但不抛出
+            // console.warn('Failed to write localStorage backup', e)
+          }
+        } catch (e) {
+          // JSON 序列化失败（极少见），继续尝试 IndexedDB 写入
+        }
+
         try {
           await indexedDBService.setItem(STORES.EDITOR_STATE, STORAGE_KEY, state.pageSchema)
+          // 如果 IndexedDB 写入成功且数据看起来有效，则可以尝试移除本地备份（不强制）
+          // 这里我们不立即删除备份，以防止竞态导致丢失。由 loadFromStorage 在成功加载时清理备份。
         } catch (error) {
-          // 静默失败
+          // IndexedDB 写入失败，保留本地备份以便下次加载恢复，并打印错误以方便排查
+          // eslint-disable-next-line no-console
+          console.error('Failed to save editor state to IndexedDB:', error)
         }
       },
 
@@ -1116,8 +1149,15 @@ export const useEditorStore = create<EditorState>()(
               state.baseSnapshot = null
             })
 
-            // 加载成功后清除 localStorage 备份
-            localStorage.removeItem('cv-builder-backup')
+            // 加载成功后仅在读取的数据看起来有效时清除 localStorage 备份
+            if (isValidPageSchema(saved)) {
+              try {
+                localStorage.removeItem('cv-builder-backup')
+              } catch (e) {
+                // ignore localStorage errors
+              }
+            }
+
             return
           }
         } catch (error) {
