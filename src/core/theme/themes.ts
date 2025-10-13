@@ -684,7 +684,7 @@ export const presetThemes: ITheme[] = [
   modernTheme,
   feishuTheme,
   designerTheme,
-  breakthroughTheme,
+  // breakthroughTheme,
   compactTheme,
   elegantTheme,
 ]

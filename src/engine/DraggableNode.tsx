@@ -5,6 +5,7 @@
 import React from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { DragItemTypes, DragItem, NodeDragItem } from '@/editor/DndProvider'
+import { designSystem } from '@/styles/designSystem'
 
 interface DraggableNodeProps {
   nodeId: string
@@ -65,16 +66,16 @@ export const DraggableNode: React.FC<DraggableNodeProps> = ({
       ref={isEditMode ? combinedRef : null}
       style={{
         ...style,
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging ? designSystem.drag.opacity.dragging : 1,
         transform: isDragging ? 'scale(0.98)' : 'scale(1)',
-        transition: isDragging ? 'none' : 'all 0.15s ease',
+        transition: isDragging ? 'none' : designSystem.animation.transition.normal,
         cursor: isEditMode ? 'move' : 'default',
         willChange: isDragging ? 'transform, opacity' : 'auto',
         ...(isOver && canDrop
           ? {
-              outline: '2px dashed #3b82f6',
+              outline: `2px dashed ${designSystem.drag.colors.node.border}`,
               outlineOffset: '2px',
-              backgroundColor: 'rgba(59, 130, 246, 0.03)',
+              backgroundColor: designSystem.drag.colors.node.light,
             }
           : {}),
         ...(isDragging
@@ -97,20 +98,20 @@ export const DraggableNode: React.FC<DraggableNodeProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '6px',
+            borderRadius: designSystem.borderRadius.md,
             pointerEvents: 'none',
             zIndex: 1,
           }}
         >
           <div
             style={{
-              backgroundColor: '#3b82f6',
+              backgroundColor: designSystem.drag.colors.node.base,
               color: 'white',
               padding: '8px 16px',
-              borderRadius: '6px',
-              fontSize: '12px',
-              fontWeight: '600',
-              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+              borderRadius: designSystem.borderRadius.md,
+              fontSize: designSystem.typography.fontSize.sm,
+              fontWeight: designSystem.typography.fontWeight.semibold,
+              boxShadow: `0 4px 12px ${designSystem.drag.colors.node.shadow}`,
             }}
           >
             拖拽中...

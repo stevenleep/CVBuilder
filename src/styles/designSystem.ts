@@ -189,6 +189,48 @@ export const designSystem = {
     dragPreview: 10002,
   },
 
+  // 拖拽系统配置
+  drag: {
+    // 拖拽颜色（基于主色调）
+    colors: {
+      // 物料拖拽（添加新组件）- 使用主色调
+      material: {
+        base: '#2d2d2d',
+        light: 'rgba(45, 45, 45, 0.08)',
+        border: '#2d2d2d',
+        shadow: 'rgba(45, 45, 45, 0.6)',
+      },
+      // 节点拖拽（移动现有组件）- 使用稍浅的颜色
+      node: {
+        base: '#3d3d3d',
+        light: 'rgba(61, 61, 61, 0.08)',
+        border: '#3d3d3d',
+        shadow: 'rgba(61, 61, 61, 0.6)',
+      },
+      // 模板拖拽 - 使用紫色强调
+      template: {
+        base: '#8b5cf6',
+        light: 'rgba(139, 92, 246, 0.08)',
+        border: '#8b5cf6',
+        shadow: 'rgba(139, 92, 246, 0.6)',
+      },
+    },
+    // 放置区域样式
+    dropZone: {
+      // 触发区域高度（增加到更容易触发）
+      triggerHeight: '24px',
+      // 指示器高度
+      indicatorHeight: '4px',
+      // 容器内部放置的最小高度
+      containerMinHeight: '40px',
+    },
+    // 拖拽状态透明度
+    opacity: {
+      dragging: 0.5,
+      preview: 0.95,
+    },
+  },
+
   // 组件尺寸
   sizes: {
     // 输入框高度

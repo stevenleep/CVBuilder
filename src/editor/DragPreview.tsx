@@ -9,6 +9,7 @@ import { useDragLayer } from 'react-dnd'
 import { DragItemTypes, MaterialDragItem, NodeDragItem, TemplateDragItem } from './DndProvider'
 import { useMaterial } from '@/core'
 import { GripVertical, Move, Layout } from 'lucide-react'
+import { designSystem } from '@/styles/designSystem'
 
 export const DragPreview: React.FC = () => {
   const { isDragging, item, currentOffset, itemType } = useDragLayer(monitor => ({
@@ -49,12 +50,12 @@ export const DragPreview: React.FC = () => {
           alignItems: 'center',
           gap: '8px',
           padding: '10px 14px',
-          backgroundColor: '#3b82f6',
+          backgroundColor: designSystem.drag.colors.material.base,
           color: 'white',
-          borderRadius: '8px',
-          fontSize: '13px',
-          fontWeight: '600',
-          boxShadow: '0 8px 24px rgba(59, 130, 246, 0.6), 0 0 0 1px rgba(255,255,255,0.2)',
+          borderRadius: designSystem.borderRadius.lg,
+          fontSize: designSystem.typography.fontSize.base,
+          fontWeight: designSystem.typography.fontWeight.semibold,
+          boxShadow: `0 8px 24px ${designSystem.drag.colors.material.shadow}, 0 0 0 1px rgba(255,255,255,0.2)`,
           whiteSpace: 'nowrap',
           backdropFilter: 'blur(8px)',
         }}
@@ -71,12 +72,12 @@ export const DragPreview: React.FC = () => {
           alignItems: 'center',
           gap: '8px',
           padding: '10px 14px',
-          backgroundColor: '#10b981',
+          backgroundColor: designSystem.drag.colors.node.base,
           color: 'white',
-          borderRadius: '8px',
-          fontSize: '13px',
-          fontWeight: '600',
-          boxShadow: '0 8px 24px rgba(16, 185, 129, 0.6), 0 0 0 1px rgba(255,255,255,0.2)',
+          borderRadius: designSystem.borderRadius.lg,
+          fontSize: designSystem.typography.fontSize.base,
+          fontWeight: designSystem.typography.fontWeight.semibold,
+          boxShadow: `0 8px 24px ${designSystem.drag.colors.node.shadow}, 0 0 0 1px rgba(255,255,255,0.2)`,
           whiteSpace: 'nowrap',
           backdropFilter: 'blur(8px)',
         }}
@@ -94,12 +95,12 @@ export const DragPreview: React.FC = () => {
           alignItems: 'center',
           gap: '8px',
           padding: '10px 14px',
-          backgroundColor: '#8b5cf6',
+          backgroundColor: designSystem.drag.colors.template.base,
           color: 'white',
-          borderRadius: '8px',
-          fontSize: '13px',
-          fontWeight: '600',
-          boxShadow: '0 8px 24px rgba(139, 92, 246, 0.6), 0 0 0 1px rgba(255,255,255,0.2)',
+          borderRadius: designSystem.borderRadius.lg,
+          fontSize: designSystem.typography.fontSize.base,
+          fontWeight: designSystem.typography.fontWeight.semibold,
+          boxShadow: `0 8px 24px ${designSystem.drag.colors.template.shadow}, 0 0 0 1px rgba(255,255,255,0.2)`,
           whiteSpace: 'nowrap',
           backdropFilter: 'blur(8px)',
         }}
@@ -117,8 +118,9 @@ export const DragPreview: React.FC = () => {
         pointerEvents: 'none',
         left: x,
         top: y,
-        zIndex: 10000,
+        zIndex: designSystem.zIndex.dragPreview,
         transform: 'translate(-50%, -50%)',
+        opacity: designSystem.drag.opacity.preview,
       }}
     >
       {previewContent}
