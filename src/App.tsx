@@ -61,7 +61,7 @@ function App() {
           }, 500)
         }
       })
-  }, [editorContext])
+  }, [])
 
   if (!isInitialized) {
     return (

@@ -30,6 +30,7 @@ import {
   type AddNodeAction,
   type DeleteNodeAction,
   type ToggleVisibilityAction,
+  HistoryActionType,
   applyHistoryAction,
   unapplyHistoryAction,
   addHistory,
@@ -175,7 +176,7 @@ export const useEditorStore = create<EditorState>()(
         // 记录增量历史
         if (ENABLE_INCREMENTAL_HISTORY) {
           const action: AddNodeAction = {
-            type: 'ADD_NODE',
+            type: HistoryActionType.ADD_NODE,
             parentId: targetParentId,
             node: newNode,
             position: 'child',
@@ -200,7 +201,7 @@ export const useEditorStore = create<EditorState>()(
 
         if (ENABLE_INCREMENTAL_HISTORY) {
           const action: AddNodeAction = {
-            type: 'ADD_NODE',
+            type: HistoryActionType.ADD_NODE,
             parentId: targetParentId,
             node: newNode,
             position: 'child',
@@ -227,7 +228,7 @@ export const useEditorStore = create<EditorState>()(
         // 记录增量历史
         if (ENABLE_INCREMENTAL_HISTORY && parentNode) {
           const action: AddNodeAction = {
-            type: 'ADD_NODE',
+            type: HistoryActionType.ADD_NODE,
             parentId: parentNode.id,
             node: newNode,
             position: 'before',
@@ -257,7 +258,7 @@ export const useEditorStore = create<EditorState>()(
         // 记录增量历史
         if (ENABLE_INCREMENTAL_HISTORY && parentNode) {
           const action: AddNodeAction = {
-            type: 'ADD_NODE',
+            type: HistoryActionType.ADD_NODE,
             parentId: parentNode.id,
             node: newNode,
             position: 'after',
@@ -296,7 +297,7 @@ export const useEditorStore = create<EditorState>()(
 
         if (ENABLE_INCREMENTAL_HISTORY && node && parentNode) {
           const action: DeleteNodeAction = {
-            type: 'DELETE_NODE',
+            type: HistoryActionType.DELETE_NODE,
             nodeId,
             parentId: parentNode.id,
             node: safeDeepClone(node), // 保存节点副本用于恢复
@@ -311,6 +312,15 @@ export const useEditorStore = create<EditorState>()(
 
       // 复制节点
       duplicateNode: nodeId => {
+        const state = get()
+        const node = findNode(state.pageSchema.root, nodeId)
+        if (!node) return
+
+        const parentNode = findParentNode(state.pageSchema.root, nodeId)
+        if (!parentNode) return
+
+        const cloned = cloneNode(node)
+
         set(state => {
           const node = findNode(state.pageSchema.root, nodeId)
           if (node) {
@@ -322,7 +332,21 @@ export const useEditorStore = create<EditorState>()(
             state.lastSelectedNode = cloned
           }
         })
-        addHistory(set, true) // 立即保存
+
+        // 记录增量历史
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const action: AddNodeAction = {
+            type: HistoryActionType.ADD_NODE,
+            parentId: parentNode.id,
+            node: cloned,
+            position: 'after',
+            targetId: nodeId,
+            timestamp: Date.now(),
+          }
+          addHistory(set, true, action)
+        } else {
+          addHistory(set, true)
+        }
       },
 
       // 更新节点属性（高频操作 - 使用防抖历史记录 + 增量更新）
@@ -343,7 +367,7 @@ export const useEditorStore = create<EditorState>()(
         // 记录增量历史（使用防抖）
         if (ENABLE_INCREMENTAL_HISTORY) {
           const action: UpdatePropsAction = {
-            type: 'UPDATE_PROPS',
+            type: HistoryActionType.UPDATE_PROPS,
             nodeId,
             oldProps,
             newProps: props,
@@ -373,7 +397,7 @@ export const useEditorStore = create<EditorState>()(
         // 记录增量历史（使用防抖）
         if (ENABLE_INCREMENTAL_HISTORY) {
           const action: UpdateStyleAction = {
-            type: 'UPDATE_STYLE',
+            type: HistoryActionType.UPDATE_STYLE,
             nodeId,
             oldStyle,
             newStyle: style,
@@ -421,7 +445,7 @@ export const useEditorStore = create<EditorState>()(
         // 记录增量历史
         if (ENABLE_INCREMENTAL_HISTORY) {
           const action: ToggleVisibilityAction = {
-            type: 'TOGGLE_VISIBILITY',
+            type: HistoryActionType.TOGGLE_VISIBILITY,
             nodeId,
             oldVisible,
             newVisible,
@@ -435,6 +459,13 @@ export const useEditorStore = create<EditorState>()(
 
       // 上移节点
       moveNodeUp: nodeId => {
+        const state = get()
+        const parent = findParentNode(state.pageSchema.root, nodeId)
+        if (!parent || !parent.children) return
+
+        const index = parent.children.findIndex(c => c.id === nodeId)
+        if (index <= 0) return // 无法上移
+
         set(state => {
           const parent = findParentNode(state.pageSchema.root, nodeId)
           if (!parent || !parent.children) return
@@ -461,11 +492,33 @@ export const useEditorStore = create<EditorState>()(
             state.nodeMap = buildNodeMap(state.pageSchema.root)
           }
         })
-        addHistory(set, true) // 立即保存
+
+        // 记录增量历史
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const action: HistoryAction = {
+            type: HistoryActionType.MOVE_NODE,
+            nodeId,
+            oldParentId: parent.id,
+            newParentId: parent.id,
+            oldIndex: index,
+            newIndex: index - 1,
+            timestamp: Date.now(),
+          }
+          addHistory(set, true, action)
+        } else {
+          addHistory(set, true)
+        }
       },
 
       // 下移节点
       moveNodeDown: nodeId => {
+        const state = get()
+        const parent = findParentNode(state.pageSchema.root, nodeId)
+        if (!parent || !parent.children) return
+
+        const index = parent.children.findIndex(c => c.id === nodeId)
+        if (index >= parent.children.length - 1) return // 无法下移
+
         set(state => {
           const parent = findParentNode(state.pageSchema.root, nodeId)
           if (!parent || !parent.children) return
@@ -492,15 +545,40 @@ export const useEditorStore = create<EditorState>()(
             state.nodeMap = buildNodeMap(state.pageSchema.root)
           }
         })
-        addHistory(set, true) // 立即保存
+
+        // 记录增量历史
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const action: HistoryAction = {
+            type: HistoryActionType.MOVE_NODE,
+            nodeId,
+            oldParentId: parent.id,
+            newParentId: parent.id,
+            oldIndex: index,
+            newIndex: index + 1,
+            timestamp: Date.now(),
+          }
+          addHistory(set, true, action)
+        } else {
+          addHistory(set, true)
+        }
       },
 
       // 移动节点到指定位置
       moveNodeTo: (nodeId, targetId, position) => {
-        set(state => {
-          // 不能移动到自己
-          if (nodeId === targetId) return
+        const state = get()
 
+        // 不能移动到自己
+        if (nodeId === targetId) return
+
+        const nodeToMove = findNode(state.pageSchema.root, nodeId)
+        if (!nodeToMove) return
+
+        // 记录原位置
+        const oldParent = findParentNode(state.pageSchema.root, nodeId)
+        if (!oldParent || !oldParent.children) return
+        const oldIndex = oldParent.children.findIndex(c => c.id === nodeId)
+
+        set(state => {
           const nodeToMove = findNode(state.pageSchema.root, nodeId)
           if (!nodeToMove) return
 
@@ -519,7 +597,29 @@ export const useEditorStore = create<EditorState>()(
           state.pageSchema.root = newRoot
           state.nodeMap = buildNodeMap(state.pageSchema.root)
         })
-        addHistory(set, true) // 立即保存
+
+        // 记录增量历史 - 计算新位置
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const newState = get()
+          const newParent = findParentNode(newState.pageSchema.root, nodeId)
+          if (newParent && newParent.children) {
+            const newIndex = newParent.children.findIndex(c => c.id === nodeId)
+            const action: HistoryAction = {
+              type: HistoryActionType.MOVE_NODE,
+              nodeId,
+              oldParentId: oldParent.id,
+              newParentId: newParent.id,
+              oldIndex,
+              newIndex,
+              timestamp: Date.now(),
+            }
+            addHistory(set, true, action)
+          } else {
+            addHistory(set, true)
+          }
+        } else {
+          addHistory(set, true)
+        }
       },
 
       // 选中节点（兼容旧代码，但会查找节点）
@@ -645,14 +745,41 @@ export const useEditorStore = create<EditorState>()(
       cutNode: nodeId => {
         const state = get()
         const node = findNode(state.pageSchema.root, nodeId)
-        if (node) {
-          set(draft => {
-            // 使用优化的深拷贝
-            draft.clipboard = safeDeepClone(node)
-            draft.pageSchema.root = deleteNode(draft.pageSchema.root, nodeId)
-            draft.selectedNodeIds = draft.selectedNodeIds.filter(id => id !== nodeId)
-          })
-          addHistory(set, true) // 立即保存
+        if (!node) return
+
+        const parentNode = findParentNode(state.pageSchema.root, nodeId)
+        if (!parentNode || !parentNode.children) return
+
+        const nodeIndex = parentNode.children.findIndex(child => child.id === nodeId)
+
+        set(draft => {
+          // 使用优化的深拷贝
+          draft.clipboard = safeDeepClone(node)
+          draft.pageSchema.root = deleteNode(draft.pageSchema.root, nodeId)
+          draft.selectedNodeIds = draft.selectedNodeIds.filter(id => id !== nodeId)
+
+          // 同步选中节点
+          draft.selectedNodes.delete(nodeId)
+          if (draft.lastSelectedNode?.id === nodeId) {
+            const remainingIds = draft.selectedNodeIds
+            draft.lastSelectedNode =
+              remainingIds.length > 0 ? draft.selectedNodes.get(remainingIds[0]) || null : null
+          }
+        })
+
+        // 记录增量历史
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const action: DeleteNodeAction = {
+            type: HistoryActionType.DELETE_NODE,
+            nodeId,
+            parentId: parentNode.id,
+            node: safeDeepClone(node),
+            index: nodeIndex,
+            timestamp: Date.now(),
+          }
+          addHistory(set, true, action)
+        } else {
+          addHistory(set, true)
         }
       },
 
@@ -661,6 +788,20 @@ export const useEditorStore = create<EditorState>()(
         const state = get()
         if (!state.clipboard) {
           return
+        }
+
+        const newNode = cloneNode(state.clipboard)
+        let parentId: NodeId
+        let position: 'after' | 'child'
+
+        if (targetId) {
+          const targetParent = findParentNode(state.pageSchema.root, targetId)
+          if (!targetParent) return
+          parentId = targetParent.id
+          position = 'after'
+        } else {
+          parentId = state.pageSchema.root.id
+          position = 'child'
         }
 
         set(draft => {
@@ -682,7 +823,21 @@ export const useEditorStore = create<EditorState>()(
 
           draft.selectedNodeIds = [newNode.id]
         })
-        addHistory(set, true) // 立即保存
+
+        // 记录增量历史
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const action: AddNodeAction = {
+            type: HistoryActionType.ADD_NODE,
+            parentId,
+            node: newNode,
+            position,
+            targetId: targetId || undefined,
+            timestamp: Date.now(),
+          }
+          addHistory(set, true, action)
+        } else {
+          addHistory(set, true)
+        }
       },
 
       // 粘贴多个节点
@@ -691,6 +846,10 @@ export const useEditorStore = create<EditorState>()(
         if (!state.clipboard || state.clipboard.type !== '__MultiCopy__') {
           return
         }
+
+        const nodes = (state.clipboard.props?.nodes as NodeSchema[]) || []
+        const clonedNodes = nodes.map(node => cloneNode(node))
+        const rootId = state.pageSchema.root.id
 
         set(draft => {
           if (!draft.clipboard || !draft.clipboard.props?.nodes) return
@@ -709,7 +868,26 @@ export const useEditorStore = create<EditorState>()(
 
           draft.selectedNodeIds = newNodeIds
         })
-        addHistory(set, true) // 立即保存
+
+        // 记录增量历史 - 使用 BATCH_UPDATE
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const actions: AddNodeAction[] = clonedNodes.map(node => ({
+            type: HistoryActionType.ADD_NODE,
+            parentId: rootId,
+            node,
+            position: 'child' as const,
+            timestamp: Date.now(),
+          }))
+
+          const batchAction: HistoryAction = {
+            type: HistoryActionType.BATCH_UPDATE,
+            actions,
+            timestamp: Date.now(),
+          }
+          addHistory(set, true, batchAction)
+        } else {
+          addHistory(set, true)
+        }
       },
 
       // 批量复制节点（将多个节点存储为数组）
@@ -736,17 +914,85 @@ export const useEditorStore = create<EditorState>()(
 
       // 批量删除节点
       deleteNodes: nodeIds => {
+        const state = get()
+
+        // 收集要删除的节点及其信息
+        const nodesToDelete: Array<{
+          nodeId: NodeId
+          parentId: NodeId
+          node: NodeSchema
+          index: number
+        }> = []
+
+        nodeIds.forEach(nodeId => {
+          const node = findNode(state.pageSchema.root, nodeId)
+          const parent = findParentNode(state.pageSchema.root, nodeId)
+          if (node && parent && parent.children) {
+            const index = parent.children.findIndex(c => c.id === nodeId)
+            nodesToDelete.push({
+              nodeId,
+              parentId: parent.id,
+              node: safeDeepClone(node),
+              index,
+            })
+          }
+        })
+
         set(state => {
           nodeIds.forEach(nodeId => {
             state.pageSchema.root = deleteNode(state.pageSchema.root, nodeId)
           })
           state.selectedNodeIds = []
+          state.selectedNodes.clear()
+          state.lastSelectedNode = null
         })
-        addHistory(set, true) // 立即保存
+
+        // 记录增量历史 - 使用 BATCH_UPDATE
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const actions: DeleteNodeAction[] = nodesToDelete.map(info => ({
+            type: HistoryActionType.DELETE_NODE,
+            nodeId: info.nodeId,
+            parentId: info.parentId,
+            node: info.node,
+            index: info.index,
+            timestamp: Date.now(),
+          }))
+
+          const batchAction: HistoryAction = {
+            type: HistoryActionType.BATCH_UPDATE,
+            actions,
+            timestamp: Date.now(),
+          }
+          addHistory(set, true, batchAction)
+        } else {
+          addHistory(set, true)
+        }
       },
 
       // 批量复制节点
       duplicateNodes: nodeIds => {
+        const state = get()
+
+        // 收集要复制的节点及其信息
+        const nodesToDuplicate: Array<{
+          nodeId: NodeId
+          parentId: NodeId
+          node: NodeSchema
+        }> = []
+
+        nodeIds.forEach(nodeId => {
+          const node = findNode(state.pageSchema.root, nodeId)
+          const parent = findParentNode(state.pageSchema.root, nodeId)
+          if (node && parent) {
+            const cloned = cloneNode(node)
+            nodesToDuplicate.push({
+              nodeId,
+              parentId: parent.id,
+              node: cloned,
+            })
+          }
+        })
+
         set(state => {
           const newNodeIds: string[] = []
           nodeIds.forEach(nodeId => {
@@ -759,7 +1005,27 @@ export const useEditorStore = create<EditorState>()(
           })
           state.selectedNodeIds = newNodeIds
         })
-        addHistory(set, true) // 立即保存
+
+        // 记录增量历史 - 使用 BATCH_UPDATE
+        if (ENABLE_INCREMENTAL_HISTORY) {
+          const actions: AddNodeAction[] = nodesToDuplicate.map(info => ({
+            type: HistoryActionType.ADD_NODE,
+            parentId: info.parentId,
+            node: info.node,
+            position: 'after' as const,
+            targetId: info.nodeId,
+            timestamp: Date.now(),
+          }))
+
+          const batchAction: HistoryAction = {
+            type: HistoryActionType.BATCH_UPDATE,
+            actions,
+            timestamp: Date.now(),
+          }
+          addHistory(set, true, batchAction)
+        } else {
+          addHistory(set, true)
+        }
       },
 
       // 撤销
@@ -834,7 +1100,55 @@ export const useEditorStore = create<EditorState>()(
         try {
           const saved = await indexedDBService.getItem<PageSchema>(STORES.EDITOR_STATE, STORAGE_KEY)
           if (saved) {
-            get().setPageSchema(saved)
+            // 直接设置状态，不触发历史记录
+            // 注意：使用深拷贝避免 immer 代理对象问题
+            set(state => {
+              state.pageSchema = safeDeepClone(saved)
+              state.nodeMap = buildNodeMap(state.pageSchema.root)
+              // 清空历史记录和选中状态
+              state.selectedNodeIds = []
+              state.selectedNodes = new Map()
+              state.lastSelectedNode = null
+              // 🔥 关键：清空历史记录，避免 undo 操作影响
+              state.history = []
+              state.historyActions = []
+              state.historyIndex = -1
+              state.baseSnapshot = null
+            })
+
+            // 加载成功后清除 localStorage 备份
+            localStorage.removeItem('cv-builder-backup')
+            return
+          }
+        } catch (error) {
+          // 静默失败
+        }
+
+        // 如果 IndexedDB 加载失败，尝试从 localStorage 备份恢复
+        try {
+          const backup = localStorage.getItem('cv-builder-backup')
+          if (backup) {
+            const backupSchema = JSON.parse(backup) as PageSchema
+
+            // 直接设置状态，不触发历史记录
+            // 注意：使用深拷贝避免引用问题
+            set(state => {
+              state.pageSchema = safeDeepClone(backupSchema)
+              state.nodeMap = buildNodeMap(state.pageSchema.root)
+              // 清空历史记录和选中状态
+              state.selectedNodeIds = []
+              state.selectedNodes = new Map()
+              state.lastSelectedNode = null
+              // 🔥 关键：清空历史记录，避免 undo 操作影响
+              state.history = []
+              state.historyActions = []
+              state.historyIndex = -1
+              state.baseSnapshot = null
+            })
+            // 恢复后立即保存到 IndexedDB
+            await get().saveToStorage()
+            // 清除备份
+            localStorage.removeItem('cv-builder-backup')
           }
         } catch (error) {
           // 静默失败
