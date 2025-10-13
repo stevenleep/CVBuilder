@@ -606,8 +606,8 @@ export const breakthroughTheme: ITheme = {
     family:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
     titleSize: {
-      h1: 28, // 姓名：大气现代
-      h2: 17, // 章节：清晰醒目
+      h1: 30, // 姓名：更大气醒目
+      h2: 18, // 章节：更清晰有力
       h3: 14, // 条目：适中
     },
     bodySize: {
@@ -624,43 +624,43 @@ export const breakthroughTheme: ITheme = {
     },
   },
   color: {
-    primary: '#1a73e8', // Google 蓝，现代活力
+    primary: '#0066ff', // 更鲜明的蓝色，更有活力
     text: {
-      primary: '#202124', // 深灰黑，舒适阅读
-      secondary: '#5f6368', // 中灰，层次分明
-      tertiary: '#9aa0a6', // 浅灰，辅助信息
-      link: '#1a73e8', // 蓝色链接
+      primary: '#1a1a1a', // 更深的黑色，增强对比度
+      secondary: '#5a5a5a', // 中灰，清晰层次
+      tertiary: '#999999', // 浅灰，辅助信息
+      link: '#0066ff', // 蓝色链接
     },
     background: {
-      page: '#f5f7fa', // 浅灰背景，衬托白色卡片
-      section: '#ffffff', // 纯白卡片，毛玻璃基底
+      page: '#ffffff', // 白色背景
+      section: '#ffffff', // 纯白卡片，通过阴影营造立体感
     },
     border: {
-      light: '#e8eaed', // 极浅边框
-      normal: '#dadce0', // 标准边框
-      dark: '#bdc1c6', // 深边框
+      light: '#e5e9ee', // 淡蓝灰边框
+      normal: '#d0d7de', // 标准边框
+      dark: '#b8c1cc', // 深边框
     },
-    accent: '#1a73e8', // 蓝色强调
+    accent: '#0066ff', // 蓝色强调
   },
   spacing: {
-    page: 48, // 舒适页边距
-    section: 20, // 卡片间距，营造漂浮感
+    page: 50, // 增加页边距，更舒适
+    section: 18, // 卡片间距稍微紧凑，增强密度
     item: 14, // 条目间距
-    paragraph: 10, // 段落间距
+    paragraph: 12, // 增加段落间距
     line: 6, // 行间距
   },
   layout: {
     pageWidth: 210,
     pageMinHeight: 297,
     columnGap: 20,
-    lineHeight: 1.6, // 流畅舒适的行高
+    lineHeight: 1.65, // 稍微增加行高，提升可读性
   },
   style: {
     showSectionDivider: false, // 无分割线，卡片本身就是分隔
     dividerStyle: 'solid',
     dividerThickness: 0,
     showPersonalInfoDivider: false, // 无分割线
-    borderRadius: 8, // 柔和圆角，现代友好
+    borderRadius: 12, // 更大的圆角，更现代友好
     useEmojiIcons: false,
   },
 }

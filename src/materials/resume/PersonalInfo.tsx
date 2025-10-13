@@ -93,17 +93,17 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
   const theme = useThemeConfig()
   const styleConfig = useStyleConfig()
 
-  // 判断是否使用卡片样式（背景色不同 + 有圆角）
-  const isCardStyle =
-    theme.color.background.section !== theme.color.background.page && styleConfig.borderRadius > 0
+  // 判断是否使用卡片样式（只有"创意破局"主题使用卡片样式）
+  const isCardStyle = theme.id === 'breakthrough' && styleConfig.borderRadius > 0
 
   // 卡片样式
   const cardStyle: React.CSSProperties = isCardStyle
     ? {
         backgroundColor: theme.color.background.section,
         borderRadius: `${styleConfig.borderRadius}px`,
-        padding: `${theme.spacing.paragraph * 2}px ${theme.spacing.paragraph * 2.5}px`,
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
+        padding: `${theme.spacing.paragraph * 2.4}px ${theme.spacing.paragraph * 3}px`,
+        boxShadow:
+          '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02), 0 8px 24px rgba(0, 102, 255, 0.03)',
       }
     : {}
 

@@ -21,8 +21,35 @@ const ExpectedPositionSection: React.FC<ExpectedPositionSectionProps> = ({
   const styleConfig = useStyleConfig()
   const hasChildren = React.Children.count(children) > 0
 
+  // 判断是否使用卡片样式（只有"创意破局"主题使用卡片样式）
+  const isCardStyle = theme.id === 'breakthrough' && styleConfig.borderRadius > 0
+
+  // 基础样式
+  const baseStyle: React.CSSProperties = {
+    marginBottom: `${theme.spacing.section}px`,
+  }
+
+  // 卡片样式
+  const cardStyle: React.CSSProperties = isCardStyle
+    ? {
+        backgroundColor: theme.color.background.section,
+        borderRadius: `${styleConfig.borderRadius}px`,
+        padding: `${theme.spacing.paragraph * 2.4}px ${theme.spacing.paragraph * 3}px`,
+        boxShadow:
+          '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02), 0 8px 24px rgba(0, 102, 255, 0.03)',
+        transition: 'box-shadow 0.2s ease',
+      }
+    : {}
+
+  // 合并样式
+  const finalStyle: React.CSSProperties = {
+    ...baseStyle,
+    ...style,
+    ...cardStyle,
+  }
+
   return (
-    <div style={{ marginBottom: `${theme.spacing.section}px`, ...style }}>
+    <div style={finalStyle}>
       <h2
         style={{
           fontSize: `${theme.font.titleSize.h2}px`,
