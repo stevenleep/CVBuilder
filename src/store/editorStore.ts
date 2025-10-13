@@ -242,7 +242,10 @@ export const useEditorStore = create<EditorState>()(
           const newNode = createNode(materialType)
           const targetParentId = parentId || state.pageSchema.root.id
           state.pageSchema.root = appendChild(state.pageSchema.root, targetParentId, newNode)
+          // 同步更新三个选中状态
           state.selectedNodeIds = [newNode.id]
+          state.selectedNodes = new Map([[newNode.id, newNode]])
+          state.lastSelectedNode = newNode
         })
         addHistory(set)
       },
@@ -254,7 +257,10 @@ export const useEditorStore = create<EditorState>()(
           const newNode = cloneNode(schema)
           const targetParentId = parentId || state.pageSchema.root.id
           state.pageSchema.root = appendChild(state.pageSchema.root, targetParentId, newNode)
+          // 同步更新三个选中状态
           state.selectedNodeIds = [newNode.id]
+          state.selectedNodes = new Map([[newNode.id, newNode]])
+          state.lastSelectedNode = newNode
         })
         addHistory(set)
       },
@@ -264,7 +270,10 @@ export const useEditorStore = create<EditorState>()(
         set(state => {
           const newNode = createNode(materialType)
           state.pageSchema.root = insertBefore(state.pageSchema.root, targetId, newNode)
+          // 同步更新三个选中状态
           state.selectedNodeIds = [newNode.id]
+          state.selectedNodes = new Map([[newNode.id, newNode]])
+          state.lastSelectedNode = newNode
         })
         addHistory(set)
       },
@@ -274,7 +283,10 @@ export const useEditorStore = create<EditorState>()(
         set(state => {
           const newNode = createNode(materialType)
           state.pageSchema.root = insertAfter(state.pageSchema.root, targetId, newNode)
+          // 同步更新三个选中状态
           state.selectedNodeIds = [newNode.id]
+          state.selectedNodes = new Map([[newNode.id, newNode]])
+          state.lastSelectedNode = newNode
         })
         addHistory(set)
       },
@@ -284,6 +296,17 @@ export const useEditorStore = create<EditorState>()(
         set(state => {
           state.pageSchema.root = deleteNode(state.pageSchema.root, nodeId)
           state.selectedNodeIds = state.selectedNodeIds.filter(id => id !== nodeId)
+          // 同步更新 selectedNodes 和 lastSelectedNode
+          state.selectedNodes.delete(nodeId)
+          if (state.lastSelectedNode?.id === nodeId) {
+            // 如果删除的是焦点节点，更新为剩余选中节点中的第一个
+            const remainingIds = state.selectedNodeIds
+            if (remainingIds.length > 0) {
+              state.lastSelectedNode = state.selectedNodes.get(remainingIds[0]) || null
+            } else {
+              state.lastSelectedNode = null
+            }
+          }
         })
         addHistory(set)
       },
@@ -295,7 +318,10 @@ export const useEditorStore = create<EditorState>()(
           if (node) {
             const cloned = cloneNode(node)
             state.pageSchema.root = insertAfter(state.pageSchema.root, nodeId, cloned)
+            // 同步更新三个选中状态
             state.selectedNodeIds = [cloned.id]
+            state.selectedNodes = new Map([[cloned.id, cloned]])
+            state.lastSelectedNode = cloned
           }
         })
         addHistory(set)
