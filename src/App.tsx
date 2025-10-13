@@ -38,7 +38,6 @@ function App() {
   }, [])
 
   useEffect(() => {
-    // 尝试从 IndexedDB 加载
     useEditorStore
       .getState()
       .loadFromStorage()
@@ -55,8 +54,6 @@ function App() {
       })
       .catch(() => {
         setIsInitialized(true)
-
-        // 首次使用显示欢迎
         const hasShownWelcome = localStorage.getItem('cv-builder-welcome-shown')
         if (!hasShownWelcome) {
           setTimeout(() => {

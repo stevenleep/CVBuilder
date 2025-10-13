@@ -1,10 +1,11 @@
 /**
  * PWA 安装提示组件
- * 提示用户可以将应用安装到桌面/主屏幕
  */
 
 import { useEffect, useState } from 'react'
 import { X, Download } from 'lucide-react'
+import { Button } from './Button'
+import { ds } from '@/styles/designSystem'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
@@ -101,20 +102,21 @@ export function PWAInstallPrompt() {
     <div
       style={{
         position: 'fixed',
-        bottom: '20px',
+        bottom: ds.spacing.xl,
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: '#ffffff',
-        padding: '16px 20px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+        backgroundColor: ds.colors.background.card,
+        padding: `${ds.spacing.lg} ${ds.spacing.xl}`,
+        borderRadius: ds.borderRadius.xxl,
+        boxShadow: ds.shadows.floating,
         display: 'flex',
         alignItems: 'center',
-        gap: '12px',
-        zIndex: 9999,
+        gap: ds.spacing.lg,
+        zIndex: ds.zIndex.notification,
         maxWidth: '90vw',
-        width: '400px',
-        animation: 'slideUp 0.3s ease-out',
+        width: '420px',
+        animation: 'slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        border: `1px solid ${ds.colors.border.light}`,
       }}
     >
       <style>
@@ -137,76 +139,67 @@ export function PWAInstallPrompt() {
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          gap: '4px',
+          gap: ds.spacing.xs,
         }}
       >
         <div
           style={{
-            fontSize: '14px',
-            fontWeight: '600',
-            color: '#2d2d2d',
+            fontSize: ds.typography.fontSize.md,
+            fontWeight: ds.typography.fontWeight.semibold,
+            color: ds.colors.text.primary,
+            lineHeight: ds.typography.lineHeight.tight,
           }}
         >
           安装 CVKit 应用
         </div>
         <div
           style={{
-            fontSize: '12px',
-            color: '#666',
+            fontSize: ds.typography.fontSize.sm,
+            color: ds.colors.text.secondary,
+            lineHeight: ds.typography.lineHeight.normal,
           }}
         >
           快速访问，离线使用，体验更佳
         </div>
       </div>
 
-      <button
+      <Button
+        variant="primary"
+        size="sm"
+        icon={<Download size={ds.sizes.icon.sm} />}
         onClick={handleInstall}
         style={{
-          padding: '8px 16px',
-          backgroundColor: '#3b82f6',
-          color: '#ffffff',
-          border: 'none',
-          borderRadius: '8px',
-          fontSize: '13px',
-          fontWeight: '500',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          transition: 'background-color 0.2s',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = '#2563eb'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.backgroundColor = '#3b82f6'
+          whiteSpace: 'nowrap',
         }}
       >
-        <Download size={14} />
-        安装
-      </button>
+        立即安装
+      </Button>
 
       <button
         onClick={handleClose}
         style={{
-          padding: '4px',
+          padding: ds.spacing.xs,
           backgroundColor: 'transparent',
           border: 'none',
           cursor: 'pointer',
-          color: '#999',
+          color: ds.colors.text.tertiary,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'color 0.2s',
+          borderRadius: ds.borderRadius.sm,
+          transition: ds.animation.transition.fast,
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.color = '#666'
+          e.currentTarget.style.color = ds.colors.text.secondary
+          e.currentTarget.style.backgroundColor = ds.colors.background.hover
         }}
         onMouseLeave={e => {
-          e.currentTarget.style.color = '#999'
+          e.currentTarget.style.color = ds.colors.text.tertiary
+          e.currentTarget.style.backgroundColor = 'transparent'
         }}
+        aria-label="关闭"
       >
-        <X size={18} />
+        <X size={ds.sizes.icon.lg} />
       </button>
     </div>
   )
