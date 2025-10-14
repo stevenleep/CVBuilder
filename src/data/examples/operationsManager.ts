@@ -86,25 +86,10 @@ export const operationsManagerExample: ExampleResume = {
                 startDate: '2020.06',
                 endDate: '至今',
                 location: '杭州',
-                description: '负责平台用户增长和活跃度提升',
+                description: '<ul><li>策划用户裂变活动，3个月内新增用户50万+，获客成本降低60%</li><li>搭建用户成长体系，DAU提升80%，用户留存率提升45%</li><li>运营社群矩阵，管理100+用户群，月活跃用户10万+</li><li>通过内容运营实现用户转化，付费转化率提升至12%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '策划用户裂变活动，3个月内新增用户50万+，获客成本降低60%',
-                      '搭建用户成长体系，DAU提升80%，用户留存率提升45%',
-                      '运营社群矩阵，管理100+用户群，月活跃用户10万+',
-                      '通过内容运营实现用户转化，付费转化率提升至12%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -121,10 +106,10 @@ export const operationsManagerExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
                 content:
-                  '• 裂变活动"邀请好友得会员"：3天新增用户20万+，传播系数2.5\n• 用户等级体系：设计5级成长体系，用户活跃度提升60%\n• 私域社群运营：搭建100+精品社群，转化率达15%\n• 节日营销活动：策划中秋、双11等大促，单次GMV突破500万',
+                  '<ul><li>裂变活动"邀请好友得会员"：3天新增用户20万+，传播系数2.5</li><li>用户等级体系：设计5级成长体系，用户活跃度提升60%</li><li>私域社群运营：搭建100+精品社群，转化率达15%</li><li>节日营销活动：策划中秋、双11等大促，单次GMV突破500万</li></ul>',
               },
               style: {},
               children: [],

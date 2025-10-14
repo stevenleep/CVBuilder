@@ -86,28 +86,12 @@ export const customerServiceExample: ExampleResume = {
                 startDate: '2020.03',
                 endDate: '至今',
                 location: '广州',
-                description: '负责客服团队管理和客户服务体系优化',
+                description: '<ul><li>管理30人客服团队，客户满意度从85%提升至95%</li><li>优化客服工作流程，平均响应时间缩短40%，问题解决率提升至92%</li><li>建立客户分级服务体系，VIP客户留存率提升25%</li><li>设计并实施客服培训计划，新员工上岗周期缩短30%</li><li>分析客户反馈数据，推动产品和服务改进，投诉率下降35%</li></ul>',
               },
               style: {
                 marginBottom: '20px',
               },
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '管理30人客服团队，客户满意度从85%提升至95%',
-                      '优化客服工作流程，平均响应时间缩短40%，问题解决率提升至92%',
-                      '建立客户分级服务体系，VIP客户留存率提升25%',
-                      '设计并实施客服培训计划，新员工上岗周期缩短30%',
-                      '分析客户反馈数据，推动产品和服务改进，投诉率下降35%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
@@ -118,24 +102,10 @@ export const customerServiceExample: ExampleResume = {
                 startDate: '2018.06',
                 endDate: '2020.02',
                 location: '广州',
-                description: '负责客服团队日常管理和服务质量把控',
+                description: '<ul><li>管理10人客服小组，达成月度服务指标</li><li>处理复杂客诉和升级问题，客户满意度保持90%以上</li><li>参与客服系统选型和优化，提升工作效率</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '管理10人客服小组，达成月度服务指标',
-                      '处理复杂客诉和升级问题，客户满意度保持90%以上',
-                      '参与客服系统选型和优化，提升工作效率',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -177,29 +147,15 @@ export const customerServiceExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '智能客服系统上线',
+                projectName: '智能客服系统上线',
                 role: '项目负责人',
                 startDate: '2021.06',
                 endDate: '2022.03',
-                tech: '智能客服、知识库、工单系统',
+                techStack: '智能客服、知识库、工单系统',
+                description: '<ul><li>主导智能客服系统选型和实施，搭建AI问答机器人</li><li>梳理常见问题，建立知识库，覆盖80%常见咨询</li><li>机器人分流30%咨询量，人工客服压力大幅减轻</li><li>系统上线后，客户自助解决率从40%提升至70%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '主导智能客服系统选型和实施，搭建AI问答机器人',
-                      '梳理常见问题，建立知识库，覆盖80%常见咨询',
-                      '机器人分流30%咨询量，人工客服压力大幅减轻',
-                      '系统上线后，客户自助解决率从40%提升至70%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -223,19 +179,12 @@ export const customerServiceExample: ExampleResume = {
                 degree: '本科',
                 startDate: '2014.09',
                 endDate: '2018.06',
+                gpa: '3.6',
+                gpaScale: '4.0',
+                achievements: '<ul><li>获得校级优秀学生奖学金</li><li>担任学生会外联部副部长</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: ['GPA: 3.6/4.0', '获得校级优秀学生奖学金', '担任学生会外联部副部长'],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -250,9 +199,9 @@ export const customerServiceExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
-                content: '• 客户服务管理师认证\n• 2023年度优秀管理者\n• 公司服务之星\n• 英语四级',
+                content: '<ul><li>客户服务管理师认证</li><li>2023年度优秀管理者</li><li>公司服务之星</li><li>英语四级</li></ul>',
               },
               style: {},
               children: [],

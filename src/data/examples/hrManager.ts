@@ -86,25 +86,10 @@ export const hrManagerExample: ExampleResume = {
                 startDate: '2019.05',
                 endDate: '至今',
                 location: '北京',
-                description: '负责公司人力资源全模块管理',
+                description: '<ul><li>搭建完整的招聘体系，年招聘200+优秀人才，离职率控制在8%以内</li><li>设计并实施OKR绩效管理体系，员工满意度提升40%</li><li>建立人才发展计划，培养储备干部30+人</li><li>优化薪酬福利体系，具有行业竞争力，保留核心人才</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '搭建完整的招聘体系，年招聘200+优秀人才，离职率控制在8%以内',
-                      '设计并实施OKR绩效管理体系，员工满意度提升40%',
-                      '建立人才发展计划，培养储备干部30+人',
-                      '优化薪酬福利体系，具有行业竞争力，保留核心人才',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },

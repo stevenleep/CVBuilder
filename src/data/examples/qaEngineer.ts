@@ -87,27 +87,12 @@ export const qaEngineerExample: ExampleResume = {
                 startDate: '2020.07',
                 endDate: '至今',
                 location: '上海',
-                description: '负责核心业务的测试工作和质量保障',
+                description: '<ul><li>搭建自动化测试框架，接口自动化覆盖率达85%，UI自动化覆盖率70%</li><li>主导性能测试和压测工作，发现并解决多个性能瓶颈，系统吞吐量提升50%</li><li>建立质量度量体系，通过数据分析驱动质量改进</li><li>组织代码评审和质量培训，团队整体缺陷率下降40%</li></ul>',
               },
               style: {
                 marginBottom: '20px',
               },
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '搭建自动化测试框架，接口自动化覆盖率达85%，UI自动化覆盖率70%',
-                      '主导性能测试和压测工作，发现并解决多个性能瓶颈，系统吞吐量提升50%',
-                      '建立质量度量体系，通过数据分析驱动质量改进',
-                      '组织代码评审和质量培训，团队整体缺陷率下降40%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
@@ -118,24 +103,10 @@ export const qaEngineerExample: ExampleResume = {
                 startDate: '2018.06',
                 endDate: '2020.06',
                 location: '上海',
-                description: '参与多个项目的功能测试和自动化测试',
+                description: '<ul><li>负责Web和移动端应用的功能测试，发现并跟踪缺陷500+个</li><li>编写自动化测试脚本，减少重复性工作，提升测试效率30%</li><li>参与需求评审和测试用例设计，保证测试覆盖率</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '负责Web和移动端应用的功能测试，发现并跟踪缺陷500+个',
-                      '编写自动化测试脚本，减少重复性工作，提升测试效率30%',
-                      '参与需求评审和测试用例设计，保证测试覆盖率',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -177,29 +148,15 @@ export const qaEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '自动化测试平台',
+                projectName: '自动化测试平台',
                 role: '测试负责人',
                 startDate: '2021.03',
                 endDate: '2023.06',
-                tech: 'Python, Selenium, Jenkins, Allure',
+                techStack: 'Python, Selenium, Jenkins, Allure',
+                description: '<ul><li>从0到1搭建公司级自动化测试平台，支持多项目多环境测试</li><li>实现用例编排、定时执行、结果统计等核心功能</li><li>接入CI/CD流程，实现每日自动化回归测试</li><li>平台使用后，团队测试效率提升60%，发现缺陷数量增加35%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '从0到1搭建公司级自动化测试平台，支持多项目多环境测试',
-                      '实现用例编排、定时执行、结果统计等核心功能',
-                      '接入CI/CD流程，实现每日自动化回归测试',
-                      '平台使用后，团队测试效率提升60%，发现缺陷数量增加35%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -223,23 +180,12 @@ export const qaEngineerExample: ExampleResume = {
                 degree: '本科',
                 startDate: '2014.09',
                 endDate: '2018.06',
+                gpa: '3.5',
+                gpaScale: '4.0',
+                achievements: '<ul><li>获得校级优秀学生奖学金</li><li>参与软件测试课程设计并获优秀</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      'GPA: 3.5/4.0',
-                      '获得校级优秀学生奖学金',
-                      '参与软件测试课程设计并获优秀',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -254,9 +200,9 @@ export const qaEngineerExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
-                content: '• ISTQB 国际软件测试工程师认证\n• 2023年度优秀员工\n• 公司技术创新奖',
+                content: '<ul><li>ISTQB 国际软件测试工程师认证</li><li>2023年度优秀员工</li><li>公司技术创新奖</li></ul>',
               },
               style: {},
               children: [],

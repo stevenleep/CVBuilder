@@ -86,25 +86,10 @@ export const salesManagerExample: ExampleResume = {
                 startDate: '2019.09',
                 endDate: '至今',
                 location: '深圳',
-                description: '负责企业级客户的开发和维护',
+                description: '<ul><li>独立开发50+大客户，年销售额达3000万+，超额完成业绩150%</li><li>签约多家世界500强企业，包括腾讯、华为等标杆客户</li><li>客户续约率达85%，NPS评分90+</li><li>建立销售方法论并培训新人，团队业绩提升40%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '独立开发50+大客户，年销售额达3000万+，超额完成业绩150%',
-                      '签约多家世界500强企业，包括腾讯、华为等标杆客户',
-                      '客户续约率达85%，NPS评分90+',
-                      '建立销售方法论并培训新人，团队业绩提升40%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -121,10 +106,10 @@ export const salesManagerExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
                 content:
-                  '• 2023年度销售冠军：年度销售额3500万，完成率175%\n• 标杆客户：成功签约腾讯、华为、字节跳动等头部企业\n• 客户满意度：NPS评分92，客户续约率85%\n• 团队贡献：培养销售新人5名，平均业绩达标率90%',
+                  '<ul><li>2023年度销售冠军：年度销售额3500万，完成率175%</li><li>标杆客户：成功签约腾讯、华为、字节跳动等头部企业</li><li>客户满意度：NPS评分92，客户续约率85%</li><li>团队贡献：培养销售新人5名，平均业绩达标率90%</li></ul>',
               },
               style: {},
               children: [],

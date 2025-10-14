@@ -87,25 +87,10 @@ export const contentWriterExample: ExampleResume = {
                 startDate: '2021.04',
                 endDate: '至今',
                 location: '成都',
-                description: '负责公司全平台新媒体运营',
+                description: '<ul><li>运营公司官方账号矩阵，全网粉丝从0到50万+，月阅读量500万+</li><li>策划并执行多个爆款内容，单篇最高阅读量200万+</li><li>建立内容生产流程和SOP，提升内容产出效率3倍</li><li>通过内容变现，月均收入达30万+</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '运营公司官方账号矩阵，全网粉丝从0到50万+，月阅读量500万+',
-                      '策划并执行多个爆款内容，单篇最高阅读量200万+',
-                      '建立内容生产流程和SOP，提升内容产出效率3倍',
-                      '通过内容变现，月均收入达30万+',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -122,10 +107,10 @@ export const contentWriterExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
                 content:
-                  '• 《年轻人的第一份工作该怎么选》阅读量200万+，收藏3万+\n• 《90后程序员的一天》视频播放量500万+，涨粉5万+\n• 策划"职场生存指南"系列，持续霸榜热搜3天\n• 运营账号矩阵：微信50万、抖音30万、小红书20万粉丝',
+                  '<ul><li>《年轻人的第一份工作该怎么选》阅读量200万+，收藏3万+</li><li>《90后程序员的一天》视频播放量500万+，涨粉5万+</li><li>策划"职场生存指南"系列，持续霸榜热搜3天</li><li>运营账号矩阵：微信50万、抖音30万、小红书20万粉丝</li></ul>',
               },
               style: {},
               children: [],

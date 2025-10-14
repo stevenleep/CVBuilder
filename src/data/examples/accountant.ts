@@ -86,25 +86,10 @@ export const accountantExample: ExampleResume = {
                 startDate: '2020.03',
                 endDate: '至今',
                 location: '广州',
-                description: '负责集团财务核算和税务管理',
+                description: '<ul><li>管理5人财务团队，完成集团及子公司的全盘账务处理</li><li>完成年度审计和税务申报工作，零差错零处罚</li><li>优化财务流程，月结账时间缩短50%</li><li>进行税务筹划，合理节税年均200万+</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '管理5人财务团队，完成集团及子公司的全盘账务处理',
-                      '完成年度审计和税务申报工作，零差错零处罚',
-                      '优化财务流程，月结账时间缩短50%',
-                      '进行税务筹划，合理节税年均200万+',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -168,9 +153,9 @@ export const accountantExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
-                content: '• 注册会计师（CPA）- 2019年\n• 中级会计师 - 2018年\n• 税务师 - 2020年',
+                content: '<ul><li>注册会计师（CPA）- 2019年</li><li>中级会计师 - 2018年</li><li>税务师 - 2020年</li></ul>',
               },
               style: {},
               children: [],

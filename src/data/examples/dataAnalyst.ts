@@ -65,29 +65,12 @@ export const dataAnalystExample: ExampleResume = {
                 startDate: '2021.06',
                 endDate: '至今',
                 location: '深圳',
-                description: '用户增长部，负责产品数据分析和用户增长策略制定',
+                description: '<ul><li>负责产品核心指标体系搭建与监控，设计北极星指标和 AARRR 漏斗模型，建立数据看板实时监控业务健康度</li><li>主导用户增长分析专项，通过 RFM 模型、用户分群、流失预警，识别高价值用户，制定精准运营策略，用户留存率提升 25%</li><li>设计并执行 30+ 个 A/B 测试实验，优化产品功能和运营策略，推动注册转化率提升 18%，付费转化率提升 22%</li><li>搭建用户画像体系，整合多源数据（行为数据、画像标签、业务数据），支持精准营销和个性化推荐，营销 ROI 提升 40%</li><li>与产品、运营、研发跨部门协作，输出数据分析报告 50+ 篇，为业务决策提供数据支持</li><li>负责数据埋点规范制定和数据质量监控，保证数据准确性，支撑业务数据化运营</li></ul>',
               },
               style: {
                 marginBottom: '20px',
               },
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '负责产品核心指标体系搭建与监控，设计北极星指标和 AARRR 漏斗模型，建立数据看板实时监控业务健康度',
-                      '主导用户增长分析专项，通过 RFM 模型、用户分群、流失预警，识别高价值用户，制定精准运营策略，用户留存率提升 25%',
-                      '设计并执行 30+ 个 A/B 测试实验，优化产品功能和运营策略，推动注册转化率提升 18%，付费转化率提升 22%',
-                      '搭建用户画像体系，整合多源数据（行为数据、画像标签、业务数据），支持精准营销和个性化推荐，营销 ROI 提升 40%',
-                      '与产品、运营、研发跨部门协作，输出数据分析报告 50+ 篇，为业务决策提供数据支持',
-                      '负责数据埋点规范制定和数据质量监控，保证数据准确性，支撑业务数据化运营',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
@@ -98,27 +81,12 @@ export const dataAnalystExample: ExampleResume = {
                 startDate: '2019.07',
                 endDate: '2021.05',
                 location: '深圳',
-                description: '商业化部门，负责广告投放效果分析和归因分析',
+                description: '<ul><li>负责广告投放数据分析，监控 CTR、CVR、ROI 等核心指标，为广告优化提供数据支持</li><li>搭建广告归因模型，分析不同渠道对转化的贡献，优化广告投放策略，广告 ROI 提升 30%</li><li>使用 Python 开发数据分析工具和自动化报表，提升分析效率 50%</li><li>参与数据仓库建设，设计数据模型和 ETL 流程，提升数据加工效率</li></ul>',
               },
               style: {
                 marginBottom: '20px',
               },
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '负责广告投放数据分析，监控 CTR、CVR、ROI 等核心指标，为广告优化提供数据支持',
-                      '搭建广告归因模型，分析不同渠道对转化的贡献，优化广告投放策略，广告 ROI 提升 30%',
-                      '使用 Python 开发数据分析工具和自动化报表，提升分析效率 50%',
-                      '参与数据仓库建设，设计数据模型和 ETL 流程，提升数据加工效率',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
@@ -129,24 +97,10 @@ export const dataAnalystExample: ExampleResume = {
                 startDate: '2018.07',
                 endDate: '2019.06',
                 location: '北京',
-                description: '负责外卖业务数据分析，支持运营决策',
+                description: '<ul><li>分析用户下单行为和商家经营数据，输出专题分析报告，为运营策略提供数据支持</li><li>监控业务核心指标（订单量、GMV、客单价等），发现异常并快速定位问题</li><li>参与营销活动效果评估，通过对比分析和归因分析，量化活动效果</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '分析用户下单行为和商家经营数据，输出专题分析报告，为运营策略提供数据支持',
-                      '监控业务核心指标（订单量、GMV、客单价等），发现异常并快速定位问题',
-                      '参与营销活动效果评估，通过对比分析和归因分析，量化活动效果',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -166,62 +120,31 @@ export const dataAnalystExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '用户增长数据分析体系搭建',
+                projectName: '用户增长数据分析体系搭建',
                 role: '数据分析负责人',
                 startDate: '2022.01',
                 endDate: '2023.06',
-                tech: 'SQL, Python, Tableau, A/B Testing',
+                techStack: 'SQL, Python, Tableau, A/B Testing',
+                description: '<ul><li>项目背景：产品进入增长瓶颈期，需要建立数据驱动的增长体系</li><li>指标体系：设计北极星指标和 AARRR 漏斗（获客、激活、留存、变现、推荐），建立数据看板实时监控</li><li>用户分析：RFM 模型进行用户分层，识别高价值用户、流失预警用户，制定差异化运营策略</li><li>A/B 测试：设计实验方案，使用统计学方法进行显著性检验，验证产品优化效果</li><li>增长策略：通过数据分析发现增长机会点，与产品运营协作制定增长策略</li><li>项目成果：用户留存率提升 25%，付费转化率提升 22%，为公司贡献 ARR 增长 1500 万</li></ul>',
               },
               style: {
                 marginBottom: '20px',
               },
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '项目背景：产品进入增长瓶颈期，需要建立数据驱动的增长体系',
-                      '指标体系：设计北极星指标和 AARRR 漏斗（获客、激活、留存、变现、推荐），建立数据看板实时监控',
-                      '用户分析：RFM 模型进行用户分层，识别高价值用户、流失预警用户，制定差异化运营策略',
-                      'A/B 测试：设计实验方案，使用统计学方法进行显著性检验，验证产品优化效果',
-                      '增长策略：通过数据分析发现增长机会点，与产品运营协作制定增长策略',
-                      '项目成果：用户留存率提升 25%，付费转化率提升 22%，为公司贡献 ARR 增长 1500 万',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '用户画像体系搭建',
+                projectName: '用户画像体系搭建',
                 role: '核心成员',
                 startDate: '2021.09',
                 endDate: '2022.03',
-                tech: 'Hive, Spark, Python, Tag System',
+                techStack: 'Hive, Spark, Python, Tag System',
+                description: '<ul><li>项目背景：为支持精准营销和个性化推荐，需要建立完整的用户画像体系</li><li>标签体系：设计用户画像标签体系，包括人口属性、行为特征、兴趣偏好、消费能力等 200+ 标签</li><li>数据加工：使用 Hive SQL 和 Spark 进行数据 ETL，从多源数据中提取、清洗、加工标签数据</li><li>标签应用：支持运营进行用户圈选和精准营销，支持算法团队进行个性化推荐</li><li>项目成果：标签覆盖率 95%，支持 50+ 业务场景应用，营销 ROI 提升 40%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '项目背景：为支持精准营销和个性化推荐，需要建立完整的用户画像体系',
-                      '标签体系：设计用户画像标签体系，包括人口属性、行为特征、兴趣偏好、消费能力等 200+ 标签',
-                      '数据加工：使用 Hive SQL 和 Spark 进行数据 ETL，从多源数据中提取、清洗、加工标签数据',
-                      '标签应用：支持运营进行用户圈选和精准营销，支持算法团队进行个性化推荐',
-                      '项目成果：标签覆盖率 95%，支持 50+ 业务场景应用，营销 ROI 提升 40%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -270,23 +193,13 @@ export const dataAnalystExample: ExampleResume = {
                 degree: '本科',
                 startDate: '2014.09',
                 endDate: '2018.06',
+                gpa: '3.6',
+                gpaScale: '4.0',
+                achievements: '<ul><li>获得校级二等奖学金、优秀学生称号</li></ul>',
+                courses: '概率论、数理统计、回归分析、多元统计分析、时间序列分析、数据挖掘',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      'GPA: 3.6/4.0，专业核心课程成绩优秀',
-                      '主修课程：概率论、数理统计、回归分析、多元统计分析、时间序列分析、数据挖掘',
-                      '获得校级二等奖学金、优秀学生称号',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -302,10 +215,10 @@ export const dataAnalystExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
                 content:
-                  '• 2023 年度公司优秀员工\n• 数据分析师（高级）职业资格证书\n• CET-6，具备良好的英文文档阅读能力',
+                  '<ul><li>2023 年度公司优秀员工</li><li>数据分析师（高级）职业资格证书</li><li>CET-6，具备良好的英文文档阅读能力</li></ul>',
               },
               style: {},
               children: [],

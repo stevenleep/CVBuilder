@@ -86,28 +86,12 @@ export const ecommerceOperatorExample: ExampleResume = {
                 startDate: '2020.04',
                 endDate: '至今',
                 location: '杭州',
-                description: '负责天猫旗舰店整体运营和团队管理',
+                description: '<ul><li>管理店铺年销售额从3000万增长至1.2亿，增长率300%</li><li>策划并执行双11、618等大促活动，单日销售额突破2000万</li><li>打造爆款产品5款，单品月销10万+件</li><li>优化店铺转化率从2.5%提升至4.8%，ROI从1:3提升至1:5</li><li>搭建运营团队8人，制定运营SOP和考核体系</li></ul>',
               },
               style: {
                 marginBottom: '20px',
               },
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '管理店铺年销售额从3000万增长至1.2亿，增长率300%',
-                      '策划并执行双11、618等大促活动，单日销售额突破2000万',
-                      '打造爆款产品5款，单品月销10万+件',
-                      '优化店铺转化率从2.5%提升至4.8%，ROI从1:3提升至1:5',
-                      '搭建运营团队8人，制定运营SOP和考核体系',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
@@ -118,24 +102,10 @@ export const ecommerceOperatorExample: ExampleResume = {
                 startDate: '2018.07',
                 endDate: '2020.03',
                 location: '杭州',
-                description: '负责日常店铺运营和推广',
+                description: '<ul><li>负责商品上架、详情页优化、活动报名等日常工作</li><li>通过直通车、钻展等付费推广，ROI保持在1:4以上</li><li>分析运营数据，优化产品和营销策略</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '负责商品上架、详情页优化、活动报名等日常工作',
-                      '通过直通车、钻展等付费推广，ROI保持在1:4以上',
-                      '分析运营数据，优化产品和营销策略',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -177,29 +147,15 @@ export const ecommerceOperatorExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '新品牌0-1冷启动',
+                projectName: '新品牌0-1冷启动',
                 role: '运营负责人',
                 startDate: '2021.03',
                 endDate: '2022.06',
-                tech: '电商运营、品牌营销',
+                techStack: '电商运营、品牌营销',
+                description: '<ul><li>从0搭建天猫旗舰店，完成品牌入驻和店铺装修</li><li>制定产品线规划和定价策略，上架SKU 50+个</li><li>通过内容营销和KOL合作，快速积累种子用户</li><li>6个月内月销突破500万，店铺层级达到Top 7</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '从0搭建天猫旗舰店，完成品牌入驻和店铺装修',
-                      '制定产品线规划和定价策略，上架SKU 50+个',
-                      '通过内容营销和KOL合作，快速积累种子用户',
-                      '6个月内月销突破500万，店铺层级达到Top 7',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -223,19 +179,12 @@ export const ecommerceOperatorExample: ExampleResume = {
                 degree: '本科',
                 startDate: '2014.09',
                 endDate: '2018.06',
+                gpa: '3.5',
+                gpaScale: '4.0',
+                achievements: '<ul><li>校级优秀学生</li><li>参与电商创业大赛获二等奖</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: ['GPA: 3.5/4.0', '校级优秀学生', '参与电商创业大赛获二等奖'],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -250,9 +199,9 @@ export const ecommerceOperatorExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
-                content: '• 2023年度最佳运营奖\n• 阿里巴巴电商运营认证\n• 双11优秀运营团队负责人',
+                content: '<ul><li>2023年度最佳运营奖</li><li>阿里巴巴电商运营认证</li><li>双11优秀运营团队负责人</li></ul>',
               },
               style: {},
               children: [],

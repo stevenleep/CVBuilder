@@ -87,25 +87,10 @@ export const marketingManagerExample: ExampleResume = {
                 startDate: '2020.01',
                 endDate: '至今',
                 location: '上海',
-                description: '负责品牌营销和用户增长',
+                description: '<ul><li>策划新品上市营销活动，实现首月销售额1000万+</li><li>运营公司官方社交媒体，粉丝增长至50万+，互动率提升200%</li><li>建立KOL合作体系，月均曝光量达5000万+</li><li>优化SEO/SEM策略，自然流量增长150%，获客成本降低40%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '策划新品上市营销活动，实现首月销售额1000万+',
-                      '运营公司官方社交媒体，粉丝增长至50万+，互动率提升200%',
-                      '建立KOL合作体系，月均曝光量达5000万+',
-                      '优化SEO/SEM策略，自然流量增长150%，获客成本降低40%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -122,10 +107,10 @@ export const marketingManagerExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
                 content:
-                  '• 618大促活动：策划全渠道营销，GMV达2000万+，ROI 1:8\n• 品牌重塑项目：全面升级品牌形象，品牌认知度提升60%\n• KOL合作矩阵：建立300+KOL资源库，单次活动曝光5000万+\n• 私域运营体系：搭建企业微信社群，月活用户10万+',
+                  '<ul><li>618大促活动：策划全渠道营销，GMV达2000万+，ROI 1:8</li><li>品牌重塑项目：全面升级品牌形象，品牌认知度提升60%</li><li>KOL合作矩阵：建立300+KOL资源库，单次活动曝光5000万+</li><li>私域运营体系：搭建企业微信社群，月活用户10万+</li></ul>',
               },
               style: {},
               children: [],

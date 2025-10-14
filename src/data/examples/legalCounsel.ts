@@ -86,27 +86,12 @@ export const legalCounselExample: ExampleResume = {
                 startDate: '2020.06',
                 endDate: '至今',
                 location: '北京',
-                description: '负责公司日常法律事务和风险管理',
+                description: '<ul><li>审核各类商业合同3000+份，发现并规避潜在法律风险，避免经济损失500万+</li><li>建立合同管理系统和审核流程，合同审核效率提升50%</li><li>处理劳动争议、知识产权纠纷等案件20+起，胜诉率达90%</li><li>组织法律培训，提升员工法律意识和风险防范能力</li></ul>',
               },
               style: {
                 marginBottom: '20px',
               },
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '审核各类商业合同3000+份，发现并规避潜在法律风险，避免经济损失500万+',
-                      '建立合同管理系统和审核流程，合同审核效率提升50%',
-                      '处理劳动争议、知识产权纠纷等案件20+起，胜诉率达90%',
-                      '组织法律培训，提升员工法律意识和风险防范能力',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
@@ -117,24 +102,10 @@ export const legalCounselExample: ExampleResume = {
                 startDate: '2018.07',
                 endDate: '2020.05',
                 location: '北京',
-                description: '协助律师处理公司法律事务和诉讼案件',
+                description: '<ul><li>协助处理商事诉讼、劳动仲裁等案件50+起</li><li>参与企业法律尽职调查和并购项目</li><li>撰写法律意见书、起诉状、答辩状等法律文书</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '协助处理商事诉讼、劳动仲裁等案件50+起',
-                      '参与企业法律尽职调查和并购项目',
-                      '撰写法律意见书、起诉状、答辩状等法律文书',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -176,29 +147,15 @@ export const legalCounselExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '合规管理体系建设',
+                projectName: '合规管理体系建设',
                 role: '项目负责人',
                 startDate: '2021.09',
                 endDate: '2022.12',
-                tech: '合规管理、风险防控',
+                techStack: '合规管理、风险防控',
+                description: '<ul><li>主导建立公司合规管理体系，制定合规政策和流程</li><li>开展合规风险评估，识别重点风险领域</li><li>设计合规培训计划，覆盖全员1000+人</li><li>建立合规监控机制，及时发现和处理合规问题</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '主导建立公司合规管理体系，制定合规政策和流程',
-                      '开展合规风险评估，识别重点风险领域',
-                      '设计合规培训计划，覆盖全员1000+人',
-                      '建立合规监控机制，及时发现和处理合规问题',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -222,21 +179,14 @@ export const legalCounselExample: ExampleResume = {
                 degree: '硕士',
                 startDate: '2016.09',
                 endDate: '2018.06',
+                gpa: '3.7',
+                gpaScale: '4.0',
+                achievements: '<ul><li>研究方向：公司法与商法</li><li>发表学术论文3篇</li></ul>',
               },
               style: {
                 marginBottom: '16px',
               },
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: ['GPA: 3.7/4.0', '研究方向：公司法与商法', '发表学术论文3篇'],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
@@ -264,9 +214,9 @@ export const legalCounselExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
-                content: '• 法律职业资格证书（A证）\n• 企业合规师\n• 英语六级\n• 普通话二级甲等',
+                content: '<ul><li>法律职业资格证书（A证）</li><li>企业合规师</li><li>英语六级</li><li>普通话二级甲等</li></ul>',
               },
               style: {},
               children: [],
