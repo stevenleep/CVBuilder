@@ -15,6 +15,7 @@ import { WelcomeGuide } from './components/WelcomeGuide'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { Logo } from './components/Logo'
 import { PWAInstallPrompt } from './components/PWAInstallPrompt'
+import { PWAUpdatePrompt } from './components/PWAUpdatePrompt'
 import { HomePage } from './pages/HomePage'
 import { EditorPage } from './pages/EditorPage'
 import { TemplatesPage } from './pages/TemplatesPage'
@@ -160,6 +161,9 @@ function App() {
 
               {/* PWA 安装提示 */}
               <PWAInstallPrompt />
+
+              {/* PWA 更新提示 */}
+              <PWAUpdatePrompt />
             </BrowserRouter>
           </ThemeProvider>
         </EditorProvider>

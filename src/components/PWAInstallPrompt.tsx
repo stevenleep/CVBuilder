@@ -4,7 +4,6 @@
 
 import { useEffect, useState } from 'react'
 import { X, Download } from 'lucide-react'
-import { Button } from './Button'
 import { ds } from '@/styles/designSystem'
 
 interface BeforeInstallPromptEvent extends Event {
@@ -18,28 +17,44 @@ export function PWAInstallPrompt() {
 
   useEffect(() => {
     // 检查是否已经安装
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    const isIOSStandalone = (window.navigator as any).standalone === true
+
+    if (isStandalone || isIOSStandalone) {
+      console.log('[PWA] 应用已在独立模式运行，不显示安装提示')
       return
     }
 
     // 检查是否已经关闭过提示
     const hasClosedPrompt = localStorage.getItem('pwa-install-prompt-closed')
     if (hasClosedPrompt) {
-      return
+      const closedTime = parseInt(hasClosedPrompt)
+      const elapsed = Date.now() - closedTime
+      if (elapsed < 86400000) {
+        // 24小时内
+        console.log('[PWA] 用户最近关闭过提示，暂不显示')
+        return
+      } else {
+        // 超过24小时，清除标记
+        localStorage.removeItem('pwa-install-prompt-closed')
+      }
     }
 
     const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('[PWA] beforeinstallprompt事件触发')
       // 阻止默认的安装提示
       e.preventDefault()
       // 保存事件，以便稍后触发
       setDeferredPrompt(e as BeforeInstallPromptEvent)
       // 延迟 3 秒显示提示，让用户先体验应用
       setTimeout(() => {
+        console.log('[PWA] 显示自定义安装提示')
         setShowPrompt(true)
       }, 3000)
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    console.log('[PWA] 已注册beforeinstallprompt事件监听器')
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
@@ -48,19 +63,26 @@ export function PWAInstallPrompt() {
 
   const handleInstall = async () => {
     if (!deferredPrompt) {
+      console.log('[PWA] 无法安装：deferredPrompt未定义')
       return
     }
 
-    // 显示安装提示
-    deferredPrompt.prompt()
+    try {
+      console.log('[PWA] 触发安装提示')
+      // 显示安装提示
+      await deferredPrompt.prompt()
 
-    // 等待用户响应
-    const { outcome } = await deferredPrompt.userChoice
+      // 等待用户响应
+      const { outcome } = await deferredPrompt.userChoice
+      console.log('[PWA] 用户选择:', outcome)
 
-    if (outcome === 'accepted') {
-      console.log('用户接受了安装')
-    } else {
-      console.log('用户拒绝了安装')
+      if (outcome === 'accepted') {
+        console.log('[PWA] 用户接受了安装')
+      } else {
+        console.log('[PWA] 用户拒绝了安装')
+      }
+    } catch (error) {
+      console.error('[PWA] 安装过程出错:', error)
     }
 
     // 清除保存的事件
@@ -69,6 +91,7 @@ export function PWAInstallPrompt() {
   }
 
   const handleClose = () => {
+    console.log('[PWA] 用户关闭了安装提示')
     setShowPrompt(false)
     // 记录用户关闭了提示，24小时内不再显示
     localStorage.setItem('pwa-install-prompt-closed', Date.now().toString())
@@ -163,17 +186,39 @@ export function PWAInstallPrompt() {
         </div>
       </div>
 
-      <Button
-        variant="primary"
-        size="sm"
-        icon={<Download size={ds.sizes.icon.sm} />}
+      <button
         onClick={handleInstall}
         style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: ds.spacing.xs,
+          height: ds.sizes.button.sm,
+          padding: `0 ${ds.spacing.lg}`,
+          backgroundColor: ds.colors.neutral.white,
+          color: ds.colors.text.primary,
+          border: `1px solid ${ds.colors.border.base}`,
+          borderRadius: ds.borderRadius.md,
+          fontSize: ds.typography.fontSize.sm,
+          fontWeight: ds.typography.fontWeight.semibold,
+          cursor: 'pointer',
           whiteSpace: 'nowrap',
+          transition: ds.animation.transition.smooth,
+          boxShadow: ds.shadows.sm,
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.backgroundColor = ds.colors.neutral.gray50
+          e.currentTarget.style.boxShadow = ds.shadows.md
+          e.currentTarget.style.transform = 'translateY(-1px)'
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.backgroundColor = ds.colors.neutral.white
+          e.currentTarget.style.boxShadow = ds.shadows.sm
+          e.currentTarget.style.transform = 'translateY(0)'
         }}
       >
+        <Download size={ds.sizes.icon.sm} />
         立即安装
-      </Button>
+      </button>
 
       <button
         onClick={handleClose}
