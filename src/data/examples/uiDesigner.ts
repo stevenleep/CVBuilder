@@ -32,41 +32,19 @@ export const uiDesignerExample: ExampleResume = {
           id: nanoid(),
           type: 'PersonalInfo',
           props: {
-            name: '王美',
-            title: 'UI/UX 设计师',
-            phone: '186-0000-0000',
-            email: 'wangmei@example.com',
+            name: '王思琪',
+            title: '资深 UI/UX 设计师',
+            phone: '186-5678-1234',
+            email: 'siqiwang@example.com',
             location: '深圳·南山区',
-            portfolio: 'behance.net/wangmei',
+            portfolio: 'behance.net/siqiwang',
           },
           style: {
             marginBottom: '32px',
           },
           children: [],
         },
-        {
-          id: nanoid(),
-          type: 'Section',
-          props: {
-            title: '个人简介',
-            icon: '✨',
-          },
-          style: {
-            marginBottom: '24px',
-          },
-          children: [
-            {
-              id: nanoid(),
-              type: 'TextBlock',
-              props: {
-                content:
-                  '4年+互联网产品设计经验，擅长移动端和Web端界面设计。注重用户体验和视觉美感的平衡，熟悉设计系统搭建和规范化流程。作品多次获得设计奖项。',
-              },
-              style: {},
-              children: [],
-            },
-          ],
-        },
+        // 2. 工作经历
         {
           id: nanoid(),
           type: 'Section',
@@ -82,12 +60,45 @@ export const uiDesignerExample: ExampleResume = {
               id: nanoid(),
               type: 'ExperienceItem',
               props: {
-                company: '互联网公司',
-                position: 'UI/UX 设计师',
-                startDate: '2020.07',
+                company: '字节跳动',
+                position: '资深 UI/UX 设计师',
+                startDate: '2021.08',
                 endDate: '至今',
                 location: '深圳',
-                description: '负责多个产品的视觉和交互设计',
+                description: '企业协作产品设计团队，负责核心产品的设计体验与设计系统建设',
+              },
+              style: {
+                marginBottom: '20px',
+              },
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      '主导企业级设计系统（Design System）从 0 到 1 搭建，覆盖 Web 和移动端 200+ 组件，被 6 个产品线采用，设计交付效率提升 50%',
+                      '负责核心产品的视觉和交互设计，完成 3 个大版本的体验升级，用户满意度从 72 分提升至 88 分',
+                      '推动设计规范化流程：制定设计走查标准、组件设计规范、视觉规范文档，保证团队设计质量和一致性',
+                      '深度参与用户研究，主导 20+ 场用户访谈和可用性测试，输出用户洞察报告，指导产品设计决策',
+                      '优化关键交互流程，通过设计优化将新手引导完成率从 45% 提升至 78%，核心功能使用率提升 35%',
+                      '指导 2 名初级设计师成长，定期进行设计评审和技能培训',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
+            },
+            {
+              id: nanoid(),
+              type: 'ExperienceItem',
+              props: {
+                company: '腾讯',
+                position: 'UI 设计师',
+                startDate: '2019.07',
+                endDate: '2021.07',
+                location: '深圳',
+                description: '社交产品部，负责移动端产品的界面和交互设计',
               },
               style: {},
               children: [
@@ -96,10 +107,10 @@ export const uiDesignerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '主导公司设计系统建设，统一视觉语言，提升设计效率40%',
-                      '设计的移动应用获得 App Store 精品推荐，用户好评率95%',
-                      '优化产品交互流程，用户完成率提升35%，流失率降低20%',
-                      '协助产品经理进行用户研究和可用性测试',
+                      '负责社交产品的视觉设计和交互优化，覆盖 iOS 和 Android 双端，日活用户 500w+',
+                      '参与产品品牌视觉升级项目，重新设计 Logo、图标体系和视觉风格，获得 App Store 首页推荐',
+                      '设计的动效方案获得团队认可并全面应用，提升产品趣味性和用户留存（次日留存提升 8%）',
+                      '与产品和研发紧密协作，快速响应需求迭代，保持双周发版节奏',
                     ],
                   },
                   style: {},
@@ -109,6 +120,7 @@ export const uiDesignerExample: ExampleResume = {
             },
           ],
         },
+        // 3. 项目经验
         {
           id: nanoid(),
           type: 'Section',
@@ -124,10 +136,43 @@ export const uiDesignerExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '企业级设计系统',
-                role: '主设计师',
-                startDate: '2022.01',
-                endDate: '2023.12',
+                name: '企业级设计系统（Design System）',
+                role: '设计负责人',
+                startDate: '2022.03',
+                endDate: '2023.06',
+                tech: 'Figma, Auto Layout, Design Tokens, Component Library',
+              },
+              style: {
+                marginBottom: '20px',
+              },
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      '项目背景：公司多产品线视觉不统一，设计师重复劳动严重，亟需建立统一的设计语言',
+                      '设计体系：基于原子设计理论，搭建包含 200+ 组件的设计系统，覆盖 Web 和移动端（iOS/Android）',
+                      '设计规范：制定完整的设计规范文档（色彩、字体、间距、图标、布局等），使用 Design Tokens 实现跨平台一致性',
+                      '协作流程：在 Figma 搭建组件库和样式库，配合 Auto Layout 和 Variants，提升设计复用率 80%',
+                      '开发对接：与前端紧密协作，确保设计还原度，输出组件使用文档，建立设计-开发高效协作流程',
+                      '项目成果：设计系统被 6 个产品线采用，设计交付效率提升 50%，品牌视觉一致性显著提升',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
+            },
+            {
+              id: nanoid(),
+              type: 'ProjectItem',
+              props: {
+                name: '社交产品品牌视觉升级',
+                role: '视觉设计师',
+                startDate: '2020.09',
+                endDate: '2021.03',
+                tech: 'Brand Design, Motion Design, Illustration',
               },
               style: {},
               children: [
@@ -136,9 +181,12 @@ export const uiDesignerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '搭建包含200+组件的设计系统，覆盖Web和移动端',
-                      '制定设计规范和组件使用文档，团队协作效率提升50%',
-                      '设计系统已被3个产品线采用，统一品牌形象',
+                      '项目背景：产品进入成熟期，原有视觉风格陈旧，需要品牌升级吸引年轻用户',
+                      '设计策略：通过用户调研和竞品分析，确定年轻化、活力感的视觉方向',
+                      '视觉设计：重新设计品牌 Logo、图标体系、插画风格、配色方案，打造全新视觉语言',
+                      '动效设计：设计微交互动效和过场动画，提升产品趣味性和情感化体验',
+                      '落地推广：设计启动页、引导页、宣传物料，协助运营团队进行品牌推广',
+                      '项目成果：新版本获得 App Store 首页推荐，用户好评率提升至 4.8 分，次日留存提升 8%',
                     ],
                   },
                   style: {},
@@ -148,6 +196,7 @@ export const uiDesignerExample: ExampleResume = {
             },
           ],
         },
+        // 4. 专业技能
         {
           id: nanoid(),
           type: 'Section',
@@ -164,13 +213,14 @@ export const uiDesignerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通 Figma、Sketch 等主流设计工具</li><li>熟练使用 Adobe Creative Suite（PS、AI、AE等）</li><li>掌握交互设计原则和方法论</li><li>具备完整的原型设计能力</li><li>了解用户研究和可用性测试</li><li>掌握基础的 HTML/CSS，能与开发高效协作</li></ul>',
+                  '<ul><li><strong>设计工具：</strong>精通 Figma（插件开发、Auto Layout、Variants）、Sketch，熟练使用 Principle/ProtoPie 做高保真交互原型</li><li><strong>视觉设计：</strong>Adobe Creative Suite（Photoshop、Illustrator、After Effects、XD），掌握平面设计、品牌设计、动效设计</li><li><strong>设计理论：</strong>熟悉交互设计原则（尼尔森十大可用性原则、格式塔原理）、视觉设计理论（色彩、排版、栅格系统）</li><li><strong>设计系统：</strong>掌握 Atomic Design、Design Tokens、Component Library 搭建，有完整的设计系统建设经验</li><li><strong>用户研究：</strong>熟悉用户访谈、问卷调查、可用性测试、A/B 测试等研究方法，能输出用户洞察报告</li><li><strong>跨端设计：</strong>熟悉 iOS、Android、Web 设计规范（HIG、Material Design），能完成多端适配设计</li><li><strong>协作能力：</strong>了解前端基础（HTML/CSS/JavaScript），能与开发高效协作，使用 Zeplin/蓝湖进行设计交付</li></ul>',
               },
               style: {},
               children: [],
             },
           ],
         },
+        // 5. 教育背景
         {
           id: nanoid(),
           type: 'Section',
@@ -186,17 +236,33 @@ export const uiDesignerExample: ExampleResume = {
               id: nanoid(),
               type: 'EducationItem',
               props: {
-                school: '某某美术学院',
+                school: '中国美术学院',
                 major: '视觉传达设计',
                 degree: '本科',
-                startDate: '2016.09',
-                endDate: '2020.06',
+                startDate: '2015.09',
+                endDate: '2019.06',
               },
               style: {},
-              children: [],
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      'GPA: 3.8/4.0，多次获得专业一等奖学金',
+                      '毕业设计《城市记忆 - 杭州文化视觉系统》获得优秀毕业设计奖',
+                      '担任设计学院学生会宣传部部长，负责学院视觉物料设计',
+                      '主修课程：平面设计、品牌设计、交互设计、动态图形设计、用户体验设计',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
             },
           ],
         },
+        // 6. 获奖经历
         {
           id: nanoid(),
           type: 'Section',
@@ -211,7 +277,7 @@ export const uiDesignerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '• 站酷网年度推荐设计师\n• iF 设计奖入围作品\n• 公司年度最佳设计师（2022、2023）',
+                  '• <strong>iF 设计奖</strong>（2023）：企业协作产品设计系统\n• <strong>Red Dot 红点奖</strong>（2022）：社交产品品牌设计入围作品\n• <strong>站酷网</strong>：年度推荐设计师，作品收藏 8000+，粉丝 15000+\n• <strong>Dribbble</strong>：Top Designer，作品获赞 20000+\n• 公司年度最佳设计师（2022、2023）',
               },
               style: {},
               children: [],

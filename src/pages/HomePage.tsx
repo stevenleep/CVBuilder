@@ -21,6 +21,7 @@ import {
   ChevronDown,
   X,
   Trash2,
+  Pencil,
 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
@@ -256,7 +257,7 @@ export const HomePage: React.FC = () => {
             backgroundColor: '#2d2d2d',
             borderRadius: '10px',
             padding: '24px 28px',
-            marginBottom: '24px',
+            marginBottom: '36px',
           }}
         >
           <div style={{ maxWidth: '500px' }}>
@@ -311,7 +312,7 @@ export const HomePage: React.FC = () => {
 
         {/* 最近编辑 */}
         {recentResumes.length > 0 && (
-          <div style={{ marginBottom: '28px' }}>
+          <div style={{ marginBottom: '48px' }}>
             <div
               style={{
                 display: 'flex',
@@ -1022,7 +1023,7 @@ const ResumeCard: React.FC<{
           alignItems: 'center',
           justifyContent: 'space-between',
           paddingTop: '12px',
-          borderTop: '1px solid #f0f0f0',
+          borderTop: hover ? '1px solid #f0f0f0' : '1px solid transparent',
         }}
       >
         <span
@@ -1032,6 +1033,8 @@ const ResumeCard: React.FC<{
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
+            opacity: hover ? 0.8 : 1,
+            transition: 'opacity 0.2s',
           }}
         >
           <Clock size={12} />
@@ -1046,14 +1049,26 @@ const ResumeCard: React.FC<{
             padding: '5px 12px',
             border: 'none',
             borderRadius: '5px',
-            backgroundColor: hover ? '#2d2d2d' : '#f0f0f0',
-            color: hover ? '#fff' : '#666',
+            backgroundColor: '#2d2d2d',
+            color: '#fff',
             fontSize: '11px',
             fontWeight: '600',
             cursor: 'pointer',
-            transition: 'all 0.2s',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            opacity: hover ? 1 : 0,
+            transform: hover ? 'translateY(0)' : 'translateY(-4px)',
+            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.backgroundColor = '#1a1a1a'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.backgroundColor = '#2d2d2d'
           }}
         >
+          <Pencil size={12} />
           继续编辑
         </button>
       </div>

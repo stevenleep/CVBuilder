@@ -21,6 +21,22 @@ export const ExamplePreviewPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       const found = getExampleById(id)
+      console.log('🔍 ExamplePreviewPage - 加载示例:', id)
+      console.log('📄 示例数据:', found)
+      if (found?.schema?.root?.children) {
+        console.log('✅ 子节点数量:', found.schema.root.children.length)
+        // 打印工作经历的第一条内容来验证
+        const workSection = found.schema.root.children.find(
+          (c: any) => c.props?.title === '工作经历'
+        )
+        if (workSection) {
+          console.log('💼 工作经历section:', workSection)
+          const firstExp = workSection.children?.[0]
+          if (firstExp?.children?.[0]?.props?.items) {
+            console.log('📝 第一条工作经历内容:', firstExp.children[0].props.items[0])
+          }
+        }
+      }
       if (found) {
         setExample(found)
         setPageSchema(found.schema)

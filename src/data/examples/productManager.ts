@@ -32,122 +32,19 @@ export const productManagerExample: ExampleResume = {
           id: nanoid(),
           type: 'PersonalInfo',
           props: {
-            name: '李思',
+            name: '李雨晨',
             title: '高级产品经理',
-            phone: '139-0000-0000',
-            email: 'lisi@example.com',
+            phone: '139-8765-4321',
+            email: 'yuchenli@example.com',
             location: '上海·浦东新区',
-            website: 'www.lisi-portfolio.com',
+            website: 'www.yuchenli.com',
           },
           style: {
             marginBottom: '32px',
           },
           children: [],
         },
-        {
-          id: nanoid(),
-          type: 'Section',
-          props: {
-            title: '个人简介',
-            icon: '👤',
-          },
-          style: {
-            marginBottom: '24px',
-          },
-          children: [
-            {
-              id: nanoid(),
-              type: 'TextBlock',
-              props: {
-                content:
-                  '5年+互联网产品经验，擅长从0到1打造产品，成功主导过多个百万级用户产品。具备优秀的需求分析、数据分析和项目管理能力，注重用户体验和商业价值平衡。',
-              },
-              style: {},
-              children: [],
-            },
-          ],
-        },
-        {
-          id: nanoid(),
-          type: 'Section',
-          props: {
-            title: '工作经历',
-            icon: '💼',
-          },
-          style: {
-            marginBottom: '24px',
-          },
-          children: [
-            {
-              id: nanoid(),
-              type: 'ExperienceItem',
-              props: {
-                company: '互联网大厂',
-                position: '高级产品经理',
-                startDate: '2021.01',
-                endDate: '至今',
-                location: '上海',
-                description: '负责核心产品的规划和迭代',
-              },
-              style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '主导产品从0到1，上线后6个月获得100万+用户，月活跃率达45%',
-                      '优化用户转化漏斗，付费转化率提升60%，年营收增长300万',
-                      '建立数据驱动的产品迭代机制，通过A/B测试优化核心功能',
-                      '跨部门协作推进项目，管理研发、设计、运营团队高效配合',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: nanoid(),
-          type: 'Section',
-          props: {
-            title: '项目经验',
-            icon: '🚀',
-          },
-          style: {
-            marginBottom: '24px',
-          },
-          children: [
-            {
-              id: nanoid(),
-              type: 'ProjectItem',
-              props: {
-                name: 'SaaS 产品从 0 到 1',
-                role: '产品负责人',
-                startDate: '2022.03',
-                endDate: '2023.06',
-              },
-              style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '市场调研：访谈50+目标用户，分析10+竞品，确定差异化定位',
-                      '产品设计：设计核心功能和交互流程，输出PRD 30+篇',
-                      '上线成果：6个月获得付费企业客户200+，NPS达70+',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
-            },
-          ],
-        },
+        // 2. 核心技能
         {
           id: nanoid(),
           type: 'Section',
@@ -164,13 +61,195 @@ export const productManagerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通产品规划与设计，从需求到落地全流程</li><li>掌握需求分析方法，能够准确把握用户痛点</li><li>熟练使用数据分析工具，驱动产品决策</li><li>具备项目管理能力，确保产品按时交付</li><li>了解用户研究方法，定性与定量结合</li><li>熟练使用 Axure、Figma 等原型设计工具</li></ul>',
+                  '<ul><li><strong>产品能力：</strong>精通产品全生命周期管理（从 0 到 1、增长优化、商业化），擅长需求分析、竞品分析、用户研究</li><li><strong>数据分析：</strong>熟练使用 SQL 进行数据查询和分析，掌握数据埋点设计，熟悉 Google Analytics、神策数据、GrowingIO 等工具</li><li><strong>增长方法论：</strong>掌握 AARRR 增长模型、北极星指标、A/B 测试方法论，有实际增长项目经验</li><li><strong>设计工具：</strong>Axure、Figma、Sketch、Xmind、ProcessOn，能独立输出高保真原型和交互设计</li><li><strong>项目管理：</strong>熟悉敏捷开发流程，使用 JIRA、Teambition 等工具进行项目管理，确保按时交付</li><li><strong>商业思维：</strong>具备商业 sense，能平衡用户价值和商业价值，参与过 Pricing、LTV、CAC 等商业模型设计</li><li><strong>跨部门协作：</strong>优秀的沟通和推动能力，能高效协调研发、设计、运营、市场等团队</li></ul>',
               },
               style: {},
               children: [],
             },
           ],
         },
+        // 3. 工作经历
+        {
+          id: nanoid(),
+          type: 'Section',
+          props: {
+            title: '工作经历',
+            icon: '💼',
+          },
+          style: {
+            marginBottom: '24px',
+          },
+          children: [
+            {
+              id: nanoid(),
+              type: 'ExperienceItem',
+              props: {
+                company: '腾讯',
+                position: '高级产品经理',
+                startDate: '2021.03',
+                endDate: '至今',
+                location: '上海',
+                description: '企业服务事业群，负责企业协作 SaaS 产品规划与增长',
+              },
+              style: {
+                marginBottom: '20px',
+              },
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      '主导企业协作产品从 0 到 1 孵化，负责产品定位、功能规划和 MVP 打磨，上线 8 个月获得付费企业客户 800+，ARR 突破 1000 万',
+                      '建立数据驱动的增长体系：搭建完整的数据埋点和分析体系，通过漏斗分析定位问题，优化注册转化率从 12% 提升至 28%',
+                      '推动付费转化优化专项：设计分层定价策略，开发试用转付费流程，付费转化率提升 65%，客单价增长 40%',
+                      '跨部门协作推进重点项目，协调 3 个研发团队（15 人）、设计团队、运营团队，按时交付 4 个大版本',
+                      '深度参与商业化探索，设计增值服务和企业定制方案，为公司贡献 ARR 300 万+',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
+            },
+            {
+              id: nanoid(),
+              type: 'ExperienceItem',
+              props: {
+                company: '美团',
+                position: '产品经理',
+                startDate: '2019.07',
+                endDate: '2021.02',
+                location: '上海',
+                description: '到店事业群，负责商家端产品和数据中台产品设计',
+              },
+              style: {
+                marginBottom: '20px',
+              },
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      '负责商家端核心功能迭代，包括订单管理、营销工具、数据看板等模块，服务 5w+ 商家',
+                      '主导商家数据看板产品，整合多方数据源，设计 20+ 数据指标和可视化报表，商家使用率达 75%',
+                      '推动产品体验优化：通过用户访谈和数据分析，识别核心痛点，优化核心流程，商家满意度从 68 分提升至 82 分',
+                      '参与商家成长体系设计，制定新手引导和激励机制，新商家留存率提升 35%',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
+            },
+            {
+              id: nanoid(),
+              type: 'ExperienceItem',
+              props: {
+                company: '某创业公司',
+                position: '产品经理',
+                startDate: '2017.07',
+                endDate: '2019.06',
+                location: '上海',
+                description: '负责教育 SaaS 产品设计，从 0 到 1 搭建产品',
+              },
+              style: {},
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      '深入教育行业调研，完成 60+ 用户访谈，输出竞品分析和需求文档，明确产品定位',
+                      '独立负责产品规划与设计，输出 PRD 40+ 篇，跟进研发实现，确保产品按时上线',
+                      '产品上线后快速迭代，通过用户反馈和数据分析持续优化，用户留存率达 60%',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
+            },
+          ],
+        },
+        // 4. 项目经验
+        {
+          id: nanoid(),
+          type: 'Section',
+          props: {
+            title: '项目经验',
+            icon: '🚀',
+          },
+          style: {
+            marginBottom: '24px',
+          },
+          children: [
+            {
+              id: nanoid(),
+              type: 'ProjectItem',
+              props: {
+                name: '企业协作 SaaS 产品从 0 到 1',
+                role: '产品负责人',
+                startDate: '2021.06',
+                endDate: '2022.03',
+                tech: '项目管理、知识库、在线文档协作',
+              },
+              style: {
+                marginBottom: '20px',
+              },
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      '项目背景：针对中小企业团队协作痛点，打造轻量级企业协作工具',
+                      '市场调研：深度访谈 60+ 目标用户，调研 15+ 竞品，输出用户画像和产品定位报告',
+                      '产品规划：制定产品 Roadmap，设计 MVP 核心功能（项目管理、知识库、在线文档），输出 PRD 35+ 篇',
+                      '敏捷开发：采用双周迭代模式，与研发团队紧密协作，快速验证假设和优化体验',
+                      '增长策略：设计 Freemium 商业模式，通过内容营销和社群运营获客，3 个月获取 10000+ 注册用户',
+                      '数据驱动：建立数据看板监控核心指标（DAU、留存、转化），通过 A/B 测试优化关键流程，付费转化率 18%',
+                      '项目成果：产品 PMF 验证成功，8 个月获得 800+ 付费企业，NPS 72，获得 A 轮融资',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
+            },
+            {
+              id: nanoid(),
+              type: 'ProjectItem',
+              props: {
+                name: '商家数据中台产品',
+                role: '产品经理',
+                startDate: '2020.03',
+                endDate: '2020.12',
+                tech: '数据可视化、BI分析、智能推荐',
+              },
+              style: {},
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      '需求分析：调研商家痛点，发现商家缺乏数据分析工具导致决策盲目',
+                      '产品设计：设计数据看板产品，整合订单、用户、营销等多维度数据，提供 25+ 核心指标和可视化图表',
+                      '智能洞察：引入算法能力，提供经营分析和优化建议（如高峰期预测、菜品推荐等）',
+                      '用户验证：小范围灰度测试，收集反馈快速迭代，最终全量上线',
+                      '项目成果：商家使用率 75%，满意度 4.2/5，帮助商家提升运营效率 30%',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
+            },
+          ],
+        },
+        // 5. 教育背景
         {
           id: nanoid(),
           type: 'Section',
@@ -184,14 +263,28 @@ export const productManagerExample: ExampleResume = {
               id: nanoid(),
               type: 'EducationItem',
               props: {
-                school: '某某大学',
+                school: '上海交通大学',
                 major: '工商管理',
                 degree: '本科',
                 startDate: '2013.09',
                 endDate: '2017.06',
               },
               style: {},
-              children: [],
+              children: [
+                {
+                  id: nanoid(),
+                  type: 'BulletList',
+                  props: {
+                    items: [
+                      'GPA: 3.6/4.0，核心课程：市场营销、战略管理、运营管理、数据分析',
+                      '担任学生会外联部副部长，组织校企合作活动 10+ 场',
+                      '获得校级二等奖学金、优秀学生干部称号',
+                    ],
+                  },
+                  style: {},
+                  children: [],
+                },
+              ],
             },
           ],
         },
