@@ -147,14 +147,8 @@ export const marketingManagerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '数字营销', level: 90 },
-                  { name: '品牌策划', level: 85 },
-                  { name: '内容营销', level: 90 },
-                  { name: '数据分析', level: 80 },
-                  { name: '用户增长', level: 85 },
-                  { name: '社交媒体', level: 90 },
-                ],
+                content:
+                  '<ul><li>精通数字营销全链路（SEO、SEM、信息流等）</li><li>擅长品牌策划和定位</li><li>掌握内容营销策略和执行</li><li>熟练使用数据分析工具，优化营销ROI</li><li>具备用户增长和裂变营销经验</li><li>精通社交媒体运营（微信、微博、抖音等）</li></ul>',
               },
               style: {},
               children: [],

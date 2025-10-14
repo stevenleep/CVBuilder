@@ -1,20 +1,20 @@
 /**
- * 后端工程师简历示例
+ * 客服经理简历示例
  */
 
 import { nanoid } from 'nanoid'
 import type { ExampleResume } from '@/data/types'
 
-export const backendEngineerExample: ExampleResume = {
-  id: 'example-backend-engineer',
-  name: '后端工程师简历',
-  category: '技术',
-  description: '适合后端开发、服务端工程师等岗位',
-  tags: ['技术', '后端', 'Java'],
+export const customerServiceExample: ExampleResume = {
+  id: 'example-customer-service',
+  name: '客服经理简历',
+  category: '客服',
+  description: '适合客服、客户成功等岗位',
+  tags: ['客服', '客户', '服务'],
   schema: {
     version: '1.0.0',
     meta: {
-      title: '后端工程师简历示例',
+      title: '客服经理简历示例',
       description: '使用 CVKit 创建',
       createTime: new Date().toISOString(),
       updateTime: new Date().toISOString(),
@@ -32,12 +32,11 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'PersonalInfo',
           props: {
-            name: '刘强',
-            title: 'Java 后端工程师',
-            phone: '137-0000-0000',
-            email: 'liuqiang@example.com',
-            location: '杭州·西湖区',
-            github: 'github.com/liuqiang',
+            name: '孙悦',
+            title: '客服经理',
+            phone: '177-0000-0000',
+            email: 'sunyue@example.com',
+            location: '广州·天河区',
           },
           style: {
             marginBottom: '32px',
@@ -60,7 +59,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '6年+后端开发经验，精通 Java/Spring 技术栈，熟悉分布式系统设计和微服务架构。有高并发场景优化经验，注重代码质量和系统稳定性。',
+                  '6年+客户服务经验，擅长客服团队管理和服务体系搭建。具备丰富的客户沟通和投诉处理经验，致力于提升客户满意度和忠诚度。',
               },
               style: {},
               children: [],
@@ -83,11 +82,11 @@ export const backendEngineerExample: ExampleResume = {
               type: 'ExperienceItem',
               props: {
                 company: '某电商平台',
-                position: '高级后端工程师',
+                position: '客服经理',
                 startDate: '2020.03',
                 endDate: '至今',
-                location: '杭州',
-                description: '负责核心交易系统的设计和开发',
+                location: '广州',
+                description: '负责客服团队管理和客户服务体系优化',
               },
               style: {
                 marginBottom: '20px',
@@ -98,10 +97,11 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '重构订单系统，支持日均百万级订单处理，系统可用性达99.99%',
-                      '优化数据库查询性能，关键接口响应时间降低70%',
-                      '设计并实现分布式缓存方案，减少数据库压力80%',
-                      '搭建微服务监控体系，实现全链路追踪和告警',
+                      '管理30人客服团队，客户满意度从85%提升至95%',
+                      '优化客服工作流程，平均响应时间缩短40%，问题解决率提升至92%',
+                      '建立客户分级服务体系，VIP客户留存率提升25%',
+                      '设计并实施客服培训计划，新员工上岗周期缩短30%',
+                      '分析客户反馈数据，推动产品和服务改进，投诉率下降35%',
                     ],
                   },
                   style: {},
@@ -114,11 +114,11 @@ export const backendEngineerExample: ExampleResume = {
               type: 'ExperienceItem',
               props: {
                 company: '互联网公司',
-                position: 'Java 开发工程师',
-                startDate: '2018.07',
+                position: '客服主管',
+                startDate: '2018.06',
                 endDate: '2020.02',
-                location: '杭州',
-                description: '参与多个业务系统的开发和维护',
+                location: '广州',
+                description: '负责客服团队日常管理和服务质量把控',
               },
               style: {},
               children: [
@@ -127,9 +127,9 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '使用 Spring Boot 开发用户中心、支付系统等核心服务',
-                      '设计并实现高性能的消息队列处理系统',
-                      '优化 SQL 查询和索引，数据库性能提升50%',
+                      '管理10人客服小组，达成月度服务指标',
+                      '处理复杂客诉和升级问题，客户满意度保持90%以上',
+                      '参与客服系统选型和优化，提升工作效率',
                     ],
                   },
                   style: {},
@@ -143,7 +143,7 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
-            title: '技术栈',
+            title: '专业技能',
             icon: '💡',
           },
           style: {
@@ -155,7 +155,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通 Java 及 Spring 全家桶（Spring Boot、Spring Cloud、MyBatis）</li><li>熟练使用 MySQL、Redis、MongoDB 等数据库</li><li>掌握微服务架构设计和分布式系统开发</li><li>熟悉 Kafka、RabbitMQ 等消息中间件</li><li>了解 Docker、Kubernetes 容器化技术</li><li>具备丰富的性能优化和故障排查经验</li></ul>',
+                  '<ul><li>精通客户服务管理体系和质量控制方法</li><li>熟练使用客服系统（如网易七鱼、Udesk等）</li><li>掌握客户关系管理和客户体验优化</li><li>具备团队管理和培训能力</li><li>擅长数据分析和报表制作（Excel、Power BI）</li><li>具备优秀的沟通、协调和抗压能力</li></ul>',
               },
               style: {},
               children: [],
@@ -177,11 +177,11 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '分布式交易系统重构',
-                role: '核心开发',
+                name: '智能客服系统上线',
+                role: '项目负责人',
                 startDate: '2021.06',
-                endDate: '2022.12',
-                tech: 'Spring Cloud, MySQL, Redis, Kafka',
+                endDate: '2022.03',
+                tech: '智能客服、知识库、工单系统',
               },
               style: {},
               children: [
@@ -190,10 +190,10 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '设计并实现订单、支付、库存等核心服务的微服务化改造',
-                      '引入分布式事务解决方案，保证数据一致性',
-                      '系统性能提升5倍，支持并发量从1000 TPS提升至5000 TPS',
-                      '搭建完整的监控告警体系，故障恢复时间缩短80%',
+                      '主导智能客服系统选型和实施，搭建AI问答机器人',
+                      '梳理常见问题，建立知识库，覆盖80%常见咨询',
+                      '机器人分流30%咨询量，人工客服压力大幅减轻',
+                      '系统上线后，客户自助解决率从40%提升至70%',
                     ],
                   },
                   style: {},
@@ -219,7 +219,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'EducationItem',
               props: {
                 school: '某某大学',
-                major: '软件工程',
+                major: '工商管理',
                 degree: '本科',
                 startDate: '2014.09',
                 endDate: '2018.06',
@@ -230,7 +230,7 @@ export const backendEngineerExample: ExampleResume = {
                   id: nanoid(),
                   type: 'BulletList',
                   props: {
-                    items: ['GPA: 3.6/4.0', '获得校级优秀毕业生', 'ACM 程序设计竞赛省级二等奖'],
+                    items: ['GPA: 3.6/4.0', '获得校级优秀学生奖学金', '担任学生会外联部副部长'],
                   },
                   style: {},
                   children: [],
@@ -243,8 +243,8 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
-            title: '自我评价',
-            icon: '✨',
+            title: '证书/获奖',
+            icon: '🏅',
           },
           style: {},
           children: [
@@ -252,8 +252,7 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'TextBlock',
               props: {
-                content:
-                  '热爱技术，追求卓越。具备扎实的计算机基础和系统设计能力，能独立完成复杂系统的架构设计。注重代码质量和工程规范，有良好的团队协作精神。持续学习新技术，关注行业动态。',
+                content: '• 客户服务管理师认证\n• 2023年度优秀管理者\n• 公司服务之星\n• 英语四级',
               },
               style: {},
               children: [],

@@ -147,14 +147,8 @@ export const contentWriterExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '内容创作', level: 95 },
-                  { name: '短视频制作', level: 85 },
-                  { name: '社交媒体运营', level: 90 },
-                  { name: '数据分析', level: 80 },
-                  { name: '热点策划', level: 90 },
-                  { name: 'PR稿撰写', level: 85 },
-                ],
+                content:
+                  '<ul><li>精通图文和视频内容创作</li><li>掌握短视频制作和剪辑（剪映、PR）</li><li>擅长社交媒体运营和粉丝互动</li><li>具备数据分析能力，优化内容策略</li><li>敏锐的热点捕捉和策划能力</li><li>熟练撰写 PR 稿和软文</li></ul>',
               },
               style: {},
               children: [],

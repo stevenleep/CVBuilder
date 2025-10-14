@@ -163,14 +163,8 @@ export const uiDesignerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: 'Figma / Sketch', level: 95 },
-                  { name: 'Adobe Creative Suite', level: 90 },
-                  { name: '交互设计', level: 85 },
-                  { name: '原型设计', level: 85 },
-                  { name: '用户研究', level: 75 },
-                  { name: 'HTML/CSS', level: 70 },
-                ],
+                content:
+                  '<ul><li>精通 Figma、Sketch 等主流设计工具</li><li>熟练使用 Adobe Creative Suite（PS、AI、AE等）</li><li>掌握交互设计原则和方法论</li><li>具备完整的原型设计能力</li><li>了解用户研究和可用性测试</li><li>掌握基础的 HTML/CSS，能与开发高效协作</li></ul>',
               },
               style: {},
               children: [],

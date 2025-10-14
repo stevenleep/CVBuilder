@@ -1,20 +1,20 @@
 /**
- * 后端工程师简历示例
+ * 电商运营简历示例
  */
 
 import { nanoid } from 'nanoid'
 import type { ExampleResume } from '@/data/types'
 
-export const backendEngineerExample: ExampleResume = {
-  id: 'example-backend-engineer',
-  name: '后端工程师简历',
-  category: '技术',
-  description: '适合后端开发、服务端工程师等岗位',
-  tags: ['技术', '后端', 'Java'],
+export const ecommerceOperatorExample: ExampleResume = {
+  id: 'example-ecommerce-operator',
+  name: '电商运营简历',
+  category: '运营',
+  description: '适合电商运营、店铺运营等岗位',
+  tags: ['电商', '运营', '淘宝'],
   schema: {
     version: '1.0.0',
     meta: {
-      title: '后端工程师简历示例',
+      title: '电商运营简历示例',
       description: '使用 CVKit 创建',
       createTime: new Date().toISOString(),
       updateTime: new Date().toISOString(),
@@ -32,12 +32,11 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'PersonalInfo',
           props: {
-            name: '刘强',
-            title: 'Java 后端工程师',
-            phone: '137-0000-0000',
-            email: 'liuqiang@example.com',
-            location: '杭州·西湖区',
-            github: 'github.com/liuqiang',
+            name: '吴越',
+            title: '电商运营',
+            phone: '188-0000-0000',
+            email: 'wuyue@example.com',
+            location: '杭州·滨江区',
           },
           style: {
             marginBottom: '32px',
@@ -60,7 +59,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '6年+后端开发经验，精通 Java/Spring 技术栈，熟悉分布式系统设计和微服务架构。有高并发场景优化经验，注重代码质量和系统稳定性。',
+                  '5年+电商运营经验，精通淘宝、天猫、京东等主流电商平台。擅长店铺运营、活动策划和数据分析，成功操盘过多个爆款产品。',
               },
               style: {},
               children: [],
@@ -82,12 +81,12 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ExperienceItem',
               props: {
-                company: '某电商平台',
-                position: '高级后端工程师',
-                startDate: '2020.03',
+                company: '某电商公司',
+                position: '电商运营经理',
+                startDate: '2020.04',
                 endDate: '至今',
                 location: '杭州',
-                description: '负责核心交易系统的设计和开发',
+                description: '负责天猫旗舰店整体运营和团队管理',
               },
               style: {
                 marginBottom: '20px',
@@ -98,10 +97,11 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '重构订单系统，支持日均百万级订单处理，系统可用性达99.99%',
-                      '优化数据库查询性能，关键接口响应时间降低70%',
-                      '设计并实现分布式缓存方案，减少数据库压力80%',
-                      '搭建微服务监控体系，实现全链路追踪和告警',
+                      '管理店铺年销售额从3000万增长至1.2亿，增长率300%',
+                      '策划并执行双11、618等大促活动，单日销售额突破2000万',
+                      '打造爆款产品5款，单品月销10万+件',
+                      '优化店铺转化率从2.5%提升至4.8%，ROI从1:3提升至1:5',
+                      '搭建运营团队8人，制定运营SOP和考核体系',
                     ],
                   },
                   style: {},
@@ -113,12 +113,12 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ExperienceItem',
               props: {
-                company: '互联网公司',
-                position: 'Java 开发工程师',
+                company: '电商品牌',
+                position: '运营专员',
                 startDate: '2018.07',
-                endDate: '2020.02',
+                endDate: '2020.03',
                 location: '杭州',
-                description: '参与多个业务系统的开发和维护',
+                description: '负责日常店铺运营和推广',
               },
               style: {},
               children: [
@@ -127,9 +127,9 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '使用 Spring Boot 开发用户中心、支付系统等核心服务',
-                      '设计并实现高性能的消息队列处理系统',
-                      '优化 SQL 查询和索引，数据库性能提升50%',
+                      '负责商品上架、详情页优化、活动报名等日常工作',
+                      '通过直通车、钻展等付费推广，ROI保持在1:4以上',
+                      '分析运营数据，优化产品和营销策略',
                     ],
                   },
                   style: {},
@@ -143,7 +143,7 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
-            title: '技术栈',
+            title: '专业技能',
             icon: '💡',
           },
           style: {
@@ -155,7 +155,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通 Java 及 Spring 全家桶（Spring Boot、Spring Cloud、MyBatis）</li><li>熟练使用 MySQL、Redis、MongoDB 等数据库</li><li>掌握微服务架构设计和分布式系统开发</li><li>熟悉 Kafka、RabbitMQ 等消息中间件</li><li>了解 Docker、Kubernetes 容器化技术</li><li>具备丰富的性能优化和故障排查经验</li></ul>',
+                  '<ul><li>精通淘宝、天猫、京东、拼多多等电商平台规则和运营策略</li><li>熟练使用直通车、超级推荐、钻展等推广工具</li><li>掌握选品、定价、促销等运营技巧</li><li>擅长数据分析（生意参谋、数据魔方等）</li><li>熟悉店铺装修、详情页设计、视觉营销</li><li>具备优秀的活动策划和执行能力</li></ul>',
               },
               style: {},
               children: [],
@@ -177,11 +177,11 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '分布式交易系统重构',
-                role: '核心开发',
-                startDate: '2021.06',
-                endDate: '2022.12',
-                tech: 'Spring Cloud, MySQL, Redis, Kafka',
+                name: '新品牌0-1冷启动',
+                role: '运营负责人',
+                startDate: '2021.03',
+                endDate: '2022.06',
+                tech: '电商运营、品牌营销',
               },
               style: {},
               children: [
@@ -190,10 +190,10 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '设计并实现订单、支付、库存等核心服务的微服务化改造',
-                      '引入分布式事务解决方案，保证数据一致性',
-                      '系统性能提升5倍，支持并发量从1000 TPS提升至5000 TPS',
-                      '搭建完整的监控告警体系，故障恢复时间缩短80%',
+                      '从0搭建天猫旗舰店，完成品牌入驻和店铺装修',
+                      '制定产品线规划和定价策略，上架SKU 50+个',
+                      '通过内容营销和KOL合作，快速积累种子用户',
+                      '6个月内月销突破500万，店铺层级达到Top 7',
                     ],
                   },
                   style: {},
@@ -219,7 +219,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'EducationItem',
               props: {
                 school: '某某大学',
-                major: '软件工程',
+                major: '电子商务',
                 degree: '本科',
                 startDate: '2014.09',
                 endDate: '2018.06',
@@ -230,7 +230,7 @@ export const backendEngineerExample: ExampleResume = {
                   id: nanoid(),
                   type: 'BulletList',
                   props: {
-                    items: ['GPA: 3.6/4.0', '获得校级优秀毕业生', 'ACM 程序设计竞赛省级二等奖'],
+                    items: ['GPA: 3.5/4.0', '校级优秀学生', '参与电商创业大赛获二等奖'],
                   },
                   style: {},
                   children: [],
@@ -243,8 +243,8 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
-            title: '自我评价',
-            icon: '✨',
+            title: '荣誉/证书',
+            icon: '🏅',
           },
           style: {},
           children: [
@@ -252,8 +252,7 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'TextBlock',
               props: {
-                content:
-                  '热爱技术，追求卓越。具备扎实的计算机基础和系统设计能力，能独立完成复杂系统的架构设计。注重代码质量和工程规范，有良好的团队协作精神。持续学习新技术，关注行业动态。',
+                content: '• 2023年度最佳运营奖\n• 阿里巴巴电商运营认证\n• 双11优秀运营团队负责人',
               },
               style: {},
               children: [],

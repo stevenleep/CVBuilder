@@ -123,14 +123,8 @@ export const accountantExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '财务核算', level: 95 },
-                  { name: '税务筹划', level: 90 },
-                  { name: '财务分析', level: 85 },
-                  { name: '成本管理', level: 85 },
-                  { name: '审计', level: 90 },
-                  { name: 'ERP系统', level: 80 },
-                ],
+                content:
+                  '<ul><li>精通财务核算和账务处理</li><li>掌握税务筹划和税务申报</li><li>熟练进行财务分析和报表编制</li><li>具备成本管理和成本控制能力</li><li>了解审计流程和审计准则</li><li>熟练使用 SAP、用友等 ERP 系统</li></ul>',
               },
               style: {},
               children: [],

@@ -163,14 +163,8 @@ export const productManagerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '产品规划与设计', level: 90 },
-                  { name: '需求分析', level: 90 },
-                  { name: '数据分析', level: 85 },
-                  { name: '项目管理', level: 85 },
-                  { name: '用户研究', level: 80 },
-                  { name: 'Axure / Figma', level: 85 },
-                ],
+                content:
+                  '<ul><li>精通产品规划与设计，从需求到落地全流程</li><li>掌握需求分析方法，能够准确把握用户痛点</li><li>熟练使用数据分析工具，驱动产品决策</li><li>具备项目管理能力，确保产品按时交付</li><li>了解用户研究方法，定性与定量结合</li><li>熟练使用 Axure、Figma 等原型设计工具</li></ul>',
               },
               style: {},
               children: [],

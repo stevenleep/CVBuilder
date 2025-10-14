@@ -146,14 +146,8 @@ export const operationsManagerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '用户增长', level: 90 },
-                  { name: '数据分析', level: 85 },
-                  { name: '内容运营', level: 85 },
-                  { name: '社群运营', level: 90 },
-                  { name: '活动策划', level: 80 },
-                  { name: '裂变营销', level: 85 },
-                ],
+                content:
+                  '<ul><li>精通用户增长策略和增长黑客方法</li><li>熟练进行数据分析和运营决策</li><li>掌握内容运营和内容营销</li><li>擅长社群运营和用户留存</li><li>具备丰富的活动策划和执行经验</li><li>了解裂变营销和私域流量运营</li></ul>',
               },
               style: {},
               children: [],

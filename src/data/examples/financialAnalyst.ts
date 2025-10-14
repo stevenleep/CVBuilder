@@ -1,20 +1,20 @@
 /**
- * 后端工程师简历示例
+ * 财务分析师简历示例
  */
 
 import { nanoid } from 'nanoid'
 import type { ExampleResume } from '@/data/types'
 
-export const backendEngineerExample: ExampleResume = {
-  id: 'example-backend-engineer',
-  name: '后端工程师简历',
-  category: '技术',
-  description: '适合后端开发、服务端工程师等岗位',
-  tags: ['技术', '后端', 'Java'],
+export const financialAnalystExample: ExampleResume = {
+  id: 'example-financial-analyst',
+  name: '财务分析师简历',
+  category: '财务',
+  description: '适合财务分析、会计等岗位',
+  tags: ['财务', '会计', '分析'],
   schema: {
     version: '1.0.0',
     meta: {
-      title: '后端工程师简历示例',
+      title: '财务分析师简历示例',
       description: '使用 CVKit 创建',
       createTime: new Date().toISOString(),
       updateTime: new Date().toISOString(),
@@ -32,12 +32,11 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'PersonalInfo',
           props: {
-            name: '刘强',
-            title: 'Java 后端工程师',
-            phone: '137-0000-0000',
-            email: 'liuqiang@example.com',
-            location: '杭州·西湖区',
-            github: 'github.com/liuqiang',
+            name: '陈晓',
+            title: '财务分析师',
+            phone: '186-0000-0000',
+            email: 'chenxiao@example.com',
+            location: '上海·浦东新区',
           },
           style: {
             marginBottom: '32px',
@@ -60,7 +59,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '6年+后端开发经验，精通 Java/Spring 技术栈，熟悉分布式系统设计和微服务架构。有高并发场景优化经验，注重代码质量和系统稳定性。',
+                  '6年+财务分析经验，精通财务建模和数据分析。熟悉上市公司财务报表编制和分析，具备扎实的会计理论基础和财务管理能力。持有CPA、CFA证书。',
               },
               style: {},
               children: [],
@@ -82,12 +81,12 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ExperienceItem',
               props: {
-                company: '某电商平台',
-                position: '高级后端工程师',
-                startDate: '2020.03',
+                company: '某上市公司',
+                position: '高级财务分析师',
+                startDate: '2020.01',
                 endDate: '至今',
-                location: '杭州',
-                description: '负责核心交易系统的设计和开发',
+                location: '上海',
+                description: '负责公司财务分析、预算管理和投资决策支持',
               },
               style: {
                 marginBottom: '20px',
@@ -98,10 +97,10 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '重构订单系统，支持日均百万级订单处理，系统可用性达99.99%',
-                      '优化数据库查询性能，关键接口响应时间降低70%',
-                      '设计并实现分布式缓存方案，减少数据库压力80%',
-                      '搭建微服务监控体系，实现全链路追踪和告警',
+                      '主导年度预算编制和月度滚动预测，预算准确率达95%以上',
+                      '建立财务分析模型，为管理层提供经营决策支持，助力营收增长30%',
+                      '优化成本管控体系，通过精细化管理降低运营成本15%',
+                      '负责投资项目财务可行性分析，累计评估项目20+个，投资回报率超预期',
                     ],
                   },
                   style: {},
@@ -113,12 +112,12 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ExperienceItem',
               props: {
-                company: '互联网公司',
-                position: 'Java 开发工程师',
-                startDate: '2018.07',
-                endDate: '2020.02',
-                location: '杭州',
-                description: '参与多个业务系统的开发和维护',
+                company: '会计师事务所',
+                position: '审计师',
+                startDate: '2017.07',
+                endDate: '2019.12',
+                location: '上海',
+                description: '参与上市公司年度审计和IPO审计项目',
               },
               style: {},
               children: [
@@ -127,9 +126,9 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '使用 Spring Boot 开发用户中心、支付系统等核心服务',
-                      '设计并实现高性能的消息队列处理系统',
-                      '优化 SQL 查询和索引，数据库性能提升50%',
+                      '参与20+家企业的年度财务报表审计工作',
+                      '协助2家公司完成IPO审计，成功上市',
+                      '负责财务尽职调查，识别并报告财务风险',
                     ],
                   },
                   style: {},
@@ -143,7 +142,7 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
-            title: '技术栈',
+            title: '专业技能',
             icon: '💡',
           },
           style: {
@@ -155,7 +154,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通 Java 及 Spring 全家桶（Spring Boot、Spring Cloud、MyBatis）</li><li>熟练使用 MySQL、Redis、MongoDB 等数据库</li><li>掌握微服务架构设计和分布式系统开发</li><li>熟悉 Kafka、RabbitMQ 等消息中间件</li><li>了解 Docker、Kubernetes 容器化技术</li><li>具备丰富的性能优化和故障排查经验</li></ul>',
+                  '<ul><li>精通财务报表分析、财务建模和估值分析</li><li>熟练使用 Excel、Power BI、Tableau 进行数据分析和可视化</li><li>熟悉 SAP、Oracle 等财务管理系统</li><li>掌握成本核算、预算管理和财务风险控制</li><li>了解税法、公司法等相关法律法规</li><li>具备良好的商业敏感度和沟通能力</li></ul>',
               },
               style: {},
               children: [],
@@ -177,11 +176,11 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '分布式交易系统重构',
-                role: '核心开发',
-                startDate: '2021.06',
-                endDate: '2022.12',
-                tech: 'Spring Cloud, MySQL, Redis, Kafka',
+                name: '全面预算管理系统实施',
+                role: '项目负责人',
+                startDate: '2021.03',
+                endDate: '2022.06',
+                tech: 'SAP BPC, Excel, Power BI',
               },
               style: {},
               children: [
@@ -190,10 +189,10 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '设计并实现订单、支付、库存等核心服务的微服务化改造',
-                      '引入分布式事务解决方案，保证数据一致性',
-                      '系统性能提升5倍，支持并发量从1000 TPS提升至5000 TPS',
-                      '搭建完整的监控告警体系，故障恢复时间缩短80%',
+                      '主导公司全面预算管理系统的规划和实施',
+                      '建立预算编制、执行、分析、考核的闭环管理体系',
+                      '实现预算数据自动化采集和实时监控',
+                      '系统上线后，预算编制效率提升70%，数据准确性提升至98%',
                     ],
                   },
                   style: {},
@@ -219,23 +218,42 @@ export const backendEngineerExample: ExampleResume = {
               type: 'EducationItem',
               props: {
                 school: '某某大学',
-                major: '软件工程',
-                degree: '本科',
-                startDate: '2014.09',
-                endDate: '2018.06',
+                major: '会计学',
+                degree: '硕士',
+                startDate: '2015.09',
+                endDate: '2017.06',
               },
-              style: {},
+              style: {
+                marginBottom: '16px',
+              },
               children: [
                 {
                   id: nanoid(),
                   type: 'BulletList',
                   props: {
-                    items: ['GPA: 3.6/4.0', '获得校级优秀毕业生', 'ACM 程序设计竞赛省级二等奖'],
+                    items: [
+                      'GPA: 3.8/4.0，专业排名前5%',
+                      '研究生国家奖学金',
+                      '发表财务管理相关论文2篇',
+                    ],
                   },
                   style: {},
                   children: [],
                 },
               ],
+            },
+            {
+              id: nanoid(),
+              type: 'EducationItem',
+              props: {
+                school: '某某大学',
+                major: '财务管理',
+                degree: '本科',
+                startDate: '2011.09',
+                endDate: '2015.06',
+              },
+              style: {},
+              children: [],
             },
           ],
         },
@@ -243,8 +261,8 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
-            title: '自我评价',
-            icon: '✨',
+            title: '证书资质',
+            icon: '🏅',
           },
           style: {},
           children: [
@@ -253,7 +271,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '热爱技术，追求卓越。具备扎实的计算机基础和系统设计能力，能独立完成复杂系统的架构设计。注重代码质量和工程规范，有良好的团队协作精神。持续学习新技术，关注行业动态。',
+                  '• 注册会计师（CPA）\n• 特许金融分析师（CFA）三级\n• 中级会计师\n• 证券从业资格',
               },
               style: {},
               children: [],

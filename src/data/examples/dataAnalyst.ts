@@ -163,14 +163,8 @@ export const dataAnalystExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: 'Python / Pandas', level: 90 },
-                  { name: 'SQL / Hive', level: 85 },
-                  { name: 'Tableau / Power BI', level: 80 },
-                  { name: '机器学习', level: 70 },
-                  { name: '统计分析', level: 85 },
-                  { name: '商业分析', level: 80 },
-                ],
+                content:
+                  '<ul><li>精通 Python 数据分析（Pandas、NumPy、Matplotlib）</li><li>熟练使用 SQL、Hive 进行数据查询和处理</li><li>掌握 Tableau、Power BI 等数据可视化工具</li><li>了解机器学习算法和应用场景</li><li>具备扎实的统计分析基础</li><li>擅长商业分析和业务洞察</li></ul>',
               },
               style: {},
               children: [],

@@ -1,20 +1,20 @@
 /**
- * 后端工程师简历示例
+ * 测试工程师简历示例
  */
 
 import { nanoid } from 'nanoid'
 import type { ExampleResume } from '@/data/types'
 
-export const backendEngineerExample: ExampleResume = {
-  id: 'example-backend-engineer',
-  name: '后端工程师简历',
+export const qaEngineerExample: ExampleResume = {
+  id: 'example-qa-engineer',
+  name: '测试工程师简历',
   category: '技术',
-  description: '适合后端开发、服务端工程师等岗位',
-  tags: ['技术', '后端', 'Java'],
+  description: '适合测试工程师、QA等岗位',
+  tags: ['测试', 'QA', '质量'],
   schema: {
     version: '1.0.0',
     meta: {
-      title: '后端工程师简历示例',
+      title: '测试工程师简历示例',
       description: '使用 CVKit 创建',
       createTime: new Date().toISOString(),
       updateTime: new Date().toISOString(),
@@ -32,12 +32,12 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'PersonalInfo',
           props: {
-            name: '刘强',
-            title: 'Java 后端工程师',
-            phone: '137-0000-0000',
-            email: 'liuqiang@example.com',
-            location: '杭州·西湖区',
-            github: 'github.com/liuqiang',
+            name: '王敏',
+            title: '高级测试工程师',
+            phone: '135-0000-0000',
+            email: 'wangmin@example.com',
+            location: '上海·徐汇区',
+            github: 'github.com/wangmin',
           },
           style: {
             marginBottom: '32px',
@@ -60,7 +60,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '6年+后端开发经验，精通 Java/Spring 技术栈，熟悉分布式系统设计和微服务架构。有高并发场景优化经验，注重代码质量和系统稳定性。',
+                  '5年+测试开发经验，精通自动化测试和性能测试。熟悉测试框架搭建和CI/CD流程，有丰富的缺陷分析和质量保障经验。',
               },
               style: {},
               children: [],
@@ -82,12 +82,12 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ExperienceItem',
               props: {
-                company: '某电商平台',
-                position: '高级后端工程师',
-                startDate: '2020.03',
+                company: '某互联网公司',
+                position: '高级测试工程师',
+                startDate: '2020.07',
                 endDate: '至今',
-                location: '杭州',
-                description: '负责核心交易系统的设计和开发',
+                location: '上海',
+                description: '负责核心业务的测试工作和质量保障',
               },
               style: {
                 marginBottom: '20px',
@@ -98,10 +98,10 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '重构订单系统，支持日均百万级订单处理，系统可用性达99.99%',
-                      '优化数据库查询性能，关键接口响应时间降低70%',
-                      '设计并实现分布式缓存方案，减少数据库压力80%',
-                      '搭建微服务监控体系，实现全链路追踪和告警',
+                      '搭建自动化测试框架，接口自动化覆盖率达85%，UI自动化覆盖率70%',
+                      '主导性能测试和压测工作，发现并解决多个性能瓶颈，系统吞吐量提升50%',
+                      '建立质量度量体系，通过数据分析驱动质量改进',
+                      '组织代码评审和质量培训，团队整体缺陷率下降40%',
                     ],
                   },
                   style: {},
@@ -113,12 +113,12 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ExperienceItem',
               props: {
-                company: '互联网公司',
-                position: 'Java 开发工程师',
-                startDate: '2018.07',
-                endDate: '2020.02',
-                location: '杭州',
-                description: '参与多个业务系统的开发和维护',
+                company: '软件公司',
+                position: '测试工程师',
+                startDate: '2018.06',
+                endDate: '2020.06',
+                location: '上海',
+                description: '参与多个项目的功能测试和自动化测试',
               },
               style: {},
               children: [
@@ -127,9 +127,9 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '使用 Spring Boot 开发用户中心、支付系统等核心服务',
-                      '设计并实现高性能的消息队列处理系统',
-                      '优化 SQL 查询和索引，数据库性能提升50%',
+                      '负责Web和移动端应用的功能测试，发现并跟踪缺陷500+个',
+                      '编写自动化测试脚本，减少重复性工作，提升测试效率30%',
+                      '参与需求评审和测试用例设计，保证测试覆盖率',
                     ],
                   },
                   style: {},
@@ -143,7 +143,7 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
-            title: '技术栈',
+            title: '专业技能',
             icon: '💡',
           },
           style: {
@@ -155,7 +155,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通 Java 及 Spring 全家桶（Spring Boot、Spring Cloud、MyBatis）</li><li>熟练使用 MySQL、Redis、MongoDB 等数据库</li><li>掌握微服务架构设计和分布式系统开发</li><li>熟悉 Kafka、RabbitMQ 等消息中间件</li><li>了解 Docker、Kubernetes 容器化技术</li><li>具备丰富的性能优化和故障排查经验</li></ul>',
+                  '<ul><li>精通 Selenium、Appium 等自动化测试框架</li><li>熟练使用 Postman、JMeter、Locust 进行接口和性能测试</li><li>掌握 Python、Java 编程语言，能独立开发测试工具</li><li>熟悉 Jenkins、GitLab CI 等持续集成工具</li><li>了解 Docker、Kubernetes 容器化技术</li><li>具备良好的缺陷分析和定位能力</li></ul>',
               },
               style: {},
               children: [],
@@ -177,11 +177,11 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '分布式交易系统重构',
-                role: '核心开发',
-                startDate: '2021.06',
-                endDate: '2022.12',
-                tech: 'Spring Cloud, MySQL, Redis, Kafka',
+                name: '自动化测试平台',
+                role: '测试负责人',
+                startDate: '2021.03',
+                endDate: '2023.06',
+                tech: 'Python, Selenium, Jenkins, Allure',
               },
               style: {},
               children: [
@@ -190,10 +190,10 @@ export const backendEngineerExample: ExampleResume = {
                   type: 'BulletList',
                   props: {
                     items: [
-                      '设计并实现订单、支付、库存等核心服务的微服务化改造',
-                      '引入分布式事务解决方案，保证数据一致性',
-                      '系统性能提升5倍，支持并发量从1000 TPS提升至5000 TPS',
-                      '搭建完整的监控告警体系，故障恢复时间缩短80%',
+                      '从0到1搭建公司级自动化测试平台，支持多项目多环境测试',
+                      '实现用例编排、定时执行、结果统计等核心功能',
+                      '接入CI/CD流程，实现每日自动化回归测试',
+                      '平台使用后，团队测试效率提升60%，发现缺陷数量增加35%',
                     ],
                   },
                   style: {},
@@ -219,7 +219,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'EducationItem',
               props: {
                 school: '某某大学',
-                major: '软件工程',
+                major: '计算机科学与技术',
                 degree: '本科',
                 startDate: '2014.09',
                 endDate: '2018.06',
@@ -230,7 +230,11 @@ export const backendEngineerExample: ExampleResume = {
                   id: nanoid(),
                   type: 'BulletList',
                   props: {
-                    items: ['GPA: 3.6/4.0', '获得校级优秀毕业生', 'ACM 程序设计竞赛省级二等奖'],
+                    items: [
+                      'GPA: 3.5/4.0',
+                      '获得校级优秀学生奖学金',
+                      '参与软件测试课程设计并获优秀',
+                    ],
                   },
                   style: {},
                   children: [],
@@ -243,8 +247,8 @@ export const backendEngineerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
-            title: '自我评价',
-            icon: '✨',
+            title: '证书/获奖',
+            icon: '🏅',
           },
           style: {},
           children: [
@@ -252,8 +256,7 @@ export const backendEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'TextBlock',
               props: {
-                content:
-                  '热爱技术，追求卓越。具备扎实的计算机基础和系统设计能力，能独立完成复杂系统的架构设计。注重代码质量和工程规范，有良好的团队协作精神。持续学习新技术，关注行业动态。',
+                content: '• ISTQB 国际软件测试工程师认证\n• 2023年度优秀员工\n• 公司技术创新奖',
               },
               style: {},
               children: [],

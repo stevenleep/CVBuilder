@@ -217,14 +217,8 @@ export const feishuStyleExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '产品设计与规划', level: 90 },
-                  { name: '用户研究与体验', level: 85 },
-                  { name: '数据分析与运营', level: 82 },
-                  { name: '项目管理', level: 88 },
-                  { name: '团队协作与沟通', level: 90 },
-                  { name: 'Axure / Figma', level: 85 },
-                ],
+                content:
+                  '<ul><li>精通产品设计与规划，能从0到1打造成功产品</li><li>擅长用户研究与体验设计，深刻理解用户需求</li><li>掌握数据分析与运营增长方法论</li><li>具备优秀的项目管理能力，能协调多方资源</li><li>拥有良好的团队协作与跨部门沟通能力</li><li>熟练使用 Axure、Figma、Sketch 等设计工具</li></ul>',
               },
               style: {},
               children: [],

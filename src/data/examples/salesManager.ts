@@ -146,14 +146,8 @@ export const salesManagerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '大客户开发', level: 95 },
-                  { name: '商务谈判', level: 90 },
-                  { name: '方案呈现', level: 85 },
-                  { name: '客户关系管理', level: 90 },
-                  { name: '团队管理', level: 80 },
-                  { name: 'CRM系统', level: 75 },
-                ],
+                content:
+                  '<ul><li>精通大客户开发和维护</li><li>掌握商务谈判技巧和策略</li><li>擅长方案呈现和演讲</li><li>具备完善的客户关系管理能力</li><li>拥有团队管理和培训经验</li><li>熟练使用 CRM 系统和销售工具</li></ul>',
               },
               style: {},
               children: [],

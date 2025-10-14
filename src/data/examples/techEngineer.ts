@@ -196,14 +196,8 @@ export const techEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: 'React / Vue', level: 90 },
-                  { name: 'TypeScript', level: 85 },
-                  { name: 'Node.js', level: 75 },
-                  { name: '前端工程化', level: 85 },
-                  { name: '性能优化', level: 80 },
-                  { name: 'UI/UX 设计', level: 70 },
-                ],
+                content:
+                  '<ul><li>精通 React、Vue.js 及其生态系统（Redux、Vuex、React Router等）</li><li>熟练使用 TypeScript 进行大型项目开发</li><li>掌握 Node.js 后端开发，了解全栈技术</li><li>熟悉前端工程化工具（Webpack、Vite、Rollup）</li><li>具备丰富的前端性能优化经验</li><li>了解 UI/UX 设计原则，能与设计师高效协作</li></ul>',
               },
               style: {},
               children: [],

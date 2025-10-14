@@ -112,6 +112,29 @@ export const projectManagerExample: ExampleResume = {
           id: nanoid(),
           type: 'Section',
           props: {
+            title: '专业技能',
+            icon: '💡',
+          },
+          style: {
+            marginBottom: '24px',
+          },
+          children: [
+            {
+              id: nanoid(),
+              type: 'SkillList',
+              props: {
+                content:
+                  '<ul><li>精通项目管理方法论（PMP、PMBOK、敏捷、Scrum）</li><li>掌握项目计划、执行、监控和收尾全流程</li><li>熟练使用项目管理工具（Jira、MS Project、禅道）</li><li>具备风险管理和质量管理能力</li><li>擅长跨部门协作和沟通</li><li>了解软件开发流程和技术架构</li></ul>',
+              },
+              style: {},
+              children: [],
+            },
+          ],
+        },
+        {
+          id: nanoid(),
+          type: 'Section',
+          props: {
             title: '专业资质',
             icon: '🏅',
           },
