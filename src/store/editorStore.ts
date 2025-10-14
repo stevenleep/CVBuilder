@@ -47,6 +47,14 @@ const STORAGE_KEY = 'resume-builder-state'
 
 export { getPerformanceStats, resetPerformanceStats }
 
+export interface PreviewExampleInfo {
+  id: string
+  name: string
+  description: string
+  onEditDirectly?: () => void
+  onCreateCopy?: () => void
+}
+
 export interface EditorState {
   pageSchema: PageSchema
   nodeMap: Map<NodeId, NodeSchema> // O(1)查找优化
@@ -61,6 +69,9 @@ export interface EditorState {
   mode: EditorMode
   canvasConfig: CanvasConfig
 
+  // 预览示例信息（用于示例预览页面）
+  previewExampleInfo: PreviewExampleInfo | null
+
   // 历史记录双模式：完整快照（兼容）+ 增量操作（省内存2000倍）
   history: PageSchema[]
   historyActions: HistoryAction[]
@@ -71,6 +82,7 @@ export interface EditorState {
 
   setPageSchema: (schema: PageSchema) => void
   setCurrentResumeId: (id: string | null) => void
+  setPreviewExampleInfo: (info: PreviewExampleInfo | null) => void
 
   getNode: (nodeId: NodeId) => NodeSchema | null
   getSelectedNode: (nodeId: NodeId) => NodeSchema | null
@@ -152,6 +164,7 @@ export const useEditorStore = create<EditorState>()(
         showRuler: false,
         backgroundColor: '#fafafa',
       },
+      previewExampleInfo: null,
       history: [],
       historyActions: [],
       historyIndex: -1,
@@ -174,6 +187,12 @@ export const useEditorStore = create<EditorState>()(
       setCurrentResumeId: id => {
         set(state => {
           state.currentResumeId = id
+        })
+      },
+
+      setPreviewExampleInfo: info => {
+        set(state => {
+          state.previewExampleInfo = info
         })
       },
 

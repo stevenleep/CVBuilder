@@ -34,7 +34,7 @@ export const PropertyPanel: React.FC = () => {
         style={{
           width: '100%',
           height: '100%',
-          borderLeft: '1px solid #e8e8e8',
+          borderLeft: '1px solid #f0f0f0',
           backgroundColor: '#fafafa',
           display: 'flex',
           flexDirection: 'column',
@@ -44,8 +44,8 @@ export const PropertyPanel: React.FC = () => {
         <div
           style={{
             padding: '12px',
-            borderBottom: '1px solid #e8e8e8',
-            backgroundColor: '#fff',
+            borderBottom: '1px solid #f0f0f0',
+            backgroundColor: '#fafafa',
             flexShrink: 0,
           }}
         >
@@ -86,8 +86,8 @@ export const PropertyPanel: React.FC = () => {
         style={{
           width: '100%',
           height: '100%',
-          borderLeft: '1px solid #f1f1f1',
-          backgroundColor: '#fff',
+          borderLeft: '1px solid #f0f0f0',
+          backgroundColor: '#fafafa',
           padding: '20px',
         }}
       >
@@ -129,8 +129,8 @@ export const PropertyPanel: React.FC = () => {
       style={{
         width: '100%',
         height: '100%',
-        borderLeft: '1px solid #e0e0e0',
-        backgroundColor: '#f8f8f8',
+        borderLeft: '1px solid #f0f0f0',
+        backgroundColor: '#fafafa',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -140,8 +140,8 @@ export const PropertyPanel: React.FC = () => {
       <div
         style={{
           padding: '12px',
-          borderBottom: '1px solid #e0e0e0',
-          backgroundColor: '#fff',
+          borderBottom: '1px solid #f0f0f0',
+          backgroundColor: '#fafafa',
           flexShrink: 0,
         }}
       >
@@ -187,7 +187,7 @@ export const PropertyPanel: React.FC = () => {
           overflow: 'auto',
           overflowX: 'hidden',
           padding: '12px',
-          backgroundColor: '#f8f8f8',
+          backgroundColor: '#fafafa',
           minHeight: 0,
         }}
       >

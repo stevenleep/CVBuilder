@@ -22,6 +22,7 @@ import {
   Upload,
   MoreVertical,
   Globe,
+  Check,
 } from 'lucide-react'
 import { SaveResumeDialog } from './SaveResumeDialog'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
@@ -48,6 +49,7 @@ export const Toolbar: React.FC = () => {
     updateCanvasConfig,
     currentResumeId,
     setCurrentResumeId,
+    previewExampleInfo,
   } = useEditorStore()
 
   const { theme } = useTheme()
@@ -318,16 +320,174 @@ export const Toolbar: React.FC = () => {
     }
   }
 
+  // 预览模式且有示例信息时，显示特殊的 Toolbar
+  if (previewExampleInfo) {
+    return (
+      <div
+        style={{
+          height: '48px',
+          backgroundColor: '#fafbfc',
+          borderBottom: '1px solid #f0f0f0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 16px',
+          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.02)',
+        }}
+      >
+        {/* 左侧：返回 */}
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            padding: '5px 10px',
+            border: 'none',
+            borderRadius: '5px',
+            backgroundColor: 'transparent',
+            color: '#666',
+            cursor: 'pointer',
+            fontSize: '12px',
+            fontWeight: '600',
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.backgroundColor = '#f0f0f0'
+            e.currentTarget.style.color = '#2d2d2d'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.backgroundColor = 'transparent'
+            e.currentTarget.style.color = '#666'
+          }}
+        >
+          <Home size={14} />
+          <span>返回</span>
+        </button>
+
+        {/* 中间：示例信息 */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          <div
+            style={{
+              padding: '4px 10px',
+              backgroundColor: '#eff6ff',
+              borderRadius: '5px',
+              fontSize: '11px',
+              fontWeight: '600',
+              color: '#1e40af',
+              border: '1px solid #dbeafe',
+            }}
+          >
+            预览模式
+          </div>
+          <div
+            style={{
+              width: '1px',
+              height: '14px',
+              backgroundColor: '#e0e0e0',
+            }}
+          />
+          <div style={{ fontSize: '13px', fontWeight: '600', color: '#2d2d2d' }}>
+            {previewExampleInfo.name}
+          </div>
+          <div
+            style={{
+              fontSize: '11px',
+              color: '#999',
+              padding: '2px 8px',
+              backgroundColor: '#f8f9fa',
+              borderRadius: '4px',
+              fontWeight: '500',
+            }}
+          >
+            {previewExampleInfo.description}
+          </div>
+        </div>
+
+        {/* 右侧：操作按钮 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {previewExampleInfo.onEditDirectly && (
+            <button
+              onClick={previewExampleInfo.onEditDirectly}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '5px 12px',
+                border: '1px solid #e0e0e0',
+                borderRadius: '5px',
+                backgroundColor: 'white',
+                color: '#666',
+                fontSize: '11px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#fafafa'
+                e.currentTarget.style.borderColor = '#d0d0d0'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'white'
+                e.currentTarget.style.borderColor = '#e0e0e0'
+              }}
+            >
+              <Edit3 size={12} />
+              <span>进入编辑</span>
+            </button>
+          )}
+          {previewExampleInfo.onCreateCopy && (
+            <button
+              onClick={previewExampleInfo.onCreateCopy}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '5px 12px',
+                border: 'none',
+                borderRadius: '5px',
+                backgroundColor: '#2d2d2d',
+                color: 'white',
+                fontSize: '11px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#1a1a1a'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = '#2d2d2d'
+              }}
+            >
+              <Check size={12} />
+              <span>创建副本</span>
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       style={{
         height: isMobile ? '44px' : '48px',
-        borderBottom: '1px solid #e8e8e8',
+        borderBottom: '1px solid #f0f0f0',
         display: 'flex',
         alignItems: 'center',
         padding: isMobile ? '0 8px' : '0 14px',
         gap: isMobile ? '5px' : '8px',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#fafafa',
         boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
       }}
     >
