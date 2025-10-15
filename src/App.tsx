@@ -3,7 +3,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { registerAllMaterials } from './materials'
 import { useEditorStore } from './store/editorStore'
 import { bootstrapEditor } from './core'
@@ -102,8 +102,8 @@ function App() {
       <NotificationProvider>
         <EditorProvider value={editorContext}>
           <ThemeProvider>
-            {/* basename 会自动使用 vite.config.ts 中的 base 值 */}
-            <BrowserRouter basename={import.meta.env.BASE_URL}>
+            {/* HashRouter 不需要 basename 配置 */}
+            <HashRouter>
               <Routes>
                 {/* 首页 */}
                 <Route path="/" element={<HomePage />} />
@@ -164,7 +164,7 @@ function App() {
 
               {/* PWA 更新提示 */}
               <PWAUpdatePrompt />
-            </BrowserRouter>
+            </HashRouter>
           </ThemeProvider>
         </EditorProvider>
       </NotificationProvider>

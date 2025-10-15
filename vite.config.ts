@@ -4,11 +4,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  // 优先使用环境变量，如果没有设置则根据模式决定
+export default defineConfig(() => {
   const base = process.env.VITE_BASE_PATH !== undefined 
     ? process.env.VITE_BASE_PATH 
-    : (mode === 'production' ? '/CVBuilder/' : '/')
+    : '/'
   
   return {
   base,
@@ -41,21 +40,21 @@ export default defineConfig(({ mode }) => {
             name: '新建简历',
             short_name: '新建',
             description: '创建一份新的简历',
-            url: base + 'editor',
+            url: base + '#/editor',
             icons: [{ src: 'favicon.svg', sizes: 'any' }]
           },
           {
             name: '我的简历',
             short_name: '简历',
             description: '查看我的简历列表',
-            url: base + 'resumes',
+            url: base + '#/resumes',
             icons: [{ src: 'favicon.svg', sizes: 'any' }]
           },
           {
             name: '模板中心',
             short_name: '模板',
             description: '浏览简历模板',
-            url: base + 'templates',
+            url: base + '#/templates',
             icons: [{ src: 'favicon.svg', sizes: 'any' }]
           }
         ]

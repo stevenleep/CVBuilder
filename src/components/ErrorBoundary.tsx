@@ -70,7 +70,7 @@ const ErrorFallback: React.FC<{ error: Error | null; onReset: () => void }> = ({
 }) => {
   const handleGoHome = () => {
     // 使用原生导航，避免依赖 Router 上下文
-    window.location.href = '/'
+    window.location.href = '#/'
   }
 
   return (
