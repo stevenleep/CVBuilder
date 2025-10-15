@@ -36,13 +36,35 @@ export const EditorPage: React.FC = () => {
       // 有ID：加载对应的简历
       indexedDBService.getItem(STORES.RESUMES, id).then(data => {
         if (data && data.schema) {
-          setPageSchema(data.schema)
-          setCurrentResumeId(id) // 设置当前编辑的简历ID
+          // 使用最新的 store state 进行比较，避免重复设置导致循环
+          const current = useEditorStore.getState()
+          const currentRootId = current.pageSchema?.root?.id
+          const incomingRootId = data.schema?.root?.id
+          const currentHasChildren =
+            Array.isArray(current.pageSchema?.root?.children) &&
+            current.pageSchema!.root.children.length > 0
+          const incomingHasChildren =
+            Array.isArray(data.schema?.root?.children) && data.schema.root.children.length > 0
+
+          // 仅在 incoming 有有效内容且与当前不同（或当前无内容）时才覆盖 store
+          if (incomingHasChildren && (!currentHasChildren || currentRootId !== incomingRootId)) {
+            setPageSchema(data.schema)
+            setCurrentResumeId(id) // 设置当前编辑的简历ID
+          }
         }
       })
     } else {
-      // 无ID：新建简历，创建空白页面
-      setPageSchema(createBlankPageSchema())
+      // 无 ID：新建简历，但仅在 store 里没有内容时才创建空白页面，避免覆盖恢复
+      const current = useEditorStore.getState()
+      const hasContent = !!(
+        current.pageSchema &&
+        current.pageSchema.root &&
+        Array.isArray(current.pageSchema.root.children) &&
+        current.pageSchema.root.children.length > 0
+      )
+      if (!hasContent) {
+        setPageSchema(createBlankPageSchema())
+      }
       setCurrentResumeId(null)
     }
   }, [id, setPageSchema, setCurrentResumeId])

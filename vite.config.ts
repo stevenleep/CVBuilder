@@ -15,18 +15,19 @@ export default defineConfig(({ mode }) => {
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt', // 改为prompt模式，让用户确认更新
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'CVKit - 专业简历制作工具',
+        name: 'CVKit 专业在线简历工具',
         short_name: 'CVKit',
-        description: '专业的在线简历制作工具，可视化编辑，精美主题，一键导出',
-        theme_color: '#000000',
-        background_color: '#ffffff',
+        description: 'CVKit是一款免费的在线简历制作工具，提供可视化拖拽编辑、多种精美主题模板、实时预览、一键导出PDF等功能。让简历创作回归简单，助您快速打造专业简历。',
+        theme_color: '#18181b',
+        background_color: '#18181b',
         display: 'standalone',
         orientation: 'portrait',
         scope: base,
         start_url: base,
+        categories: ['business', 'productivity', 'utilities'],
         icons: [
           {
             src: 'favicon.svg',
@@ -34,11 +35,35 @@ export default defineConfig(({ mode }) => {
             type: 'image/svg+xml',
             purpose: 'any maskable'
           }
+        ],
+        shortcuts: [
+          {
+            name: '新建简历',
+            short_name: '新建',
+            description: '创建一份新的简历',
+            url: base + 'editor',
+            icons: [{ src: 'favicon.svg', sizes: 'any' }]
+          },
+          {
+            name: '我的简历',
+            short_name: '简历',
+            description: '查看我的简历列表',
+            url: base + 'resumes',
+            icons: [{ src: 'favicon.svg', sizes: 'any' }]
+          },
+          {
+            name: '模板中心',
+            short_name: '模板',
+            description: '浏览简历模板',
+            url: base + 'templates',
+            icons: [{ src: 'favicon.svg', sizes: 'any' }]
+          }
         ]
       },
       workbox: {
         // 配置缓存策略
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
+        // 运行时缓存策略
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

@@ -15,6 +15,7 @@ import { WelcomeGuide } from './components/WelcomeGuide'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { Logo } from './components/Logo'
 import { PWAInstallPrompt } from './components/PWAInstallPrompt'
+import { PWAUpdatePrompt } from './components/PWAUpdatePrompt'
 import { HomePage } from './pages/HomePage'
 import { EditorPage } from './pages/EditorPage'
 import { TemplatesPage } from './pages/TemplatesPage'
@@ -38,7 +39,6 @@ function App() {
   }, [])
 
   useEffect(() => {
-    // 尝试从 IndexedDB 加载
     useEditorStore
       .getState()
       .loadFromStorage()
@@ -55,8 +55,6 @@ function App() {
       })
       .catch(() => {
         setIsInitialized(true)
-
-        // 首次使用显示欢迎
         const hasShownWelcome = localStorage.getItem('cv-builder-welcome-shown')
         if (!hasShownWelcome) {
           setTimeout(() => {
@@ -64,7 +62,7 @@ function App() {
           }, 500)
         }
       })
-  }, [editorContext])
+  }, [])
 
   if (!isInitialized) {
     return (
@@ -163,6 +161,9 @@ function App() {
 
               {/* PWA 安装提示 */}
               <PWAInstallPrompt />
+
+              {/* PWA 更新提示 */}
+              <PWAUpdatePrompt />
             </BrowserRouter>
           </ThemeProvider>
         </EditorProvider>

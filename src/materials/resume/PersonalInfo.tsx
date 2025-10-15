@@ -24,7 +24,6 @@ interface PersonalInfoProps {
   maritalStatus?: string
 
   // 求职信息
-  expectedPosition?: string
   expectedSalary?: string
   workYears?: string
   currentStatus?: string
@@ -69,7 +68,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
     nationality = '',
     politicalStatus = '',
     maritalStatus = '',
-    expectedPosition = '',
     expectedSalary = '',
     workYears = '',
     currentStatus = '',
@@ -121,12 +119,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
   ].filter(Boolean)
 
   // 求职意向
-  const jobExpectation = [
-    expectedPosition && `期望：${expectedPosition}`,
-    expectedSalary && `${expectedSalary}`,
-    currentStatus,
-    arrivalTime,
-  ].filter(Boolean)
+  const jobExpectation = [expectedSalary && `${expectedSalary}`, currentStatus, arrivalTime].filter(
+    Boolean
+  )
 
   // 根据预设选择渲染方式
   switch (layoutPreset) {
@@ -906,14 +901,6 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       tab: 'content',
     },
     {
-      name: 'expectedPosition',
-      label: '期望职位',
-      type: 'string',
-      defaultValue: '',
-      group: '补充信息',
-      tab: 'content',
-    },
-    {
       name: 'arrivalTime',
       label: '到岗时间',
       type: 'select',
@@ -969,8 +956,9 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
       label: '个人简介',
       type: 'richtext',
       defaultValue: '',
-      description: '一句话介绍',
+      description: '一句话介绍自己',
       group: '补充信息',
+      tab: 'content',
       minHeight: 60,
     },
 
@@ -1126,9 +1114,9 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     maritalStatus: '',
     education: '',
     workYears: '',
-    expectedPosition: '',
     expectedSalary: '',
     currentStatus: '',
+    summary: '',
     arrivalTime: '',
     phone: '138-0000-0000',
     email: 'zhangsan@example.com',
@@ -1142,7 +1130,6 @@ export const PersonalInfoMaterial: IMaterialDefinition = {
     blog: '',
     avatar: '',
     showAvatar: false,
-    summary: '',
     layoutPreset: 'classic',
     align: 'left',
     showFullLinks: true,

@@ -1,0 +1,59 @@
+{
+  "name": "CVKit - 专业的在线简历制作工具",
+  "short_name": "CVKit",
+  "description": "免费的可视化简历编辑器，提供精美模板，支持拖拽编辑和一键导出",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#18181b",
+  "theme_color": "#18181b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "screenshots": [
+    {
+      "src": "/images/1.png",
+      "sizes": "800x600",
+      "type": "image/png",
+      "label": "CVKit 编辑器界面"
+    },
+    {
+      "src": "/images/2.png",
+      "sizes": "800x600",
+      "type": "image/png",
+      "label": "CVKit 模板展示"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "新建简历",
+      "short_name": "新建",
+      "description": "创建一份新的简历",
+      "url": "/editor",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "我的简历",
+      "short_name": "简历",
+      "description": "查看我的简历列表",
+      "url": "/resumes",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "模板中心",
+      "short_name": "模板",
+      "description": "浏览简历模板",
+      "url": "/templates",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    }
+  ]
+}

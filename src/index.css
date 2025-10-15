@@ -95,35 +95,17 @@ body {
   display: block;
 }
 
-/* 所有内容块避免跨页截断 - 编辑器和打印都生效 */
-[data-material-type='Section'],
-[data-material-type='ExperienceItem'],
-[data-material-type='EducationItem'],
-[data-material-type='ProjectItem'],
-[data-material-type='PersonalInfo'],
-[data-material-type='SkillList'],
-[data-material-type='SkillRating'],
-[data-material-type='WorkExperienceSection'],
-[data-material-type='EducationSection'],
-[data-material-type='SkillsSection'],
-[data-material-type='CertificationItem'],
-[data-material-type='AwardItem'],
-[data-material-type='HighlightBox'],
-[data-material-type='MetricsCard'],
-[data-material-type='SummaryBlock'],
-[data-material-type='RichTextBlock'],
-[data-material-type='TextBlock'],
-[data-material-type='BulletList'],
-[data-material-type='SelfEvaluation'],
-[data-material-type='InterestsHobbies'],
-[data-material-type='LanguageSkills'],
-[data-material-type='ExpectedPosition'] {
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-  display: block;
-  box-sizing: border-box;
-  /* 如果放不下，整体移到下一页 */
-  overflow: visible;
+/* 所有内容块避免跨页截断 - 仅在打印和导出时生效 */
+/* 使用通用属性选择器，匹配所有物料元素 */
+@media print {
+  [data-material-type]:not([data-material-type='Page']):not([data-material-type='Container']) {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    display: block;
+    box-sizing: border-box;
+    /* 如果放不下，整体移到下一页 */
+    overflow: visible;
+  }
 }
 
 /* 标题元素避免孤立在页面底部 */

@@ -86,25 +86,10 @@ export const operationsManagerExample: ExampleResume = {
                 startDate: '2020.06',
                 endDate: '至今',
                 location: '杭州',
-                description: '负责平台用户增长和活跃度提升',
+                description: '<ul><li>策划用户裂变活动，3个月内新增用户50万+，获客成本降低60%</li><li>搭建用户成长体系，DAU提升80%，用户留存率提升45%</li><li>运营社群矩阵，管理100+用户群，月活跃用户10万+</li><li>通过内容运营实现用户转化，付费转化率提升至12%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '策划用户裂变活动，3个月内新增用户50万+，获客成本降低60%',
-                      '搭建用户成长体系，DAU提升80%，用户留存率提升45%',
-                      '运营社群矩阵，管理100+用户群，月活跃用户10万+',
-                      '通过内容运营实现用户转化，付费转化率提升至12%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -121,10 +106,10 @@ export const operationsManagerExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
                 content:
-                  '• 裂变活动"邀请好友得会员"：3天新增用户20万+，传播系数2.5\n• 用户等级体系：设计5级成长体系，用户活跃度提升60%\n• 私域社群运营：搭建100+精品社群，转化率达15%\n• 节日营销活动：策划中秋、双11等大促，单次GMV突破500万',
+                  '<ul><li>裂变活动"邀请好友得会员"：3天新增用户20万+，传播系数2.5</li><li>用户等级体系：设计5级成长体系，用户活跃度提升60%</li><li>私域社群运营：搭建100+精品社群，转化率达15%</li><li>节日营销活动：策划中秋、双11等大促，单次GMV突破500万</li></ul>',
               },
               style: {},
               children: [],
@@ -146,14 +131,8 @@ export const operationsManagerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '用户增长', level: 90 },
-                  { name: '数据分析', level: 85 },
-                  { name: '内容运营', level: 85 },
-                  { name: '社群运营', level: 90 },
-                  { name: '活动策划', level: 80 },
-                  { name: '裂变营销', level: 85 },
-                ],
+                content:
+                  '<ul><li>精通用户增长策略和增长黑客方法</li><li>熟练进行数据分析和运营决策</li><li>掌握内容运营和内容营销</li><li>擅长社群运营和用户留存</li><li>具备丰富的活动策划和执行经验</li><li>了解裂变营销和私域流量运营</li></ul>',
               },
               style: {},
               children: [],

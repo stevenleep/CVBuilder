@@ -51,6 +51,9 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
     copyNodes,
     deleteNodes,
     duplicateNodes,
+    addNode,
+    updateNodeProps,
+    updateNodeStyle,
   } = useEditorStore()
 
   const materialRegistry = useMaterialRegistry()
@@ -230,12 +233,12 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
                     updateNodeProps: (
                       id: string,
                       props: Record<string, string | number | boolean | null>
-                    ) => useEditorStore.getState().updateNodeProps(id, props),
+                    ) => updateNodeProps(id, props),
                     updateNodeStyle: (id: string, style: React.CSSProperties) =>
-                      useEditorStore.getState().updateNodeStyle(id, style),
-                    deleteNode: (id: string) => useEditorStore.getState().deleteNode(id),
+                      updateNodeStyle(id, style),
+                    deleteNode: (id: string) => deleteNode(id),
                     addNode: (materialType: string, parentId?: string) => {
-                      useEditorStore.getState().addNode(materialType, parentId)
+                      addNode(materialType, parentId)
                       return ''
                     },
                     findNode: (id: string) => findNode(pageSchema.root, id),
@@ -273,6 +276,9 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
       copyNodes,
       deleteNodes,
       duplicateNodes,
+      addNode,
+      updateNodeProps,
+      updateNodeStyle,
     ]
   )
 

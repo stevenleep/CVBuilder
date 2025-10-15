@@ -158,7 +158,7 @@ export const MaterialPanel: React.FC = () => {
       style={{
         width: '100%',
         height: '100%',
-        borderRight: '1px solid #e8e8e8',
+        borderRight: '1px solid #f0f0f0',
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: '#fafafa',
@@ -170,8 +170,8 @@ export const MaterialPanel: React.FC = () => {
           display: 'flex',
           gap: '4px',
           padding: '8px',
-          borderBottom: '1px solid #e8e8e8',
-          backgroundColor: '#fff',
+          borderBottom: '1px solid #f0f0f0',
+          backgroundColor: '#fafafa',
           alignItems: 'center',
         }}
       >
@@ -290,8 +290,8 @@ export const MaterialPanel: React.FC = () => {
               display: 'flex',
               gap: '4px',
               flexWrap: 'wrap',
-              backgroundColor: '#fff',
-              borderBottom: '1px solid #e8e8e8',
+              backgroundColor: '#fafafa',
+              borderBottom: '1px solid #f0f0f0',
             }}
           >
             {categoryList.map(category => (
@@ -312,7 +312,7 @@ export const MaterialPanel: React.FC = () => {
                 fontSize: '11px',
                 color: '#666',
                 backgroundColor: '#f9f9f9',
-                borderBottom: '1px solid #e8e8e8',
+                borderBottom: '1px solid #f0f0f0',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',

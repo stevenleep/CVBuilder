@@ -86,25 +86,10 @@ export const accountantExample: ExampleResume = {
                 startDate: '2020.03',
                 endDate: '至今',
                 location: '广州',
-                description: '负责集团财务核算和税务管理',
+                description: '<ul><li>管理5人财务团队，完成集团及子公司的全盘账务处理</li><li>完成年度审计和税务申报工作，零差错零处罚</li><li>优化财务流程，月结账时间缩短50%</li><li>进行税务筹划，合理节税年均200万+</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '管理5人财务团队，完成集团及子公司的全盘账务处理',
-                      '完成年度审计和税务申报工作，零差错零处罚',
-                      '优化财务流程，月结账时间缩短50%',
-                      '进行税务筹划，合理节税年均200万+',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -123,14 +108,8 @@ export const accountantExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '财务核算', level: 95 },
-                  { name: '税务筹划', level: 90 },
-                  { name: '财务分析', level: 85 },
-                  { name: '成本管理', level: 85 },
-                  { name: '审计', level: 90 },
-                  { name: 'ERP系统', level: 80 },
-                ],
+                content:
+                  '<ul><li>精通财务核算和账务处理</li><li>掌握税务筹划和税务申报</li><li>熟练进行财务分析和报表编制</li><li>具备成本管理和成本控制能力</li><li>了解审计流程和审计准则</li><li>熟练使用 SAP、用友等 ERP 系统</li></ul>',
               },
               style: {},
               children: [],
@@ -174,9 +153,9 @@ export const accountantExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
-                content: '• 注册会计师（CPA）- 2019年\n• 中级会计师 - 2018年\n• 税务师 - 2020年',
+                content: '<ul><li>注册会计师（CPA）- 2019年</li><li>中级会计师 - 2018年</li><li>税务师 - 2020年</li></ul>',
               },
               style: {},
               children: [],

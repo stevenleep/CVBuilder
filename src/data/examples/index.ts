@@ -17,6 +17,11 @@ import { operationsManagerExample } from './operationsManager'
 import { contentWriterExample } from './contentWriter'
 import { projectManagerExample } from './projectManager'
 import { feishuStyleExample } from './feishuStyle'
+import { qaEngineerExample } from './qaEngineer'
+import { financialAnalystExample } from './financialAnalyst'
+import { legalCounselExample } from './legalCounsel'
+import { customerServiceExample } from './customerService'
+import { ecommerceOperatorExample } from './ecommerceOperator'
 
 // 导出所有示例简历
 export const exampleResumes: ExampleResume[] = [
@@ -32,6 +37,11 @@ export const exampleResumes: ExampleResume[] = [
   hrManagerExample,
   projectManagerExample,
   feishuStyleExample,
+  qaEngineerExample,
+  financialAnalystExample,
+  legalCounselExample,
+  customerServiceExample,
+  ecommerceOperatorExample,
 ]
 
 // 根据分类获取示例

@@ -7,7 +7,7 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import type { NodeSchema } from '@/types/material'
 import { useMaterialRegistry, useEventBus } from '@/core'
-import { DropZone } from './DropZone'
+import { SmartDropZone } from './SmartDropZone'
 import { useDrag } from 'react-dnd'
 import { DragItemTypes, NodeDragItem } from '@/editor/DndProvider'
 
@@ -383,26 +383,12 @@ export const Renderer: React.FC<RendererProps> = ({
     </div>
   )
 
-  // 在编辑模式下，所有节点都支持before/after拖放
+  // 在编辑模式下，使用智能拖放区域
   if (isEditMode) {
     return (
-      <>
-        <DropZone nodeId={id} position="before">
-          <div />
-        </DropZone>
-
-        {meta.isContainer ? (
-          <DropZone nodeId={id} position="inside" isContainer>
-            {content}
-          </DropZone>
-        ) : (
-          content
-        )}
-
-        <DropZone nodeId={id} position="after">
-          <div />
-        </DropZone>
-      </>
+      <SmartDropZone nodeId={id} isContainer={meta.isContainer}>
+        {content}
+      </SmartDropZone>
     )
   }
 

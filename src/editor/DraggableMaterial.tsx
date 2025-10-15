@@ -6,6 +6,7 @@ import React from 'react'
 import { useDrag } from 'react-dnd'
 import { DragItemTypes, MaterialDragItem } from './DndProvider'
 import { GripVertical } from 'lucide-react'
+import { designSystem } from '@/styles/designSystem'
 
 interface DraggableMaterialProps {
   materialType: string
@@ -65,16 +66,16 @@ export const DraggableMaterial: React.FC<DraggableMaterialProps> = ({
         onMouseLeave={handleMouseLeave}
         style={{
           padding: '10px 12px',
-          borderRadius: '6px',
+          borderRadius: designSystem.borderRadius.md,
           cursor: isDragging ? 'grabbing' : 'grab',
-          backgroundColor: hover ? '#fff' : 'transparent',
-          border: `0.5px dashed ${hover ? '#000000' : 'transparent'}`,
-          opacity: isDragging ? 0.5 : 1,
+          backgroundColor: hover ? designSystem.colors.background.card : 'transparent',
+          border: `0.5px dashed ${hover ? designSystem.colors.primary.base : 'transparent'}`,
+          opacity: isDragging ? designSystem.drag.opacity.dragging : 1,
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: hover ? '0 3px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)' : 'none',
+          transition: designSystem.animation.transition.smooth,
+          boxShadow: hover ? designSystem.shadows.sm : 'none',
           transform: hover ? 'translateX(2px)' : 'translateX(0)',
         }}
       >
@@ -119,7 +120,7 @@ export const DraggableMaterial: React.FC<DraggableMaterialProps> = ({
               width: '4px',
               height: '4px',
               borderRadius: '50%',
-              backgroundColor: '#3b82f6',
+              backgroundColor: designSystem.drag.colors.material.base,
               flexShrink: 0,
               animation: 'pulse 1.5s ease-in-out infinite',
             }}

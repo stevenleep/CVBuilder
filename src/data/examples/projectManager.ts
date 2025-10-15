@@ -86,25 +86,33 @@ export const projectManagerExample: ExampleResume = {
                 startDate: '2019.01',
                 endDate: '至今',
                 location: '上海',
-                description: '负责公司大型数字化转型项目',
+                description: '<ul><li>主导企业数字化转型项目，预算5000万，按时按质交付</li><li>管理跨部门团队50+人，协调研发、业务、IT多方资源</li><li>建立敏捷项目管理体系，项目交付周期缩短30%</li><li>风险管理和质量控制，项目成功率达95%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '主导企业数字化转型项目，预算5000万，按时按质交付',
-                      '管理跨部门团队50+人，协调研发、业务、IT多方资源',
-                      '建立敏捷项目管理体系，项目交付周期缩短30%',
-                      '风险管理和质量控制，项目成功率达95%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
+            },
+          ],
+        },
+        {
+          id: nanoid(),
+          type: 'Section',
+          props: {
+            title: '专业技能',
+            icon: '💡',
+          },
+          style: {
+            marginBottom: '24px',
+          },
+          children: [
+            {
+              id: nanoid(),
+              type: 'SkillList',
+              props: {
+                content:
+                  '<ul><li>精通项目管理方法论（PMP、PMBOK、敏捷、Scrum）</li><li>掌握项目计划、执行、监控和收尾全流程</li><li>熟练使用项目管理工具（Jira、MS Project、禅道）</li><li>具备风险管理和质量管理能力</li><li>擅长跨部门协作和沟通</li><li>了解软件开发流程和技术架构</li></ul>',
+              },
+              style: {},
+              children: [],
             },
           ],
         },
@@ -121,10 +129,10 @@ export const projectManagerExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
                 content:
-                  '• PMP（项目管理专业人士）\n• CSM（认证 Scrum Master）\n• PRINCE2 Foundation',
+                  '<ul><li>PMP（项目管理专业人士）</li><li>CSM（认证 Scrum Master）</li><li>PRINCE2 Foundation</li></ul>',
               },
               style: {},
               children: [],

@@ -86,25 +86,10 @@ export const hrManagerExample: ExampleResume = {
                 startDate: '2019.05',
                 endDate: '至今',
                 location: '北京',
-                description: '负责公司人力资源全模块管理',
+                description: '<ul><li>搭建完整的招聘体系，年招聘200+优秀人才，离职率控制在8%以内</li><li>设计并实施OKR绩效管理体系，员工满意度提升40%</li><li>建立人才发展计划，培养储备干部30+人</li><li>优化薪酬福利体系，具有行业竞争力，保留核心人才</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '搭建完整的招聘体系，年招聘200+优秀人才，离职率控制在8%以内',
-                      '设计并实施OKR绩效管理体系，员工满意度提升40%',
-                      '建立人才发展计划，培养储备干部30+人',
-                      '优化薪酬福利体系，具有行业竞争力，保留核心人才',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -123,14 +108,8 @@ export const hrManagerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '招聘管理', level: 90 },
-                  { name: '培训发展', level: 85 },
-                  { name: '绩效管理', level: 90 },
-                  { name: '薪酬福利', level: 85 },
-                  { name: '员工关系', level: 85 },
-                  { name: 'HRBP', level: 80 },
-                ],
+                content:
+                  '<ul><li>精通招聘管理和人才选拔</li><li>掌握培训体系搭建和人才发展</li><li>熟练进行绩效管理和考核体系设计</li><li>了解薪酬福利设计和激励机制</li><li>具备员工关系管理和劳动法实务经验</li><li>拥有 HRBP 业务伙伴思维和实践</li></ul>',
               },
               style: {},
               children: [],

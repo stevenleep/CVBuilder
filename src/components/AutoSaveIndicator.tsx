@@ -11,7 +11,7 @@ import { useEditorStore } from '@/store/editorStore'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 
 // 自动保存配置
-const AUTO_SAVE_DELAY = 1500 // 防抖延迟（毫秒）
+const AUTO_SAVE_DELAY = 800 // 防抖延迟（毫秒）- 缩短延迟以减少数据丢失风险
 const MAX_RETRY_ATTEMPTS = 3 // 最大重试次数
 const RETRY_DELAY = 2000 // 重试延迟（毫秒）
 
@@ -22,6 +22,7 @@ export const AutoSaveIndicator: React.FC = () => {
   const { pageSchema, currentResumeId } = useEditorStore()
   const saveTimeoutRef = useRef<NodeJS.Timeout>()
   const retryTimeoutRef = useRef<NodeJS.Timeout>()
+  const isFirstLoadRef = useRef(true) // 标记首次加载，避免立即触发保存
 
   // 保存函数（支持重试）
   const performSave = async () => {
@@ -71,6 +72,12 @@ export const AutoSaveIndicator: React.FC = () => {
 
   // 监听页面变化，实现防抖自动保存
   useEffect(() => {
+    // 跳过首次加载（首次加载是从存储恢复的，不需要保存）
+    if (isFirstLoadRef.current) {
+      isFirstLoadRef.current = false
+      return
+    }
+
     setStatus('unsaved')
 
     // 清除之前的定时器
@@ -96,6 +103,63 @@ export const AutoSaveIndicator: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSchema, currentResumeId])
+
+  // 监听页面刷新/关闭，强制保存并提示
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // 1. 取消防抖定时器，避免重复保存
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current)
+      }
+
+      // 2. 立即同步保存到 localStorage 作为备份（同步操作，确保执行）
+      const state = useEditorStore.getState()
+      try {
+        localStorage.setItem('cv-builder-backup', JSON.stringify(state.pageSchema))
+      } catch (err) {
+        // 静默失败
+      }
+
+      // 3. 尝试保存到 IndexedDB（异步，可能不会完成，但 localStorage 已确保数据安全）
+      state.saveToStorage().catch(() => {
+        // 静默失败
+      })
+
+      // 4. 如果有简历 ID，也保存简历数据
+      if (state.currentResumeId) {
+        indexedDBService
+          .getItem(STORES.RESUMES, state.currentResumeId)
+          .then(existing => {
+            if (existing) {
+              const updated = {
+                ...existing,
+                schema: state.pageSchema,
+                updatedAt: new Date().toISOString(),
+              }
+              indexedDBService.setItem(STORES.RESUMES, state.currentResumeId!, updated)
+            }
+          })
+          .catch(() => {
+            // 静默失败
+          })
+      }
+
+      // 5. 显示离开提示（浏览器会显示标准确认对话框）
+      const message = '您的更改正在保存中，确定要离开吗？'
+      e.preventDefault()
+      e.returnValue = message
+      return message
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [])
 
   const getStatusText = () => {
     switch (status) {

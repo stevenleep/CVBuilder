@@ -86,25 +86,10 @@ export const feishuStyleExample: ExampleResume = {
                 startDate: '2021.07',
                 endDate: '至今',
                 location: '深圳',
-                description: '负责企业协作产品线，包括文档、表格等核心功能',
+                description: '<ul><li>主导在线文档编辑器产品设计，DAU 增长 150%，用户满意度达 90%</li><li>推动协同编辑功能优化，实时协作延迟降低 60%，大幅提升用户体验</li><li>设计并落地文档模板系统，月活跃模板使用量超 500万次</li><li>搭建数据指标体系，通过 A/B 测试优化转化率提升 35%</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '主导在线文档编辑器产品设计，DAU 增长 150%，用户满意度达 90%',
-                      '推动协同编辑功能优化，实时协作延迟降低 60%，大幅提升用户体验',
-                      '设计并落地文档模板系统，月活跃模板使用量超 500万次',
-                      '搭建数据指标体系，通过 A/B 测试优化转化率提升 35%',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
@@ -115,24 +100,10 @@ export const feishuStyleExample: ExampleResume = {
                 startDate: '2019.03',
                 endDate: '2021.06',
                 location: '深圳',
-                description: '负责移动端产品的规划与迭代',
+                description: '<ul><li>从0到1设计并上线移动应用，3个月内获得 10万+ 用户</li><li>建立用户反馈机制，每周收集整理用户需求，迭代效率提升 40%</li><li>协调开发、设计、运营团队，保证产品按时高质量交付</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '从0到1设计并上线移动应用，3个月内获得 10万+ 用户',
-                      '建立用户反馈机制，每周收集整理用户需求，迭代效率提升 40%',
-                      '协调开发、设计、运营团队，保证产品按时高质量交付',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -150,56 +121,29 @@ export const feishuStyleExample: ExampleResume = {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '智能文档协作平台',
+                projectName: '智能文档协作平台',
                 role: '产品负责人',
                 startDate: '2022.01',
                 endDate: '2023.12',
-                tech: '在线文档、实时协作、AI辅助',
+                techStack: '在线文档、实时协作、AI辅助',
+                description: '<ul><li>产品定位：面向企业的智能文档协作工具，支持多人实时编辑和AI写作助手</li><li>核心成果：上线 18 个月，服务企业客户 5000+，付费转化率 12%</li><li>创新亮点：引入 AI 智能写作和文档美化功能，使用率超 60%</li><li>技术突破：实现毫秒级冲突解决算法，支持 50人+ 同时编辑</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '产品定位：面向企业的智能文档协作工具，支持多人实时编辑和AI写作助手',
-                      '核心成果：上线 18 个月，服务企业客户 5000+，付费转化率 12%',
-                      '创新亮点：引入 AI 智能写作和文档美化功能，使用率超 60%',
-                      '技术突破：实现毫秒级冲突解决算法，支持 50人+ 同时编辑',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
             {
               id: nanoid(),
               type: 'ProjectItem',
               props: {
-                name: '企业知识库系统',
+                projectName: '企业知识库系统',
                 role: '产品经理',
                 startDate: '2020.06',
                 endDate: '2021.12',
-                tech: '知识管理、搜索引擎、权限控制',
+                techStack: '知识管理、搜索引擎、权限控制',
+                description: '<ul><li>设计企业级知识库架构，支持文档、表格、思维导图等多种内容形式</li><li>实现智能搜索和推荐系统，内容查找效率提升 70%</li><li>建立完善的权限体系，支持细粒度的访问控制</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      '设计企业级知识库架构，支持文档、表格、思维导图等多种内容形式',
-                      '实现智能搜索和推荐系统，内容查找效率提升 70%',
-                      '建立完善的权限体系，支持细粒度的访问控制',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -217,14 +161,8 @@ export const feishuStyleExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                skills: [
-                  { name: '产品设计与规划', level: 90 },
-                  { name: '用户研究与体验', level: 85 },
-                  { name: '数据分析与运营', level: 82 },
-                  { name: '项目管理', level: 88 },
-                  { name: '团队协作与沟通', level: 90 },
-                  { name: 'Axure / Figma', level: 85 },
-                ],
+                content:
+                  '<ul><li>精通产品设计与规划，能从0到1打造成功产品</li><li>擅长用户研究与体验设计，深刻理解用户需求</li><li>掌握数据分析与运营增长方法论</li><li>具备优秀的项目管理能力，能协调多方资源</li><li>拥有良好的团队协作与跨部门沟通能力</li><li>熟练使用 Axure、Figma、Sketch 等设计工具</li></ul>',
               },
               style: {},
               children: [],
@@ -250,23 +188,12 @@ export const feishuStyleExample: ExampleResume = {
                 degree: '本科',
                 startDate: '2015.09',
                 endDate: '2019.06',
+                gpa: '3.7',
+                gpaScale: '4.0',
+                achievements: '<ul><li>校级优秀毕业生、多次获得奖学金</li><li>担任学生会项目部部长，组织策划多场校园活动</li></ul>',
               },
               style: {},
-              children: [
-                {
-                  id: nanoid(),
-                  type: 'BulletList',
-                  props: {
-                    items: [
-                      'GPA: 3.7/4.0，专业前 15%',
-                      '校级优秀毕业生、多次获得奖学金',
-                      '担任学生会项目部部长，组织策划多场校园活动',
-                    ],
-                  },
-                  style: {},
-                  children: [],
-                },
-              ],
+              children: [],
             },
           ],
         },
@@ -282,10 +209,10 @@ export const feishuStyleExample: ExampleResume = {
           children: [
             {
               id: nanoid(),
-              type: 'TextBlock',
+              type: 'SkillList',
               props: {
                 content:
-                  '• PMP 项目管理专业认证\n• 2023年度公司最佳产品奖\n• 产品创新大赛一等奖\n• NPDP 产品经理国际认证',
+                  '<ul><li>PMP 项目管理专业认证</li><li>2023年度公司最佳产品奖</li><li>产品创新大赛一等奖</li><li>NPDP 产品经理国际认证</li></ul>',
               },
               style: {},
               children: [],
