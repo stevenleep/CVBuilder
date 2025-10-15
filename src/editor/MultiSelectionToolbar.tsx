@@ -46,7 +46,7 @@ export const MultiSelectionToolbar: React.FC = () => {
         borderRadius: '8px',
         padding: '10px 16px',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
-        zIndex: 100000,
+        zIndex: 1000,
         color: '#fff',
       }}
     >

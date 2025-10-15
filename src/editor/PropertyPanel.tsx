@@ -33,33 +33,36 @@ export const PropertyPanel: React.FC = () => {
       <div
         style={{
           width: '100%',
-          height: '100%',
-          borderLeft: '1px solid #f0f0f0',
-          backgroundColor: '#fafafa',
+          height: '100vh',
+          borderLeft: '1px solid #e8e8e8',
+          backgroundColor: '#fefefe',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
+          boxShadow: '-2px 0 8px rgba(0,0,0,0.04)',
         }}
       >
         <div
           style={{
-            padding: '12px',
-            borderBottom: '1px solid #f0f0f0',
-            backgroundColor: '#fafafa',
+            padding: '16px 18px',
+            borderBottom: '1px solid #e8e8e8',
+            backgroundColor: '#f8f9fa',
             flexShrink: 0,
+            background: 'linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%)',
           }}
         >
           <div
             style={{
-              fontSize: '12px',
+              fontSize: '13px',
               fontWeight: '700',
-              color: '#2d2d2d',
+              color: '#1a1a1a',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '8px',
+              letterSpacing: '-0.01em',
             }}
           >
-            <Palette size={14} />
+            <Palette size={16} />
             主题设置
           </div>
         </div>
@@ -69,8 +72,8 @@ export const PropertyPanel: React.FC = () => {
             flex: 1,
             overflow: 'auto',
             overflowX: 'hidden',
-            padding: '12px',
-            backgroundColor: '#fafafa',
+            padding: '16px 18px',
+            backgroundColor: '#fefefe',
             minHeight: 0,
           }}
         >
@@ -128,29 +131,31 @@ export const PropertyPanel: React.FC = () => {
     <div
       style={{
         width: '100%',
-        height: '100%',
-        borderLeft: '1px solid #f0f0f0',
-        backgroundColor: '#fafafa',
+        height: '100vh',
+        borderLeft: '1px solid #e8e8e8',
+        backgroundColor: '#fefefe',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        boxShadow: '-2px 0 8px rgba(0,0,0,0.04)',
       }}
     >
-      {/* 标题 - 紧凑版 */}
+      {/* 标题 - 精美版 */}
       <div
         style={{
-          padding: '12px',
-          borderBottom: '1px solid #f0f0f0',
-          backgroundColor: '#fafafa',
+          padding: '16px 18px',
+          borderBottom: '1px solid #e8e8e8',
+          backgroundColor: '#f8f9fa',
           flexShrink: 0,
+          background: 'linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%)',
         }}
       >
         <div
           style={{
-            fontSize: '12px',
+            fontSize: '13px',
             fontWeight: '700',
             color: '#1a1a1a',
-            marginBottom: needsTabs ? '10px' : '0',
+            marginBottom: needsTabs ? '12px' : '0',
             letterSpacing: '-0.01em',
           }}
         >
@@ -180,14 +185,14 @@ export const PropertyPanel: React.FC = () => {
         )}
       </div>
 
-      {/* 属性区域 - 紧凑版 */}
+      {/* 属性区域 - 精美版 */}
       <div
         style={{
           flex: 1,
           overflow: 'auto',
           overflowX: 'hidden',
-          padding: '12px',
-          backgroundColor: '#fafafa',
+          padding: '16px 18px',
+          backgroundColor: '#fefefe',
           minHeight: 0,
         }}
       >
@@ -220,7 +225,7 @@ const PropertyGroup: React.FC<{
   const [hover, setHover] = React.useState(false)
 
   return (
-    <div style={{ marginBottom: showCollapse ? '12px' : '0' }}>
+    <div style={{ marginBottom: showCollapse ? '16px' : '0' }}>
       {showCollapse && (
         <div
           onClick={() => setCollapsed(!collapsed)}
@@ -231,24 +236,25 @@ const PropertyGroup: React.FC<{
             alignItems: 'center',
             justifyContent: 'space-between',
             cursor: 'pointer',
-            marginBottom: collapsed ? '0' : '8px',
-            padding: '8px 10px',
-            borderRadius: '6px',
-            border: `1px solid ${hover ? '#e0e0e0' : 'transparent'}`,
-            backgroundColor: hover ? '#fafafa' : 'transparent',
+            marginBottom: collapsed ? '0' : '10px',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            border: `1px solid ${hover ? '#d0d0d0' : 'transparent'}`,
+            backgroundColor: hover ? '#f8f9fa' : 'transparent',
             transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: hover ? '0 2px 4px rgba(0,0,0,0.04)' : 'none',
           }}
         >
           <div
             style={{
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: '700',
-              color: hover ? '#2d2d2d' : '#666',
-              letterSpacing: '0.3px',
+              color: hover ? '#1a1a1a' : '#555',
+              letterSpacing: '0.2px',
               textTransform: 'uppercase',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '8px',
               transition: 'color 0.2s',
             }}
           >
@@ -282,8 +288,8 @@ const PropertyGroup: React.FC<{
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '10px',
-            paddingLeft: showCollapse ? '4px' : '0',
+            gap: '12px',
+            paddingLeft: showCollapse ? '6px' : '0',
           }}
         >
           {props.map(propSchema => (
@@ -317,24 +323,25 @@ const TabButton: React.FC<{
       style={{
         flex: '1 1 0',
         minWidth: 0,
-        height: '28px',
-        padding: '0 4px',
+        height: '32px',
+        padding: '0 8px',
         border: 'none',
-        borderRadius: '4px',
+        borderRadius: '6px',
         backgroundColor: active ? '#2d2d2d' : hover ? '#f0f0f0' : 'transparent',
-        color: active ? '#fff' : hover ? '#2d2d2d' : '#666',
+        color: active ? '#fff' : hover ? '#1a1a1a' : '#666',
         cursor: 'pointer',
-        fontSize: '11px',
-        fontWeight: '500',
-        transition: 'all 0.12s',
+        fontSize: '12px',
+        fontWeight: '600',
+        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '3px',
+        gap: '4px',
         lineHeight: 1,
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
+        boxShadow: active ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
       }}
     >
       {icon && <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{icon}</span>}
@@ -562,32 +569,32 @@ const PropertyInput: React.FC<{
   const renderInput = () => {
     const baseStyle: React.CSSProperties = {
       width: '100%',
-      height: '32px',
-      padding: '0 12px',
-      border: '1px solid #e8e8e8',
-      borderRadius: '6px',
-      fontSize: '12px',
+      height: '36px',
+      padding: '0 14px',
+      border: '1px solid #e0e0e0',
+      borderRadius: '8px',
+      fontSize: '13px',
       outline: 'none',
       backgroundColor: '#fafafa',
-      color: '#2d2d2d',
+      color: '#1a1a1a',
       transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-      boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
     }
 
     const handleFocus = (
       e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
       e.currentTarget.style.backgroundColor = '#fff'
-      e.currentTarget.style.borderColor = '#d0d0d0'
-      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(45,45,45,0.05), 0 2px 4px rgba(0,0,0,0.04)'
+      e.currentTarget.style.borderColor = '#b0b0b0'
+      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(45,45,45,0.08), 0 2px 6px rgba(0,0,0,0.06)'
     }
 
     const handleBlur = (
       e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
       e.currentTarget.style.backgroundColor = '#fafafa'
-      e.currentTarget.style.borderColor = '#e8e8e8'
-      e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.02)'
+      e.currentTarget.style.borderColor = '#e0e0e0'
+      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.03)'
     }
 
     switch (schema.type) {
@@ -761,11 +768,11 @@ const PropertyInput: React.FC<{
       <label
         style={{
           display: 'block',
-          fontSize: '11px',
+          fontSize: '12px',
           fontWeight: '600',
-          marginBottom: '6px',
-          color: '#666',
-          letterSpacing: '0.3px',
+          marginBottom: '8px',
+          color: '#555',
+          letterSpacing: '0.2px',
         }}
       >
         {schema.label}
@@ -817,23 +824,25 @@ const ArrayInput: React.FC<{
           onMouseEnter={() => setHoveredIndex(index)}
           onMouseLeave={() => setHoveredIndex(null)}
           style={{
-            padding: '6px 8px',
-            backgroundColor: hoveredIndex === index ? '#fafafa' : '#fff',
-            border: '1px solid #e8e8e8',
-            borderRadius: '4px',
+            padding: '8px 10px',
+            backgroundColor: hoveredIndex === index ? '#f8f9fa' : '#fff',
+            border: '1px solid #e0e0e0',
+            borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            transition: 'all 0.12s',
+            gap: '8px',
+            transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow:
+              hoveredIndex === index ? '0 2px 4px rgba(0,0,0,0.04)' : '0 1px 2px rgba(0,0,0,0.02)',
           }}
         >
           {/* 序号 */}
           <span
             style={{
-              fontSize: '10px',
+              fontSize: '11px',
               fontWeight: '700',
-              color: '#ccc',
-              width: '18px',
+              color: '#999',
+              width: '20px',
               flexShrink: 0,
             }}
           >
@@ -849,14 +858,15 @@ const ArrayInput: React.FC<{
                   onChange={e => handleItemChange(index, field.name, e.target.value)}
                   style={{
                     width: '100%',
-                    height: '28px',
-                    padding: '0 6px',
-                    border: '1px solid #e8e8e8',
-                    borderRadius: '3px',
-                    fontSize: '11px',
+                    height: '32px',
+                    padding: '0 8px',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '5px',
+                    fontSize: '12px',
                     outline: 'none',
                     backgroundColor: '#fafafa',
                     cursor: 'pointer',
+                    transition: 'all 0.15s',
                   }}
                 >
                   {field.options?.map(opt => (
@@ -873,13 +883,14 @@ const ArrayInput: React.FC<{
                   placeholder={field.placeholder}
                   style={{
                     width: '100%',
-                    height: '28px',
-                    padding: '0 8px',
-                    border: '1px solid #e8e8e8',
-                    borderRadius: '3px',
-                    fontSize: '11px',
+                    height: '32px',
+                    padding: '0 10px',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '5px',
+                    fontSize: '12px',
                     outline: 'none',
                     backgroundColor: '#fafafa',
+                    transition: 'all 0.15s',
                   }}
                 />
               ) : (
@@ -890,13 +901,14 @@ const ArrayInput: React.FC<{
                   placeholder={field.placeholder}
                   style={{
                     width: '100%',
-                    height: '28px',
-                    padding: '0 8px',
-                    border: '1px solid #e8e8e8',
-                    borderRadius: '3px',
-                    fontSize: '11px',
+                    height: '32px',
+                    padding: '0 10px',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '5px',
+                    fontSize: '12px',
                     outline: 'none',
                     backgroundColor: '#fafafa',
+                    transition: 'all 0.15s',
                   }}
                 />
               )}
@@ -907,18 +919,18 @@ const ArrayInput: React.FC<{
           <button
             onClick={() => handleRemoveItem(index)}
             style={{
-              width: '24px',
-              height: '24px',
+              width: '28px',
+              height: '28px',
               border: 'none',
-              borderRadius: '3px',
+              borderRadius: '5px',
               backgroundColor: hoveredIndex === index ? '#fee' : 'transparent',
-              color: hoveredIndex === index ? '#ef4444' : '#ddd',
+              color: hoveredIndex === index ? '#ef4444' : '#ccc',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
-              transition: 'all 0.12s',
+              transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
             title="删除"
           >
@@ -931,36 +943,36 @@ const ArrayInput: React.FC<{
       <button
         onClick={handleAddItem}
         style={{
-          height: '32px',
-          padding: '0 12px',
-          border: '1px dashed #d8d8d8',
-          borderRadius: '6px',
+          height: '36px',
+          padding: '0 14px',
+          border: '1px dashed #d0d0d0',
+          borderRadius: '8px',
           backgroundColor: '#fafafa',
           color: '#666',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '5px',
-          fontSize: '11px',
+          gap: '6px',
+          fontSize: '12px',
           fontWeight: '600',
           transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-          marginTop: '2px',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+          marginTop: '4px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
         }}
         onMouseEnter={e => {
           e.currentTarget.style.backgroundColor = '#fff'
-          e.currentTarget.style.borderColor = '#b0b0b0'
+          e.currentTarget.style.borderColor = '#a0a0a0'
           e.currentTarget.style.borderStyle = 'solid'
-          e.currentTarget.style.color = '#2d2d2d'
-          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.06)'
+          e.currentTarget.style.color = '#1a1a1a'
+          e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)'
         }}
         onMouseLeave={e => {
           e.currentTarget.style.backgroundColor = '#fafafa'
-          e.currentTarget.style.borderColor = '#d8d8d8'
+          e.currentTarget.style.borderColor = '#d0d0d0'
           e.currentTarget.style.borderStyle = 'dashed'
           e.currentTarget.style.color = '#666'
-          e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.02)'
+          e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.03)'
         }}
       >
         <Plus size={13} />

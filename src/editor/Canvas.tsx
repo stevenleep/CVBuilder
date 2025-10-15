@@ -265,9 +265,10 @@ export const Canvas: React.FC = () => {
       className="canvas-container"
       style={{
         flex: 1,
+        height: '100vh',
         overflow: 'auto',
         backgroundColor: '#f8f9fa',
-        padding: '32px 24px 80px 24px',
+        padding: '20px 24px 80px 24px',
         position: 'relative',
         display: 'flex',
         justifyContent: 'center',

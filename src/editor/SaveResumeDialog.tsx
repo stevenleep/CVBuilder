@@ -25,13 +25,18 @@ export const SaveResumeDialog: React.FC<SaveResumeDialogProps> = ({ onSave, onCl
     <div
       style={{
         position: 'fixed',
-        inset: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.4)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 100001,
         backdropFilter: 'blur(4px)',
+        padding: '20px',
+        boxSizing: 'border-box',
       }}
       onClick={onClose}
     >
@@ -40,9 +45,12 @@ export const SaveResumeDialog: React.FC<SaveResumeDialogProps> = ({ onSave, onCl
           backgroundColor: '#fff',
           borderRadius: '16px',
           width: '480px',
-          maxWidth: '90vw',
+          maxWidth: 'calc(100vw - 40px)',
+          maxHeight: 'calc(100vh - 40px)',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)',
           overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
         }}
         onClick={e => e.stopPropagation()}
       >
@@ -94,7 +102,7 @@ export const SaveResumeDialog: React.FC<SaveResumeDialogProps> = ({ onSave, onCl
         </div>
 
         {/* 表单内容 */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={{ flex: 1, overflow: 'auto' }}>
           <div style={{ padding: '24px' }}>
             {/* 简历名称 */}
             <div style={{ marginBottom: '20px' }}>

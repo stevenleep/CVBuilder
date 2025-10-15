@@ -184,12 +184,13 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
       {isOver && canDrop && (
         <div
           style={{
-            height: '3px',
-            backgroundColor: '#3b82f6',
-            marginLeft: `${level * 20 + 8}px`,
-            marginRight: '8px',
+            height: '4px',
+            backgroundColor: '#6b7280',
+            marginLeft: `${level * 16 + 8}px`,
+            marginRight: '12px',
             borderRadius: '2px',
-            boxShadow: '0 0 8px rgba(59, 130, 246, 0.4)',
+            boxShadow: '0 0 12px rgba(59, 130, 246, 0.5)',
+            animation: 'pulse 1.5s ease-in-out infinite',
           }}
         />
       )}
@@ -214,44 +215,47 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{
-          paddingLeft: `${level * 20 + 8}px`,
-          paddingRight: '8px',
-          paddingTop: '6px',
-          paddingBottom: '6px',
+          paddingLeft: `${level * 16 + 8}px`,
+          paddingRight: '12px',
+          paddingTop: '8px',
+          paddingBottom: '8px',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
+          gap: '8px',
           cursor: 'pointer',
           backgroundColor: isSelected
-            ? 'rgba(59, 130, 246, 0.08)'
+            ? 'rgba(0, 0, 0, 0.05)'
             : hover
-              ? 'rgba(0, 0, 0, 0.02)'
+              ? 'rgba(0, 0, 0, 0.04)'
               : 'transparent',
-          borderLeft: isSelected ? '3px solid #3b82f6' : '3px solid transparent',
-          borderRadius: isSelected ? '0 4px 4px 0' : '0',
-          transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+          borderRadius: '8px',
+          transition: 'background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
           opacity: schema.hidden ? 0.4 : 1,
           position: 'relative',
+          margin: '2px 8px',
         }}
       >
         {/* 拖动手柄 */}
         <div
           style={{
-            width: '16px',
-            height: '16px',
+            width: '18px',
+            height: '18px',
             display: hover ? 'flex' : 'none',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#bbb',
+            color: '#ccc',
             cursor: 'grab',
             flexShrink: 0,
-            transition: 'color 0.15s',
+            transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+            borderRadius: '4px',
           }}
           onMouseEnter={e => {
             e.currentTarget.style.color = '#666'
+            e.currentTarget.style.backgroundColor = '#f0f0f0'
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.color = '#bbb'
+            e.currentTarget.style.color = '#ccc'
+            e.currentTarget.style.backgroundColor = 'transparent'
           }}
         >
           <GripVertical size={13} />
@@ -265,37 +269,39 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
               setCollapsed(!collapsed)
             }}
             style={{
-              width: '16px',
-              height: '16px',
+              width: '18px',
+              height: '18px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: collapsed ? '#bbb' : '#888',
               cursor: 'pointer',
               flexShrink: 0,
-              borderRadius: '3px',
-              transition: 'all 0.15s',
+              borderRadius: '4px',
+              transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.color = '#2d2d2d'
-              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.06)'
+              e.currentTarget.style.color = '#1a1a1a'
+              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.08)'
+              e.currentTarget.style.transform = 'scale(1.1)'
             }}
             onMouseLeave={e => {
               e.currentTarget.style.color = collapsed ? '#bbb' : '#888'
               e.currentTarget.style.backgroundColor = 'transparent'
+              e.currentTarget.style.transform = 'scale(1)'
             }}
           >
             {collapsed ? <ChevronRight size={13} /> : <ChevronDown size={13} />}
           </div>
         ) : (
-          <div style={{ width: '16px', flexShrink: 0 }} />
+          <div style={{ width: '18px', flexShrink: 0 }} />
         )}
 
         {/* 节点类型图标 */}
         <div
           style={{
             display: 'flex',
-            color: isSelected ? '#3b82f6' : '#999',
+            color: isSelected ? '#6b7280' : '#999',
             transition: 'color 0.15s',
           }}
         >
@@ -305,11 +311,12 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
         {/* 组件类型 */}
         <div
           style={{
-            fontSize: '11px',
-            color: isSelected ? '#3b82f6' : '#2d2d2d',
+            fontSize: '12px',
+            color: isSelected ? '#6b7280' : '#1a1a1a',
             fontWeight: '600',
             flexShrink: 0,
             transition: 'color 0.15s',
+            letterSpacing: '-0.01em',
           }}
         >
           {materialDef?.meta.title || schema.type}
@@ -319,12 +326,13 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
         <div
           style={{
             fontSize: '11px',
-            color: '#999',
+            color: '#666',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
             flex: 1,
             minWidth: 0,
+            fontStyle: 'italic',
           }}
         >
           {getNodePreview(schema)}
@@ -335,7 +343,7 @@ export const StructureTree: React.FC<StructureTreeProps> = ({
           <div
             style={{
               display: 'flex',
-              gap: '2px',
+              gap: '4px',
               flexShrink: 0,
             }}
             onClick={e => e.stopPropagation()}
@@ -398,17 +406,18 @@ const ActionBtn: React.FC<{
       onMouseLeave={() => setHover(false)}
       title={tooltip}
       style={{
-        width: '18px',
-        height: '18px',
+        width: '20px',
+        height: '20px',
         border: 'none',
-        borderRadius: '3px',
+        borderRadius: '4px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         cursor: 'pointer',
         backgroundColor: hover ? (danger ? '#fef2f2' : '#f0f0f0') : 'transparent',
         color: danger ? '#ef4444' : '#666',
-        transition: 'all 0.1s',
+        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+        transform: hover ? 'scale(1.1)' : 'scale(1)',
       }}
     >
       {icon}
@@ -446,7 +455,7 @@ export const StructurePanel: React.FC = () => {
       style={{
         width: '100%',
         height: '100%',
-        backgroundColor: '#fff',
+        backgroundColor: '#fefefe',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -454,17 +463,19 @@ export const StructurePanel: React.FC = () => {
       {/* 标题 */}
       <div
         style={{
-          padding: '14px 16px 12px 16px',
-          borderBottom: '1px solid #f1f1f1',
+          padding: '16px 18px 14px 18px',
+          borderBottom: '1px solid #e8e8e8',
+          backgroundColor: '#f8f9fa',
+          background: 'linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%)',
         }}
       >
         <div
           style={{
-            fontSize: '11px',
+            fontSize: '12px',
             fontWeight: '700',
-            color: '#666',
+            color: '#1a1a1a',
             textTransform: 'uppercase',
-            letterSpacing: '0.8px',
+            letterSpacing: '0.5px',
           }}
         >
           页面结构
@@ -476,7 +487,7 @@ export const StructurePanel: React.FC = () => {
         style={{
           flex: 1,
           overflow: 'auto',
-          padding: '8px 0',
+          padding: '12px 0',
         }}
       >
         <StructureTree
@@ -490,11 +501,12 @@ export const StructurePanel: React.FC = () => {
       {/* 底部提示 */}
       <div
         style={{
-          padding: '12px',
-          borderTop: '1px solid #f1f1f1',
-          fontSize: '10px',
-          color: '#999',
+          padding: '14px 16px',
+          borderTop: '1px solid #e8e8e8',
+          fontSize: '11px',
+          color: '#666',
           lineHeight: '1.5',
+          backgroundColor: '#f8f9fa',
         }}
       >
         💡 Ctrl+点击多选 · Ctrl+A全选 · 拖拽调整顺序

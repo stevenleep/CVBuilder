@@ -125,7 +125,7 @@ export function PWAInstallPrompt() {
     <div
       style={{
         position: 'fixed',
-        bottom: ds.spacing.xl,
+        top: ds.spacing.xl,
         left: '50%',
         transform: 'translateX(-50%)',
         backgroundColor: ds.colors.background.card,
@@ -191,39 +191,38 @@ export function PWAInstallPrompt() {
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: ds.spacing.xs,
-          height: ds.sizes.button.sm,
-          padding: `0 ${ds.spacing.lg}`,
-          backgroundColor: ds.colors.neutral.white,
-          color: ds.colors.text.primary,
-          border: `1px solid ${ds.colors.border.base}`,
-          borderRadius: ds.borderRadius.md,
+          gap: ds.spacing.sm,
+          height: '40px',
+          padding: `0 ${ds.spacing.xl}`,
+          backgroundColor: ds.colors.primary.base,
+          color: ds.colors.neutral.white,
+          border: 'none',
+          borderRadius: ds.borderRadius.lg,
           fontSize: ds.typography.fontSize.sm,
           fontWeight: ds.typography.fontWeight.semibold,
           cursor: 'pointer',
           whiteSpace: 'nowrap',
-          transition: ds.animation.transition.smooth,
-          boxShadow: ds.shadows.sm,
+          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          position: 'relative',
+          overflow: 'hidden',
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = ds.colors.neutral.gray50
-          e.currentTarget.style.boxShadow = ds.shadows.md
+          e.currentTarget.style.backgroundColor = ds.colors.primary.dark
           e.currentTarget.style.transform = 'translateY(-1px)'
         }}
         onMouseLeave={e => {
-          e.currentTarget.style.backgroundColor = ds.colors.neutral.white
-          e.currentTarget.style.boxShadow = ds.shadows.sm
+          e.currentTarget.style.backgroundColor = ds.colors.primary.base
           e.currentTarget.style.transform = 'translateY(0)'
         }}
       >
-        <Download size={ds.sizes.icon.sm} />
+        <Download size={16} />
         立即安装
       </button>
 
       <button
         onClick={handleClose}
         style={{
-          padding: ds.spacing.xs,
+          padding: ds.spacing.sm,
           backgroundColor: 'transparent',
           border: 'none',
           cursor: 'pointer',
@@ -231,20 +230,24 @@ export function PWAInstallPrompt() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          borderRadius: ds.borderRadius.sm,
-          transition: ds.animation.transition.fast,
+          borderRadius: ds.borderRadius.md,
+          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          width: '32px',
+          height: '32px',
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.color = ds.colors.text.secondary
-          e.currentTarget.style.backgroundColor = ds.colors.background.hover
+          e.currentTarget.style.backgroundColor = ds.colors.neutral.gray100
+          e.currentTarget.style.color = ds.colors.text.primary
+          e.currentTarget.style.transform = 'scale(1.1)'
         }}
         onMouseLeave={e => {
-          e.currentTarget.style.color = ds.colors.text.tertiary
           e.currentTarget.style.backgroundColor = 'transparent'
+          e.currentTarget.style.color = ds.colors.text.tertiary
+          e.currentTarget.style.transform = 'scale(1)'
         }}
         aria-label="关闭"
       >
-        <X size={ds.sizes.icon.lg} />
+        <X size={16} />
       </button>
     </div>
   )

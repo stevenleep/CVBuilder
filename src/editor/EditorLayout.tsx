@@ -13,6 +13,8 @@ import { ResizablePanel } from './ResizablePanel'
 import { DragPreview } from './DragPreview'
 import { MultiSelectionToolbar } from './MultiSelectionToolbar'
 import { BatchEditPanel } from './BatchEditPanel'
+import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
+import { SaveResumeDialog } from './SaveResumeDialog'
 import { useKeyboardShortcuts } from '@/core/hooks/useKeyboardShortcuts'
 import { useIsSmallScreen } from '@/hooks/useMediaQuery'
 import { Menu, X } from 'lucide-react'
@@ -26,6 +28,11 @@ export const EditorLayout: React.FC = () => {
   const [showLeftPanel, setShowLeftPanel] = useState(!isSmallScreen)
   const [showRightPanel, setShowRightPanel] = useState(!isSmallScreen)
 
+  // 弹窗状态
+  const [showNewResumeDialog, setShowNewResumeDialog] = useState(false)
+  const [showSaveAsDialog, setShowSaveAsDialog] = useState(false)
+  const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
+
   // 小屏幕时自动收起侧边栏
   React.useEffect(() => {
     if (isSmallScreen) {
@@ -37,6 +44,23 @@ export const EditorLayout: React.FC = () => {
     }
   }, [isSmallScreen])
 
+  // 监听弹窗事件
+  React.useEffect(() => {
+    const handleShowNewResumeDialog = () => setShowNewResumeDialog(true)
+    const handleShowSaveAsDialog = () => setShowSaveAsDialog(true)
+    const handleShowSaveTemplateDialog = () => setShowSaveTemplateDialog(true)
+
+    window.addEventListener('cvkit-show-new-resume-dialog', handleShowNewResumeDialog)
+    window.addEventListener('cvkit-show-save-as-dialog', handleShowSaveAsDialog)
+    window.addEventListener('cvkit-show-save-template-dialog', handleShowSaveTemplateDialog)
+
+    return () => {
+      window.removeEventListener('cvkit-show-new-resume-dialog', handleShowNewResumeDialog)
+      window.removeEventListener('cvkit-show-save-as-dialog', handleShowSaveAsDialog)
+      window.removeEventListener('cvkit-show-save-template-dialog', handleShowSaveTemplateDialog)
+    }
+  }, [])
+
   return (
     <div
       style={{
@@ -44,10 +68,24 @@ export const EditorLayout: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
-      {/* 顶部工具栏 */}
-      <Toolbar />
+      {/* 悬浮工具栏 - 底部 */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 100,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1)',
+          borderRadius: '12px',
+          overflow: 'hidden',
+        }}
+      >
+        <Toolbar />
+      </div>
 
       {/* 主要内容区 */}
       <div
@@ -169,7 +207,7 @@ export const EditorLayout: React.FC = () => {
               right: 0,
               bottom: 0,
               backgroundColor: 'rgba(0,0,0,0.3)',
-              zIndex: 999,
+              zIndex: 50,
             }}
           />
         )}
@@ -183,6 +221,49 @@ export const EditorLayout: React.FC = () => {
 
       {/* 批量编辑面板 */}
       <BatchEditPanel />
+
+      {/* 自动保存指示器 - 右下角 */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          right: '20px',
+          zIndex: 100,
+        }}
+      >
+        <AutoSaveIndicator />
+      </div>
+
+      {/* 弹窗组件 - 在最顶层 */}
+      {showNewResumeDialog && (
+        <SaveResumeDialog
+          onSave={(name, description) => {
+            // 这里需要调用保存逻辑
+            setShowNewResumeDialog(false)
+          }}
+          onClose={() => setShowNewResumeDialog(false)}
+        />
+      )}
+
+      {showSaveAsDialog && (
+        <SaveResumeDialog
+          onSave={(name, description) => {
+            // 这里需要调用另存为逻辑
+            setShowSaveAsDialog(false)
+          }}
+          onClose={() => setShowSaveAsDialog(false)}
+        />
+      )}
+
+      {showSaveTemplateDialog && (
+        <SaveResumeDialog
+          onSave={(name, description) => {
+            // 这里需要调用保存为模板逻辑
+            setShowSaveTemplateDialog(false)
+          }}
+          onClose={() => setShowSaveTemplateDialog(false)}
+        />
+      )}
     </div>
   )
 }

@@ -225,22 +225,20 @@ export const AutoSaveIndicator: React.FC = () => {
     <div
       onClick={handleClick}
       style={{
+        width: '26px',
+        height: '26px',
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        padding: '4px 10px',
-        borderRadius: '6px',
-        backgroundColor: status === 'error' ? '#fee2e2' : '#f8f9fa',
-        fontSize: '11px',
-        fontWeight: '500',
+        justifyContent: 'center',
+        borderRadius: '5px',
+        backgroundColor: status === 'error' ? '#fee2e2' : 'transparent',
         color: getStatusColor(),
         cursor: status === 'error' ? 'pointer' : 'default',
         transition: 'all 0.2s',
       }}
-      title={status === 'error' ? '点击重试' : ''}
+      title={getStatusText()}
     >
       {getStatusIcon()}
-      <span>{getStatusText()}</span>
       <style>
         {`
           @keyframes spin {

@@ -21,18 +21,14 @@ import {
   Download,
   Upload,
   MoreVertical,
-  Globe,
   Check,
 } from 'lucide-react'
 import { SaveResumeDialog } from './SaveResumeDialog'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
-import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
-import { ExportPreviewDialog, ExportOptions } from './ExportPreviewDialog'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
-import { exportHTML } from '@/utils/htmlExporter'
 import { useTheme } from '@/core/context/ThemeContext'
 import { useIsMobile, useIsSmallScreen } from '@/hooks/useMediaQuery'
 
@@ -57,14 +53,7 @@ export const Toolbar: React.FC = () => {
   const isSmallScreen = useIsSmallScreen()
 
   const [showSaveMenu, setShowSaveMenu] = useState(false)
-  const [showNewResumeDialog, setShowNewResumeDialog] = useState(false)
-  const [showSaveAsDialog, setShowSaveAsDialog] = useState(false)
-  const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
-  const [showExportPreview, setShowExportPreview] = useState(false)
-  const [exportInitialFormat, setExportInitialFormat] = useState<'pdf' | 'png' | 'json' | 'html'>(
-    'pdf'
-  )
   const [showMoreMenu, setShowMoreMenu] = useState(false)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
@@ -222,85 +211,49 @@ export const Toolbar: React.FC = () => {
     }
   }
 
-  const handleExportWithOptions = async (options: ExportOptions) => {
+  const handleExportPDF = async () => {
     try {
-      // 查找所有页面元素
       const pages = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
-
       if (!pages || pages.length === 0) {
         notification.error('未找到简历页面')
         return
       }
 
-      notification.info('正在生成导出文件...')
+      notification.info('正在生成PDF文件...')
 
-      if (options.format === 'pdf') {
-        // PDF 导出 - 支持多页
-        const pdf = new jsPDF({
-          orientation: options.pageSize === 'a4' ? 'portrait' : 'landscape',
-          unit: 'mm',
-          format: options.pageSize || 'a4',
-        })
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      })
 
-        const scale = options.scale || 2
+      const scale = 2
 
-        for (let i = 0; i < pages.length; i++) {
-          const page = pages[i]
-
-          const canvas = await html2canvas(page, {
-            scale,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff',
-          })
-
-          const imgData = canvas.toDataURL('image/jpeg', (options.quality || 90) / 100)
-
-          if (i > 0) {
-            pdf.addPage()
-          }
-
-          const pdfWidth = pdf.internal.pageSize.getWidth()
-          const pdfHeight = pdf.internal.pageSize.getHeight()
-          pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight)
-        }
-
-        pdf.save('resume.pdf')
-        notification.success('PDF 导出成功！')
-      } else if (options.format === 'png') {
-        // PNG 导出 - 只导出第一页
-        const scale = options.scale || 2
-
-        const canvas = await html2canvas(pages[0], {
+      for (let i = 0; i < pages.length; i++) {
+        const page = pages[i]
+        const canvas = await html2canvas(page, {
           scale,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
         })
 
-        const link = document.createElement('a')
-        link.download = 'resume.png'
-        link.href = canvas.toDataURL('image/png')
-        link.click()
-        notification.success('PNG 导出成功！')
-      } else if (options.format === 'html') {
-        // HTML 导出 - 使用独立导出模块
-        const state = useEditorStore.getState()
-        await exportHTML({
-          version: options.htmlVersion || 'html5',
-          pageSchema: state.pageSchema,
-        })
-        notification.success('网页导出成功！')
-      } else if (options.format === 'json') {
-        // JSON 导出
-        handleExportJSON()
-        return
+        const imgData = canvas.toDataURL('image/jpeg', 0.9)
+
+        if (i > 0) {
+          pdf.addPage()
+        }
+
+        const pdfWidth = pdf.internal.pageSize.getWidth()
+        const pdfHeight = pdf.internal.pageSize.getHeight()
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight)
       }
 
-      setShowExportPreview(false)
+      pdf.save('resume.pdf')
+      notification.success('PDF 导出成功！')
     } catch (error) {
-      notification.error('导出失败')
-      console.error('Export error:', error)
+      notification.error('PDF 导出失败')
+      console.error('PDF export error:', error)
     }
   }
 
@@ -323,14 +276,17 @@ export const Toolbar: React.FC = () => {
     return (
       <div
         style={{
-          height: '48px',
-          backgroundColor: '#fafbfc',
-          borderBottom: '1px solid #f0f0f0',
+          height: '64px',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 16px',
-          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.02)',
+          padding: '0 24px',
+          minWidth: '600px',
+          maxWidth: '800px',
         }}
       >
         {/* 左侧：返回 */}
@@ -479,335 +435,161 @@ export const Toolbar: React.FC = () => {
   return (
     <div
       style={{
-        height: isMobile ? '44px' : '48px',
-        borderBottom: '1px solid #f0f0f0',
+        height: isMobile ? '52px' : '56px',
         display: 'flex',
         alignItems: 'center',
-        padding: isMobile ? '0 8px' : '0 14px',
-        gap: isMobile ? '5px' : '8px',
-        backgroundColor: '#fafafa',
-        boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+        padding: isMobile ? '0 16px' : '0 20px',
+        gap: isMobile ? '6px' : '8px',
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        borderRadius: '16px',
+        minWidth: '380px',
+        maxWidth: '520px',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
-      {/* 左侧区域 */}
-      {!isMobile && <LogoIcon size={28} />}
-
-      {!isSmallScreen && (
-        <>
-          <div style={{ display: 'flex', gap: '4px' }}>
-            {/* 返回首页 */}
-            <TextButton onClick={() => navigate('/')}>
-              <Home size={13} />
-              首页
-            </TextButton>
-
-            {/* 导入 */}
-            <TextButton onClick={handleImportJSON}>
-              <Upload size={13} />
-              导入
-            </TextButton>
-          </div>
-
-          <Divider />
-
-          {/* 模式切换 - 带文字的按钮组 */}
-          <div style={{ display: 'flex', gap: '3px' }}>
-            <ModeButton
-              icon={<Edit3 size={13} />}
-              label="编辑"
-              active={mode === 'edit'}
-              onClick={() => setMode('edit')}
-            />
-            <ModeButton
-              icon={<Eye size={13} />}
-              label="预览"
-              active={mode === 'preview'}
-              onClick={() => setMode('preview')}
-            />
-          </div>
-        </>
+      {/* 左侧区域 - 返回首页 */}
+      {!isMobile && (
+        <IconButton icon={<Home size={14} />} tooltip="返回首页" onClick={() => navigate('/')} />
       )}
 
-      {/* 中间区域 - 核心编辑功能 */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: isMobile ? '5px' : '8px',
-          flex: 1,
-          justifyContent: 'center',
-        }}
-      >
-        {/* 撤销/重做 */}
-        <div style={{ display: 'flex', gap: '3px' }}>
-          <IconButton
-            icon={<Undo size={13} />}
-            tooltip="撤销"
-            onClick={() => undo()}
-            disabled={!canUndo()}
-          />
-          <IconButton
-            icon={<Redo size={13} />}
-            tooltip="重做"
-            onClick={() => redo()}
-            disabled={!canRedo()}
-          />
-        </div>
-
-        {/* 移动端的模式切换 */}
-        {isMobile && (
-          <>
-            <Divider />
-            <div style={{ display: 'flex', gap: '3px' }}>
-              <IconButton
-                icon={<Edit3 size={13} />}
-                tooltip="编辑模式"
-                onClick={() => setMode('edit')}
-              />
-              <IconButton
-                icon={<Eye size={13} />}
-                tooltip="预览模式"
-                onClick={() => setMode('preview')}
-              />
-            </div>
-          </>
-        )}
-
-        {!isSmallScreen && (
-          <>
-            <Divider />
-            {/* 缩放控制 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <IconButton
-                icon={<ZoomOut size={14} />}
-                tooltip="缩小"
-                onClick={() => handleZoomOut()}
-              />
-              <button
-                onClick={handleZoomReset}
-                title="重置缩放"
-                style={{
-                  minWidth: '52px',
-                  height: '26px',
-                  padding: '0 8px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  color: '#2d2d2d',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  fontVariantNumeric: 'tabular-nums',
-                  transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.backgroundColor = '#f5f5f5'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                }}
-              >
-                {Math.round(canvasConfig.scale * 100)}%
-              </button>
-              <IconButton
-                icon={<ZoomIn size={14} />}
-                tooltip="放大"
-                onClick={() => handleZoomIn()}
-              />
-            </div>
-          </>
-        )}
+      {/* 模式切换 - 仅图标 */}
+      <div style={{ display: 'flex', gap: '2px' }}>
+        <IconButton
+          icon={<Edit3 size={14} />}
+          tooltip="编辑模式"
+          onClick={() => setMode('edit')}
+          active={mode === 'edit'}
+        />
+        <IconButton
+          icon={<Eye size={14} />}
+          tooltip="预览模式"
+          onClick={() => setMode('preview')}
+          active={mode === 'preview'}
+        />
       </div>
 
-      {/* 右侧区域 - 文档操作 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} />
+      <Divider />
 
-      {!isSmallScreen && (
-        <>
-          <AutoSaveIndicator />
-
-          {/* 帮助 - 增强视觉效果 */}
-          <div
-            style={{
-              position: 'relative',
-              animation: 'pulse 2s ease-in-out infinite',
-            }}
-          >
-            <IconButton
-              icon={<HelpCircle size={13} />}
-              tooltip="快捷键帮助 (按 ? 查看)"
-              onClick={() => setShowShortcutsHelp(true)}
-            />
-            {/* 小提示徽章 */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '-2px',
-                right: '-2px',
-                width: '6px',
-                height: '6px',
-                backgroundColor: '#3b82f6',
-                borderRadius: '50%',
-                border: '1.5px solid #fff',
-              }}
-            />
-          </div>
-
-          <Divider />
-
-          {/* HTML 快捷导出 */}
-          <TextButton
-            onClick={() => {
-              setExportInitialFormat('html')
-              setShowExportPreview(true)
-            }}
-          >
-            <Globe size={13} />
-            网页
-          </TextButton>
-
-          {/* 导出 */}
-          <TextButton
-            onClick={() => {
-              setExportInitialFormat('pdf')
-              setShowExportPreview(true)
-            }}
-          >
-            <Download size={13} />
-            导出
-          </TextButton>
-
-          {/* 保存 - 分割按钮 */}
-          <div style={{ position: 'relative' }}>
-            <SplitButton
-              onMainClick={() => handleSave()}
-              onMenuClick={() => setShowSaveMenu(!showSaveMenu)}
-            >
-              <Save size={13} />
-              保存
-            </SplitButton>
-
-            {showSaveMenu && (
-              <Menu onClose={() => setShowSaveMenu(false)} align="right">
-                <MenuItem
-                  onClick={() => {
-                    setShowSaveAsDialog(true)
-                    setShowSaveMenu(false)
-                  }}
-                >
-                  另存为...
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    setShowSaveTemplateDialog(true)
-                    setShowSaveMenu(false)
-                  }}
-                >
-                  保存为模板
-                </MenuItem>
-              </Menu>
-            )}
-          </div>
-        </>
-      )}
-
-      {/* 移动端/平板：紧凑操作按钮 */}
-      {isSmallScreen && (
-        <>
-          {/* HTML 快捷导出 - 仅图标 */}
-          <IconButton
-            icon={<Globe size={isMobile ? 14 : 16} />}
-            tooltip="导出网页"
-            onClick={() => {
-              setExportInitialFormat('html')
-              setShowExportPreview(true)
-            }}
-          />
-
-          {/* 导出按钮 - 仅图标 */}
-          <IconButton
-            icon={<Download size={isMobile ? 14 : 16} />}
-            tooltip="导出"
-            onClick={() => {
-              setExportInitialFormat('pdf')
-              setShowExportPreview(true)
-            }}
-          />
-
-          {/* 保存按钮 - 仅图标 */}
-          <IconButton
-            icon={<Save size={isMobile ? 14 : 16} />}
-            tooltip="保存"
-            onClick={() => handleSave()}
-          />
-
-          {/* 更多菜单 */}
-          <div style={{ position: 'relative' }}>
-            <IconButton
-              icon={<MoreVertical size={isMobile ? 14 : 16} />}
-              tooltip="更多"
-              onClick={() => setShowMoreMenu(!showMoreMenu)}
-            />
-
-            {showMoreMenu && (
-              <Menu onClose={() => setShowMoreMenu(false)} align="right">
-                <MenuItem onClick={() => navigate('/')}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Home size={13} />
-                    返回首页
-                  </div>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleImportJSON()
-                    setShowMoreMenu(false)
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Upload size={13} />
-                    导入JSON
-                  </div>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    setShowSaveAsDialog(true)
-                    setShowMoreMenu(false)
-                  }}
-                >
-                  另存为...
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    setShowSaveTemplateDialog(true)
-                    setShowMoreMenu(false)
-                  }}
-                >
-                  保存为模板
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    setShowShortcutsHelp(true)
-                    setShowMoreMenu(false)
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <HelpCircle size={13} />
-                    快捷键帮助
-                  </div>
-                </MenuItem>
-              </Menu>
-            )}
-          </div>
-        </>
-      )}
-
-      {showExportPreview && (
-        <ExportPreviewDialog
-          onExport={handleExportWithOptions}
-          onClose={() => setShowExportPreview(false)}
-          initialFormat={exportInitialFormat}
+      {/* 撤销/重做 */}
+      <div style={{ display: 'flex', gap: '2px' }}>
+        <IconButton
+          icon={<Undo size={14} />}
+          tooltip="撤销"
+          onClick={() => undo()}
+          disabled={!canUndo()}
         />
-      )}
+        <IconButton
+          icon={<Redo size={14} />}
+          tooltip="重做"
+          onClick={() => redo()}
+          disabled={!canRedo()}
+        />
+      </div>
+
+      <Divider />
+
+      {/* 缩放控制 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+        <IconButton icon={<ZoomOut size={14} />} tooltip="缩小" onClick={() => handleZoomOut()} />
+        <button
+          onClick={handleZoomReset}
+          title="重置缩放"
+          style={{
+            width: '26px',
+            height: '26px',
+            padding: '0',
+            fontSize: '10px',
+            fontWeight: '700',
+            color: '#2d2d2d',
+            backgroundColor: 'transparent',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontVariantNumeric: 'tabular-nums',
+            transition: 'all 0.15s',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.backgroundColor = '#f5f5f5'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.backgroundColor = 'transparent'
+          }}
+        >
+          {Math.round(canvasConfig.scale * 100)}%
+        </button>
+        <IconButton icon={<ZoomIn size={14} />} tooltip="放大" onClick={() => handleZoomIn()} />
+      </div>
+
+      <Divider />
+
+      {/* 右侧区域 - 文档操作 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        {/* 导入 */}
+        <IconButton icon={<Upload size={14} />} tooltip="导入JSON" onClick={handleImportJSON} />
+
+        {/* 导出 */}
+        <IconButton
+          icon={<Download size={14} />}
+          tooltip="导出PDF"
+          onClick={() => handleExportPDF()}
+        />
+
+        {/* 保存 */}
+        <IconButton
+          icon={<Save size={14} />}
+          tooltip="保存"
+          onClick={() => {
+            if (!currentResumeId) {
+              // 触发新简历对话框事件
+              window.dispatchEvent(new CustomEvent('cvkit-show-new-resume-dialog'))
+            } else {
+              handleSave()
+            }
+          }}
+        />
+
+        {/* 更多菜单 - 暂时注释掉 */}
+        {/* <div style={{ position: 'relative' }}>
+          <IconButton
+            icon={<MoreVertical size={14} />}
+            tooltip="更多"
+            onClick={e => {
+              e.stopPropagation()
+              setShowMoreMenu(!showMoreMenu)
+            }}
+          />
+
+          {showMoreMenu && (
+            <Menu onClose={() => setShowMoreMenu(false)} align="right">
+              <MenuItem
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent('cvkit-show-save-as-dialog'))
+                  setShowMoreMenu(false)
+                }}
+              >
+                另存为...
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setShowShortcutsHelp(true)
+                  setShowMoreMenu(false)
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <HelpCircle size={13} />
+                  快捷键帮助
+                </div>
+              </MenuItem>
+            </Menu>
+          )}
+        </div> */}
+      </div>
 
       {/* 隐藏的文件输入 */}
       <input
@@ -832,36 +614,6 @@ export const Toolbar: React.FC = () => {
 
       {/* 对话框 */}
       {showShortcutsHelp && <KeyboardShortcutsHelp onClose={() => setShowShortcutsHelp(false)} />}
-
-      {showNewResumeDialog && (
-        <SaveResumeDialog
-          onSave={(name, description) => {
-            handleSave(name, description)
-            setShowNewResumeDialog(false)
-          }}
-          onClose={() => setShowNewResumeDialog(false)}
-        />
-      )}
-
-      {showSaveAsDialog && (
-        <SaveResumeDialog
-          onSave={(name, description) => {
-            handleSaveAs(name, description)
-            setShowSaveAsDialog(false)
-          }}
-          onClose={() => setShowSaveAsDialog(false)}
-        />
-      )}
-
-      {showSaveTemplateDialog && (
-        <SaveResumeDialog
-          onSave={(name, description) => {
-            handleSaveAsTemplate(name, description)
-            setShowSaveTemplateDialog(false)
-          }}
-          onClose={() => setShowSaveTemplateDialog(false)}
-        />
-      )}
     </div>
   )
 }
@@ -872,7 +624,8 @@ const IconButton: React.FC<{
   tooltip: string
   onClick: (e?: React.MouseEvent) => void
   disabled?: boolean
-}> = ({ icon, tooltip, onClick, disabled = false }) => {
+  active?: boolean
+}> = ({ icon, tooltip, onClick, disabled = false, active = false }) => {
   const [hover, setHover] = React.useState(false)
 
   return (
@@ -883,18 +636,27 @@ const IconButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        width: '26px',
-        height: '26px',
+        width: '32px',
+        height: '32px',
         border: 'none',
-        borderRadius: '5px',
+        borderRadius: '8px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         cursor: disabled ? 'not-allowed' : 'pointer',
-        backgroundColor: hover && !disabled ? '#f5f5f5' : 'transparent',
-        color: disabled ? '#d0d0d0' : hover ? '#2d2d2d' : '#666',
-        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+        backgroundColor: active
+          ? 'rgba(0, 0, 0, 0.08)'
+          : hover && !disabled
+            ? 'rgba(0, 0, 0, 0.05)'
+            : 'transparent',
+        color: active ? '#1f2937' : disabled ? '#d0d0d0' : hover ? '#374151' : '#6b7280',
+        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
         transform: hover && !disabled ? 'scale(1.05)' : 'scale(1)',
+        boxShadow: active
+          ? '0 0 0 1px rgba(0, 0, 0, 0.1)'
+          : hover && !disabled
+            ? '0 2px 4px rgba(0, 0, 0, 0.1)'
+            : 'none',
       }}
     >
       {icon}
@@ -915,21 +677,21 @@ const TextButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        height: '26px',
-        padding: '0 10px',
-        border: hover ? '1px solid #e8e8e8' : '1px solid transparent',
-        borderRadius: '5px',
-        fontSize: '12px',
+        height: '36px',
+        padding: '0 16px',
+        border: hover ? '1px solid rgba(0, 0, 0, 0.1)' : '1px solid transparent',
+        borderRadius: '8px',
+        fontSize: '13px',
         fontWeight: '600',
         cursor: 'pointer',
-        backgroundColor: hover ? '#f8f8f8' : 'transparent',
-        color: hover ? '#2d2d2d' : '#666',
-        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+        backgroundColor: hover ? 'rgba(0, 0, 0, 0.05)' : 'transparent',
+        color: hover ? '#374151' : '#6b7280',
+        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         alignItems: 'center',
-        gap: '4px',
+        gap: '8px',
         transform: hover ? 'translateY(-1px)' : 'translateY(0)',
-        boxShadow: hover ? '0 2px 4px rgba(0,0,0,0.04)' : 'none',
+        boxShadow: hover ? '0 4px 8px rgba(0, 0, 0, 0.08)' : 'none',
       }}
     >
       {children}
@@ -951,10 +713,10 @@ const SplitButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        height: '26px',
+        height: '32px',
         display: 'flex',
         backgroundColor: '#2d2d2d',
-        borderRadius: '5px',
+        borderRadius: '8px',
         boxShadow: hover ? '0 2px 6px rgba(0,0,0,0.15)' : '0 1px 3px rgba(0,0,0,0.1)',
         overflow: 'hidden',
         transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -967,11 +729,11 @@ const SplitButton: React.FC<{
         onMouseEnter={() => setMainHover(true)}
         onMouseLeave={() => setMainHover(false)}
         style={{
-          height: '26px',
-          padding: '0 12px',
+          height: '32px',
+          padding: '0 14px',
           border: 'none',
           background: 'transparent',
-          fontSize: '12px',
+          fontSize: '13px',
           fontWeight: '600',
           cursor: 'pointer',
           backgroundColor: mainHover ? '#1a1a1a' : 'transparent',
@@ -979,7 +741,7 @@ const SplitButton: React.FC<{
           transition: 'all 0.15s',
           display: 'flex',
           alignItems: 'center',
-          gap: '5px',
+          gap: '6px',
         }}
       >
         {children}
@@ -1005,8 +767,8 @@ const SplitButton: React.FC<{
         onMouseLeave={() => setMenuHover(false)}
         title="更多保存选项"
         style={{
-          width: '24px',
-          height: '26px',
+          width: '28px',
+          height: '32px',
           border: 'none',
           background: 'transparent',
           cursor: 'pointer',
@@ -1029,7 +791,7 @@ const Divider = () => (
   <div
     style={{
       width: '1px',
-      height: '16px',
+      height: '20px',
       backgroundColor: '#e8e8e8',
     }}
   />
@@ -1051,20 +813,20 @@ const ModeButton: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        minWidth: compact ? '22px' : 'auto',
-        height: '26px',
-        padding: compact ? '0' : '0 10px',
+        minWidth: compact ? '28px' : 'auto',
+        height: '32px',
+        padding: compact ? '0' : '0 12px',
         border: '1px solid transparent',
-        borderRadius: '5px',
+        borderRadius: '8px',
         backgroundColor: active ? '#2d2d2d' : hover ? '#f5f5f5' : 'transparent',
         color: active ? '#fff' : hover ? '#2d2d2d' : '#666',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '4px',
+        gap: '6px',
         transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-        fontSize: '12px',
+        fontSize: '13px',
         fontWeight: '600',
         whiteSpace: 'nowrap',
       }}
@@ -1098,7 +860,7 @@ const Menu: React.FC<{
       style={{
         position: 'absolute',
         top: '100%',
-        [align]: 0,
+        right: 0,
         marginTop: '6px',
         minWidth: '180px',
         backgroundColor: '#fff',
@@ -1106,7 +868,7 @@ const Menu: React.FC<{
         boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)',
         border: '1px solid #e8e8e8',
         padding: '4px',
-        zIndex: 1000,
+        zIndex: 100001,
       }}
     >
       {children}

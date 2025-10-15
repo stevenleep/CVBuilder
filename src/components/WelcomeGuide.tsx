@@ -85,7 +85,7 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onClose }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 100002,
+        zIndex: 100000,
         animation: 'fadeIn 0.3s ease',
       }}
       onClick={handleSkip}
