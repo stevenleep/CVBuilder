@@ -3,7 +3,7 @@
  * 当检测到新版本时，提示用户刷新页面
  */
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { ds } from '@/styles/designSystem'
 import { useRegisterSW } from 'virtual:pwa-register/react'
@@ -13,7 +13,7 @@ export function PWAUpdatePrompt() {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
-    onRegistered(registration) {
+    onRegistered(registration: ServiceWorkerRegistration | undefined) {
       console.log('[PWA] Service Worker已注册')
 
       // 定期检查更新（每小时）
@@ -27,7 +27,7 @@ export function PWAUpdatePrompt() {
         )
       }
     },
-    onRegisterError(error) {
+    onRegisterError(error: Error) {
       console.error('[PWA] Service Worker注册失败:', error)
     },
   })
