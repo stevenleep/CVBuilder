@@ -78,15 +78,9 @@ function performAddHistory(
       } else {
         state.historyActions.push(action)
       }
+
       state.maxHistoryIndex += 1
       state.historyIndex = state.maxHistoryIndex
-
-      // 调试信息：只在开发环境显示
-      if (process.env.NODE_ENV === 'development') {
-        console.log(
-          `[History] 操作: ${action.type}, 索引: ${state.historyIndex}/${state.maxHistoryIndex}`
-        )
-      }
 
       if (state.historyActions.length > HISTORY_MAX_SIZE) {
         const actionsToMerge = state.historyActions.slice(

@@ -148,26 +148,6 @@ export function bootstrapEditor(config: IEditorConfig = {}): IEditorContext {
     config: finalConfig,
   }
 
-  // ===== 5. 调试输出 =====
-  if (finalConfig.debug) {
-    console.group('[CVBuilder] 编辑器初始化完成')
-    console.log('📦 事件总线:', eventBus)
-    console.log('🎨 物料注册表:', materialRegistry)
-    console.log('🔌 插件管理器:', pluginManager)
-    console.log('⌨️ 命令服务:', commandService)
-    console.log('⏮️ 历史服务:', historyService)
-    console.log('🔔 通知服务:', notificationService)
-    console.log('✅ 验证服务:', validationService)
-    console.log('🔗 扩展服务:', extensionService)
-    console.log('🪝 钩子服务:', hookService)
-    console.log('🔀 中间件服务:', middlewareService)
-    console.log('🎬 行为服务:', actionService)
-    console.log('⚡ 快捷键服务:', shortcutService)
-    console.log('⚙️ 配置:', finalConfig)
-    console.log('📊 已注册物料数量:', materialRegistry.getAll().length)
-    console.groupEnd()
-  }
-
   return editorContext
 }
 

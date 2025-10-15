@@ -24,7 +24,6 @@ import {
   Pencil,
 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
-import { HomeIconModal } from '@/components/HomeIconModal'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { exampleResumes } from '@/data/examples'
 import { nanoid } from 'nanoid'
@@ -56,6 +55,7 @@ export const HomePage: React.FC = () => {
     const handleResumeUpdate = () => {
       loadRecentResumes()
     }
+
     window.addEventListener('cvkit-resume-updated', handleResumeUpdate)
 
     return () => {
@@ -1072,16 +1072,6 @@ const ResumeCard: React.FC<{
           继续编辑
         </button>
       </div>
-
-      {/* 首页图标提示窗口 */}
-      <HomeIconModal
-        isOpen={showHomeIconModal}
-        onClose={() => setShowHomeIconModal(false)}
-        onConfirm={() => {
-          setShowHomeIconModal(false)
-          navigate('/')
-        }}
-      />
     </div>
   )
 }

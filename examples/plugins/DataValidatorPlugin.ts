@@ -55,15 +55,13 @@ export class DataValidatorPlugin {
 
     // 3. 监听事件
     this.setupEventListeners()
-
-    console.log('[DataValidatorPlugin] 数据验证插件已激活')
   }
 
   /**
    * 停用插件
    */
   public async deactivate(): Promise<void> {
-    console.log('[DataValidatorPlugin] 数据验证插件已停用')
+    //
   }
 
   /**
@@ -180,8 +178,6 @@ export class DataValidatorPlugin {
       handler: async context => {
         const { data } = context
 
-        console.log('[DataValidatorPlugin] 开始验证数据...')
-
         // 验证整体数据结构
         const errors = await this.validateResumeData(data)
 
@@ -203,8 +199,6 @@ export class DataValidatorPlugin {
           } else {
             this.notificationService.warning('已保存，但建议修正验证错误')
           }
-        } else {
-          console.log('[DataValidatorPlugin] 数据验证通过')
         }
       },
     })
@@ -331,9 +325,8 @@ export class DataValidatorPlugin {
     })
 
     // 监听数据更新事件
-    this.eventBus.on('node:after-update', (data: any) => {
+    this.eventBus.on('node:after-update', () => {
       // 可以在此进行实时验证
-      console.log('[DataValidatorPlugin] 节点已更新:', data)
     })
   }
 

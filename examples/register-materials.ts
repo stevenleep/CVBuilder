@@ -28,34 +28,15 @@ export function registerExampleMaterials(
     ...config,
   }
 
-  console.group('[Example Materials] 开始注册示例物料')
+  if (finalConfig.enableChart) {
+    registry.register(ChartMaterialDefinition)
+  }
 
-  let registeredCount = 0
+  if (finalConfig.enableQRCode) {
+    registry.register(QRCodeMaterialDefinition)
+  }
 
-  try {
-    if (finalConfig.enableChart) {
-      registry.register(ChartMaterialDefinition)
-      console.log('  ✓ 图表物料 (Chart) 已注册')
-      registeredCount++
-    }
-
-    if (finalConfig.enableQRCode) {
-      registry.register(QRCodeMaterialDefinition)
-      console.log('  ✓ 二维码物料 (QRCode) 已注册')
-      registeredCount++
-    }
-
-    if (finalConfig.enableSkillRadar) {
-      registry.register(SkillRadarMaterialDefinition)
-      console.log('  ✓ 技能雷达图物料 (SkillRadar) 已注册')
-      registeredCount++
-    }
-
-    console.log(`✅ [Example Materials] 已成功注册 ${registeredCount} 个示例物料`)
-    console.groupEnd()
-  } catch (error) {
-    console.error('❌ [Example Materials] 示例物料注册失败:', error)
-    console.groupEnd()
-    throw error
+  if (finalConfig.enableSkillRadar) {
+    registry.register(SkillRadarMaterialDefinition)
   }
 }

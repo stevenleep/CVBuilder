@@ -66,8 +66,6 @@ export class AIAssistantPlugin {
 
     // 4. 监听事件
     this.setupEventListeners()
-
-    console.log('[AIAssistantPlugin] 插件已激活')
   }
 
   /**
@@ -75,7 +73,6 @@ export class AIAssistantPlugin {
    */
   public async deactivate(): Promise<void> {
     // 清理资源
-    console.log('[AIAssistantPlugin] 插件已停用')
   }
 
   /**
@@ -254,14 +251,12 @@ export class AIAssistantPlugin {
     if (!this.eventBus) return
 
     // 监听节点添加事件
-    this.eventBus.on('node:after-add', data => {
-      console.log('[AIAssistantPlugin] 节点已添加:', data)
+    this.eventBus.on('node:after-add', () => {
       // 可以在此处提供AI建议
     })
 
     // 监听导出事件
-    this.eventBus.on('export:before', data => {
-      console.log('[AIAssistantPlugin] 准备导出:', data)
+    this.eventBus.on('export:before', () => {
       // 可以在导出前进行AI优化
     })
   }
@@ -272,17 +267,6 @@ export class AIAssistantPlugin {
   private async openAIAssistant(): Promise<void> {
     // TODO: 实现AI助手UI
     this.notificationService?.info('AI助手功能开发中...')
-
-    // 显示可用的AI功能
-    const functions = [
-      '✨ 优化文本内容',
-      '📝 生成工作经历描述',
-      '🎯 生成自我评价',
-      '🔍 内容质量检查',
-      '💡 智能建议',
-    ]
-
-    console.log('[AI助手功能]', functions)
   }
 
   /**

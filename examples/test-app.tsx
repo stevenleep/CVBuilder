@@ -44,7 +44,6 @@ export function ExampleTestApp() {
 
     // 2. 注册系统物料
     registerAllMaterials(context.materialRegistry)
-    console.log('✅ 系统物料已注册')
 
     // 3. 注册示例物料
     registerExampleMaterials(context.materialRegistry, {
@@ -52,7 +51,6 @@ export function ExampleTestApp() {
       enableQRCode: true,
       enableSkillRadar: true,
     })
-    console.log('✅ 示例物料已注册')
 
     // 4. 注册示例插件
     registerAllPlugins(context, {
@@ -74,17 +72,6 @@ export function ExampleTestApp() {
         // model: 'gpt-3.5-turbo',
       },
     })
-      .then(() => {
-        console.log('✅ 示例插件已注册')
-      })
-      .catch(error => {
-        console.error('❌ 插件注册失败:', error)
-      })
-
-    const materials = context.materialRegistry.getAll()
-    console.log(`📦 已注册物料总数: ${materials.length}`)
-    console.groupEnd()
-
     return context
   }, [])
 

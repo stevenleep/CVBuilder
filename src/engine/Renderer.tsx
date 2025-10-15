@@ -88,7 +88,6 @@ export const Renderer: React.FC<RendererProps> = ({
       if (isEditMode && onNodeClick) {
         e.preventDefault()
         e.stopPropagation()
-        console.log('Renderer: 点击物料', { id, type, isEditMode, onNodeClick: !!onNodeClick })
         onNodeClick(id, e)
       }
     },

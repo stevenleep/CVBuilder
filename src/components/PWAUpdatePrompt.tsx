@@ -14,13 +14,10 @@ export function PWAUpdatePrompt() {
     updateServiceWorker,
   } = useRegisterSW({
     onRegistered(registration: ServiceWorkerRegistration | undefined) {
-      console.log('[PWA] Service Worker已注册')
-
       // 定期检查更新（每小时）
       if (registration) {
         setInterval(
           () => {
-            console.log('[PWA] 检查更新...')
             registration.update()
           },
           60 * 60 * 1000
@@ -35,21 +32,16 @@ export function PWAUpdatePrompt() {
   const [isUpdating, setIsUpdating] = useState(false)
 
   const handleUpdate = async () => {
-    console.log('[PWA] 用户确认更新')
     setIsUpdating(true)
-
     try {
       await updateServiceWorker(true)
-      // 页面会自动刷新
     } catch (error) {
-      console.error('[PWA] 更新失败:', error)
       // 如果更新失败，手动刷新页面
       window.location.reload()
     }
   }
 
   const handleDismiss = () => {
-    console.log('[PWA] 用户稍后更新')
     setNeedRefresh(false)
 
     // 10分钟后再次提示

@@ -58,7 +58,6 @@ export const Canvas: React.FC = () => {
   const handleNodeClick = (nodeId: string, event: React.MouseEvent) => {
     event.stopPropagation()
     const isMultiSelect = event.metaKey || event.ctrlKey
-    console.log('Canvas: 处理节点点击', { nodeId, isMultiSelect, selectedNodeIds })
     selectNode(nodeId, isMultiSelect)
     // 切换节点时关闭右键菜单
     setContextMenu(null)

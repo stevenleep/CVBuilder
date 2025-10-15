@@ -78,8 +78,6 @@ export class WatermarkPlugin {
 
     // 4. 监听配置变化
     this.setupEventListeners()
-
-    console.log('[WatermarkPlugin] 水印插件已激活')
   }
 
   /**
@@ -88,7 +86,6 @@ export class WatermarkPlugin {
   public async deactivate(): Promise<void> {
     // 移除中间件
     this.middlewareService?.unregister(PipelineNames.EXPORT, 'add-watermark')
-    console.log('[WatermarkPlugin] 水印插件已停用')
   }
 
   /**
@@ -117,12 +114,10 @@ export class WatermarkPlugin {
       priority: 50,
       enabled: this.config.enabled,
       // 条件：仅在启用水印时执行
-      condition: async context => {
+      condition: async () => {
         return this.config.enabled && !!this.config.text
       },
       handler: async (context, next) => {
-        console.log('[WatermarkPlugin] 正在添加水印...')
-
         try {
           // 在请求数据中添加水印配置
           const exportData = context.request as any
@@ -160,10 +155,7 @@ export class WatermarkPlugin {
 
           // 继续下一个中间件
           await next()
-
-          console.log('[WatermarkPlugin] 水印添加成功')
         } catch (error) {
-          console.error('[WatermarkPlugin] 添加水印失败:', error)
           // 即使失败也继续执行
           await next()
         }
@@ -254,11 +246,7 @@ export class WatermarkPlugin {
     })
 
     // 监听导出开始事件
-    this.eventBus.on('export:start', () => {
-      if (this.config.enabled) {
-        console.log('[WatermarkPlugin] 导出开始，准备添加水印')
-      }
-    })
+    this.eventBus.on('export:start', () => {})
   }
 
   /**
@@ -278,8 +266,6 @@ export class WatermarkPlugin {
         this.middlewareService.disable(PipelineNames.EXPORT, 'add-watermark')
       }
     }
-
-    console.log('[WatermarkPlugin] 配置已更新:', this.config)
   }
 
   /**

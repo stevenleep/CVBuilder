@@ -169,19 +169,9 @@ export const SmartDropZone: React.FC<SmartDropZoneProps> = ({
         setDropElement(el)
         drop(el)
       }}
-      style={{
-        position: 'relative',
-        pointerEvents: 'auto', // 确保点击事件能够正常传递
-      }}
-      onClick={() => {
-        // 确保点击事件能够传递到子组件
-        console.log('SmartDropZone: 点击事件', { nodeId, isOver, canDrop })
-        // 不要阻止事件传播，让子组件处理点击
-      }}
+      style={{ position: 'relative', pointerEvents: 'auto' }}
     >
       {children}
-
-      {/* Before 指示器 */}
       {showIndicator && hoverPosition === 'before' && (
         <div
           style={{
