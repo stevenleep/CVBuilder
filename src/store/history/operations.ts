@@ -123,12 +123,21 @@ export function unapplyHistoryAction(schema: PageSchema, action: HistoryAction):
       if (parent && parent.children) {
         const newChildren = [...parent.children]
         newChildren.splice(action.index, 0, action.node) // 恢复到原位置
+
+        // 直接更新父节点的children，而不是通过updateNodeProps
+        const updateParent = (node: NodeSchema): NodeSchema => {
+          if (node.id === action.parentId) {
+            return { ...node, children: newChildren }
+          }
+          if (node.children) {
+            return { ...node, children: node.children.map(updateParent) }
+          }
+          return node
+        }
+
         return {
           ...schema,
-          root: updateNodeProps(schema.root, action.parentId, {
-            ...parent.props,
-            children: newChildren,
-          }),
+          root: updateParent(schema.root),
         }
       }
       return schema

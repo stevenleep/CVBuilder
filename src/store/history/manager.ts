@@ -8,7 +8,7 @@ import { applyHistoryAction } from './operations'
 import { buildNodeMap } from '../helpers'
 import { createDefaultPageSchema, safeDeepClone } from '../helpers'
 
-export const HISTORY_MAX_SIZE = 50
+export const HISTORY_MAX_SIZE = 100
 export const HISTORY_DEBOUNCE_MS = 300
 export const ENABLE_INCREMENTAL_HISTORY = true
 
@@ -70,14 +70,21 @@ function performAddHistory(
 
     if (ENABLE_INCREMENTAL_HISTORY && action) {
       // 增量模式
-      state.historyActions = state.historyActions.slice(0, state.historyIndex + 1)
+      // 只有在历史中间执行新操作时才需要截断"未来"的操作
+      // 如果当前在历史末尾，则不需要截断
+      if (state.historyIndex < state.historyActions.length - 1) {
+        state.historyActions = state.historyActions.slice(0, state.historyIndex + 1)
+      }
       state.historyActions.push(action)
+
+      console.log('state.historyActions.length', state.historyActions.length)
+      console.log('state.historyIndex', state.historyIndex)
 
       if (state.historyActions.length > HISTORY_MAX_SIZE) {
         // 超过上限，合并旧操作为快照
         const actionsToMerge = state.historyActions.slice(
           0,
-          state.historyActions.length - HISTORY_MAX_SIZE + 1
+          state.historyActions.length - HISTORY_MAX_SIZE
         )
         let mergedSchema = state.baseSnapshot || createDefaultPageSchema()
         actionsToMerge.forEach(a => {
@@ -86,7 +93,7 @@ function performAddHistory(
 
         state.baseSnapshot = mergedSchema
         state.historyActions = state.historyActions.slice(
-          state.historyActions.length - HISTORY_MAX_SIZE + 1
+          state.historyActions.length - HISTORY_MAX_SIZE
         )
         state.historyIndex = state.historyActions.length - 1
       } else {

@@ -202,6 +202,8 @@ export const useEditorStore = create<EditorState>()(
 
         set(state => {
           state.pageSchema.root = appendChild(state.pageSchema.root, targetParentId, newNode)
+          // 重新构建 nodeMap - 关键修复！
+          state.nodeMap = buildNodeMap(state.pageSchema.root)
           // 同步更新三个选中状态
           state.selectedNodeIds = [newNode.id]
           state.selectedNodes = new Map([[newNode.id, newNode]])
@@ -317,19 +319,7 @@ export const useEditorStore = create<EditorState>()(
           nodeIndex = parentNode.children.findIndex(child => child.id === nodeId)
         }
 
-        set(state => {
-          state.pageSchema.root = deleteNode(state.pageSchema.root, nodeId)
-          state.selectedNodeIds = state.selectedNodeIds.filter(id => id !== nodeId)
-          state.selectedNodes.delete(nodeId)
-
-          // 如果删除的是焦点节点，切换到剩余节点的第一个
-          if (state.lastSelectedNode?.id === nodeId) {
-            const remainingIds = state.selectedNodeIds
-            state.lastSelectedNode =
-              remainingIds.length > 0 ? state.selectedNodes.get(remainingIds[0]) || null : null
-          }
-        })
-
+        // 记录增量历史（在操作前记录）
         if (ENABLE_INCREMENTAL_HISTORY && node && parentNode) {
           const action: DeleteNodeAction = {
             type: HistoryActionType.DELETE_NODE,
@@ -343,6 +333,21 @@ export const useEditorStore = create<EditorState>()(
         } else {
           addHistory(set, true)
         }
+
+        set(state => {
+          state.pageSchema.root = deleteNode(state.pageSchema.root, nodeId)
+          // 重新构建 nodeMap - 关键修复！
+          state.nodeMap = buildNodeMap(state.pageSchema.root)
+          state.selectedNodeIds = state.selectedNodeIds.filter(id => id !== nodeId)
+          state.selectedNodes.delete(nodeId)
+
+          // 如果删除的是焦点节点，切换到剩余节点的第一个
+          if (state.lastSelectedNode?.id === nodeId) {
+            const remainingIds = state.selectedNodeIds
+            state.lastSelectedNode =
+              remainingIds.length > 0 ? state.selectedNodes.get(remainingIds[0]) || null : null
+          }
+        })
       },
 
       // 复制节点
@@ -356,19 +361,7 @@ export const useEditorStore = create<EditorState>()(
 
         const cloned = cloneNode(node)
 
-        set(state => {
-          const node = findNode(state.pageSchema.root, nodeId)
-          if (node) {
-            const cloned = cloneNode(node)
-            state.pageSchema.root = insertAfter(state.pageSchema.root, nodeId, cloned)
-            // 同步更新三个选中状态
-            state.selectedNodeIds = [cloned.id]
-            state.selectedNodes = new Map([[cloned.id, cloned]])
-            state.lastSelectedNode = cloned
-          }
-        })
-
-        // 记录增量历史
+        // 记录增量历史（在操作前记录）
         if (ENABLE_INCREMENTAL_HISTORY) {
           const action: AddNodeAction = {
             type: HistoryActionType.ADD_NODE,
@@ -382,6 +375,20 @@ export const useEditorStore = create<EditorState>()(
         } else {
           addHistory(set, true)
         }
+
+        set(state => {
+          const node = findNode(state.pageSchema.root, nodeId)
+          if (node) {
+            const cloned = cloneNode(node)
+            state.pageSchema.root = insertAfter(state.pageSchema.root, nodeId, cloned)
+            // 重新构建 nodeMap - 关键修复！
+            state.nodeMap = buildNodeMap(state.pageSchema.root)
+            // 同步更新三个选中状态
+            state.selectedNodeIds = [cloned.id]
+            state.selectedNodes = new Map([[cloned.id, cloned]])
+            state.lastSelectedNode = cloned
+          }
+        })
       },
 
       // 更新节点属性（高频操作 - 使用防抖历史记录 + 增量更新）
@@ -791,6 +798,8 @@ export const useEditorStore = create<EditorState>()(
           // 使用优化的深拷贝
           draft.clipboard = safeDeepClone(node)
           draft.pageSchema.root = deleteNode(draft.pageSchema.root, nodeId)
+          // 重新构建 nodeMap - 关键修复！
+          draft.nodeMap = buildNodeMap(draft.pageSchema.root)
           draft.selectedNodeIds = draft.selectedNodeIds.filter(id => id !== nodeId)
 
           // 同步选中节点
@@ -856,6 +865,8 @@ export const useEditorStore = create<EditorState>()(
             )
           }
 
+          // 重新构建 nodeMap - 关键修复！
+          draft.nodeMap = buildNodeMap(draft.pageSchema.root)
           draft.selectedNodeIds = [newNode.id]
         })
 
@@ -901,6 +912,8 @@ export const useEditorStore = create<EditorState>()(
             newNodeIds.push(cloned.id)
           })
 
+          // 重新构建 nodeMap - 关键修复！
+          draft.nodeMap = buildNodeMap(draft.pageSchema.root)
           draft.selectedNodeIds = newNodeIds
         })
 
@@ -973,16 +986,7 @@ export const useEditorStore = create<EditorState>()(
           }
         })
 
-        set(state => {
-          nodeIds.forEach(nodeId => {
-            state.pageSchema.root = deleteNode(state.pageSchema.root, nodeId)
-          })
-          state.selectedNodeIds = []
-          state.selectedNodes.clear()
-          state.lastSelectedNode = null
-        })
-
-        // 记录增量历史 - 使用 BATCH_UPDATE
+        // 记录增量历史 - 使用 BATCH_UPDATE（在操作前记录）
         if (ENABLE_INCREMENTAL_HISTORY) {
           const actions: DeleteNodeAction[] = nodesToDelete.map(info => ({
             type: HistoryActionType.DELETE_NODE,
@@ -1002,6 +1006,21 @@ export const useEditorStore = create<EditorState>()(
         } else {
           addHistory(set, true)
         }
+
+        set(state => {
+          // 批量删除节点，避免重复赋值
+          let newRoot = state.pageSchema.root
+          nodeIds.forEach(nodeId => {
+            newRoot = deleteNode(newRoot, nodeId)
+          })
+          state.pageSchema.root = newRoot
+          // 重新构建 nodeMap - 关键修复！
+          state.nodeMap = buildNodeMap(state.pageSchema.root)
+          // 清除选中状态
+          state.selectedNodeIds = []
+          state.selectedNodes.clear()
+          state.lastSelectedNode = null
+        })
       },
 
       // 批量复制节点
@@ -1028,20 +1047,7 @@ export const useEditorStore = create<EditorState>()(
           }
         })
 
-        set(state => {
-          const newNodeIds: string[] = []
-          nodeIds.forEach(nodeId => {
-            const node = findNode(state.pageSchema.root, nodeId)
-            if (node) {
-              const cloned = cloneNode(node)
-              state.pageSchema.root = insertAfter(state.pageSchema.root, nodeId, cloned)
-              newNodeIds.push(cloned.id)
-            }
-          })
-          state.selectedNodeIds = newNodeIds
-        })
-
-        // 记录增量历史 - 使用 BATCH_UPDATE
+        // 记录增量历史 - 使用 BATCH_UPDATE（在操作前记录）
         if (ENABLE_INCREMENTAL_HISTORY) {
           const actions: AddNodeAction[] = nodesToDuplicate.map(info => ({
             type: HistoryActionType.ADD_NODE,
@@ -1061,6 +1067,33 @@ export const useEditorStore = create<EditorState>()(
         } else {
           addHistory(set, true)
         }
+
+        set(state => {
+          const newNodeIds: string[] = []
+          nodeIds.forEach(nodeId => {
+            const node = findNode(state.pageSchema.root, nodeId)
+            if (node) {
+              const cloned = cloneNode(node)
+              state.pageSchema.root = insertAfter(state.pageSchema.root, nodeId, cloned)
+              newNodeIds.push(cloned.id)
+            }
+          })
+          // 重新构建 nodeMap - 关键修复！
+          state.nodeMap = buildNodeMap(state.pageSchema.root)
+          // 更新选中状态
+          state.selectedNodeIds = newNodeIds
+          state.selectedNodes.clear()
+          newNodeIds.forEach(id => {
+            const node = state.nodeMap.get(id)
+            if (node) {
+              state.selectedNodes.set(id, node)
+            }
+          })
+          state.lastSelectedNode =
+            newNodeIds.length > 0
+              ? state.nodeMap.get(newNodeIds[newNodeIds.length - 1]) || null
+              : null
+        })
       },
 
       // 撤销
@@ -1108,6 +1141,9 @@ export const useEditorStore = create<EditorState>()(
       // 是否可以撤销
       canUndo: () => {
         const state = get()
+        if (ENABLE_INCREMENTAL_HISTORY && state.historyActions.length > 0) {
+          return state.historyIndex >= 0
+        }
         return state.historyIndex > 0
       },
 
