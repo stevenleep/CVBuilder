@@ -15,13 +15,16 @@ import { MultiSelectionToolbar } from './MultiSelectionToolbar'
 import { BatchEditPanel } from './BatchEditPanel'
 import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
 import { SaveResumeDialog } from './SaveResumeDialog'
+import { HomeIconModal } from '@/components/HomeIconModal'
 import { useKeyboardShortcuts } from '@/core/hooks/useKeyboardShortcuts'
 import { useIsSmallScreen } from '@/hooks/useMediaQuery'
+import { useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 
 export const EditorLayout: React.FC = () => {
   // 启用键盘快捷键
   useKeyboardShortcuts()
+  const navigate = useNavigate()
 
   // 响应式设计
   const isSmallScreen = useIsSmallScreen()
@@ -32,6 +35,7 @@ export const EditorLayout: React.FC = () => {
   const [showNewResumeDialog, setShowNewResumeDialog] = useState(false)
   const [showSaveAsDialog, setShowSaveAsDialog] = useState(false)
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
+  const [showHomeIconModal, setShowHomeIconModal] = useState(false)
 
   // 小屏幕时自动收起侧边栏
   React.useEffect(() => {
@@ -49,15 +53,18 @@ export const EditorLayout: React.FC = () => {
     const handleShowNewResumeDialog = () => setShowNewResumeDialog(true)
     const handleShowSaveAsDialog = () => setShowSaveAsDialog(true)
     const handleShowSaveTemplateDialog = () => setShowSaveTemplateDialog(true)
+    const handleShowHomeIconModal = () => setShowHomeIconModal(true)
 
     window.addEventListener('cvkit-show-new-resume-dialog', handleShowNewResumeDialog)
     window.addEventListener('cvkit-show-save-as-dialog', handleShowSaveAsDialog)
     window.addEventListener('cvkit-show-save-template-dialog', handleShowSaveTemplateDialog)
+    window.addEventListener('show-home-icon-modal', handleShowHomeIconModal)
 
     return () => {
       window.removeEventListener('cvkit-show-new-resume-dialog', handleShowNewResumeDialog)
       window.removeEventListener('cvkit-show-save-as-dialog', handleShowSaveAsDialog)
       window.removeEventListener('cvkit-show-save-template-dialog', handleShowSaveTemplateDialog)
+      window.removeEventListener('show-home-icon-modal', handleShowHomeIconModal)
     }
   }, [])
 
@@ -237,7 +244,7 @@ export const EditorLayout: React.FC = () => {
       {/* 弹窗组件 - 在最顶层 */}
       {showNewResumeDialog && (
         <SaveResumeDialog
-          onSave={(name, description) => {
+          onSave={(_name, _description) => {
             // 这里需要调用保存逻辑
             setShowNewResumeDialog(false)
           }}
@@ -247,7 +254,7 @@ export const EditorLayout: React.FC = () => {
 
       {showSaveAsDialog && (
         <SaveResumeDialog
-          onSave={(name, description) => {
+          onSave={(_name, _description) => {
             // 这里需要调用另存为逻辑
             setShowSaveAsDialog(false)
           }}
@@ -257,13 +264,23 @@ export const EditorLayout: React.FC = () => {
 
       {showSaveTemplateDialog && (
         <SaveResumeDialog
-          onSave={(name, description) => {
+          onSave={(_name, _description) => {
             // 这里需要调用保存为模板逻辑
             setShowSaveTemplateDialog(false)
           }}
           onClose={() => setShowSaveTemplateDialog(false)}
         />
       )}
+
+      {/* 首页图标提示窗口 - 全屏modal */}
+      <HomeIconModal
+        isOpen={showHomeIconModal}
+        onClose={() => setShowHomeIconModal(false)}
+        onConfirm={() => {
+          setShowHomeIconModal(false)
+          navigate('/')
+        }}
+      />
     </div>
   )
 }

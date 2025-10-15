@@ -6,7 +6,6 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEditorStore } from '@store/editorStore'
 import { notification } from '@/utils/notification'
-import { LogoIcon } from '@/components/Logo'
 import {
   Undo,
   Redo,
@@ -14,23 +13,20 @@ import {
   Edit3,
   ZoomIn,
   ZoomOut,
-  HelpCircle,
   ChevronDown,
   Home,
   Save,
   Download,
   Upload,
-  MoreVertical,
   Check,
 } from 'lucide-react'
-import { SaveResumeDialog } from './SaveResumeDialog'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 import { useTheme } from '@/core/context/ThemeContext'
-import { useIsMobile, useIsSmallScreen } from '@/hooks/useMediaQuery'
+import { useIsMobile } from '@/hooks/useMediaQuery'
 
 export const Toolbar: React.FC = () => {
   const navigate = useNavigate()
@@ -50,11 +46,8 @@ export const Toolbar: React.FC = () => {
 
   const { theme } = useTheme()
   const isMobile = useIsMobile()
-  const isSmallScreen = useIsSmallScreen()
 
-  const [showSaveMenu, setShowSaveMenu] = useState(false)
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
-  const [showMoreMenu, setShowMoreMenu] = useState(false)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   // 监听快捷键保存事件
@@ -79,28 +72,6 @@ export const Toolbar: React.FC = () => {
 
   const handleZoomReset = () => {
     updateCanvasConfig({ scale: 1 })
-  }
-
-  const handleExportJSON = () => {
-    const state = useEditorStore.getState()
-
-    const exportData = {
-      version: '1.0.0',
-      exportTime: Date.now(),
-      pageSchema: state.pageSchema,
-      theme: theme,
-      canvasConfig: state.canvasConfig,
-    }
-
-    const dataStr = JSON.stringify(exportData, null, 2)
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
-    const exportFileDefaultName = `resume-${Date.now()}.json`
-
-    const linkElement = document.createElement('a')
-    linkElement.setAttribute('href', dataUri)
-    linkElement.setAttribute('download', exportFileDefaultName)
-    linkElement.click()
-    notification.success('JSON 导出成功！')
   }
 
   const handleImportJSON = () => {
@@ -150,8 +121,8 @@ export const Toolbar: React.FC = () => {
       const resumeId = currentResumeId || nanoid()
 
       if (!currentResumeId && !name) {
-        setShowNewResumeDialog(true)
-        return
+        // 如果没有当前简历ID且没有名称，使用默认名称
+        // 继续保存逻辑
       }
 
       const resumeData = {
@@ -180,34 +151,6 @@ export const Toolbar: React.FC = () => {
     } catch (error) {
       notification.error('保存失败')
       console.error('Save error:', error)
-    }
-  }
-
-  const handleSaveAs = async (name: string, description: string) => {
-    try {
-      const state = useEditorStore.getState()
-      const newId = nanoid()
-
-      const resumeData = {
-        id: newId,
-        name,
-        description,
-        schema: state.pageSchema,
-        theme: theme,
-        canvasConfig: state.canvasConfig,
-        thumbnail: '',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-
-      await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
-      setCurrentResumeId(newId)
-
-      notification.success('另存为成功！')
-      window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
-    } catch (error) {
-      notification.error('另存为失败')
-      console.error('Save as error:', error)
     }
   }
 
@@ -254,20 +197,6 @@ export const Toolbar: React.FC = () => {
     } catch (error) {
       notification.error('PDF 导出失败')
       console.error('PDF export error:', error)
-    }
-  }
-
-  const handleSaveAsTemplate = async (name: string, description: string) => {
-    try {
-      const state = useEditorStore.getState()
-
-      const { resumeTemplateManager } = await import('@/core/services/ResumeTemplateManager')
-      resumeTemplateManager.saveAsTemplate(state.pageSchema, name, description)
-
-      notification.success('模板保存成功！')
-    } catch (error) {
-      notification.error('保存模板失败')
-      console.error('Save template error:', error)
     }
   }
 
@@ -452,7 +381,14 @@ export const Toolbar: React.FC = () => {
     >
       {/* 左侧区域 - 返回首页 */}
       {!isMobile && (
-        <IconButton icon={<Home size={14} />} tooltip="返回首页" onClick={() => navigate('/')} />
+        <IconButton
+          icon={<Home size={14} />}
+          tooltip="返回首页"
+          onClick={() => {
+            // 触发全屏modal显示事件
+            window.dispatchEvent(new CustomEvent('show-home-icon-modal'))
+          }}
+        />
       )}
 
       {/* 模式切换 - 仅图标 */}

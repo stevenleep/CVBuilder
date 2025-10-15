@@ -86,7 +86,9 @@ export const Renderer: React.FC<RendererProps> = ({
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       if (isEditMode && onNodeClick) {
+        e.preventDefault()
         e.stopPropagation()
+        console.log('Renderer: 点击物料', { id, type, isEditMode, onNodeClick: !!onNodeClick })
         onNodeClick(id, e)
       }
     },
@@ -267,6 +269,7 @@ export const Renderer: React.FC<RendererProps> = ({
   const wrapperStyle: React.CSSProperties = {
     position: 'relative',
     opacity: isDragging ? 0.3 : 1,
+    pointerEvents: 'auto', // 确保点击事件能够正常触发
     ...(isEditMode && isSelected
       ? {
           outline: '1px dashed #2d2d2d',
