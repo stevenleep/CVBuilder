@@ -384,7 +384,7 @@ function generateFullHTML(bodyContent: string, title: string, version: ExportHTM
   <meta charset="UTF-8">
   ${version === 'html5' ? '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">' : ''}
   ${version === 'html5' ? '<meta name="format-detection" content="telephone=yes">' : ''}
-  ${version === 'html5' ? '<meta name="apple-mobile-web-app-capable" content="yes">' : ''}
+  ${version === 'html5' ? '<meta name="mobile-web-app-capable" content="yes">' : ''}
   <title>${title}</title>
   <link rel="stylesheet" href="styles.css">
 </head>

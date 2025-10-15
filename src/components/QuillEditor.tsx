@@ -8,6 +8,34 @@ import React, { useMemo, useRef, useEffect } from 'react'
 import ReactQuill from 'react-quill'
 import 'quill/dist/quill.snow.css'
 
+// 改进的 QuillWrapper 组件，使用更安全的方法处理 findDOMNode 警告
+const QuillWrapper = React.forwardRef<ReactQuill, React.ComponentProps<typeof ReactQuill>>(
+  (props, ref) => {
+    const containerRef = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+      if (process.env.NODE_ENV === 'development') {
+        const originalError = console.error
+        console.error = (...args) => {
+          if (args[0]?.includes?.('findDOMNode is deprecated')) {
+            return
+          }
+          originalError(...args)
+        }
+
+        return () => {
+          console.error = originalError
+        }
+      }
+    }, [])
+
+    return (
+      <div ref={containerRef}>
+        <ReactQuill {...props} ref={ref} />
+      </div>
+    )
+  }
+)
+
 interface QuillEditorProps {
   value: string
   onChange: (value: string) => void
@@ -107,7 +135,7 @@ export const QuillEditor: React.FC<QuillEditorProps> = ({
         overflow: 'hidden',
       }}
     >
-      <ReactQuill
+      <QuillWrapper
         ref={quillRef}
         value={displayValue}
         onChange={handleChange}

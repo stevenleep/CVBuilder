@@ -23,6 +23,7 @@ export const AutoSaveIndicator: React.FC = () => {
   const saveTimeoutRef = useRef<NodeJS.Timeout>()
   const retryTimeoutRef = useRef<NodeJS.Timeout>()
   const isFirstLoadRef = useRef(true) // 标记首次加载，避免立即触发保存
+  const hasUserInteractedRef = useRef(false) // 跟踪用户是否已与页面交互
 
   // 保存函数（支持重试）
   const performSave = async () => {
@@ -69,6 +70,25 @@ export const AutoSaveIndicator: React.FC = () => {
       }
     }
   }
+
+  // 监听用户交互，标记用户已与页面交互
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      hasUserInteractedRef.current = true
+    }
+
+    // 监听各种用户交互事件
+    const events = ['click', 'keydown', 'mousedown', 'touchstart', 'scroll']
+    events.forEach(event => {
+      document.addEventListener(event, handleUserInteraction, { once: true, passive: true })
+    })
+
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, handleUserInteraction)
+      })
+    }
+  }, [])
 
   // 监听页面变化，实现防抖自动保存
   useEffect(() => {
@@ -147,11 +167,16 @@ export const AutoSaveIndicator: React.FC = () => {
           })
       }
 
-      // 5. 显示离开提示（浏览器会显示标准确认对话框）
-      const message = '您的更改正在保存中，确定要离开吗？'
-      e.preventDefault()
-      e.returnValue = message
-      return message
+      // 5. 只有在用户有交互且有未保存更改时才显示离开提示
+      if (hasUserInteractedRef.current && status === 'unsaved') {
+        const message = '您的更改正在保存中，确定要离开吗？'
+        e.preventDefault()
+        e.returnValue = message
+        return message
+      }
+
+      // 如果没有用户交互或已保存，不显示确认对话框
+      return undefined
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
