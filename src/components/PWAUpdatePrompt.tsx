@@ -39,7 +39,6 @@ export function PWAUpdatePrompt() {
     setIsUpdating(true)
 
     try {
-      // 更新Service Worker
       await updateServiceWorker(true)
       // 页面会自动刷新
     } catch (error) {

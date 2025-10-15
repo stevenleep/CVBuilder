@@ -61,11 +61,9 @@ export const DropZone: React.FC<DropZoneProps> = ({
           }
         } else if (item.type === DragItemTypes.NODE) {
           const nodeItem = item as NodeDragItem
-          // 移动节点
           moveNodeTo(nodeItem.nodeId, nodeId, position)
         } else if (item.type === DragItemTypes.TEMPLATE) {
           const templateItem = item as TemplateDragItem
-          // 添加模板到容器内部
           addNodeFromSchema(templateItem.templateSchema, nodeId)
         }
       },

@@ -21,10 +21,9 @@ export const ExamplePreviewPage: React.FC = () => {
       const found = getExampleById(id)
       if (found) {
         setPageSchema(found.schema)
-        setMode('preview') // 设置为预览模式
+        setMode('preview')
         setCurrentResumeId(null) // 清空当前简历ID
 
-        // 设置预览示例信息
         setPreviewExampleInfo({
           id: found.id,
           name: found.name,
@@ -70,7 +69,6 @@ export const ExamplePreviewPage: React.FC = () => {
       }
     }
 
-    // 清理：离开页面时清除预览信息
     return () => {
       setPreviewExampleInfo(null)
     }

@@ -51,11 +51,9 @@ export const Renderer: React.FC<RendererProps> = ({
 
   const { id, type, props = {}, style = {}, children = [], hidden } = schema
 
-  // 获取编辑器操作方法
   const { duplicateNode, deleteNode, pageSchema, moveNodeUp, moveNodeDown, toggleNodeVisibility } =
     useEditorStore()
 
-  // 获取物料定义（必须在所有Hooks之前）
   const materialDef = materialRegistry.get(type)
 
   // 所有Hooks必须在任何条件返回之前调用
@@ -116,7 +114,6 @@ export const Renderer: React.FC<RendererProps> = ({
     [isEditMode, onNodeHover, id]
   )
 
-  // 判断是否选中或悬停（需要在 useEffect 之前定义）
   const isSelected = selectedNodeIds.includes(id)
   const isHovered = hoveredNodeId === id && !isSelected
 
@@ -223,7 +220,6 @@ export const Renderer: React.FC<RendererProps> = ({
 
   const { component: Component, meta } = materialDef
 
-  // 合并默认属性和用户属性
   const mergedProps = {
     ...(meta?.defaultProps || {}),
     ...props,

@@ -126,7 +126,6 @@ export const Toolbar: React.FC = () => {
       const text = await file.text()
       const data = JSON.parse(text)
 
-      // 验证数据格式
       if (!data.pageSchema) {
         notification.error('无效的JSON文件格式')
         return
@@ -153,7 +152,6 @@ export const Toolbar: React.FC = () => {
       console.error('Import error:', error)
     }
 
-    // 重置 input
     e.target.value = ''
   }
 
@@ -939,7 +937,6 @@ const TextButton: React.FC<{
   )
 }
 
-// 分割按钮 - 保存按钮专用
 const SplitButton: React.FC<{
   onMainClick: () => void
   onMenuClick: (e: React.MouseEvent) => void

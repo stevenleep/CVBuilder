@@ -92,7 +92,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
   const theme = useThemeConfig()
   const styleConfig = useStyleConfig()
 
-  // 判断是否使用卡片样式（只有"创意破局"主题使用卡片样式）
   const isCardStyle = theme.id === 'breakthrough' && styleConfig.borderRadius > 0
 
   // 卡片样式
@@ -150,7 +149,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
       alignItems: 'flex-start',
     }
 
-    // 合并样式：基础 -> 自定义 -> 卡片（卡片优先级最高）
     const finalStyle = {
       ...baseLayoutStyle,
       ...style,

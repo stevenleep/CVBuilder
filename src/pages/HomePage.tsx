@@ -104,7 +104,6 @@ export const HomePage: React.FC = () => {
     }
   }
 
-  // 获取分类列表
   const categories = useMemo(() => {
     const cats = Array.from(new Set(exampleResumes.map(e => e.category)))
     return ['全部', ...cats]

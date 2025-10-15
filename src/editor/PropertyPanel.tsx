@@ -364,13 +364,11 @@ const ImageUploadInput: React.FC<{
     const file = e.target.files?.[0]
     if (!file) return
 
-    // 检查文件类型
     if (!file.type.startsWith('image/')) {
       notification.error('请选择图片文件')
       return
     }
 
-    // 检查文件大小（限制 5MB）
     if (file.size > 5 * 1024 * 1024) {
       notification.error('图片大小不能超过 5MB')
       return

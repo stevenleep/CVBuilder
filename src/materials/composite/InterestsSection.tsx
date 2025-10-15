@@ -21,7 +21,6 @@ const InterestsSection: React.FC<InterestsSectionProps> = ({
   const styleConfig = useStyleConfig()
   const hasChildren = React.Children.count(children) > 0
 
-  // 判断是否使用卡片样式（只有"创意破局"主题使用卡片样式）
   const isCardStyle = theme.id === 'breakthrough' && styleConfig.borderRadius > 0
 
   // 基础样式
@@ -41,7 +40,6 @@ const InterestsSection: React.FC<InterestsSectionProps> = ({
       }
     : {}
 
-  // 合并样式
   const finalStyle: React.CSSProperties = {
     ...baseStyle,
     ...style,

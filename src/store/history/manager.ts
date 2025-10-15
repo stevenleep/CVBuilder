@@ -69,19 +69,26 @@ function performAddHistory(
     historySnapshotCount++
 
     if (ENABLE_INCREMENTAL_HISTORY && action) {
-      // 增量模式
-      // 只有在历史中间执行新操作时才需要截断"未来"的操作
-      // 如果当前在历史末尾，则不需要截断
-      if (state.historyIndex < state.historyActions.length - 1) {
-        state.historyActions = state.historyActions.slice(0, state.historyIndex + 1)
+      if (state.historyIndex < state.maxHistoryIndex) {
+        state.maxHistoryIndex = state.historyIndex
       }
-      state.historyActions.push(action)
 
-      console.log('state.historyActions.length', state.historyActions.length)
-      console.log('state.historyIndex', state.historyIndex)
+      if (state.maxHistoryIndex < state.historyActions.length - 1) {
+        state.historyActions[state.maxHistoryIndex + 1] = action
+      } else {
+        state.historyActions.push(action)
+      }
+      state.maxHistoryIndex += 1
+      state.historyIndex = state.maxHistoryIndex
+
+      // 调试信息：只在开发环境显示
+      if (process.env.NODE_ENV === 'development') {
+        console.log(
+          `[History] 操作: ${action.type}, 索引: ${state.historyIndex}/${state.maxHistoryIndex}`
+        )
+      }
 
       if (state.historyActions.length > HISTORY_MAX_SIZE) {
-        // 超过上限，合并旧操作为快照
         const actionsToMerge = state.historyActions.slice(
           0,
           state.historyActions.length - HISTORY_MAX_SIZE
@@ -96,8 +103,10 @@ function performAddHistory(
           state.historyActions.length - HISTORY_MAX_SIZE
         )
         state.historyIndex = state.historyActions.length - 1
+        state.maxHistoryIndex = state.historyActions.length - 1
       } else {
         state.historyIndex = state.historyActions.length - 1
+        state.maxHistoryIndex = state.historyActions.length - 1
       }
     } else {
       // 完整快照模式

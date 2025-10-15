@@ -30,6 +30,7 @@ import {
   type AddNodeAction,
   type DeleteNodeAction,
   type ToggleVisibilityAction,
+  type MoveNodeAction,
   HistoryActionType,
   applyHistoryAction,
   unapplyHistoryAction,
@@ -76,6 +77,7 @@ export interface EditorState {
   history: PageSchema[]
   historyActions: HistoryAction[]
   historyIndex: number
+  maxHistoryIndex: number // 指向最后一个有效操作的位置
   baseSnapshot: PageSchema | null
 
   clipboard: NodeSchema | null
@@ -168,6 +170,7 @@ export const useEditorStore = create<EditorState>()(
       history: [],
       historyActions: [],
       historyIndex: -1,
+      maxHistoryIndex: -1, // 指向最后一个有效操作的位置
       baseSnapshot: null,
       clipboard: null,
 
@@ -180,6 +183,11 @@ export const useEditorStore = create<EditorState>()(
         set(state => {
           state.pageSchema = schema
           state.nodeMap = buildNodeMap(schema.root)
+          // 清空历史记录，避免混乱
+          state.history = []
+          state.historyActions = []
+          state.historyIndex = -1
+          state.baseSnapshot = null
         })
         addHistory(set, true)
       },
@@ -350,7 +358,6 @@ export const useEditorStore = create<EditorState>()(
         })
       },
 
-      // 复制节点
       duplicateNode: nodeId => {
         const state = get()
         const node = findNode(state.pageSchema.root, nodeId)
@@ -391,7 +398,6 @@ export const useEditorStore = create<EditorState>()(
         })
       },
 
-      // 更新节点属性（高频操作 - 使用防抖历史记录 + 增量更新）
       updateNodeProps: (nodeId, props) => {
         const state = get()
         const oldNode = state.nodeMap.get(nodeId)
@@ -421,7 +427,6 @@ export const useEditorStore = create<EditorState>()(
         }
       },
 
-      // 更新节点样式（高频操作 - 使用防抖历史记录 + 增量更新）
       updateNodeStyle: (nodeId, style) => {
         const state = get()
         const oldNode = state.nodeMap.get(nodeId)
@@ -537,7 +542,7 @@ export const useEditorStore = create<EditorState>()(
 
         // 记录增量历史
         if (ENABLE_INCREMENTAL_HISTORY) {
-          const action: HistoryAction = {
+          const action: MoveNodeAction = {
             type: HistoryActionType.MOVE_NODE,
             nodeId,
             oldParentId: parent.id,
@@ -590,7 +595,7 @@ export const useEditorStore = create<EditorState>()(
 
         // 记录增量历史
         if (ENABLE_INCREMENTAL_HISTORY) {
-          const action: HistoryAction = {
+          const action: MoveNodeAction = {
             type: HistoryActionType.MOVE_NODE,
             nodeId,
             oldParentId: parent.id,
@@ -605,7 +610,6 @@ export const useEditorStore = create<EditorState>()(
         }
       },
 
-      // 移动节点到指定位置
       moveNodeTo: (nodeId, targetId, position) => {
         const state = get()
 
@@ -624,10 +628,8 @@ export const useEditorStore = create<EditorState>()(
           const nodeToMove = findNode(state.pageSchema.root, nodeId)
           if (!nodeToMove) return
 
-          // 删除原节点
           let newRoot = deleteNode(state.pageSchema.root, nodeId)
 
-          // 插入到新位置
           if (position === 'before') {
             newRoot = insertBefore(newRoot, targetId, nodeToMove)
           } else if (position === 'after') {
@@ -646,7 +648,7 @@ export const useEditorStore = create<EditorState>()(
           const newParent = findParentNode(newState.pageSchema.root, nodeId)
           if (newParent && newParent.children) {
             const newIndex = newParent.children.findIndex(c => c.id === nodeId)
-            const action: HistoryAction = {
+            const action: MoveNodeAction = {
               type: HistoryActionType.MOVE_NODE,
               nodeId,
               oldParentId: oldParent.id,
@@ -683,16 +685,13 @@ export const useEditorStore = create<EditorState>()(
                 state.selectedNodeIds.splice(index, 1)
               }
               state.selectedNodes.delete(node.id)
-              // 更新最后选中节点：如果取消的是最后选中的，则指向新的最后一个
               if (state.lastSelectedNode?.id === node.id) {
                 const lastId = state.selectedNodeIds[state.selectedNodeIds.length - 1]
                 state.lastSelectedNode = lastId ? state.selectedNodes.get(lastId) || null : null
               }
             } else {
-              // 添加选中
               state.selectedNodeIds.push(node.id)
               state.selectedNodes.set(node.id, node)
-              // 更新最后选中节点
               state.lastSelectedNode = node
             }
           } else {
@@ -750,7 +749,6 @@ export const useEditorStore = create<EditorState>()(
         })
       },
 
-      // 设置悬停节点
       setHoveredNode: nodeId => {
         set(state => {
           state.hoveredNodeId = nodeId
@@ -764,13 +762,11 @@ export const useEditorStore = create<EditorState>()(
         })
       },
 
-      // 更新画布配置
       updateCanvasConfig: config => {
         set(state => {
           state.canvasConfig = { ...state.canvasConfig, ...config }
         })
       },
-
       // 复制节点到剪贴板
       copyNode: nodeId => {
         const state = get()
@@ -849,7 +845,6 @@ export const useEditorStore = create<EditorState>()(
         }
 
         set(draft => {
-          // 克隆剪贴板中的节点并生成新ID
           if (!draft.clipboard) return
           const newNode = cloneNode(draft.clipboard)
 
@@ -1080,7 +1075,6 @@ export const useEditorStore = create<EditorState>()(
           })
           // 重新构建 nodeMap - 关键修复！
           state.nodeMap = buildNodeMap(state.pageSchema.root)
-          // 更新选中状态
           state.selectedNodeIds = newNodeIds
           state.selectedNodes.clear()
           newNodeIds.forEach(id => {
@@ -1102,16 +1096,13 @@ export const useEditorStore = create<EditorState>()(
         if (state.canUndo()) {
           set(draft => {
             if (ENABLE_INCREMENTAL_HISTORY && draft.historyActions.length > 0) {
-              // ========== 增量模式：反向应用当前操作 ==========
               const currentAction = draft.historyActions[draft.historyIndex]
               draft.pageSchema = unapplyHistoryAction(draft.pageSchema, currentAction)
               draft.historyIndex -= 1
             } else {
-              // ========== 完整快照模式 ==========
               draft.historyIndex -= 1
               draft.pageSchema = safeDeepClone(draft.history[draft.historyIndex])
             }
-            // 重建 nodeMap
             draft.nodeMap = buildNodeMap(draft.pageSchema.root)
           })
         }
@@ -1123,16 +1114,13 @@ export const useEditorStore = create<EditorState>()(
         if (state.canRedo()) {
           set(draft => {
             if (ENABLE_INCREMENTAL_HISTORY && draft.historyActions.length > 0) {
-              // ========== 增量模式：正向应用下一个操作 ==========
-              draft.historyIndex += 1
-              const nextAction = draft.historyActions[draft.historyIndex]
+              const nextAction = draft.historyActions[draft.historyIndex + 1]
               draft.pageSchema = applyHistoryAction(draft.pageSchema, nextAction)
+              draft.historyIndex += 1
             } else {
-              // ========== 完整快照模式 ==========
               draft.historyIndex += 1
               draft.pageSchema = safeDeepClone(draft.history[draft.historyIndex])
             }
-            // 重建 nodeMap
             draft.nodeMap = buildNodeMap(draft.pageSchema.root)
           })
         }
@@ -1142,7 +1130,7 @@ export const useEditorStore = create<EditorState>()(
       canUndo: () => {
         const state = get()
         if (ENABLE_INCREMENTAL_HISTORY && state.historyActions.length > 0) {
-          return state.historyIndex >= 0
+          return state.historyIndex > 0
         }
         return state.historyIndex > 0
       },
@@ -1151,7 +1139,7 @@ export const useEditorStore = create<EditorState>()(
       canRedo: () => {
         const state = get()
         if (ENABLE_INCREMENTAL_HISTORY && state.historyActions.length > 0) {
-          return state.historyIndex < state.historyActions.length - 1
+          return state.historyIndex < state.maxHistoryIndex
         }
         return state.historyIndex < state.history.length - 1
       },
@@ -1189,7 +1177,6 @@ export const useEditorStore = create<EditorState>()(
           const saved = await indexedDBService.getItem<PageSchema>(STORES.EDITOR_STATE, STORAGE_KEY)
           if (saved) {
             // 直接设置状态，不触发历史记录
-            // 注意：使用深拷贝避免 immer 代理对象问题
             set(state => {
               state.pageSchema = safeDeepClone(saved)
               state.nodeMap = buildNodeMap(state.pageSchema.root)
@@ -1197,12 +1184,15 @@ export const useEditorStore = create<EditorState>()(
               state.selectedNodeIds = []
               state.selectedNodes = new Map()
               state.lastSelectedNode = null
-              // 🔥 关键：清空历史记录，避免 undo 操作影响
               state.history = []
               state.historyActions = []
               state.historyIndex = -1
+              state.maxHistoryIndex = -1
               state.baseSnapshot = null
             })
+
+            // 重新初始化历史记录，添加初始状态
+            addHistory(set, true)
 
             // 加载成功后仅在读取的数据看起来有效时清除 localStorage 备份
             if (isValidPageSchema(saved)) {
@@ -1226,7 +1216,6 @@ export const useEditorStore = create<EditorState>()(
             const backupSchema = JSON.parse(backup) as PageSchema
 
             // 直接设置状态，不触发历史记录
-            // 注意：使用深拷贝避免引用问题
             set(state => {
               state.pageSchema = safeDeepClone(backupSchema)
               state.nodeMap = buildNodeMap(state.pageSchema.root)
@@ -1234,10 +1223,10 @@ export const useEditorStore = create<EditorState>()(
               state.selectedNodeIds = []
               state.selectedNodes = new Map()
               state.lastSelectedNode = null
-              // 🔥 关键：清空历史记录，避免 undo 操作影响
               state.history = []
               state.historyActions = []
               state.historyIndex = -1
+              state.maxHistoryIndex = -1
               state.baseSnapshot = null
             })
             // 恢复后立即保存到 IndexedDB

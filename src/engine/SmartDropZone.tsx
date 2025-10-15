@@ -67,7 +67,6 @@ export const SmartDropZone: React.FC<SmartDropZoneProps> = ({
         const hoverHeight = hoverBoundingRect.bottom - hoverBoundingRect.top
         const hoverClientY = clientOffset.y - hoverBoundingRect.top
 
-        // 计算鼠标在元素中的相对位置（0-1）
         const hoverRatio = hoverClientY / hoverHeight
 
         if (disableBeforeAfter) {
@@ -109,11 +108,9 @@ export const SmartDropZone: React.FC<SmartDropZoneProps> = ({
           }
         } else if (item.type === DragItemTypes.NODE) {
           const nodeItem = item as NodeDragItem
-          // 移动节点
           moveNodeTo(nodeItem.nodeId, nodeId, position)
         } else if (item.type === DragItemTypes.TEMPLATE) {
           const templateItem = item as TemplateDragItem
-          // 添加模板（通常添加到容器内部）
           if (position === 'inside') {
             addNodeFromSchema(templateItem.templateSchema, nodeId)
           } else if (position === 'before') {

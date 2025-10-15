@@ -52,10 +52,8 @@ export function applyHistoryAction(schema: PageSchema, action: HistoryAction): P
       const nodeToMove = findNode(schema.root, nodeId)
       if (!nodeToMove) return schema
 
-      // 删除原位置
       const newRoot = deleteNode(schema.root, nodeId)
 
-      // 插入到新位置
       const newParent = findNode(newRoot, newParentId)
       if (!newParent || !newParent.children) return schema
 
@@ -148,10 +146,8 @@ export function unapplyHistoryAction(schema: PageSchema, action: HistoryAction):
       const nodeToMove = findNode(schema.root, nodeId)
       if (!nodeToMove) return schema
 
-      // 删除当前位置（新位置）
       const newRoot = deleteNode(schema.root, nodeId)
 
-      // 插入到旧位置
       const oldParent = findNode(newRoot, oldParentId)
       if (!oldParent) return schema
 

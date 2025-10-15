@@ -9,7 +9,6 @@ import { useEditorStore } from '@/store/editorStore'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
 
-// 创建空白页面Schema
 const createBlankPageSchema = () => ({
   version: '1.0.0',
   meta: {
@@ -49,7 +48,7 @@ export const EditorPage: React.FC = () => {
           // 仅在 incoming 有有效内容且与当前不同（或当前无内容）时才覆盖 store
           if (incomingHasChildren && (!currentHasChildren || currentRootId !== incomingRootId)) {
             setPageSchema(data.schema)
-            setCurrentResumeId(id) // 设置当前编辑的简历ID
+            setCurrentResumeId(id)
           }
         }
       })
