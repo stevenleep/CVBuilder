@@ -13,7 +13,6 @@ import {
   Edit3,
   ZoomIn,
   ZoomOut,
-  ChevronDown,
   Home,
   Save,
   Download,
@@ -407,8 +406,6 @@ export const Toolbar: React.FC = () => {
         />
       </div>
 
-      <Divider />
-
       {/* 撤销/重做 */}
       <div style={{ display: 'flex', gap: '2px' }}>
         <IconButton
@@ -424,8 +421,6 @@ export const Toolbar: React.FC = () => {
           disabled={!canRedo()}
         />
       </div>
-
-      <Divider />
 
       {/* 缩放控制 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
@@ -461,8 +456,6 @@ export const Toolbar: React.FC = () => {
         </button>
         <IconButton icon={<ZoomIn size={14} />} tooltip="放大" onClick={() => handleZoomIn()} />
       </div>
-
-      <Divider />
 
       {/* 右侧区域 - 文档操作 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -596,250 +589,6 @@ const IconButton: React.FC<{
       }}
     >
       {icon}
-    </button>
-  )
-}
-
-// 文本按钮
-const TextButton: React.FC<{
-  onClick: () => void
-  children: React.ReactNode
-}> = ({ onClick, children }) => {
-  const [hover, setHover] = React.useState(false)
-
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        height: '36px',
-        padding: '0 16px',
-        border: hover ? '1px solid rgba(0, 0, 0, 0.1)' : '1px solid transparent',
-        borderRadius: '8px',
-        fontSize: '13px',
-        fontWeight: '600',
-        cursor: 'pointer',
-        backgroundColor: hover ? 'rgba(0, 0, 0, 0.05)' : 'transparent',
-        color: hover ? '#374151' : '#6b7280',
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        transform: hover ? 'translateY(-1px)' : 'translateY(0)',
-        boxShadow: hover ? '0 4px 8px rgba(0, 0, 0, 0.08)' : 'none',
-      }}
-    >
-      {children}
-    </button>
-  )
-}
-
-const SplitButton: React.FC<{
-  onMainClick: () => void
-  onMenuClick: (e: React.MouseEvent) => void
-  children: React.ReactNode
-}> = ({ onMainClick, onMenuClick, children }) => {
-  const [mainHover, setMainHover] = React.useState(false)
-  const [menuHover, setMenuHover] = React.useState(false)
-  const [hover, setHover] = React.useState(false)
-
-  return (
-    <div
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        height: '32px',
-        display: 'flex',
-        backgroundColor: '#2d2d2d',
-        borderRadius: '8px',
-        boxShadow: hover ? '0 2px 6px rgba(0,0,0,0.15)' : '0 1px 3px rgba(0,0,0,0.1)',
-        overflow: 'hidden',
-        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-        transform: hover ? 'translateY(-1px)' : 'translateY(0)',
-      }}
-    >
-      {/* 主按钮区域 */}
-      <button
-        onClick={onMainClick}
-        onMouseEnter={() => setMainHover(true)}
-        onMouseLeave={() => setMainHover(false)}
-        style={{
-          height: '32px',
-          padding: '0 14px',
-          border: 'none',
-          background: 'transparent',
-          fontSize: '13px',
-          fontWeight: '600',
-          cursor: 'pointer',
-          backgroundColor: mainHover ? '#1a1a1a' : 'transparent',
-          color: '#fff',
-          transition: 'all 0.15s',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-        }}
-      >
-        {children}
-      </button>
-
-      {/* 分隔线 */}
-      <div
-        style={{
-          width: '1px',
-          height: '16px',
-          backgroundColor: 'rgba(255,255,255,0.2)',
-          alignSelf: 'center',
-        }}
-      />
-
-      {/* 下拉按钮区域 */}
-      <button
-        onClick={e => {
-          e.stopPropagation()
-          onMenuClick(e)
-        }}
-        onMouseEnter={() => setMenuHover(true)}
-        onMouseLeave={() => setMenuHover(false)}
-        title="更多保存选项"
-        style={{
-          width: '28px',
-          height: '32px',
-          border: 'none',
-          background: 'transparent',
-          cursor: 'pointer',
-          backgroundColor: menuHover ? '#1a1a1a' : 'transparent',
-          color: '#fff',
-          transition: 'all 0.15s',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <ChevronDown size={12} />
-      </button>
-    </div>
-  )
-}
-
-// 分隔线
-const Divider = () => (
-  <div
-    style={{
-      width: '1px',
-      height: '20px',
-      backgroundColor: '#e8e8e8',
-    }}
-  />
-)
-
-// 模式按钮
-const ModeButton: React.FC<{
-  icon: React.ReactNode
-  label?: string
-  active: boolean
-  onClick: () => void
-  compact?: boolean
-}> = ({ icon, label, active, onClick, compact = false }) => {
-  const [hover, setHover] = React.useState(false)
-
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        minWidth: compact ? '28px' : 'auto',
-        height: '32px',
-        padding: compact ? '0' : '0 12px',
-        border: '1px solid transparent',
-        borderRadius: '8px',
-        backgroundColor: active ? '#2d2d2d' : hover ? '#f5f5f5' : 'transparent',
-        color: active ? '#fff' : hover ? '#2d2d2d' : '#666',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '6px',
-        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-        fontSize: '13px',
-        fontWeight: '600',
-        whiteSpace: 'nowrap',
-      }}
-    >
-      {icon}
-      {!compact && label && <span>{label}</span>}
-    </button>
-  )
-}
-
-// 菜单
-const Menu: React.FC<{
-  children: React.ReactNode
-  onClose: () => void
-  align?: 'left' | 'right'
-}> = ({ children, onClose, align = 'left' }) => {
-  React.useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (!target.closest('[data-menu]')) {
-        onClose()
-      }
-    }
-    document.addEventListener('click', handleClick)
-    return () => document.removeEventListener('click', handleClick)
-  }, [onClose])
-
-  return (
-    <div
-      data-menu
-      style={{
-        position: 'absolute',
-        top: '100%',
-        right: 0,
-        marginTop: '6px',
-        minWidth: '180px',
-        backgroundColor: '#fff',
-        borderRadius: '8px',
-        boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)',
-        border: '1px solid #e8e8e8',
-        padding: '4px',
-        zIndex: 100001,
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-// 菜单项
-const MenuItem: React.FC<{
-  onClick: () => void
-  children: React.ReactNode
-}> = ({ onClick, children }) => {
-  const [hover, setHover] = React.useState(false)
-
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        width: '100%',
-        height: '32px',
-        padding: '0 12px',
-        border: 'none',
-        background: hover ? '#f5f5f5' : 'transparent',
-        fontSize: '13px',
-        fontWeight: '500',
-        color: '#2d2d2d',
-        cursor: 'pointer',
-        textAlign: 'left',
-        transition: 'all 0.15s',
-        borderRadius: '6px',
-      }}
-    >
-      {children}
     </button>
   )
 }
