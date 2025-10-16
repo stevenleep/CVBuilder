@@ -22,17 +22,20 @@ import {
   X,
   Trash2,
   Pencil,
+  Settings,
 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { exampleResumes } from '@/data/examples'
 import { nanoid } from 'nanoid'
 import { notification } from '@/utils/notification'
+import { SaveResumeFullscreenModal } from '@/editor/SaveResumeFullscreenModal'
 
 interface RecentResume {
   id: string
   name: string
   description: string
+  tags: string[]
   updatedAt: string
 }
 
@@ -42,6 +45,8 @@ export const HomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [isLoading, setIsLoading] = useState(true)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingResume, setEditingResume] = useState<RecentResume | null>(null)
 
   useEffect(() => {
     const loadAllData = async () => {
@@ -102,6 +107,38 @@ export const HomePage: React.FC = () => {
     } catch (error) {
       notification.error('删除失败')
       console.error('Delete resume error:', error)
+    }
+  }
+
+  const handleEditInfo = (e: React.MouseEvent, resume: RecentResume) => {
+    e.stopPropagation()
+    setEditingResume(resume)
+    setShowEditModal(true)
+  }
+
+  const handleSaveEdit = async (name: string, description: string, tags: string[]) => {
+    if (!editingResume) return
+
+    try {
+      const updatedResume = {
+        ...editingResume,
+        name,
+        description,
+        tags,
+        updatedAt: new Date().toISOString(),
+      }
+
+      await indexedDBService.setItem(STORES.RESUMES, editingResume.id, updatedResume)
+
+      // 更新本地状态
+      setRecentResumes(recentResumes.map(r => (r.id === editingResume.id ? updatedResume : r)))
+
+      notification.success('简历信息已更新')
+      setShowEditModal(false)
+      setEditingResume(null)
+    } catch (error) {
+      notification.error('更新失败')
+      console.error('Update error:', error)
     }
   }
 
@@ -544,6 +581,7 @@ export const HomePage: React.FC = () => {
                   resume={resume}
                   onEdit={() => navigate(`/editor/${resume.id}`)}
                   onDelete={() => handleDeleteResume(resume.id, resume.name)}
+                  onEditInfo={e => handleEditInfo(e, resume)}
                   formatDate={formatDate}
                 />
               ))}
@@ -765,6 +803,20 @@ export const HomePage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* 编辑信息Modal */}
+      {showEditModal && editingResume && (
+        <SaveResumeFullscreenModal
+          initialName={editingResume.name}
+          initialDescription={editingResume.description}
+          initialTags={editingResume.tags || []}
+          onSave={handleSaveEdit}
+          onClose={() => {
+            setShowEditModal(false)
+            setEditingResume(null)
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -1147,8 +1199,9 @@ const ResumeCard: React.FC<{
   resume: RecentResume
   onEdit: () => void
   onDelete: () => void
+  onEditInfo: (e: React.MouseEvent) => void
   formatDate: (date: string) => string
-}> = ({ resume, onEdit, onDelete, formatDate }) => {
+}> = ({ resume, onEdit, onDelete, onEditInfo, formatDate }) => {
   const [hover, setHover] = React.useState(false)
 
   return (
@@ -1288,56 +1341,134 @@ const ResumeCard: React.FC<{
           borderTop: hover ? '1px solid rgba(0, 0, 0, 0.06)' : '1px solid transparent',
         }}
       >
-        <span
-          style={{
-            fontSize: '12px',
-            color: '#666',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            opacity: hover ? 0.8 : 1,
-            transition: 'opacity 0.3s',
-          }}
-        >
-          <Clock size={14} />
-          {formatDate(resume.updatedAt)}
-        </span>
-        <button
-          onClick={e => {
-            e.stopPropagation()
-            onEdit()
-          }}
-          style={{
-            padding: '8px 16px',
-            border: 'none',
-            borderRadius: '8px',
-            backgroundColor: '#2d2d2d',
-            color: '#fff',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            opacity: hover ? 1 : 0,
-            transform: hover ? 'translateY(0)' : 'translateY(-8px)',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: '0 2px 4px rgba(59, 130, 246, 0.2)',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = '#1a1a1a'
-            e.currentTarget.style.transform = 'translateY(-1px)'
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = '#1a1a1a'
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 2px 4px rgba(59, 130, 246, 0.2)'
-          }}
-        >
-          <Pencil size={14} />
-          继续编辑
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span
+            style={{
+              fontSize: '12px',
+              color: '#666',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              opacity: hover ? 0.8 : 1,
+              transition: 'opacity 0.3s',
+            }}
+          >
+            <Clock size={14} />
+            {formatDate(resume.updatedAt)}
+          </span>
+
+          {/* 标签显示 - 显示在时间旁边 */}
+          {resume.tags && resume.tags.length > 0 && (
+            <div
+              style={{
+                display: 'flex',
+                gap: '4px',
+                alignItems: 'center',
+                opacity: hover ? 0.3 : 0.7,
+                transition: 'opacity 0.3s',
+              }}
+            >
+              {resume.tags.slice(0, 2).map((tag, index) => (
+                <span
+                  key={index}
+                  style={{
+                    fontSize: '10px',
+                    padding: '2px 6px',
+                    backgroundColor: '#f0f0f0',
+                    color: '#666',
+                    borderRadius: '6px',
+                    border: '1px solid #e0e0e0',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+              {resume.tags.length > 2 && (
+                <span
+                  style={{
+                    fontSize: '10px',
+                    padding: '2px 6px',
+                    backgroundColor: '#f8f9fa',
+                    color: '#999',
+                    borderRadius: '6px',
+                    border: '1px solid #e0e0e0',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  +{resume.tags.length - 2}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button
+            onClick={onEditInfo}
+            style={{
+              width: '32px',
+              height: '32px',
+              border: 'none',
+              borderRadius: '6px',
+              backgroundColor: 'transparent',
+              color: '#666',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: hover ? 1 : 0,
+              transform: hover ? 'translateY(0)' : 'translateY(-8px)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = '#f0f0f0'
+              e.currentTarget.style.color = '#2d2d2d'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = 'transparent'
+              e.currentTarget.style.color = '#666'
+            }}
+            title="编辑信息"
+          >
+            <Settings size={14} />
+          </button>
+          <button
+            onClick={e => {
+              e.stopPropagation()
+              onEdit()
+            }}
+            style={{
+              padding: '8px 16px',
+              border: 'none',
+              borderRadius: '8px',
+              backgroundColor: '#2d2d2d',
+              color: '#fff',
+              fontSize: '13px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              opacity: hover ? 1 : 0,
+              transform: hover ? 'translateY(0)' : 'translateY(-8px)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 2px 4px rgba(59, 130, 246, 0.2)',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = '#1a1a1a'
+              e.currentTarget.style.transform = 'translateY(-1px)'
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = '#1a1a1a'
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 2px 4px rgba(59, 130, 246, 0.2)'
+            }}
+          >
+            <Pencil size={14} />
+            继续编辑
+          </button>
+        </div>
       </div>
     </div>
   )

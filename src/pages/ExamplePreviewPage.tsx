@@ -31,6 +31,33 @@ export const ExamplePreviewPage: React.FC = () => {
           onEditDirectly: () => {
             if (!found) return
             setMode('edit')
+            // 如果当前没有简历ID，创建一个新的
+            if (!useEditorStore.getState().currentResumeId) {
+              const newId = nanoid()
+              const resumeData = {
+                id: newId,
+                name: found.name,
+                description: found.description,
+                schema: found.schema,
+                theme: 'default',
+                canvasConfig: {
+                  scale: 1,
+                  showGrid: false,
+                  showRuler: false,
+                  backgroundColor: '#fafafa',
+                },
+                thumbnail: '',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              }
+              indexedDBService.setItem(STORES.RESUMES, newId, resumeData).then(() => {
+                setCurrentResumeId(newId)
+                setPreviewExampleInfo(null)
+                navigate(`/editor/${newId}`)
+              })
+            } else {
+              setPreviewExampleInfo(null)
+            }
           },
           onCreateCopy: async () => {
             if (!found) return
@@ -57,6 +84,8 @@ export const ExamplePreviewPage: React.FC = () => {
               setMode('edit')
               setPreviewExampleInfo(null)
               notification.success('已创建副本，开始编辑吧！')
+              // 跳转到编辑器页面
+              navigate(`/editor/${newId}`)
             } catch (error) {
               notification.error('创建副本失败')
               console.error('Create copy error:', error)

@@ -4,15 +4,17 @@
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, FileText, Trash2, Edit, Calendar } from 'lucide-react'
+import { ArrowLeft, FileText, Trash2, Edit, Calendar, Settings } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { notification } from '@/utils/notification'
+import { SaveResumeFullscreenModal } from '@/editor/SaveResumeFullscreenModal'
 
 interface SavedResume {
   id: string
   name: string
   description: string
+  tags: string[]
   schema: any
   createdAt: string
   updatedAt: string
@@ -22,6 +24,8 @@ interface SavedResume {
 export const ResumesPage: React.FC = () => {
   const navigate = useNavigate()
   const [resumes, setResumes] = useState<SavedResume[]>([])
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingResume, setEditingResume] = useState<SavedResume | null>(null)
 
   useEffect(() => {
     loadResumes()
@@ -83,6 +87,38 @@ export const ResumesPage: React.FC = () => {
       await indexedDBService.removeItem(STORES.RESUMES, resume.id)
       notification.success('简历已删除')
       loadResumes()
+    }
+  }
+
+  const handleEditInfo = (e: React.MouseEvent, resume: SavedResume) => {
+    e.stopPropagation()
+    setEditingResume(resume)
+    setShowEditModal(true)
+  }
+
+  const handleSaveEdit = async (name: string, description: string, tags: string[]) => {
+    if (!editingResume) return
+
+    try {
+      const updatedResume = {
+        ...editingResume,
+        name,
+        description,
+        tags,
+        updatedAt: new Date().toISOString(),
+      }
+
+      await indexedDBService.setItem(STORES.RESUMES, editingResume.id, updatedResume)
+
+      // 更新本地状态
+      setResumes(resumes.map(r => (r.id === editingResume.id ? updatedResume : r)))
+
+      notification.success('简历信息已更新')
+      setShowEditModal(false)
+      setEditingResume(null)
+    } catch (error) {
+      notification.error('更新失败')
+      console.error('Update error:', error)
     }
   }
 
@@ -190,11 +226,26 @@ export const ResumesPage: React.FC = () => {
                 resume={resume}
                 onEdit={() => handleEdit(resume)}
                 onDelete={e => handleDelete(resume, e)}
+                onEditInfo={e => handleEditInfo(e, resume)}
               />
             ))}
           </div>
         )}
       </div>
+
+      {/* 编辑信息Modal */}
+      {showEditModal && editingResume && (
+        <SaveResumeFullscreenModal
+          initialName={editingResume.name}
+          initialDescription={editingResume.description}
+          initialTags={editingResume.tags || []}
+          onSave={handleSaveEdit}
+          onClose={() => {
+            setShowEditModal(false)
+            setEditingResume(null)
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -203,7 +254,8 @@ const ResumeCard: React.FC<{
   resume: SavedResume
   onEdit: () => void
   onDelete: (e: React.MouseEvent) => void
-}> = ({ resume, onEdit, onDelete }) => {
+  onEditInfo: (e: React.MouseEvent) => void
+}> = ({ resume, onEdit, onDelete, onEditInfo }) => {
   const [hover, setHover] = React.useState(false)
 
   const formatDate = (dateString: string) => {
@@ -298,6 +350,48 @@ const ResumeCard: React.FC<{
           {resume.description || '暂无描述'}
         </p>
 
+        {/* 标签显示 */}
+        {resume.tags && resume.tags.length > 0 && (
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '6px',
+              marginBottom: '12px',
+            }}
+          >
+            {resume.tags.slice(0, 3).map((tag, index) => (
+              <span
+                key={index}
+                style={{
+                  fontSize: '11px',
+                  padding: '2px 8px',
+                  backgroundColor: '#f0f0f0',
+                  color: '#666',
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+            {resume.tags.length > 3 && (
+              <span
+                style={{
+                  fontSize: '11px',
+                  padding: '2px 8px',
+                  backgroundColor: '#f8f9fa',
+                  color: '#999',
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                }}
+              >
+                +{resume.tags.length - 3}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* 时间信息 */}
         <div
           style={{
@@ -339,6 +433,33 @@ const ResumeCard: React.FC<{
           >
             <Edit size={16} />
             <span>编辑</span>
+          </button>
+          <button
+            onClick={onEditInfo}
+            style={{
+              width: '44px',
+              height: '40px',
+              border: 'none',
+              borderRadius: '6px',
+              backgroundColor: 'transparent',
+              color: '#666',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = '#f0f0f0'
+              e.currentTarget.style.color = '#2d2d2d'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = 'transparent'
+              e.currentTarget.style.color = '#666'
+            }}
+            title="编辑信息"
+          >
+            <Settings size={16} />
           </button>
           <button
             onClick={onDelete}

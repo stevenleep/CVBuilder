@@ -18,6 +18,8 @@ import {
   Download,
   Upload,
   Check,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
@@ -47,6 +49,7 @@ export const Toolbar: React.FC = () => {
   const isMobile = useIsMobile()
 
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   // 监听快捷键保存事件
@@ -57,6 +60,16 @@ export const Toolbar: React.FC = () => {
     window.addEventListener('cvkit-save', handleSaveShortcut)
     return () => window.removeEventListener('cvkit-save', handleSaveShortcut)
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // 监听全屏状态变化
+  React.useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange)
   }, [])
 
   const handleZoomIn = () => {
@@ -71,6 +84,16 @@ export const Toolbar: React.FC = () => {
 
   const handleZoomReset = () => {
     updateCanvasConfig({ scale: 1 })
+  }
+
+  const handleFullscreenToggle = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen()
+      setIsFullscreen(true)
+    } else {
+      document.exitFullscreen()
+      setIsFullscreen(false)
+    }
   }
 
   const handleImportJSON = () => {
@@ -114,20 +137,16 @@ export const Toolbar: React.FC = () => {
     e.target.value = ''
   }
 
-  const handleSave = async (name?: string, description?: string) => {
+  const handleSave = async (name?: string, description?: string, tags?: string[]) => {
     try {
       const state = useEditorStore.getState()
       const resumeId = currentResumeId || nanoid()
-
-      if (!currentResumeId && !name) {
-        // 如果没有当前简历ID且没有名称，使用默认名称
-        // 继续保存逻辑
-      }
 
       const resumeData = {
         id: resumeId,
         name: name || `简历 ${new Date().toLocaleDateString()}`,
         description: description || '',
+        tags: tags || [],
         schema: state.pageSchema,
         theme: theme,
         canvasConfig: state.canvasConfig,
@@ -153,6 +172,11 @@ export const Toolbar: React.FC = () => {
     }
   }
 
+  const handleSaveWithModal = () => {
+    // 触发全屏保存Modal事件
+    window.dispatchEvent(new CustomEvent('cvkit-show-save-modal'))
+  }
+
   const handleExportPDF = async () => {
     try {
       const pages = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
@@ -169,7 +193,7 @@ export const Toolbar: React.FC = () => {
         format: 'a4',
       })
 
-      const scale = 2
+      const scale = 3
 
       for (let i = 0; i < pages.length; i++) {
         const page = pages[i]
@@ -199,167 +223,124 @@ export const Toolbar: React.FC = () => {
     }
   }
 
-  // 预览模式且有示例信息时，显示特殊的 Toolbar
+  // 案例预览模式下的极简toolbar - 仅图标
   if (previewExampleInfo) {
     return (
       <div
         style={{
-          height: '64px',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: '16px',
+          height: isMobile ? '44px' : '48px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 24px',
-          minWidth: '600px',
-          maxWidth: '800px',
+          padding: isMobile ? '0 12px' : '0 16px',
+          gap: isMobile ? '4px' : '6px',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '12px',
+          minWidth: '200px',
+          maxWidth: '300px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
-        {/* 左侧：返回 */}
-        <button
-          onClick={() => navigate('/')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            padding: '5px 10px',
-            border: 'none',
-            borderRadius: '5px',
-            backgroundColor: 'transparent',
-            color: '#666',
-            cursor: 'pointer',
-            fontSize: '12px',
-            fontWeight: '600',
-            transition: 'all 0.2s',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = '#f0f0f0'
-            e.currentTarget.style.color = '#2d2d2d'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = 'transparent'
-            e.currentTarget.style.color = '#666'
-          }}
-        >
-          <Home size={14} />
-          <span>返回</span>
-        </button>
+        {/* 返回首页 */}
+        <IconButton icon={<Home size={16} />} tooltip="返回" onClick={() => navigate('/')} />
 
-        {/* 中间：示例信息 */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            position: 'absolute',
-            left: '50%',
-            transform: 'translateX(-50%)',
-          }}
-        >
-          <div
-            style={{
-              padding: '4px 10px',
-              backgroundColor: '#eff6ff',
-              borderRadius: '5px',
-              fontSize: '11px',
-              fontWeight: '600',
-              color: '#1e40af',
-              border: '1px solid #dbeafe',
-            }}
-          >
-            预览模式
-          </div>
-          <div
-            style={{
-              width: '1px',
-              height: '14px',
-              backgroundColor: '#e0e0e0',
-            }}
+        {/* 缩放控制 */}
+        <IconButton icon={<ZoomOut size={16} />} tooltip="缩小" onClick={() => handleZoomOut()} />
+        <IconButton icon={<ZoomIn size={16} />} tooltip="放大" onClick={() => handleZoomIn()} />
+
+        {/* 全屏切换 */}
+        <IconButton
+          icon={isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+          tooltip={isFullscreen ? '退出' : '全屏'}
+          onClick={handleFullscreenToggle}
+        />
+
+        {/* 导出PDF */}
+        <IconButton
+          icon={<Download size={16} />}
+          tooltip="导出"
+          onClick={() => handleExportPDF()}
+        />
+
+        {/* 进入编辑 */}
+        {previewExampleInfo.onEditDirectly && (
+          <IconButton
+            icon={<Edit3 size={16} />}
+            tooltip="编辑"
+            onClick={previewExampleInfo.onEditDirectly}
           />
-          <div style={{ fontSize: '13px', fontWeight: '600', color: '#2d2d2d' }}>
-            {previewExampleInfo.name}
-          </div>
-          <div
-            style={{
-              fontSize: '11px',
-              color: '#999',
-              padding: '2px 8px',
-              backgroundColor: '#f8f9fa',
-              borderRadius: '4px',
-              fontWeight: '500',
-            }}
-          >
-            {previewExampleInfo.description}
-          </div>
-        </div>
+        )}
 
-        {/* 右侧：操作按钮 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {previewExampleInfo.onEditDirectly && (
-            <button
-              onClick={previewExampleInfo.onEditDirectly}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '5px 12px',
-                border: '1px solid #e0e0e0',
-                borderRadius: '5px',
-                backgroundColor: 'white',
-                color: '#666',
-                fontSize: '11px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#fafafa'
-                e.currentTarget.style.borderColor = '#d0d0d0'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = 'white'
-                e.currentTarget.style.borderColor = '#e0e0e0'
-              }}
-            >
-              <Edit3 size={12} />
-              <span>进入编辑</span>
-            </button>
-          )}
-          {previewExampleInfo.onCreateCopy && (
-            <button
-              onClick={previewExampleInfo.onCreateCopy}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '5px 12px',
-                border: 'none',
-                borderRadius: '5px',
-                backgroundColor: '#2d2d2d',
-                color: 'white',
-                fontSize: '11px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#1a1a1a'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = '#2d2d2d'
-              }}
-            >
-              <Check size={12} />
-              <span>创建副本</span>
-            </button>
-          )}
-        </div>
+        {/* 创建副本 */}
+        {previewExampleInfo.onCreateCopy && (
+          <IconButton
+            icon={<Check size={16} />}
+            tooltip="复制"
+            onClick={previewExampleInfo.onCreateCopy}
+          />
+        )}
       </div>
     )
   }
 
+  // 预览模式下的极简toolbar - 仅图标
+  if (mode === 'preview') {
+    return (
+      <div
+        style={{
+          height: isMobile ? '44px' : '48px',
+          display: 'flex',
+          alignItems: 'center',
+          padding: isMobile ? '0 12px' : '0 16px',
+          gap: isMobile ? '4px' : '6px',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '12px',
+          minWidth: '200px',
+          maxWidth: '300px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
+      >
+        {/* 返回首页 */}
+        {!isMobile && (
+          <IconButton
+            icon={<Home size={16} />}
+            tooltip="返回"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('show-home-icon-modal'))
+            }}
+          />
+        )}
+
+        {/* 模式切换 */}
+        <IconButton icon={<Edit3 size={16} />} tooltip="编辑" onClick={() => setMode('edit')} />
+
+        {/* 缩放控制 */}
+        <IconButton icon={<ZoomOut size={16} />} tooltip="缩小" onClick={() => handleZoomOut()} />
+        <IconButton icon={<ZoomIn size={16} />} tooltip="放大" onClick={() => handleZoomIn()} />
+
+        {/* 全屏切换 */}
+        <IconButton
+          icon={isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+          tooltip={isFullscreen ? '退出' : '全屏'}
+          onClick={handleFullscreenToggle}
+        />
+
+        {/* 导出PDF */}
+        <IconButton
+          icon={<Download size={16} />}
+          tooltip="导出"
+          onClick={() => handleExportPDF()}
+        />
+      </div>
+    )
+  }
+
+  // 编辑模式下的完整toolbar
   return (
     <div
       style={{
@@ -394,7 +375,7 @@ export const Toolbar: React.FC = () => {
       <div style={{ display: 'flex', gap: '2px' }}>
         <IconButton
           icon={<Edit3 size={14} />}
-          tooltip="编辑模式"
+          tooltip="编辑"
           onClick={() => setMode('edit')}
           active={mode === 'edit'}
         />
@@ -402,7 +383,7 @@ export const Toolbar: React.FC = () => {
           icon={<Eye size={14} />}
           tooltip="预览模式"
           onClick={() => setMode('preview')}
-          active={mode === 'preview'}
+          active={mode === ('preview' as typeof mode)}
         />
       </div>
 
@@ -465,23 +446,12 @@ export const Toolbar: React.FC = () => {
         {/* 导出 */}
         <IconButton
           icon={<Download size={14} />}
-          tooltip="导出PDF"
+          tooltip="导出"
           onClick={() => handleExportPDF()}
         />
 
         {/* 保存 */}
-        <IconButton
-          icon={<Save size={14} />}
-          tooltip="保存"
-          onClick={() => {
-            if (!currentResumeId) {
-              // 触发新简历对话框事件
-              window.dispatchEvent(new CustomEvent('cvkit-show-new-resume-dialog'))
-            } else {
-              handleSave()
-            }
-          }}
-        />
+        <IconButton icon={<Save size={14} />} tooltip="保存" onClick={handleSaveWithModal} />
 
         {/* 更多菜单 - 暂时注释掉 */}
         {/* <div style={{ position: 'relative' }}>
@@ -539,6 +509,17 @@ export const Toolbar: React.FC = () => {
             opacity: 0.7;
           }
         }
+        
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
       `}</style>
 
       {/* 对话框 */}
@@ -556,39 +537,93 @@ const IconButton: React.FC<{
   active?: boolean
 }> = ({ icon, tooltip, onClick, disabled = false, active = false }) => {
   const [hover, setHover] = React.useState(false)
+  const [tooltipPosition, setTooltipPosition] = React.useState({ x: 0, y: 0 })
+  const buttonRef = React.useRef<HTMLButtonElement>(null)
+
+  const handleMouseEnter = () => {
+    setHover(true)
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      setTooltipPosition({
+        x: rect.left + rect.width / 2,
+        y: rect.top - 8,
+      })
+    }
+  }
 
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      title={tooltip}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        width: '32px',
-        height: '32px',
-        border: 'none',
-        borderRadius: '8px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        backgroundColor: active
-          ? 'rgba(0, 0, 0, 0.08)'
-          : hover && !disabled
-            ? 'rgba(0, 0, 0, 0.05)'
-            : 'transparent',
-        color: active ? '#1f2937' : disabled ? '#d0d0d0' : hover ? '#374151' : '#6b7280',
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-        transform: hover && !disabled ? 'scale(1.05)' : 'scale(1)',
-        boxShadow: active
-          ? '0 0 0 1px rgba(0, 0, 0, 0.1)'
-          : hover && !disabled
-            ? '0 2px 4px rgba(0, 0, 0, 0.1)'
-            : 'none',
-      }}
-    >
-      {icon}
-    </button>
+    <>
+      <button
+        ref={buttonRef}
+        onClick={onClick}
+        disabled={disabled}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={() => setHover(false)}
+        style={{
+          width: '32px',
+          height: '32px',
+          border: 'none',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          backgroundColor: active
+            ? 'rgba(0, 0, 0, 0.08)'
+            : hover && !disabled
+              ? 'rgba(0, 0, 0, 0.05)'
+              : 'transparent',
+          color: active ? '#1f2937' : disabled ? '#d0d0d0' : hover ? '#374151' : '#6b7280',
+          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: hover && !disabled ? 'scale(1.05)' : 'scale(1)',
+          boxShadow: active
+            ? '0 0 0 1px rgba(0, 0, 0, 0.1)'
+            : hover && !disabled
+              ? '0 2px 4px rgba(0, 0, 0, 0.1)'
+              : 'none',
+        }}
+      >
+        {icon}
+      </button>
+
+      {/* 自定义Tooltip - 使用Portal渲染到body */}
+      {hover && tooltip && (
+        <div
+          style={{
+            position: 'fixed',
+            left: tooltipPosition.x,
+            top: tooltipPosition.y,
+            transform: 'translateX(-50%) translateY(-100%)',
+            padding: '4px 8px',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            color: 'white',
+            fontSize: '12px',
+            fontWeight: '500',
+            borderRadius: '4px',
+            whiteSpace: 'nowrap',
+            zIndex: 10000,
+            pointerEvents: 'none',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+            animation: 'fadeIn 0.2s ease-out',
+          }}
+        >
+          {tooltip}
+          {/* 小三角箭头 */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '4px solid transparent',
+              borderRight: '4px solid transparent',
+              borderTop: '4px solid rgba(0, 0, 0, 0.8)',
+            }}
+          />
+        </div>
+      )}
+    </>
   )
 }

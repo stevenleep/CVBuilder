@@ -15,16 +15,24 @@ import { MultiSelectionToolbar } from './MultiSelectionToolbar'
 import { BatchEditPanel } from './BatchEditPanel'
 import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
 import { SaveResumeDialog } from './SaveResumeDialog'
+import { SaveResumeFullscreenModal } from './SaveResumeFullscreenModal'
 import { HomeIconModal } from '@/components/HomeIconModal'
 import { useKeyboardShortcuts } from '@/core/hooks/useKeyboardShortcuts'
 import { useIsSmallScreen } from '@/hooks/useMediaQuery'
 import { useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
+import { useEditorStore } from '@/store/editorStore'
+import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { nanoid } from 'nanoid'
+import { notification } from '@/utils/notification'
+import { useTheme } from '@/core/context/ThemeContext'
 
 export const EditorLayout: React.FC = () => {
   // 启用键盘快捷键
   useKeyboardShortcuts()
   const navigate = useNavigate()
+  const { theme } = useTheme()
+  const { currentResumeId, setCurrentResumeId, pageSchema, canvasConfig } = useEditorStore()
 
   // 响应式设计
   const isSmallScreen = useIsSmallScreen()
@@ -36,6 +44,42 @@ export const EditorLayout: React.FC = () => {
   const [showSaveAsDialog, setShowSaveAsDialog] = useState(false)
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
   const [showHomeIconModal, setShowHomeIconModal] = useState(false)
+  const [showSaveFullscreenModal, setShowSaveFullscreenModal] = useState(false)
+
+  // 保存简历函数
+  const handleSave = async (name: string, description: string, tags: string[]) => {
+    try {
+      const resumeId = currentResumeId || nanoid()
+
+      const resumeData = {
+        id: resumeId,
+        name: name || `简历 ${new Date().toLocaleDateString()}`,
+        description: description || '',
+        tags: tags || [],
+        schema: pageSchema,
+        theme: theme,
+        canvasConfig: canvasConfig,
+        thumbnail: '',
+        createdAt: currentResumeId
+          ? (await indexedDBService.getItem(STORES.RESUMES, currentResumeId))?.createdAt ||
+            new Date().toISOString()
+          : new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+
+      await indexedDBService.setItem(STORES.RESUMES, resumeId, resumeData)
+
+      if (!currentResumeId) {
+        setCurrentResumeId(resumeId)
+      }
+
+      notification.success('保存成功！')
+      window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
+    } catch (error) {
+      notification.error('保存失败')
+      console.error('Save error:', error)
+    }
+  }
 
   // 小屏幕时自动收起侧边栏
   React.useEffect(() => {
@@ -54,17 +98,20 @@ export const EditorLayout: React.FC = () => {
     const handleShowSaveAsDialog = () => setShowSaveAsDialog(true)
     const handleShowSaveTemplateDialog = () => setShowSaveTemplateDialog(true)
     const handleShowHomeIconModal = () => setShowHomeIconModal(true)
+    const handleShowSaveModal = () => setShowSaveFullscreenModal(true)
 
     window.addEventListener('cvkit-show-new-resume-dialog', handleShowNewResumeDialog)
     window.addEventListener('cvkit-show-save-as-dialog', handleShowSaveAsDialog)
     window.addEventListener('cvkit-show-save-template-dialog', handleShowSaveTemplateDialog)
     window.addEventListener('show-home-icon-modal', handleShowHomeIconModal)
+    window.addEventListener('cvkit-show-save-modal', handleShowSaveModal)
 
     return () => {
       window.removeEventListener('cvkit-show-new-resume-dialog', handleShowNewResumeDialog)
       window.removeEventListener('cvkit-show-save-as-dialog', handleShowSaveAsDialog)
       window.removeEventListener('cvkit-show-save-template-dialog', handleShowSaveTemplateDialog)
       window.removeEventListener('show-home-icon-modal', handleShowHomeIconModal)
+      window.removeEventListener('cvkit-show-save-modal', handleShowSaveModal)
     }
   }, [])
 
@@ -281,6 +328,17 @@ export const EditorLayout: React.FC = () => {
           navigate('/')
         }}
       />
+
+      {/* 全屏保存Modal */}
+      {showSaveFullscreenModal && (
+        <SaveResumeFullscreenModal
+          onSave={async (name, description, tags) => {
+            await handleSave(name, description, tags)
+            setShowSaveFullscreenModal(false)
+          }}
+          onClose={() => setShowSaveFullscreenModal(false)}
+        />
+      )}
     </div>
   )
 }
