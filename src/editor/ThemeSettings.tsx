@@ -455,10 +455,10 @@ const ThemeCard: React.FC<{
       onMouseLeave={() => setHover(false)}
       style={{
         padding: '12px',
-        border: `1px solid ${active ? '#e0e0e0' : hover ? '#e8e8e8' : 'transparent'}`,
+        border: `1px solid ${active ? '#2d2d2d' : hover ? '#e8e8e8' : 'transparent'}`,
         borderRadius: '12px',
         cursor: 'pointer',
-        backgroundColor: active ? '#f8f9fa' : hover ? '#fafafa' : 'transparent',
+        backgroundColor: active ? '#ffffff' : hover ? '#fafafa' : 'transparent',
         transition: 'all 0.2s ease',
         boxShadow: active
           ? '0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)'
