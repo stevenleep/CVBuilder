@@ -26,7 +26,7 @@ import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
 import { notification } from '@/utils/notification'
 import { useTheme } from '@/core/context/ThemeContext'
-import { ViewportProvider, ViewportToggle } from '@/core/context/ViewportContext'
+import { ViewportProvider } from '@/core/context/ViewportContext'
 
 export const EditorLayout: React.FC = () => {
   // 启用键盘快捷键

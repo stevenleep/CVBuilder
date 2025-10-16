@@ -226,6 +226,7 @@ export const useKeyboardShortcuts = (onShowHelp?: () => void) => {
                   props: node.props || {},
                   style: node.style || {},
                   childrenIds: node.children?.map((c: { id: string }) => c.id) || [],
+                  viewportMode: 'desktop' as const, // 默认桌面模式
                   emit: () => {},
                   on: () => () => {},
                   getEditorAPI: () => ({

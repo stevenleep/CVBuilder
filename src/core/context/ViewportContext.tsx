@@ -64,7 +64,7 @@ export const useViewport = (): ViewportContextType => {
  * 视口模式切换组件
  */
 export const ViewportToggle: React.FC = () => {
-  const { viewportMode, setViewportMode, isMobile } = useViewport()
+  const { setViewportMode, isMobile } = useViewport()
 
   const handleToggle = useCallback(() => {
     setViewportMode(isMobile ? 'desktop' : 'mobile')

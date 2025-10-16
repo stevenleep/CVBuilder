@@ -32,7 +32,7 @@ const TwoColumnLayout: React.FC<TwoColumnLayoutProps> = ({
   const mobileStyle =
     viewportMode === 'mobile'
       ? {
-          flexDirection: 'column', // 移动端改为列布局
+          flexDirection: 'column' as const, // 移动端改为列布局
           gap: `${Math.max(gap * 0.8, 12)}px`, // 移动端间距调整
         }
       : {}

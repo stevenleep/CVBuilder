@@ -29,7 +29,7 @@ const Row: React.FC<RowProps> = ({
   const mobileStyle =
     viewportMode === 'mobile'
       ? {
-          flexDirection: 'column', // 移动端改为列布局
+          flexDirection: 'column' as const, // 移动端改为列布局
           gap: `${Math.max(gap * 0.8, 8)}px`, // 移动端间距调整
           alignItems: 'stretch', // 移动端拉伸对齐
         }
@@ -39,7 +39,7 @@ const Row: React.FC<RowProps> = ({
     <div
       style={{
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'row' as const,
         gap: `${gap}px`,
         alignItems: align,
         justifyContent: justify,
