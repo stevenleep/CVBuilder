@@ -170,6 +170,59 @@ export const HomePage: React.FC = () => {
         backgroundColor: '#f8f9fa',
       }}
     >
+      <style>
+        {`
+          @media (max-width: 768px) {
+            .homepage-container {
+              padding: 16px !important;
+            }
+            .homepage-hero {
+              padding: 24px 20px !important;
+              margin-bottom: 32px !important;
+            }
+            .homepage-hero h1 {
+              font-size: 24px !important;
+            }
+            .homepage-hero p {
+              font-size: 14px !important;
+            }
+            .homepage-section-title {
+              font-size: 18px !important;
+            }
+            .homepage-search-container {
+              flex-direction: column !important;
+              gap: 12px !important;
+              align-items: stretch !important;
+            }
+            .homepage-search-input {
+              width: 100% !important;
+            }
+            .homepage-grid {
+              grid-template-columns: 1fr !important;
+              gap: 12px !important;
+            }
+            .homepage-card {
+              padding: 16px !important;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .homepage-hero {
+              padding: 20px 16px !important;
+            }
+            .homepage-hero h1 {
+              font-size: 20px !important;
+            }
+            .homepage-hero-buttons {
+              flex-direction: column !important;
+              gap: 12px !important;
+            }
+            .homepage-hero-buttons button {
+              width: 100% !important;
+            }
+          }
+        `}
+      </style>
       {/* 顶部Header - 简化版（移除统计数据） */}
       <div
         style={{
@@ -250,121 +303,239 @@ export const HomePage: React.FC = () => {
       </div>
 
       {/* 主体内容 */}
-      <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Hero区域 - 简化版 */}
+      <div
+        className="homepage-container"
+        style={{ padding: '32px 24px', maxWidth: '1200px', margin: '0 auto' }}
+      >
+        {/* Hero区域 - 精致渐变版 */}
         <div
+          className="homepage-hero"
           style={{
             backgroundColor: '#2d2d2d',
-            borderRadius: '10px',
-            padding: '24px 28px',
-            marginBottom: '36px',
+            borderRadius: '16px',
+            padding: '40px 36px',
+            marginBottom: '48px',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <div style={{ maxWidth: '500px' }}>
-            <h1
+          <div style={{ maxWidth: '600px', position: 'relative', zIndex: 1 }}>
+            <div
               style={{
-                fontSize: '24px',
-                fontWeight: '800',
-                color: '#fff',
-                marginBottom: '6px',
-                lineHeight: 1.2,
-              }}
-            >
-              创建专业简历
-            </h1>
-            <p
-              style={{
-                fontSize: '13px',
-                color: 'rgba(255,255,255,0.7)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
                 marginBottom: '16px',
               }}
             >
-              使用精选示例快速开始，或从空白模板自由创作
-            </p>
-            <button
-              onClick={() => navigate('/editor')}
+              <div
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  backgroundColor: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <Sparkles size={24} color="#2d2d2d" strokeWidth={2} />
+              </div>
+              <div>
+                <h1
+                  style={{
+                    fontSize: '32px',
+                    fontWeight: '800',
+                    color: '#fff',
+                    marginBottom: '8px',
+                    lineHeight: 1.1,
+                  }}
+                >
+                  创建专业简历
+                </h1>
+                <div
+                  style={{
+                    width: '60px',
+                    height: '3px',
+                    backgroundColor: '#fff',
+                    borderRadius: '2px',
+                  }}
+                />
+              </div>
+            </div>
+
+            <p
               style={{
-                padding: '7px 18px',
-                border: 'none',
-                borderRadius: '6px',
-                backgroundColor: '#fff',
-                color: '#2d2d2d',
-                fontSize: '13px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#f0f0f0'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = '#fff'
+                fontSize: '16px',
+                color: 'rgba(255,255,255,0.8)',
+                marginBottom: '32px',
+                lineHeight: 1.6,
+                maxWidth: '480px',
               }}
             >
-              <Plus size={15} />
-              创建空白简历
-            </button>
+              使用精选示例快速开始，或从空白模板自由创作。让每一份简历都成为你职业发展的完美起点。
+            </p>
+
+            <div
+              className="homepage-hero-buttons"
+              style={{ display: 'flex', gap: '16px', alignItems: 'center' }}
+            >
+              <button
+                onClick={() => navigate('/editor')}
+                style={{
+                  padding: '14px 28px',
+                  border: 'none',
+                  borderRadius: '12px',
+                  backgroundColor: '#fff',
+                  color: '#2d2d2d',
+                  fontSize: '15px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)',
+                  transform: 'translateY(0)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow =
+                    '0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow =
+                    '0 8px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)'
+                }}
+              >
+                <Plus size={18} />
+                创建空白简历
+              </button>
+
+              <button
+                onClick={() =>
+                  document
+                    .getElementById('quick-start-section')
+                    ?.scrollIntoView({ behavior: 'smooth' })
+                }
+                style={{
+                  padding: '14px 24px',
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  color: '#fff',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  backdropFilter: 'blur(10px)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+                }}
+              >
+                <Eye size={18} />
+                浏览示例
+              </button>
+            </div>
           </div>
         </div>
 
         {/* 最近编辑 */}
         {recentResumes.length > 0 && (
-          <div style={{ marginBottom: '48px' }}>
+          <div style={{ marginBottom: '56px' }}>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                marginBottom: '14px',
+                marginBottom: '20px',
               }}
             >
-              <h2
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '700',
-                  color: '#2d2d2d',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '7px',
-                }}
-              >
-                <Clock size={16} />
-                最近编辑
-              </h2>
+              <div>
+                <h2
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: '800',
+                    color: '#2d2d2d',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    marginBottom: '4px',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '8px',
+                      backgroundColor: '#2d2d2d',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                    }}
+                  >
+                    <Clock size={16} />
+                  </div>
+                  最近编辑
+                </h2>
+                <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+                  继续编辑你的简历，或创建新的作品
+                </p>
+              </div>
               <button
                 onClick={() => navigate('/resumes')}
                 style={{
-                  padding: '5px 10px',
-                  border: 'none',
-                  borderRadius: '5px',
-                  backgroundColor: 'transparent',
+                  padding: '10px 20px',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  backgroundColor: '#fff',
                   color: '#666',
-                  fontSize: '12px',
+                  fontSize: '14px',
                   fontWeight: '600',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)',
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.backgroundColor = '#f0f0f0'
-                  e.currentTarget.style.color = '#2d2d2d'
+                  e.currentTarget.style.background = '#f8f9fa'
+                  e.currentTarget.style.borderColor = '#cbd5e1'
+                  e.currentTarget.style.transform = 'translateY(-1px)'
+                  e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.08)'
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                  e.currentTarget.style.color = '#666'
+                  e.currentTarget.style.background = '#fff'
+                  e.currentTarget.style.borderColor = '#e2e8f0'
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.04)'
                 }}
               >
-                查看全部 →
+                查看全部
+                <ChevronDown size={14} style={{ transform: 'rotate(-90deg)' }} />
               </button>
             </div>
 
             <div
+              className="homepage-grid"
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                gap: '12px',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gap: '16px',
               }}
             >
               {recentResumes.map(resume => (
@@ -388,41 +559,51 @@ export const HomePage: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '14px',
-              gap: '16px',
+              marginBottom: '24px',
+              gap: '24px',
             }}
           >
             {/* 左侧：标题 */}
             <div>
               <h2
                 style={{
-                  fontSize: '17px',
-                  fontWeight: '700',
+                  fontSize: '20px',
+                  fontWeight: '800',
                   color: '#2d2d2d',
-                  marginBottom: '5px',
+                  marginBottom: '6px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '7px',
+                  gap: '10px',
                 }}
               >
-                <Zap
-                  size={16}
+                <div
                   style={{
-                    color: '#f59e0b',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '8px',
+                    backgroundColor: '#2d2d2d',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff',
+                    boxShadow: '0 4px 8px rgba(245, 158, 11, 0.2)',
                   }}
-                />
+                >
+                  <Zap size={16} />
+                </div>
                 快速开始
               </h2>
-              <p style={{ fontSize: '13px', color: '#666', margin: 0 }}>
+              <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
                 从精选示例开始，一键创建你的专属简历
               </p>
             </div>
 
             {/* 右侧：搜索和筛选 */}
             <div
+              className="homepage-search-container"
               style={{
                 display: 'flex',
-                gap: '8px',
+                gap: '12px',
                 alignItems: 'center',
               }}
             >
@@ -432,23 +613,27 @@ export const HomePage: React.FC = () => {
                   value={selectedCategory}
                   onChange={e => setSelectedCategory(e.target.value)}
                   style={{
-                    padding: '7px 32px 7px 12px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '6px',
-                    fontSize: '13px',
+                    padding: '10px 36px 10px 16px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    fontSize: '14px',
                     fontWeight: '600',
                     backgroundColor: '#fff',
-                    color: '#2d2d2d',
+                    color: '#666',
                     cursor: 'pointer',
                     outline: 'none',
                     appearance: 'none',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)',
+                    minWidth: '120px',
                   }}
                   onFocus={e => {
                     e.currentTarget.style.borderColor = '#2d2d2d'
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
                   }}
                   onBlur={e => {
-                    e.currentTarget.style.borderColor = '#e0e0e0'
+                    e.currentTarget.style.borderColor = '#e2e8f0'
+                    e.currentTarget.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.04)'
                   }}
                 >
                   {categories.map(cat => (
@@ -458,10 +643,10 @@ export const HomePage: React.FC = () => {
                   ))}
                 </select>
                 <ChevronDown
-                  size={14}
+                  size={16}
                   style={{
                     position: 'absolute',
-                    right: '10px',
+                    right: '12px',
                     top: '50%',
                     transform: 'translateY(-50%)',
                     color: '#666',
@@ -471,12 +656,15 @@ export const HomePage: React.FC = () => {
               </div>
 
               {/* 搜索框 */}
-              <div style={{ position: 'relative', width: '280px' }}>
+              <div
+                className="homepage-search-input"
+                style={{ position: 'relative', width: '320px' }}
+              >
                 <Search
-                  size={15}
+                  size={16}
                   style={{
                     position: 'absolute',
-                    left: '10px',
+                    left: '12px',
                     top: '50%',
                     transform: 'translateY(-50%)',
                     color: '#999',
@@ -485,24 +673,28 @@ export const HomePage: React.FC = () => {
                 />
                 <input
                   type="text"
-                  placeholder="搜索简历..."
+                  placeholder="搜索简历模板..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '7px 10px 7px 32px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '6px',
-                    fontSize: '13px',
+                    padding: '10px 12px 10px 40px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    fontSize: '14px',
                     outline: 'none',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     backgroundColor: '#fff',
+                    color: '#666',
+                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)',
                   }}
                   onFocus={e => {
                     e.currentTarget.style.borderColor = '#2d2d2d'
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
                   }}
                   onBlur={e => {
-                    e.currentTarget.style.borderColor = '#e0e0e0'
+                    e.currentTarget.style.borderColor = '#e2e8f0'
+                    e.currentTarget.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.04)'
                   }}
                 />
                 {searchQuery && (
@@ -510,26 +702,29 @@ export const HomePage: React.FC = () => {
                     onClick={() => setSearchQuery('')}
                     style={{
                       position: 'absolute',
-                      right: '7px',
+                      right: '8px',
                       top: '50%',
                       transform: 'translateY(-50%)',
-                      padding: '2px',
+                      padding: '4px',
                       border: 'none',
                       backgroundColor: 'transparent',
                       color: '#999',
                       cursor: 'pointer',
-                      borderRadius: '3px',
+                      borderRadius: '4px',
                       display: 'flex',
                       alignItems: 'center',
+                      transition: 'all 0.2s',
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.backgroundColor = '#f0f0f0'
+                      e.currentTarget.style.backgroundColor = '#f1f5f9'
+                      e.currentTarget.style.color = '#666'
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.backgroundColor = 'transparent'
+                      e.currentTarget.style.color = '#999'
                     }}
                   >
-                    <X size={13} />
+                    <X size={14} />
                   </button>
                 )}
               </div>
@@ -549,10 +744,11 @@ export const HomePage: React.FC = () => {
             />
           ) : (
             <div
+              className="homepage-grid"
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                gap: '12px',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                gap: '20px',
               }}
             >
               {filteredItems.map(item => (
@@ -734,7 +930,7 @@ const EmptyState: React.FC<{
   )
 }
 
-// 快速开始卡片 - 柔和阴影风格
+// 快速开始卡片 - 精致设计风格
 const QuickStartCard: React.FC<{
   title: string
   description: string
@@ -749,49 +945,71 @@ const QuickStartCard: React.FC<{
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        padding: '14px',
+        padding: '20px',
         backgroundColor: '#fff',
-        borderRadius: '10px',
-        border: 'none',
+        borderRadius: '16px',
+        border: '1px solid rgba(0, 0, 0, 0.04)',
         boxShadow: hover
-          ? '0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04)'
-          : '0 1px 3px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.02)',
+          ? '0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(59, 130, 246, 0.1)'
+          : '0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02)',
         cursor: 'pointer',
-        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-        transform: hover ? 'translateY(-2px)' : 'translateY(0)',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        transform: hover ? 'translateY(-4px)' : 'translateY(0)',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '12px' }}>
+      {/* 装饰性背景渐变 */}
+      {hover && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '3px',
+            backgroundColor: '#2d2d2d',
+            borderRadius: '16px 16px 0 0',
+          }}
+        />
+      )}
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '16px' }}>
         {/* 图标 */}
         <div
           style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
-            backgroundColor: hover ? '#2d2d2d' : '#f5f5f5',
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            background: hover ? '#2d2d2d' : '#f8f9fa',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: hover ? '#fff' : '#999',
             flexShrink: 0,
-            transition: 'all 0.2s',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: hover
+              ? '0 8px 16px rgba(59, 130, 246, 0.2)'
+              : '0 2px 4px rgba(0, 0, 0, 0.04)',
+            transform: hover ? 'scale(1.05)' : 'scale(1)',
           }}
         >
-          <Sparkles size={18} strokeWidth={2} />
+          <Sparkles size={20} strokeWidth={2} />
         </div>
 
         {/* 标题和描述 */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <h3
               style={{
-                fontSize: '14px',
+                fontSize: '16px',
                 fontWeight: '700',
                 color: '#2d2d2d',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 flex: 1,
+                lineHeight: 1.3,
               }}
             >
               {title}
@@ -800,14 +1018,17 @@ const QuickStartCard: React.FC<{
             {category && (
               <span
                 style={{
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  backgroundColor: hover ? '#2d2d2d' : '#f0f0f0',
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  background: hover ? '#2d2d2d' : '#f1f5f9',
                   color: hover ? '#fff' : '#666',
-                  fontSize: '10px',
+                  fontSize: '11px',
                   fontWeight: '600',
-                  transition: 'all 0.2s',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   flexShrink: 0,
+                  boxShadow: hover
+                    ? '0 2px 4px rgba(59, 130, 246, 0.2)'
+                    : '0 1px 2px rgba(0, 0, 0, 0.04)',
                 }}
               >
                 {category}
@@ -816,11 +1037,12 @@ const QuickStartCard: React.FC<{
           </div>
           <p
             style={{
-              fontSize: '11px',
-              color: '#999',
+              fontSize: '13px',
+              color: '#666',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              lineHeight: 1.4,
             }}
           >
             {description || '暂无描述'}
@@ -833,12 +1055,12 @@ const QuickStartCard: React.FC<{
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          paddingTop: '12px',
-          borderTop: hover ? '1px solid #f0f0f0' : '1px solid transparent',
+          gap: '8px',
+          paddingTop: '16px',
+          borderTop: hover ? '1px solid rgba(0, 0, 0, 0.06)' : '1px solid transparent',
           opacity: hover ? 1 : 0,
-          transform: hover ? 'translateY(0)' : 'translateY(-4px)',
-          transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: hover ? 'translateY(0)' : 'translateY(-8px)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
         <button
@@ -848,30 +1070,35 @@ const QuickStartCard: React.FC<{
           }}
           style={{
             flex: 1,
-            padding: '5px 10px',
-            border: '1px solid #e0e0e0',
-            borderRadius: '5px',
+            padding: '10px 16px',
+            border: '1px solid #e2e8f0',
+            borderRadius: '8px',
             backgroundColor: '#fff',
             color: '#666',
-            fontSize: '11px',
+            fontSize: '13px',
             fontWeight: '600',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '4px',
-            transition: 'all 0.2s',
+            gap: '6px',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)',
           }}
           onMouseEnter={e => {
             e.currentTarget.style.backgroundColor = '#f8f9fa'
-            e.currentTarget.style.borderColor = '#d0d0d0'
+            e.currentTarget.style.borderColor = '#cbd5e1'
+            e.currentTarget.style.transform = 'translateY(-1px)'
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.08)'
           }}
           onMouseLeave={e => {
             e.currentTarget.style.backgroundColor = '#fff'
-            e.currentTarget.style.borderColor = '#e0e0e0'
+            e.currentTarget.style.borderColor = '#e2e8f0'
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.04)'
           }}
         >
-          <Eye size={12} />
+          <Eye size={14} />
           预览
         </button>
         <button
@@ -881,28 +1108,33 @@ const QuickStartCard: React.FC<{
           }}
           style={{
             flex: 1,
-            padding: '5px 12px',
+            padding: '10px 16px',
             border: 'none',
-            borderRadius: '5px',
+            borderRadius: '8px',
             backgroundColor: '#2d2d2d',
             color: '#fff',
-            fontSize: '11px',
+            fontSize: '13px',
             fontWeight: '600',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '4px',
-            transition: 'all 0.2s',
+            gap: '6px',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: '0 2px 4px rgba(59, 130, 246, 0.2)',
           }}
           onMouseEnter={e => {
             e.currentTarget.style.backgroundColor = '#1a1a1a'
+            e.currentTarget.style.transform = 'translateY(-1px)'
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = '#2d2d2d'
+            e.currentTarget.style.backgroundColor = '#1a1a1a'
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(59, 130, 246, 0.2)'
           }}
         >
-          <Plus size={12} />
+          <Plus size={14} />
           使用
         </button>
       </div>
@@ -910,7 +1142,7 @@ const QuickStartCard: React.FC<{
   )
 }
 
-// 简历卡片
+// 简历卡片 - 精致设计风格
 const ResumeCard: React.FC<{
   resume: RecentResume
   onEdit: () => void
@@ -925,16 +1157,35 @@ const ResumeCard: React.FC<{
       onMouseLeave={() => setHover(false)}
       onClick={onEdit}
       style={{
-        padding: '14px',
+        padding: '20px',
         backgroundColor: '#fff',
-        borderRadius: '10px',
-        border: `1px solid ${hover ? '#2d2d2d' : '#e8e8e8'}`,
+        borderRadius: '16px',
+        border: `1px solid ${hover ? 'rgba(59, 130, 246, 0.2)' : 'rgba(0, 0, 0, 0.04)'}`,
         cursor: 'pointer',
-        transition: 'all 0.2s',
-        transform: hover ? 'translateY(-2px)' : 'translateY(0)',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        transform: hover ? 'translateY(-4px)' : 'translateY(0)',
         position: 'relative',
+        overflow: 'hidden',
+        boxShadow: hover
+          ? '0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(59, 130, 246, 0.1)'
+          : '0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02)',
       }}
     >
+      {/* 装饰性背景渐变 */}
+      {hover && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '3px',
+            backgroundColor: '#2d2d2d',
+            borderRadius: '16px 16px 0 0',
+          }}
+        />
+      )}
+
       {/* 删除按钮 - hover时显示在右上角 */}
       {hover && (
         <button
@@ -944,11 +1195,11 @@ const ResumeCard: React.FC<{
           }}
           style={{
             position: 'absolute',
-            top: '10px',
-            right: '10px',
-            width: '28px',
-            height: '28px',
-            borderRadius: '6px',
+            top: '12px',
+            right: '12px',
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
             border: 'none',
             backgroundColor: '#fff',
             color: '#dc2626',
@@ -956,60 +1207,71 @@ const ResumeCard: React.FC<{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.2s',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             zIndex: 10,
           }}
           onMouseEnter={e => {
             e.currentTarget.style.backgroundColor = '#fee2e2'
+            e.currentTarget.style.transform = 'scale(1.05)'
+            e.currentTarget.style.boxShadow = '0 6px 12px rgba(220, 38, 38, 0.2)'
           }}
           onMouseLeave={e => {
             e.currentTarget.style.backgroundColor = '#fff'
+            e.currentTarget.style.transform = 'scale(1)'
+            e.currentTarget.style.boxShadow =
+              '0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)'
           }}
           title="删除简历"
         >
-          <Trash2 size={14} />
+          <Trash2 size={16} />
         </button>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '16px' }}>
         <div
           style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
-            backgroundColor: hover ? '#2d2d2d' : '#f5f5f5',
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            background: hover ? '#2d2d2d' : '#f8f9fa',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: hover ? '#fff' : '#999',
             flexShrink: 0,
-            transition: 'all 0.2s',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: hover
+              ? '0 8px 16px rgba(59, 130, 246, 0.2)'
+              : '0 2px 4px rgba(0, 0, 0, 0.04)',
+            transform: hover ? 'scale(1.05)' : 'scale(1)',
           }}
         >
-          <FileText size={18} strokeWidth={2} />
+          <FileText size={20} strokeWidth={2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h3
             style={{
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '700',
               color: '#2d2d2d',
-              marginBottom: '4px',
+              marginBottom: '6px',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              lineHeight: 1.3,
             }}
           >
             {resume.name}
           </h3>
           <p
             style={{
-              fontSize: '11px',
-              color: '#999',
+              fontSize: '13px',
+              color: '#666',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              lineHeight: 1.4,
             }}
           >
             {resume.description || '暂无描述'}
@@ -1022,22 +1284,22 @@ const ResumeCard: React.FC<{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingTop: '12px',
-          borderTop: hover ? '1px solid #f0f0f0' : '1px solid transparent',
+          paddingTop: '16px',
+          borderTop: hover ? '1px solid rgba(0, 0, 0, 0.06)' : '1px solid transparent',
         }}
       >
         <span
           style={{
-            fontSize: '11px',
-            color: '#999',
+            fontSize: '12px',
+            color: '#666',
             display: 'flex',
             alignItems: 'center',
-            gap: '4px',
+            gap: '6px',
             opacity: hover ? 0.8 : 1,
-            transition: 'opacity 0.2s',
+            transition: 'opacity 0.3s',
           }}
         >
-          <Clock size={12} />
+          <Clock size={14} />
           {formatDate(resume.updatedAt)}
         </span>
         <button
@@ -1046,29 +1308,34 @@ const ResumeCard: React.FC<{
             onEdit()
           }}
           style={{
-            padding: '5px 12px',
+            padding: '8px 16px',
             border: 'none',
-            borderRadius: '5px',
+            borderRadius: '8px',
             backgroundColor: '#2d2d2d',
             color: '#fff',
-            fontSize: '11px',
+            fontSize: '13px',
             fontWeight: '600',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '4px',
+            gap: '6px',
             opacity: hover ? 1 : 0,
-            transform: hover ? 'translateY(0)' : 'translateY(-4px)',
-            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: hover ? 'translateY(0)' : 'translateY(-8px)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: '0 2px 4px rgba(59, 130, 246, 0.2)',
           }}
           onMouseEnter={e => {
             e.currentTarget.style.backgroundColor = '#1a1a1a'
+            e.currentTarget.style.transform = 'translateY(-1px)'
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = '#2d2d2d'
+            e.currentTarget.style.backgroundColor = '#1a1a1a'
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(59, 130, 246, 0.2)'
           }}
         >
-          <Pencil size={12} />
+          <Pencil size={14} />
           继续编辑
         </button>
       </div>
