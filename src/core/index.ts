@@ -61,6 +61,7 @@ export { globalServices, getMaterialRegistry, getEventBus, getPluginManager } fr
 // 上下文和Hooks
 export * from './context/EditorContext'
 export * from './context/ThemeContext'
+export * from './context/ViewportContext'
 export * from './hooks/useMaterial'
 
 // 主题

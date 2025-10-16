@@ -123,6 +123,8 @@ export interface IMaterialContext {
   parentId?: string
   /** 子节点IDs */
   childrenIds: string[]
+  /** 当前视口模式 */
+  viewportMode: ViewportMode
   /** 发送事件 */
   emit: (event: string, data?: any) => void
   /** 监听事件 */
@@ -224,6 +226,11 @@ export interface IPropertyTab {
 }
 
 /**
+ * 视口模式类型
+ */
+export type ViewportMode = 'desktop' | 'mobile'
+
+/**
  * 物料定义协议
  */
 export interface IMaterialDefinition {
@@ -231,12 +238,16 @@ export interface IMaterialDefinition {
   meta: IMaterialMeta
   /** React组件 */
   component: ComponentType<any>
+  /** 移动端React组件（可选，如果不提供则使用component） */
+  mobileComponent?: ComponentType<any>
   /** 属性Schema */
   propsSchema: IPropSchema[]
   /** 默认属性 */
   defaultProps?: Record<string, any>
   /** 默认样式 */
   defaultStyle?: CSSProperties
+  /** 移动端默认样式（可选） */
+  mobileDefaultStyle?: CSSProperties
   /** 生命周期 */
   lifecycle?: IMaterialLifecycle
   /** 能力配置 */
@@ -247,6 +258,8 @@ export interface IMaterialDefinition {
   onDoubleClick?: (context: IMaterialContext) => void
   /** 自定义渲染器（可选，用于特殊渲染需求） */
   customRenderer?: (props: any) => React.ReactElement
+  /** 移动端自定义渲染器（可选） */
+  mobileCustomRenderer?: (props: any) => React.ReactElement
   /** 物料专属快捷键 */
   shortcuts?: IMaterialShortcut[]
   /** 属性面板Tab配置（可选，用于复杂物料） */

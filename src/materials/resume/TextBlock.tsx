@@ -5,6 +5,7 @@
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
+import { useViewport } from '@/core/context/ViewportContext'
 import { notification } from '@/utils/notification'
 
 interface TextBlockProps {
@@ -19,6 +20,7 @@ const TextBlock: React.FC<TextBlockProps> = ({
   align = 'left',
 }) => {
   const theme = useThemeConfig()
+  const { viewportMode } = useViewport()
 
   return (
     <div
@@ -30,6 +32,49 @@ const TextBlock: React.FC<TextBlockProps> = ({
         lineHeight: theme.layout.lineHeight,
         whiteSpace: 'pre-wrap',
         minHeight: '20px',
+        // 移动端样式调整 - 遵循主题间距设置
+        ...(viewportMode === 'mobile' && {
+          fontSize: `${theme.font.bodySize.normal * 0.9}px`,
+          lineHeight: 1.4,
+          marginTop: `${theme.spacing.paragraph}px`,
+          marginBottom: `${theme.spacing.paragraph}px`,
+          wordWrap: 'break-word',
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          maxWidth: '100%',
+        }),
+        ...style,
+      }}
+    >
+      {content}
+    </div>
+  )
+}
+
+// 移动端专用文本块组件
+const MobileTextBlock: React.FC<TextBlockProps> = ({
+  style,
+  content = '在此输入文本内容...',
+  align = 'left',
+}) => {
+  const theme = useThemeConfig()
+
+  return (
+    <div
+      style={{
+        fontSize: `${theme.font.bodySize.normal * 0.85}px`,
+        fontWeight: theme.font.weight.normal,
+        color: theme.color.text.secondary,
+        textAlign: align,
+        lineHeight: 1.4,
+        whiteSpace: 'pre-wrap',
+        minHeight: '18px',
+        marginTop: `${theme.spacing.paragraph}px`,
+        marginBottom: `${theme.spacing.paragraph}px`,
+        wordWrap: 'break-word',
+        wordBreak: 'break-word',
+        overflowWrap: 'break-word',
+        maxWidth: '100%',
         ...style,
       }}
     >
@@ -49,6 +94,7 @@ export const TextBlockMaterial: IMaterialDefinition = {
     version: '1.0.0',
   },
   component: TextBlock,
+  mobileComponent: MobileTextBlock,
   propsSchema: [
     {
       name: 'content',
@@ -76,6 +122,13 @@ export const TextBlockMaterial: IMaterialDefinition = {
   defaultProps: {
     content: '在此输入文本内容...',
     align: 'left',
+  },
+  mobileDefaultStyle: {
+    fontSize: '14px',
+    lineHeight: 1.4,
+    marginTop: '7px',
+    marginBottom: '7px',
+    maxWidth: '100%',
   },
   capabilities: {
     copyable: true,

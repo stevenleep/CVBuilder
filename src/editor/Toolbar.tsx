@@ -28,6 +28,7 @@ import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 import { useTheme } from '@/core/context/ThemeContext'
 import { useIsMobile } from '@/hooks/useMediaQuery'
+import { ViewportToggle } from '@/core/context/ViewportContext'
 
 export const Toolbar: React.FC = () => {
   const navigate = useNavigate()
@@ -386,6 +387,9 @@ export const Toolbar: React.FC = () => {
           active={mode === ('preview' as typeof mode)}
         />
       </div>
+
+      {/* 视口模式切换 */}
+      <ViewportToggle />
 
       {/* 撤销/重做 */}
       <div style={{ display: 'flex', gap: '2px' }}>

@@ -7,6 +7,7 @@
 import React, { useRef, useState } from 'react'
 import { Renderer } from '@engine/Renderer'
 import { useEditorStore } from '@store/editorStore'
+import { useViewport } from '@/core/context/ViewportContext'
 import { SelectionBox } from './SelectionBox'
 import { ContextMenu, ContextMenuItem } from './ContextMenu'
 import {
@@ -27,6 +28,7 @@ import { SaveAsTemplateDialog } from './SaveAsTemplateDialog'
 
 export const Canvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const { viewportMode } = useViewport()
   const {
     pageSchema,
     selectedNodeIds,
@@ -284,6 +286,16 @@ export const Canvas: React.FC = () => {
           transformOrigin: 'top center',
           transition: 'transform 0.2s ease',
           position: 'relative',
+          // 移动端视口样式 - 只设置容器样式，不干预物料内部样式
+          ...(viewportMode === 'mobile' && {
+            maxWidth: '375px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: '#ffffff',
+            borderRadius: '8px',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+            overflow: 'hidden',
+          }),
         }}
       >
         <Renderer

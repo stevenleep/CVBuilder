@@ -6,7 +6,7 @@
 
 import React, { useEffect, useCallback, useState } from 'react'
 import type { NodeSchema } from '@/types/material'
-import { useMaterialRegistry, useEventBus } from '@/core'
+import { useMaterialRegistry, useEventBus, useViewport } from '@/core'
 import { SmartDropZone } from './SmartDropZone'
 import { useDrag } from 'react-dnd'
 import { DragItemTypes, NodeDragItem } from '@/editor/DndProvider'
@@ -46,6 +46,7 @@ export const Renderer: React.FC<RendererProps> = ({
 }) => {
   const materialRegistry = useMaterialRegistry()
   const eventBus = useEventBus()
+  const { viewportMode } = useViewport()
   const [showToolbar, setShowToolbar] = useState(false)
   const [showSaveDialog, setShowSaveDialog] = useState(false)
 
@@ -60,27 +61,51 @@ export const Renderer: React.FC<RendererProps> = ({
   // 组件挂载生命周期
   useEffect(() => {
     if (materialDef?.lifecycle?.onMount) {
-      const context = createMaterialContext(id, type, props, style, children, eventBus)
+      const context = createMaterialContext(
+        id,
+        type,
+        props,
+        style,
+        children,
+        eventBus,
+        viewportMode
+      )
       materialDef.lifecycle.onMount(context)
     }
 
     return () => {
       if (materialDef?.lifecycle?.onUnmount) {
-        const context = createMaterialContext(id, type, props, style, children, eventBus)
+        const context = createMaterialContext(
+          id,
+          type,
+          props,
+          style,
+          children,
+          eventBus,
+          viewportMode
+        )
         materialDef.lifecycle.onUnmount(context)
       }
     }
-  }, [id, type, materialDef, props, style, children, eventBus])
+  }, [id, type, materialDef, props, style, children, eventBus, viewportMode])
 
   // 属性更新生命周期
   const prevPropsRef = React.useRef(props)
   useEffect(() => {
     if (materialDef?.lifecycle?.onUpdate && prevPropsRef.current !== props) {
-      const context = createMaterialContext(id, type, props, style, children, eventBus)
+      const context = createMaterialContext(
+        id,
+        type,
+        props,
+        style,
+        children,
+        eventBus,
+        viewportMode
+      )
       materialDef.lifecycle.onUpdate(context, prevPropsRef.current)
       prevPropsRef.current = props
     }
-  }, [props, id, type, materialDef, style, children, eventBus])
+  }, [props, id, type, materialDef, style, children, eventBus, viewportMode])
 
   // 编辑模式的包装器回调（必须在条件返回之前）
   const handleClick = useCallback(
@@ -145,11 +170,19 @@ export const Renderer: React.FC<RendererProps> = ({
     (e: React.MouseEvent) => {
       if (isEditMode && materialDef?.onDoubleClick) {
         e.stopPropagation()
-        const context = createMaterialContext(id, type, props, style, children, eventBus)
+        const context = createMaterialContext(
+          id,
+          type,
+          props,
+          style,
+          children,
+          eventBus,
+          viewportMode
+        )
         materialDef.onDoubleClick(context)
       }
     },
-    [isEditMode, materialDef, id, type, props, style, children, eventBus]
+    [isEditMode, materialDef, id, type, props, style, children, eventBus, viewportMode]
   )
 
   // 操作处理
@@ -190,12 +223,20 @@ export const Renderer: React.FC<RendererProps> = ({
     (actionId: string) => {
       const action = materialDef?.actions?.find(a => a.id === actionId)
       if (action) {
-        const context = createMaterialContext(id, type, props, style, children, eventBus)
+        const context = createMaterialContext(
+          id,
+          type,
+          props,
+          style,
+          children,
+          eventBus,
+          viewportMode
+        )
         action.execute(context)
       }
       setShowToolbar(false)
     },
-    [materialDef, id, type, props, style, children, eventBus]
+    [materialDef, id, type, props, style, children, eventBus, viewportMode]
   )
 
   // 现在可以进行条件返回
@@ -219,15 +260,24 @@ export const Renderer: React.FC<RendererProps> = ({
     )
   }
 
-  const { component: Component, meta } = materialDef
+  const { component: Component, mobileComponent, meta } = materialDef
+
+  // 根据视口模式选择组件
+  const SelectedComponent =
+    viewportMode === 'mobile' && mobileComponent ? mobileComponent : Component
 
   const mergedProps = {
     ...(meta?.defaultProps || {}),
     ...props,
   }
+
+  // 根据视口模式选择样式
   const mergedStyle = {
     ...(meta?.defaultStyle || {}),
     ...(materialDef.defaultStyle || {}),
+    ...(viewportMode === 'mobile' && materialDef.mobileDefaultStyle
+      ? materialDef.mobileDefaultStyle
+      : {}),
     ...style,
   }
 
@@ -251,8 +301,13 @@ export const Renderer: React.FC<RendererProps> = ({
   }
 
   // 使用自定义渲染器（如果提供）
-  if (materialDef.customRenderer) {
-    return materialDef.customRenderer({
+  const customRenderer =
+    viewportMode === 'mobile' && materialDef.mobileCustomRenderer
+      ? materialDef.mobileCustomRenderer
+      : materialDef.customRenderer
+
+  if (customRenderer) {
+    return customRenderer({
       ...mergedProps,
       style: mergedStyle,
       children: renderChildren(),
@@ -375,9 +430,9 @@ export const Renderer: React.FC<RendererProps> = ({
         />
       )}
 
-      <Component {...mergedProps} style={mergedStyle}>
+      <SelectedComponent {...mergedProps} style={mergedStyle}>
         {renderChildren()}
-      </Component>
+      </SelectedComponent>
     </div>
   )
 
@@ -402,7 +457,8 @@ function createMaterialContext(
   props: any,
   style: any,
   children: any[],
-  eventBus: any
+  eventBus: any,
+  viewportMode: 'desktop' | 'mobile'
 ): any {
   return {
     nodeId,
@@ -410,6 +466,7 @@ function createMaterialContext(
     props,
     style,
     childrenIds: children.map((c: any) => c.id),
+    viewportMode,
     emit: (event: string, data?: any) => {
       eventBus.emit(`material:${nodeId}:${event}`, data)
     },
