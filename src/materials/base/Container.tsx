@@ -1,11 +1,12 @@
 /**
  * 容器物料
- * 
+ *
  * 通用布局容器
  */
 
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
+import { useViewport } from '@/core/context/ViewportContext'
 
 interface ContainerProps {
   children?: React.ReactNode
@@ -16,16 +17,27 @@ interface ContainerProps {
   justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around'
 }
 
-const Container: React.FC<ContainerProps> = ({ 
-  children, 
+const Container: React.FC<ContainerProps> = ({
+  children,
   style,
   direction = 'column',
   gap = 16,
   align = 'stretch',
   justify = 'flex-start',
 }) => {
+  const { viewportMode } = useViewport()
   const hasChildren = React.Children.count(children) > 0
-  
+
+  // 移动端适配
+  const mobileStyle =
+    viewportMode === 'mobile'
+      ? {
+          flexDirection: direction === 'row' ? 'column' : direction, // 移动端行布局改为列布局
+          gap: `${Math.max(gap * 0.8, 8)}px`, // 移动端间距稍微小一些
+          padding: '8px', // 移动端添加内边距
+        }
+      : {}
+
   return (
     <div
       style={{
@@ -36,21 +48,24 @@ const Container: React.FC<ContainerProps> = ({
         justifyContent: justify,
         minHeight: hasChildren ? 'auto' : '60px',
         position: 'relative',
+        ...mobileStyle,
         ...style,
       }}
     >
       {children}
       {!hasChildren && (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#e0e0e0',
-          fontSize: '11px',
-          pointerEvents: 'none',
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#e0e0e0',
+            fontSize: viewportMode === 'mobile' ? '10px' : '11px',
+            pointerEvents: 'none',
+          }}
+        >
           拖拽组件到这里
         </div>
       )}

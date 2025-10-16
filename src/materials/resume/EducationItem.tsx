@@ -5,6 +5,7 @@
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
+import { useViewport } from '@/core/context/ViewportContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
 import { Info, BookOpen } from 'lucide-react'
 
@@ -67,6 +68,7 @@ const EducationItem: React.FC<EducationItemProps> = props => {
   } = props
 
   const theme = useThemeConfig()
+  const { viewportMode } = useViewport()
 
   // 学校详情
   const schoolDetails = [schoolType, schoolLocation, eduType].filter(Boolean)
@@ -96,12 +98,18 @@ const EducationItem: React.FC<EducationItemProps> = props => {
             alignItems: 'baseline',
             gap: '20px',
             marginBottom: `${theme.spacing.line - 1}px`,
+            // 移动端适配
+            ...(viewportMode === 'mobile' && {
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '4px',
+            }),
           }}
         >
           <div style={{ flex: 1 }}>
             <span
               style={{
-                fontSize: `${theme.font.titleSize.h3}px`,
+                fontSize: `${viewportMode === 'mobile' ? theme.font.titleSize.h3 * 0.9 : theme.font.titleSize.h3}px`,
                 fontWeight: theme.font.weight.bold,
                 color: theme.color.text.primary,
                 letterSpacing: '-0.01em',
@@ -112,7 +120,7 @@ const EducationItem: React.FC<EducationItemProps> = props => {
             {schoolDetails.length > 0 && (
               <span
                 style={{
-                  fontSize: `${theme.font.bodySize.small}px`,
+                  fontSize: `${viewportMode === 'mobile' ? theme.font.bodySize.small * 0.9 : theme.font.bodySize.small}px`,
                   color: theme.color.text.tertiary,
                   marginLeft: `${theme.spacing.paragraph}px`,
                 }}
@@ -124,9 +132,9 @@ const EducationItem: React.FC<EducationItemProps> = props => {
 
           <span
             style={{
-              fontSize: `${theme.font.bodySize.small}px`,
+              fontSize: `${viewportMode === 'mobile' ? theme.font.bodySize.small * 0.9 : theme.font.bodySize.small}px`,
               color: theme.color.text.tertiary,
-              whiteSpace: 'nowrap',
+              whiteSpace: viewportMode === 'mobile' ? 'normal' : 'nowrap',
             }}
           >
             {startDate} - {endDate}
@@ -136,7 +144,7 @@ const EducationItem: React.FC<EducationItemProps> = props => {
         {/* 专业信息 - 和谐精致 */}
         <div
           style={{
-            fontSize: `${theme.font.bodySize.normal}px`,
+            fontSize: `${viewportMode === 'mobile' ? theme.font.bodySize.normal * 0.9 : theme.font.bodySize.normal}px`,
             fontWeight: theme.font.weight.medium,
             color: theme.color.text.secondary,
             letterSpacing: '-0.005em',

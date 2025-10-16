@@ -4,6 +4,7 @@
 
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
+import { useViewport } from '@/core/context/ViewportContext'
 
 interface GridProps {
   children?: React.ReactNode
@@ -12,18 +13,25 @@ interface GridProps {
   gap?: number
 }
 
-const Grid: React.FC<GridProps> = ({ 
-  children, 
-  style,
-  columns = 2,
-  gap = 12,
-}) => {
+const Grid: React.FC<GridProps> = ({ children, style, columns = 2, gap = 12 }) => {
+  const { viewportMode } = useViewport()
+
+  // 移动端适配
+  const mobileStyle =
+    viewportMode === 'mobile'
+      ? {
+          gridTemplateColumns: '1fr', // 移动端改为单列
+          gap: `${Math.max(gap * 0.8, 8)}px`, // 移动端间距调整
+        }
+      : {}
+
   return (
     <div
       style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${columns}, 1fr)`,
         gap: `${gap}px`,
+        ...mobileStyle,
         ...style,
       }}
     >
@@ -70,4 +78,3 @@ export const GridMaterial: IMaterialDefinition = {
     canBeChild: true,
   },
 }
-

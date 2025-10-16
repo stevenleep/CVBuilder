@@ -4,6 +4,7 @@
 
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
+import { useViewport } from '@/core/context/ViewportContext'
 
 interface TwoColumnLayoutProps {
   children?: React.ReactNode
@@ -13,32 +14,53 @@ interface TwoColumnLayoutProps {
   align?: 'top' | 'center' | 'bottom'
 }
 
-const TwoColumnLayout: React.FC<TwoColumnLayoutProps> = ({ 
-  children, 
+const TwoColumnLayout: React.FC<TwoColumnLayoutProps> = ({
+  children,
   style,
   leftWidth = 30,
   gap = 16,
   align = 'top',
 }) => {
+  const { viewportMode } = useViewport()
   const childArray = React.Children.toArray(children)
   const leftChild = childArray[0]
   const rightChild = childArray[1]
-  
+
   const alignItems = align === 'center' ? 'center' : align === 'bottom' ? 'flex-end' : 'flex-start'
-  
+
+  // 移动端适配
+  const mobileStyle =
+    viewportMode === 'mobile'
+      ? {
+          flexDirection: 'column', // 移动端改为列布局
+          gap: `${Math.max(gap * 0.8, 12)}px`, // 移动端间距调整
+        }
+      : {}
+
   return (
     <div
       style={{
         display: 'flex',
         gap: `${gap}px`,
         alignItems,
+        ...mobileStyle,
         ...style,
       }}
     >
-      <div style={{ width: `${leftWidth}%`, flexShrink: 0 }}>
+      <div
+        style={{
+          width: viewportMode === 'mobile' ? '100%' : `${leftWidth}%`,
+          flexShrink: 0,
+        }}
+      >
         {leftChild}
       </div>
-      <div style={{ flex: 1 }}>
+      <div
+        style={{
+          flex: viewportMode === 'mobile' ? 'none' : 1,
+          width: viewportMode === 'mobile' ? '100%' : 'auto',
+        }}
+      >
         {rightChild}
       </div>
     </div>
@@ -98,4 +120,3 @@ export const TwoColumnLayoutMaterial: IMaterialDefinition = {
     maxChildren: 2,
   },
 }
-

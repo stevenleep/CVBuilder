@@ -5,6 +5,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
+import { useViewport } from '@/core/context/ViewportContext'
 import { useEditorStore } from '@/store/editorStore'
 import { EmptyState } from '@/editor/EmptyState'
 
@@ -30,7 +31,22 @@ const SinglePage: React.FC<SinglePageProps> = ({
   totalPages = 1,
 }) => {
   const theme = useThemeConfig()
+  const { viewportMode } = useViewport()
   const { mode } = useEditorStore()
+
+  // 移动端适配样式
+  const mobileStyle =
+    viewportMode === 'mobile'
+      ? {
+          width: '100%',
+          maxWidth: '375px',
+          height: 'auto',
+          minHeight: '600px',
+          padding: '16px',
+          margin: '0 auto',
+          borderRadius: '8px',
+        }
+      : {}
 
   return (
     <div
@@ -54,15 +70,16 @@ const SinglePage: React.FC<SinglePageProps> = ({
         breakInside: 'avoid',
         boxSizing: 'border-box',
         transition: 'box-shadow 0.2s ease',
+        ...mobileStyle,
         ...style,
       }}
     >
       {/* 内容区域 - 保持padding内的完整空间 */}
       <div
         style={{
-          height: '100%',
+          height: viewportMode === 'mobile' ? 'auto' : '100%',
           position: 'relative',
-          overflow: 'hidden',
+          overflow: viewportMode === 'mobile' ? 'visible' : 'hidden',
         }}
       >
         {children}
@@ -101,6 +118,7 @@ const SinglePage: React.FC<SinglePageProps> = ({
  */
 const Page: React.FC<PageProps> = ({ children, style }) => {
   const theme = useThemeConfig()
+  const { viewportMode } = useViewport()
   const { mode } = useEditorStore()
   const contentRef = useRef<HTMLDivElement>(null)
   const [pageCount, setPageCount] = useState(1)
@@ -116,10 +134,12 @@ const Page: React.FC<PageProps> = ({ children, style }) => {
   useEffect(() => {
     if (contentRef.current) {
       const contentHeight = contentRef.current.scrollHeight
-      const pages = Math.max(1, Math.ceil(contentHeight / availableHeight))
+      // 移动端不分页，只显示一页
+      const pages =
+        viewportMode === 'mobile' ? 1 : Math.max(1, Math.ceil(contentHeight / availableHeight))
       setPageCount(pages)
     }
-  }, [availableHeight, children])
+  }, [availableHeight, children, viewportMode])
 
   // 如果没有内容且在编辑模式，显示空状态
   if (!hasChildren && mode === 'edit') {
@@ -129,6 +149,15 @@ const Page: React.FC<PageProps> = ({ children, style }) => {
           message="开始创建你的简历"
           hint="从左侧物料库拖拽组件到这里，或点击组件快速添加"
         />
+      </SinglePage>
+    )
+  }
+
+  // 移动端简化渲染
+  if (viewportMode === 'mobile') {
+    return (
+      <SinglePage pageNumber={1} totalPages={1} style={style}>
+        {children}
       </SinglePage>
     )
   }

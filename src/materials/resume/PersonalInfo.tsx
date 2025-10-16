@@ -5,6 +5,7 @@
 import React from 'react'
 import { IMaterialDefinition, IMaterialAction } from '@/core'
 import { useThemeConfig, useStyleConfig } from '@/core/context/ThemeContext'
+import { useViewport } from '@/core/context/ViewportContext'
 import { RichTextDisplay } from '@/components/RichTextDisplay'
 import { notification } from '@/utils/notification'
 import { User, Phone, Info, Eye, Globe } from 'lucide-react'
@@ -91,6 +92,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
 
   const theme = useThemeConfig()
   const styleConfig = useStyleConfig()
+  const { viewportMode } = useViewport()
 
   const isCardStyle = theme.id === 'breakthrough' && styleConfig.borderRadius > 0
 
@@ -147,6 +149,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
       display: showAvatar && avatar ? 'flex' : 'block',
       gap: showAvatar && avatar ? `${theme.spacing.paragraph * 2}px` : '0',
       alignItems: 'flex-start',
+      // 移动端适配
+      ...(viewportMode === 'mobile' && {
+        flexDirection: 'column', // 移动端头像和内容垂直排列
+        gap: showAvatar && avatar ? `${theme.spacing.paragraph}px` : '0',
+        textAlign: 'center', // 移动端居中对齐
+        padding: '12px', // 移动端添加内边距
+      }),
     }
 
     const finalStyle = {
@@ -161,12 +170,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
         {showAvatar && avatar && (
           <div
             style={{
-              width: '80px',
-              height: '80px',
+              width: viewportMode === 'mobile' ? '60px' : '80px',
+              height: viewportMode === 'mobile' ? '60px' : '80px',
               borderRadius: `${styleConfig.borderRadius}px`,
               overflow: 'hidden',
               flexShrink: 0,
               border: `2px solid ${theme.color.border.light}`,
+              alignSelf: viewportMode === 'mobile' ? 'center' : 'flex-start',
             }}
           >
             <img
@@ -181,11 +191,16 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
           </div>
         )}
 
-        <div style={{ flex: 1, textAlign: align }}>
+        <div
+          style={{
+            flex: 1,
+            textAlign: viewportMode === 'mobile' ? 'center' : align,
+          }}
+        >
           {/* 姓名 */}
           <h1
             style={{
-              fontSize: `${theme.font.titleSize.h1}px`,
+              fontSize: `${viewportMode === 'mobile' ? theme.font.titleSize.h1 * 0.9 : theme.font.titleSize.h1}px`,
               fontWeight: theme.font.weight.bold,
               margin: `0 0 ${theme.spacing.line - 2}px 0`,
               color: theme.color.text.primary,
@@ -199,7 +214,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
           {title && (
             <div
               style={{
-                fontSize: `${theme.font.bodySize.normal}px`,
+                fontSize: `${viewportMode === 'mobile' ? theme.font.bodySize.normal * 0.9 : theme.font.bodySize.normal}px`,
                 color: theme.color.text.secondary,
                 marginBottom: `${theme.spacing.line}px`,
                 fontWeight: theme.font.weight.medium,
@@ -241,18 +256,20 @@ const PersonalInfo: React.FC<PersonalInfoProps> = props => {
             style={{
               display: 'flex',
               gap: `${theme.spacing.paragraph + 2}px`,
-              fontSize: `${theme.font.bodySize.small}px`,
+              fontSize: `${viewportMode === 'mobile' ? theme.font.bodySize.small * 0.9 : theme.font.bodySize.small}px`,
               color: theme.color.text.secondary,
               flexWrap: 'wrap',
               marginTop: `${theme.spacing.line}px`,
               justifyContent:
-                showAvatar && avatar
-                  ? 'flex-start'
-                  : align === 'center'
-                    ? 'center'
-                    : align === 'right'
-                      ? 'flex-end'
-                      : 'flex-start',
+                viewportMode === 'mobile'
+                  ? 'center'
+                  : showAvatar && avatar
+                    ? 'flex-start'
+                    : align === 'center'
+                      ? 'center'
+                      : align === 'right'
+                        ? 'flex-end'
+                        : 'flex-start',
             }}
           >
             {phone && <span>{phone}</span>}

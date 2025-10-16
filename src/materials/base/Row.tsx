@@ -4,6 +4,7 @@
 
 import React from 'react'
 import { IMaterialDefinition } from '@/core'
+import { useViewport } from '@/core/context/ViewportContext'
 
 interface RowProps {
   children?: React.ReactNode
@@ -22,6 +23,18 @@ const Row: React.FC<RowProps> = ({
   justify = 'flex-start',
   wrap = true,
 }) => {
+  const { viewportMode } = useViewport()
+
+  // 移动端适配
+  const mobileStyle =
+    viewportMode === 'mobile'
+      ? {
+          flexDirection: 'column', // 移动端改为列布局
+          gap: `${Math.max(gap * 0.8, 8)}px`, // 移动端间距调整
+          alignItems: 'stretch', // 移动端拉伸对齐
+        }
+      : {}
+
   return (
     <div
       style={{
@@ -31,6 +44,7 @@ const Row: React.FC<RowProps> = ({
         alignItems: align,
         justifyContent: justify,
         flexWrap: wrap ? 'wrap' : 'nowrap',
+        ...mobileStyle,
         ...style,
       }}
     >
