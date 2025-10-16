@@ -48,7 +48,6 @@ export const Toolbar: React.FC = () => {
 
   const { theme } = useTheme()
   const isMobile = useIsMobile()
-
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
@@ -180,32 +179,74 @@ export const Toolbar: React.FC = () => {
 
   const handleExportPDF = async () => {
     try {
-      const pages = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
+      // 首先尝试查找页面元素
+      let pages = document.querySelectorAll('.page-sheet') as NodeListOf<HTMLElement>
+
+      // 如果没找到.page-sheet，尝试查找其他可能的容器
       if (!pages || pages.length === 0) {
-        notification.error('未找到简历页面')
+        pages = document.querySelectorAll('[data-canvas]') as NodeListOf<HTMLElement>
+      }
+
+      // 如果还是没找到，尝试查找整个画布区域
+      if (!pages || pages.length === 0) {
+        pages = document.querySelectorAll('.canvas-container > div') as NodeListOf<HTMLElement>
+      }
+
+      if (!pages || pages.length === 0) {
+        notification.error('未找到简历页面，请确保页面已加载完成')
         return
       }
 
-      notification.info('正在生成PDF文件...')
+      // 使用最高画质配置
+      const scale = 6
+
+      notification.info('正在生成超高清PDF文件...')
 
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4',
+        compress: true,
       })
-
-      const scale = 3
 
       for (let i = 0; i < pages.length; i++) {
         const page = pages[i]
+        // 等待页面内容完全渲染
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // 优化html2canvas配置 - 最高画质
         const canvas = await html2canvas(page, {
           scale,
           useCORS: true,
-          logging: false,
+          logging: false, // 开启日志以便调试
           backgroundColor: '#ffffff',
+          allowTaint: true, // 允许跨域图片
+          foreignObjectRendering: false, // 禁用foreignObject渲染，可能导致问题
+          imageTimeout: 30000, // 增加超时时间
+          removeContainer: false, // 不移除容器
+          // 提高渲染质量
+          width: page.offsetWidth,
+          height: page.offsetHeight,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: window.innerWidth,
+          windowHeight: window.innerHeight,
+          // 添加更多配置
+          x: 0,
+          y: 0,
         })
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.9)
+        // 检查canvas是否有内容
+        const ctx = canvas.getContext('2d')
+        const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height)
+        const hasContent = imageData?.data.some(pixel => pixel !== 0)
+
+        if (!hasContent) {
+          console.warn(`第 ${i + 1} 页没有检测到内容`)
+        }
+
+        // 使用PNG格式获得最高质量
+        const imgData = canvas.toDataURL('image/png', 1.0)
 
         if (i > 0) {
           pdf.addPage()
@@ -213,11 +254,12 @@ export const Toolbar: React.FC = () => {
 
         const pdfWidth = pdf.internal.pageSize.getWidth()
         const pdfHeight = pdf.internal.pageSize.getHeight()
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight)
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
       }
 
-      pdf.save('resume.pdf')
-      notification.success('PDF 导出成功！')
+      const filename = `resume-ultra-${Date.now()}.pdf`
+      pdf.save(filename)
+      notification.success('PDF 导出成功！(超高清质量)')
     } catch (error) {
       notification.error('PDF 导出失败')
       console.error('PDF export error:', error)
@@ -450,7 +492,7 @@ export const Toolbar: React.FC = () => {
         {/* 导出 */}
         <IconButton
           icon={<Download size={14} />}
-          tooltip="导出"
+          tooltip="导出PDF(超高清)"
           onClick={() => handleExportPDF()}
         />
 
