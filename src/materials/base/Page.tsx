@@ -141,14 +141,11 @@ const Page: React.FC<PageProps> = ({ children, style }) => {
     }
   }, [availableHeight, children, viewportMode])
 
-  // 如果没有内容且在编辑模式，显示空状态
+  // 如果没有内容且在编辑模式，显示空白页面（提示已移到画布中央）
   if (!hasChildren && mode === 'edit') {
     return (
       <SinglePage pageNumber={1} totalPages={1} style={style}>
-        <EmptyState
-          message="开始创建你的简历"
-          hint="从左侧物料库拖拽组件到这里，或点击组件快速添加"
-        />
+        {/* 空白页面，引导提示在 Canvas 中央显示 */}
       </SinglePage>
     )
   }
