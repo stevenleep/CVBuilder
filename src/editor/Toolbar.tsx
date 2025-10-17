@@ -197,10 +197,11 @@ export const Toolbar: React.FC = () => {
         return
       }
 
-      // 使用最高画质配置
-      const scale = 6
+      // 优化：降低scale从6到3，速度提升约4倍，质量仍然很好
+      const scale = 3
+      const totalPages = pages.length
 
-      notification.info('正在生成超高清PDF文件...')
+      notification.info(`正在生成PDF (共${totalPages}页)...`)
 
       const pdf = new jsPDF({
         orientation: 'portrait',
@@ -209,44 +210,39 @@ export const Toolbar: React.FC = () => {
         compress: true,
       })
 
-      for (let i = 0; i < pages.length; i++) {
+      for (let i = 0; i < totalPages; i++) {
         const page = pages[i]
-        // 等待页面内容完全渲染
-        await new Promise(resolve => setTimeout(resolve, 100))
 
-        // 优化html2canvas配置 - 最高画质
+        // 显示进度
+        if (totalPages > 1) {
+          notification.info(`正在处理第 ${i + 1}/${totalPages} 页...`)
+        }
+
+        // 优化：减少不必要的延迟
+        if (i > 0) {
+          await new Promise(resolve => setTimeout(resolve, 50))
+        }
+
+        // 优化html2canvas配置
         const canvas = await html2canvas(page, {
           scale,
           useCORS: true,
-          logging: false, // 开启日志以便调试
+          logging: false,
           backgroundColor: '#ffffff',
-          allowTaint: true, // 允许跨域图片
-          foreignObjectRendering: false, // 禁用foreignObject渲染，可能导致问题
-          imageTimeout: 30000, // 增加超时时间
-          removeContainer: false, // 不移除容器
-          // 提高渲染质量
+          allowTaint: false,
+          foreignObjectRendering: false,
+          imageTimeout: 15000, // 减少超时时间
+          removeContainer: false,
           width: page.offsetWidth,
           height: page.offsetHeight,
           scrollX: 0,
           scrollY: 0,
-          windowWidth: window.innerWidth,
-          windowHeight: window.innerHeight,
-          // 添加更多配置
           x: 0,
           y: 0,
         })
 
-        // 检查canvas是否有内容
-        const ctx = canvas.getContext('2d')
-        const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height)
-        const hasContent = imageData?.data.some(pixel => pixel !== 0)
-
-        if (!hasContent) {
-          console.warn(`第 ${i + 1} 页没有检测到内容`)
-        }
-
-        // 使用PNG格式获得最高质量
-        const imgData = canvas.toDataURL('image/png', 1.0)
+        // 优化：使用JPEG格式，质量0.95，文件更小，速度更快
+        const imgData = canvas.toDataURL('image/jpeg', 0.95)
 
         if (i > 0) {
           pdf.addPage()
@@ -254,12 +250,12 @@ export const Toolbar: React.FC = () => {
 
         const pdfWidth = pdf.internal.pageSize.getWidth()
         const pdfHeight = pdf.internal.pageSize.getHeight()
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight)
       }
 
-      const filename = `resume-ultra-${Date.now()}.pdf`
+      const filename = `resume-${Date.now()}.pdf`
       pdf.save(filename)
-      notification.success('PDF 导出成功！(超高清质量)')
+      notification.success('PDF 导出成功！')
     } catch (error) {
       notification.error('PDF 导出失败')
       console.error('PDF export error:', error)

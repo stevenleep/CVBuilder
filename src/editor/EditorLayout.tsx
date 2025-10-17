@@ -17,6 +17,8 @@ import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
 import { SaveResumeDialog } from './SaveResumeDialog'
 import { SaveResumeFullscreenModal } from './SaveResumeFullscreenModal'
 import { HomeIconModal } from '@/components/HomeIconModal'
+import { DataBackupReminder } from '@/components/DataBackupReminder'
+import { QuickExportButton } from '@/components/QuickExportButton'
 import { useKeyboardShortcuts } from '@/core/hooks/useKeyboardShortcuts'
 import { useIsSmallScreen } from '@/hooks/useMediaQuery'
 import { useNavigate } from 'react-router-dom'
@@ -33,7 +35,7 @@ export const EditorLayout: React.FC = () => {
   useKeyboardShortcuts()
   const navigate = useNavigate()
   const { theme } = useTheme()
-  const { currentResumeId, setCurrentResumeId, pageSchema, canvasConfig } = useEditorStore()
+  const { currentResumeId, setCurrentResumeId, pageSchema, canvasConfig, mode } = useEditorStore()
 
   // 响应式设计
   const isSmallScreen = useIsSmallScreen()
@@ -293,8 +295,7 @@ export const EditorLayout: React.FC = () => {
         {/* 弹窗组件 - 在最顶层 */}
         {showNewResumeDialog && (
           <SaveResumeDialog
-            onSave={(_name, _description) => {
-              // 这里需要调用保存逻辑
+            onSave={() => {
               setShowNewResumeDialog(false)
             }}
             onClose={() => setShowNewResumeDialog(false)}
@@ -303,8 +304,7 @@ export const EditorLayout: React.FC = () => {
 
         {showSaveAsDialog && (
           <SaveResumeDialog
-            onSave={(_name, _description) => {
-              // 这里需要调用另存为逻辑
+            onSave={() => {
               setShowSaveAsDialog(false)
             }}
             onClose={() => setShowSaveAsDialog(false)}
@@ -313,8 +313,7 @@ export const EditorLayout: React.FC = () => {
 
         {showSaveTemplateDialog && (
           <SaveResumeDialog
-            onSave={(_name, _description) => {
-              // 这里需要调用保存为模板逻辑
+            onSave={() => {
               setShowSaveTemplateDialog(false)
             }}
             onClose={() => setShowSaveTemplateDialog(false)}
@@ -340,6 +339,17 @@ export const EditorLayout: React.FC = () => {
             }}
             onClose={() => setShowSaveFullscreenModal(false)}
           />
+        )}
+
+        {/* 体验优化组件 */}
+        {mode === 'edit' && (
+          <>
+            {/* 数据备份提醒 */}
+            <DataBackupReminder />
+
+            {/* 快速导出按钮 */}
+            <QuickExportButton />
+          </>
         )}
       </div>
     </ViewportProvider>

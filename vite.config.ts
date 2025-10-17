@@ -60,8 +60,10 @@ export default defineConfig(() => {
         ]
       },
       workbox: {
-        // 配置缓存策略
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
+        // 根据环境配置不同的缓存策略
+        globPatterns: process.env.NODE_ENV === 'production' 
+          ? ['**/*.{js,css,html,ico,png,svg,woff2,json}']
+          : ['**/*.{js}'], // 开发环境只缓存 js 文件
         // 运行时缓存策略
         runtimeCaching: [
           {

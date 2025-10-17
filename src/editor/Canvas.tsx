@@ -25,8 +25,11 @@ import { findNode } from '@utils/schema'
 import { templateManager } from '@/core/services/TemplateManager'
 import { notification } from '@/utils/notification'
 import { SaveAsTemplateDialog } from './SaveAsTemplateDialog'
+import { EmptyCanvasGuide } from '@/components/EmptyCanvasGuide'
+import { useNavigate } from 'react-router-dom'
 
 export const Canvas: React.FC = () => {
+  const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
   const { viewportMode } = useViewport()
   const {
@@ -307,6 +310,19 @@ export const Canvas: React.FC = () => {
           hoveredNodeId={hoveredNodeId}
         />
       </div>
+
+      {/* 空画布引导 */}
+      {mode === 'edit' &&
+        (!pageSchema?.root?.children || pageSchema.root.children.length === 0) && (
+          <EmptyCanvasGuide
+            onSelectTemplate={() => {
+              navigate('/templates')
+            }}
+            onViewExamples={() => {
+              navigate('/')
+            }}
+          />
+        )}
 
       {/* 框选组件 */}
       {mode === 'edit' && <SelectionBox containerRef={containerRef} />}
