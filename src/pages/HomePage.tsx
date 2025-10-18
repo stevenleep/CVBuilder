@@ -140,7 +140,7 @@ export const HomePage: React.FC = () => {
         updatedAt: new Date().toISOString(),
       }
 
-      await indexedDBService.setItem(STORES.RESUMES, editingResume.id, updatedResume)
+      await encryptedStorageService.setItem(STORES.RESUMES, editingResume.id, updatedResume)
 
       // 更新本地状态
       setRecentResumes(recentResumes.map(r => (r.id === editingResume.id ? updatedResume : r)))

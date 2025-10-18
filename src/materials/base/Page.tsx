@@ -7,7 +7,7 @@ import { IMaterialDefinition } from '@/core'
 import { useThemeConfig } from '@/core/context/ThemeContext'
 import { useViewport } from '@/core/context/ViewportContext'
 import { useEditorStore } from '@/store/editorStore'
-import { EmptyState } from '@/editor/EmptyState'
+// import { EmptyState } from '@/editor/EmptyState'
 
 interface PageProps {
   children?: React.ReactNode
