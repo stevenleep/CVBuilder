@@ -6,8 +6,10 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { EditorLayout } from '@/editor/EditorLayout'
 import { useEditorStore } from '@/store/editorStore'
-import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
+import { STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
+import { useEncryption } from '@/core/context/EncryptionContext'
 
 const createBlankPageSchema = () => ({
   version: '1.0.0',
@@ -28,12 +30,18 @@ const createBlankPageSchema = () => ({
 
 export const EditorPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
+  const { isEnabled, isUnlocked } = useEncryption()
   const { setPageSchema, setCurrentResumeId } = useEditorStore()
 
   useEffect(() => {
     if (id) {
+      // 如果启用了加密但未解锁，等待解锁后再加载
+      if (isEnabled && !isUnlocked) {
+        return
+      }
+
       // 有ID：加载对应的简历
-      indexedDBService.getItem(STORES.RESUMES, id).then(data => {
+      encryptedStorageService.getItem(STORES.RESUMES, id).then(data => {
         if (data && data.schema) {
           // 使用最新的 store state 进行比较，避免重复设置导致循环
           const current = useEditorStore.getState()
@@ -66,7 +74,8 @@ export const EditorPage: React.FC = () => {
       }
       setCurrentResumeId(null)
     }
-  }, [id, setPageSchema, setCurrentResumeId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, isEnabled, isUnlocked, setPageSchema, setCurrentResumeId])
 
   return <EditorLayout />
 }
