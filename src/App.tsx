@@ -9,6 +9,7 @@ import { useEditorStore } from './store/editorStore'
 import { bootstrapEditor } from './core'
 import { EditorProvider } from './core/context/EditorContext'
 import { ThemeProvider } from './core/context/ThemeContext'
+import { EncryptionProvider } from './core/context/EncryptionContext'
 import { DndProvider } from './editor/DndProvider'
 import { NotificationProvider } from './components/NotificationProvider'
 import { WelcomeGuide } from './components/WelcomeGuide'
@@ -22,6 +23,7 @@ import { TemplatesPage } from './pages/TemplatesPage'
 import { TemplatePreviewPage } from './pages/TemplatePreviewPage'
 import { ExamplePreviewPage } from './pages/ExamplePreviewPage'
 import { ResumesPage } from './pages/ResumesPage'
+import { SettingsPage } from './pages/SettingsPage'
 
 function App() {
   const [isInitialized, setIsInitialized] = useState(false)
@@ -100,73 +102,78 @@ function App() {
   return (
     <ErrorBoundary>
       <NotificationProvider>
-        <EditorProvider value={editorContext}>
-          <ThemeProvider>
-            {/* HashRouter 不需要 basename 配置 */}
-            <HashRouter>
-              <Routes>
-                {/* 首页 */}
-                <Route path="/" element={<HomePage />} />
+        <EncryptionProvider>
+          <EditorProvider value={editorContext}>
+            <ThemeProvider>
+              {/* HashRouter 不需要 basename 配置 */}
+              <HashRouter>
+                <Routes>
+                  {/* 首页 */}
+                  <Route path="/" element={<HomePage />} />
 
-                {/* 编辑器 */}
-                <Route
-                  path="/editor"
-                  element={
-                    <DndProvider>
-                      <EditorPage />
-                      {showWelcome && <WelcomeGuide onClose={() => setShowWelcome(false)} />}
-                    </DndProvider>
-                  }
-                />
+                  {/* 编辑器 */}
+                  <Route
+                    path="/editor"
+                    element={
+                      <DndProvider>
+                        <EditorPage />
+                        {showWelcome && <WelcomeGuide onClose={() => setShowWelcome(false)} />}
+                      </DndProvider>
+                    }
+                  />
 
-                {/* 编辑器 - 带ID */}
-                <Route
-                  path="/editor/:id"
-                  element={
-                    <DndProvider>
-                      <EditorPage />
-                    </DndProvider>
-                  }
-                />
+                  {/* 编辑器 - 带ID */}
+                  <Route
+                    path="/editor/:id"
+                    element={
+                      <DndProvider>
+                        <EditorPage />
+                      </DndProvider>
+                    }
+                  />
 
-                {/* 模板库 */}
-                <Route path="/templates" element={<TemplatesPage />} />
+                  {/* 模板库 */}
+                  <Route path="/templates" element={<TemplatesPage />} />
 
-                {/* 模板预览 */}
-                <Route
-                  path="/templates/:id/preview"
-                  element={
-                    <DndProvider>
-                      <TemplatePreviewPage />
-                    </DndProvider>
-                  }
-                />
+                  {/* 模板预览 */}
+                  <Route
+                    path="/templates/:id/preview"
+                    element={
+                      <DndProvider>
+                        <TemplatePreviewPage />
+                      </DndProvider>
+                    }
+                  />
 
-                {/* 示例预览 */}
-                <Route
-                  path="/examples/:id/preview"
-                  element={
-                    <DndProvider>
-                      <ExamplePreviewPage />
-                    </DndProvider>
-                  }
-                />
+                  {/* 示例预览 */}
+                  <Route
+                    path="/examples/:id/preview"
+                    element={
+                      <DndProvider>
+                        <ExamplePreviewPage />
+                      </DndProvider>
+                    }
+                  />
 
-                {/* 简历库 */}
-                <Route path="/resumes" element={<ResumesPage />} />
+                  {/* 简历库 */}
+                  <Route path="/resumes" element={<ResumesPage />} />
 
-                {/* 默认重定向到首页 */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
+                  {/* 设置页面 */}
+                  <Route path="/settings" element={<SettingsPage />} />
 
-              {/* PWA 安装提示 */}
-              <PWAInstallPrompt />
+                  {/* 默认重定向到首页 */}
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
 
-              {/* PWA 更新提示 */}
-              <PWAUpdatePrompt />
-            </HashRouter>
-          </ThemeProvider>
-        </EditorProvider>
+                {/* PWA 安装提示 */}
+                <PWAInstallPrompt />
+
+                {/* PWA 更新提示 */}
+                <PWAUpdatePrompt />
+              </HashRouter>
+            </ThemeProvider>
+          </EditorProvider>
+        </EncryptionProvider>
       </NotificationProvider>
     </ErrorBoundary>
   )

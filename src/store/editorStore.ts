@@ -21,7 +21,8 @@ import {
   insertAfter,
   cloneNode,
 } from '@utils/schema'
-import { indexedDBService, STORES } from '@utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
+import { STORES } from '@utils/indexedDB'
 
 import {
   type HistoryAction,
@@ -1161,7 +1162,7 @@ export const useEditorStore = create<EditorState>()(
         }
 
         try {
-          await indexedDBService.setItem(STORES.EDITOR_STATE, STORAGE_KEY, state.pageSchema)
+          await encryptedStorageService.setItem(STORES.EDITOR_STATE, STORAGE_KEY, state.pageSchema)
           // 如果 IndexedDB 写入成功且数据看起来有效，则可以尝试移除本地备份（不强制）
           // 这里我们不立即删除备份，以防止竞态导致丢失。由 loadFromStorage 在成功加载时清理备份。
         } catch (error) {
@@ -1174,7 +1175,10 @@ export const useEditorStore = create<EditorState>()(
       // 从 IndexedDB 加载
       loadFromStorage: async () => {
         try {
-          const saved = await indexedDBService.getItem<PageSchema>(STORES.EDITOR_STATE, STORAGE_KEY)
+          const saved = await encryptedStorageService.getItem<PageSchema>(
+            STORES.EDITOR_STATE,
+            STORAGE_KEY
+          )
           if (saved) {
             // 直接设置状态，不触发历史记录
             set(state => {

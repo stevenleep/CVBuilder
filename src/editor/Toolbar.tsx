@@ -22,7 +22,8 @@ import {
   Minimize2,
 } from 'lucide-react'
 import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
-import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
+import { STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
@@ -152,13 +153,13 @@ export const Toolbar: React.FC = () => {
         canvasConfig: state.canvasConfig,
         thumbnail: '',
         createdAt: currentResumeId
-          ? (await indexedDBService.getItem(STORES.RESUMES, currentResumeId))?.createdAt ||
+          ? (await encryptedStorageService.getItem(STORES.RESUMES, currentResumeId))?.createdAt ||
             new Date().toISOString()
           : new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       }
 
-      await indexedDBService.setItem(STORES.RESUMES, resumeId, resumeData)
+      await encryptedStorageService.setItem(STORES.RESUMES, resumeId, resumeData)
 
       if (!currentResumeId) {
         setCurrentResumeId(resumeId)

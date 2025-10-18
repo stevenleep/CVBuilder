@@ -6,9 +6,11 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, FileText, Trash2, Edit, Calendar, Settings } from 'lucide-react'
 import { Logo } from '@/components/Logo'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
 import { indexedDBService, STORES } from '@/utils/indexedDB'
 import { notification } from '@/utils/notification'
 import { SaveResumeFullscreenModal } from '@/editor/SaveResumeFullscreenModal'
+import { useEncryption } from '@/core/context/EncryptionContext'
 
 interface SavedResume {
   id: string
@@ -23,11 +25,17 @@ interface SavedResume {
 
 export const ResumesPage: React.FC = () => {
   const navigate = useNavigate()
+  const { isEnabled, isUnlocked } = useEncryption()
   const [resumes, setResumes] = useState<SavedResume[]>([])
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingResume, setEditingResume] = useState<SavedResume | null>(null)
 
   useEffect(() => {
+    // 如果启用了加密但未解锁，不加载数据（等待解锁）
+    if (isEnabled && !isUnlocked) {
+      return
+    }
+
     loadResumes()
 
     // 监听简历更新事件
@@ -39,17 +47,21 @@ export const ResumesPage: React.FC = () => {
     return () => {
       window.removeEventListener('cvkit-resume-updated', handleResumeUpdate)
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEnabled, isUnlocked])
 
   const loadResumes = async () => {
     try {
-      const allKeys = await indexedDBService.getAllKeys(STORES.RESUMES)
+      const allKeys = await encryptedStorageService.getAllKeys(STORES.RESUMES)
       const loadedResumes: SavedResume[] = []
 
       for (const key of allKeys) {
-        const resume = await indexedDBService.getItem<SavedResume>(STORES.RESUMES, String(key))
+        const resume = await encryptedStorageService.getItem<SavedResume>(
+          STORES.RESUMES,
+          String(key)
+        )
         if (resume) {
-          // 尝试加载缩略图
+          // 尝试加载缩略图（缩略图不加密）
           const thumbnail = await indexedDBService.getItem<string>(
             STORES.THUMBNAILS,
             `resume-${String(key)}`
@@ -84,7 +96,7 @@ export const ResumesPage: React.FC = () => {
       type: 'warning',
     })
     if (confirmed) {
-      await indexedDBService.removeItem(STORES.RESUMES, resume.id)
+      await encryptedStorageService.removeItem(STORES.RESUMES, resume.id)
       notification.success('简历已删除')
       loadResumes()
     }
@@ -108,7 +120,7 @@ export const ResumesPage: React.FC = () => {
         updatedAt: new Date().toISOString(),
       }
 
-      await indexedDBService.setItem(STORES.RESUMES, editingResume.id, updatedResume)
+      await encryptedStorageService.setItem(STORES.RESUMES, editingResume.id, updatedResume)
 
       // 更新本地状态
       setResumes(resumes.map(r => (r.id === editingResume.id ? updatedResume : r)))

@@ -24,7 +24,8 @@ import { useIsSmallScreen } from '@/hooks/useMediaQuery'
 import { useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { useEditorStore } from '@/store/editorStore'
-import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
+import { STORES } from '@/utils/indexedDB'
 import { nanoid } from 'nanoid'
 import { notification } from '@/utils/notification'
 import { useTheme } from '@/core/context/ThemeContext'
@@ -64,13 +65,13 @@ export const EditorLayout: React.FC = () => {
         canvasConfig: canvasConfig,
         thumbnail: '',
         createdAt: currentResumeId
-          ? (await indexedDBService.getItem(STORES.RESUMES, currentResumeId))?.createdAt ||
+          ? (await encryptedStorageService.getItem(STORES.RESUMES, currentResumeId))?.createdAt ||
             new Date().toISOString()
           : new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       }
 
-      await indexedDBService.setItem(STORES.RESUMES, resumeId, resumeData)
+      await encryptedStorageService.setItem(STORES.RESUMES, resumeId, resumeData)
 
       if (!currentResumeId) {
         setCurrentResumeId(resumeId)

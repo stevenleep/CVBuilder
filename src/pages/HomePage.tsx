@@ -25,11 +25,13 @@ import {
   Settings,
 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
-import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
+import { STORES } from '@/utils/indexedDB'
 import { exampleResumes } from '@/data/examples'
 import { nanoid } from 'nanoid'
 import { notification } from '@/utils/notification'
 import { SaveResumeFullscreenModal } from '@/editor/SaveResumeFullscreenModal'
+import { useEncryption } from '@/core/context/EncryptionContext'
 
 interface RecentResume {
   id: string
@@ -41,6 +43,7 @@ interface RecentResume {
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate()
+  const { isEnabled, isUnlocked } = useEncryption()
   const [recentResumes, setRecentResumes] = useState<RecentResume[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
@@ -50,6 +53,12 @@ export const HomePage: React.FC = () => {
 
   useEffect(() => {
     const loadAllData = async () => {
+      // 如果启用了加密但未解锁，不加载数据（等待解锁）
+      if (isEnabled && !isUnlocked) {
+        setIsLoading(false)
+        return
+      }
+
       setIsLoading(true)
       await loadRecentResumes()
       setIsLoading(false)
@@ -67,22 +76,25 @@ export const HomePage: React.FC = () => {
       window.removeEventListener('cvkit-resume-updated', handleResumeUpdate)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isEnabled, isUnlocked])
 
   const loadRecentResumes = async () => {
     try {
-      const allKeys = await indexedDBService.getAllKeys(STORES.RESUMES)
+      const allKeys = await encryptedStorageService.getAllKeys(STORES.RESUMES)
       const loaded: RecentResume[] = []
 
       for (const key of allKeys) {
-        const resume = await indexedDBService.getItem<RecentResume>(STORES.RESUMES, String(key))
+        const resume = await encryptedStorageService.getItem<RecentResume>(
+          STORES.RESUMES,
+          String(key)
+        )
         if (resume) {
           loaded.push(resume)
         }
       }
 
       loaded.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-      setRecentResumes(loaded.slice(0, 8))
+      setRecentResumes(loaded.slice(0, 6))
     } catch (error) {
       console.error('Failed to load resumes:', error)
     }
@@ -101,7 +113,7 @@ export const HomePage: React.FC = () => {
     }
 
     try {
-      await indexedDBService.removeItem(STORES.RESUMES, resumeId)
+      await encryptedStorageService.removeItem(STORES.RESUMES, resumeId)
       notification.success('简历已删除')
       await loadRecentResumes()
     } catch (error) {
@@ -191,7 +203,7 @@ export const HomePage: React.FC = () => {
         updatedAt: new Date().toISOString(),
       }
 
-      await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
+      await encryptedStorageService.setItem(STORES.RESUMES, newId, resumeData)
       notification.success(`已基于"${example.name}"创建新简历！`)
       navigate(`/editor/${newId}`)
     } catch (error) {
@@ -281,6 +293,34 @@ export const HomePage: React.FC = () => {
 
           {/* 右侧操作区 */}
           <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <button
+              onClick={() => navigate('/settings')}
+              style={{
+                padding: '6px 12px',
+                border: 'none',
+                borderRadius: '6px',
+                backgroundColor: 'transparent',
+                color: '#666',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#f0f0f0'
+                e.currentTarget.style.color = '#2d2d2d'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+                e.currentTarget.style.color = '#666'
+              }}
+            >
+              <Settings size={14} />
+              设置
+            </button>
             <button
               onClick={() => navigate('/resumes')}
               style={{
