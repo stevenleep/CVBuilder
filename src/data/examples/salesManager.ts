@@ -59,7 +59,7 @@ export const salesManagerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '5年+B2B销售经验，擅长大客户开发和维护。累计签约客户100+家，年销售额超5000万。具备优秀的沟通谈判能力和商务拓展能力。',
+                  '5年+B2B销售经验，累计签约100+客户，年销售额超5000万，擅长大客户开发和维护。',
               },
               style: {},
               children: [],
@@ -86,7 +86,8 @@ export const salesManagerExample: ExampleResume = {
                 startDate: '2019.09',
                 endDate: '至今',
                 location: '深圳',
-                description: '<ul><li>独立开发50+大客户，年销售额达3000万+，超额完成业绩150%</li><li>签约多家世界500强企业，包括腾讯、华为等标杆客户</li><li>客户续约率达85%，NPS评分90+</li><li>建立销售方法论并培训新人，团队业绩提升40%</li></ul>',
+                description:
+                  '<ul><li>独立开发50+大客户，年销售额达3000万+，超额完成业绩150%</li><li>签约多家世界500强企业，包括腾讯、华为等标杆客户</li><li>客户续约率达85%，NPS评分90+</li><li>建立销售方法论并培训新人，团队业绩提升40%</li></ul>',
               },
               style: {},
               children: [],
@@ -132,7 +133,7 @@ export const salesManagerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通大客户开发和维护</li><li>掌握商务谈判技巧和策略</li><li>擅长方案呈现和演讲</li><li>具备完善的客户关系管理能力</li><li>拥有团队管理和培训经验</li><li>熟练使用 CRM 系统和销售工具</li></ul>',
+                  '<ul><li><strong>核心能力：</strong>5年+B2B销售经验，擅长大客户开发、商务谈判、客户关系管理</li><li><strong>业绩表现：</strong>累计签约100+客户，年销售额超5000万，多次获得销售冠军</li><li><strong>客户资源：</strong>成功签约腾讯、华为、字节等头部企业，续约率85%</li><li><strong>团队管理：</strong>具备团队培训和方法论沉淀能力，带动团队业绩提升</li></ul>',
               },
               style: {},
               children: [],

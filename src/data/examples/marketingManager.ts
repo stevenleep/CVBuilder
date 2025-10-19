@@ -60,7 +60,7 @@ export const marketingManagerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '6年+市场营销经验，擅长品牌策划、数字营销和增长黑客。成功策划多个刷屏级营销活动，为公司带来显著增长。精通社交媒体运营和内容营销。',
+                  '6年+市场营销经验，擅长品牌策划、数字营销和增长策略，有成功的刷屏级营销活动经验。',
               },
               style: {},
               children: [],
@@ -87,7 +87,8 @@ export const marketingManagerExample: ExampleResume = {
                 startDate: '2020.01',
                 endDate: '至今',
                 location: '上海',
-                description: '<ul><li>策划新品上市营销活动，实现首月销售额1000万+</li><li>运营公司官方社交媒体，粉丝增长至50万+，互动率提升200%</li><li>建立KOL合作体系，月均曝光量达5000万+</li><li>优化SEO/SEM策略，自然流量增长150%，获客成本降低40%</li></ul>',
+                description:
+                  '<ul><li>策划新品上市营销活动，首月销售额破1000万</li><li>运营公司社交媒体，粉丝增至50万+，互动率提升200%</li><li>建立KOL合作体系，月均曝光5000万+</li><li>优化SEO/SEM策略，自然流量增长150%，获客成本降低40%</li></ul>',
               },
               style: {},
               children: [],
@@ -133,7 +134,7 @@ export const marketingManagerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通数字营销全链路（SEO、SEM、信息流等）</li><li>擅长品牌策划和定位</li><li>掌握内容营销策略和执行</li><li>熟练使用数据分析工具，优化营销ROI</li><li>具备用户增长和裂变营销经验</li><li>精通社交媒体运营（微信、微博、抖音等）</li></ul>',
+                  '<ul><li><strong>核心能力：</strong>6年+营销经验，擅长品牌策划、数字营销、增长策略，有成功的刷屏级活动经验</li><li><strong>营销渠道：</strong>精通SEO/SEM、社交媒体、内容营销、KOL合作、私域运营</li><li><strong>数据驱动：</strong>熟练使用数据分析工具，通过数据优化营销ROI</li><li><strong>业务理解：</strong>熟悉消费品/互联网行业，具备品牌定位和用户增长能力</li></ul>',
               },
               style: {},
               children: [],

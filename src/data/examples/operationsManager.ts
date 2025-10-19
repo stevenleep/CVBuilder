@@ -59,7 +59,7 @@ export const operationsManagerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '5年+互联网运营经验，擅长用户增长和社区运营。成功策划多个10万+用户增长活动，深谙用户心理和内容传播规律。数据驱动，结果导向。',
+                  '5年+互联网运营经验，擅长用户增长和社区运营，成功策划多个10万+用户增长活动。',
               },
               style: {},
               children: [],
@@ -86,7 +86,8 @@ export const operationsManagerExample: ExampleResume = {
                 startDate: '2020.06',
                 endDate: '至今',
                 location: '杭州',
-                description: '<ul><li>策划用户裂变活动，3个月内新增用户50万+，获客成本降低60%</li><li>搭建用户成长体系，DAU提升80%，用户留存率提升45%</li><li>运营社群矩阵，管理100+用户群，月活跃用户10万+</li><li>通过内容运营实现用户转化，付费转化率提升至12%</li></ul>',
+                description:
+                  '<ul><li>策划用户裂变活动，3个月新增50万+用户，获客成本降低60%</li><li>搭建用户成长体系，DAU提升80%，留存率提升45%</li><li>运营社群矩阵（100+群），月活10万+</li><li>通过内容运营推动转化，付费转化率提升至12%</li></ul>',
               },
               style: {},
               children: [],
@@ -132,7 +133,7 @@ export const operationsManagerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通用户增长策略和增长黑客方法</li><li>熟练进行数据分析和运营决策</li><li>掌握内容运营和内容营销</li><li>擅长社群运营和用户留存</li><li>具备丰富的活动策划和执行经验</li><li>了解裂变营销和私域流量运营</li></ul>',
+                  '<ul><li><strong>核心能力：</strong>5年+互联网运营经验，擅长用户增长、社群运营、活动策划</li><li><strong>增长策略：</strong>精通裂变营销、增长黑客、私域流量运营</li><li><strong>数据驱动：</strong>熟练数据分析，通过数据洞察驱动运营决策</li><li><strong>内容能力：</strong>掌握内容运营和内容营销，擅长用户心理和传播规律</li></ul>',
               },
               style: {},
               children: [],

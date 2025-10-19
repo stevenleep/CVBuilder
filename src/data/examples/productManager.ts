@@ -61,7 +61,7 @@ export const productManagerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li><strong>产品能力：</strong>精通产品全生命周期管理（从 0 到 1、增长优化、商业化），擅长需求分析、竞品分析、用户研究</li><li><strong>数据分析：</strong>熟练使用 SQL 进行数据查询和分析，掌握数据埋点设计，熟悉 Google Analytics、神策数据、GrowingIO 等工具</li><li><strong>增长方法论：</strong>掌握 AARRR 增长模型、北极星指标、A/B 测试方法论，有实际增长项目经验</li><li><strong>设计工具：</strong>Axure、Figma、Sketch、Xmind、ProcessOn，能独立输出高保真原型和交互设计</li><li><strong>项目管理：</strong>熟悉敏捷开发流程，使用 JIRA、Teambition 等工具进行项目管理，确保按时交付</li><li><strong>商业思维：</strong>具备商业 sense，能平衡用户价值和商业价值，参与过 Pricing、LTV、CAC 等商业模型设计</li><li><strong>跨部门协作：</strong>优秀的沟通和推动能力，能高效协调研发、设计、运营、市场等团队</li></ul>',
+                  '<ul><li><strong>核心能力：</strong>6年+产品经验，擅长B端/SaaS产品从0到1，有成功的增长和商业化项目经验</li><li><strong>数据驱动：</strong>精通数据分析和A/B测试，能通过数据洞察驱动产品决策</li><li><strong>业务理解：</strong>深入理解SaaS、协作工具、数据中台等领域，具备商业思维</li><li><strong>推动能力：</strong>优秀的跨部门协作和项目管理能力，擅长推动复杂项目落地</li></ul>',
               },
               style: {},
               children: [],
@@ -89,7 +89,8 @@ export const productManagerExample: ExampleResume = {
                 startDate: '2021.03',
                 endDate: '至今',
                 location: '上海',
-                description: '<ul><li>负责商家端核心功能迭代，包括订单管理、营销工具、数据看板等模块，服务 5w+ 商家</li><li>主导商家数据看板产品，整合多方数据源，设计 20+ 数据指标和可视化报表，商家使用率达 75%</li><li>推动产品体验优化：通过用户访谈和数据分析，识别核心痛点，优化核心流程，商家满意度从 68 分提升至 82 分</li><li>参与商家成长体系设计，制定新手引导和激励机制，新商家留存率提升 35%</li></ul>',
+                description:
+                  '<ul><li>负责商家端核心产品（订单管理、营销工具、数据看板），服务5万+商家</li><li>主导商家数据看板从0到1，解决商家缺乏经营分析工具痛点，使用率达75%，帮助商家提升运营效率</li><li>通过用户调研和数据分析识别痛点，优化核心流程，商家满意度从68分提升至82分</li><li>设计商家成长体系和新手引导，新商家留存率提升35%</li></ul>',
               },
               style: {
                 marginBottom: '20px',
@@ -105,7 +106,8 @@ export const productManagerExample: ExampleResume = {
                 startDate: '2017.07',
                 endDate: '2019.06',
                 location: '上海',
-                description: '<ul><li>深入教育行业调研，完成 60+ 用户访谈，输出竞品分析和需求文档，明确产品定位</li><li>独立负责产品规划与设计，输出 PRD 40+ 篇，跟进研发实现，确保产品按时上线</li><li>产品上线后快速迭代，通过用户反馈和数据分析持续优化，用户留存率达 60%</li></ul>',
+                description:
+                  '<ul><li>深入教育行业调研，完成60+用户访谈，明确产品定位和核心需求</li><li>独立负责产品规划、设计与落地，推动产品按时上线</li><li>通过快速迭代和数据驱动优化，用户留存率达60%</li></ul>',
               },
               style: {},
               children: [],
@@ -133,7 +135,8 @@ export const productManagerExample: ExampleResume = {
                 startDate: '2021.06',
                 endDate: '2022.03',
                 techStack: '项目管理、知识库、在线文档协作',
-                description: '<ul><li>项目背景：针对中小企业团队协作痛点，打造轻量级企业协作工具</li><li>市场调研：深度访谈 60+ 目标用户，调研 15+ 竞品，输出用户画像和产品定位报告</li><li>产品规划：制定产品 Roadmap，设计 MVP 核心功能（项目管理、知识库、在线文档），输出 PRD 35+ 篇</li><li>敏捷开发：采用双周迭代模式，与研发团队紧密协作，快速验证假设和优化体验</li><li>增长策略：设计 Freemium 商业模式，通过内容营销和社群运营获客，3 个月获取 10000+ 注册用户</li><li>数据驱动：建立数据看板监控核心指标（DAU、留存、转化），通过 A/B 测试优化关键流程，付费转化率 18%</li><li>项目成果：产品 PMF 验证成功，8 个月获得 800+ 付费企业，NPS 72，获得 A 轮融资</li></ul>',
+                description:
+                  '<ul><li>【业务目标】针对中小企业团队协作痛点，打造轻量级SaaS协作工具</li><li>【市场洞察】深度访谈60+目标用户，调研15+竞品，明确产品定位和差异化策略</li><li>【产品设计】制定Roadmap，设计MVP功能（项目管理、知识库、在线文档），双周快速迭代验证假设</li><li>【增长策略】设计Freemium商业模式，通过内容营销和社群运营获客，3个月获取1万+注册用户</li><li>【数据驱动】建立核心指标监控体系，通过A/B测试优化转化漏斗，付费转化率18%</li><li>【业务成果】8个月达成PMF，获得800+付费企业，NPS 72，助力公司完成A轮融资</li></ul>',
               },
               style: {
                 marginBottom: '20px',
@@ -149,7 +152,8 @@ export const productManagerExample: ExampleResume = {
                 startDate: '2020.03',
                 endDate: '2020.12',
                 techStack: '数据可视化、BI分析、智能推荐',
-                description: '<ul><li>需求分析：调研商家痛点，发现商家缺乏数据分析工具导致决策盲目</li><li>产品设计：设计数据看板产品，整合订单、用户、营销等多维度数据，提供 25+ 核心指标和可视化图表</li><li>智能洞察：引入算法能力，提供经营分析和优化建议（如高峰期预测、菜品推荐等）</li><li>用户验证：小范围灰度测试，收集反馈快速迭代，最终全量上线</li><li>项目成果：商家使用率 75%，满意度 4.2/5，帮助商家提升运营效率 30%</li></ul>',
+                description:
+                  '<ul><li>【痛点洞察】商家缺乏数据分析工具，经营决策盲目，急需数据化运营能力</li><li>【产品方案】设计数据看板，整合订单/用户/营销多维度数据，提供25+核心指标和可视化图表</li><li>【智能化】引入算法能力，提供经营分析和优化建议（高峰期预测、菜品推荐等）</li><li>【用户验证】灰度测试→快速迭代→全量上线，确保产品体验</li><li>【业务价值】使用率75%，满意度4.2/5，帮助商家运营效率提升30%</li></ul>',
               },
               style: {},
               children: [],
@@ -177,7 +181,8 @@ export const productManagerExample: ExampleResume = {
                 endDate: '2017.06',
                 gpa: '3.6',
                 gpaScale: '4.0',
-                achievements: '<ul><li>担任学生会外联部副部长，组织校企合作活动 10+ 场</li><li>获得校级二等奖学金、优秀学生干部称号</li></ul>',
+                achievements:
+                  '<ul><li>担任学生会外联部副部长，组织校企合作活动 10+ 场</li><li>获得校级二等奖学金、优秀学生干部称号</li></ul>',
               },
               style: {},
               children: [],

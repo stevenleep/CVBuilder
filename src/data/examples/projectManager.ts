@@ -59,7 +59,7 @@ export const projectManagerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '7年+项目管理经验，持有PMP和CSM证书。成功交付大型项目20+个，总预算超2亿。擅长敏捷项目管理和跨部门协作，注重风险控制和质量保证。',
+                  '7年+项目管理经验（PMP/CSM），成功交付20+大型项目（总预算超2亿），擅长敏捷管理和跨部门协作。',
               },
               style: {},
               children: [],
@@ -86,7 +86,8 @@ export const projectManagerExample: ExampleResume = {
                 startDate: '2019.01',
                 endDate: '至今',
                 location: '上海',
-                description: '<ul><li>主导企业数字化转型项目，预算5000万，按时按质交付</li><li>管理跨部门团队50+人，协调研发、业务、IT多方资源</li><li>建立敏捷项目管理体系，项目交付周期缩短30%</li><li>风险管理和质量控制，项目成功率达95%</li></ul>',
+                description:
+                  '<ul><li>主导企业数字化转型项目（预算5000万），按时按质交付</li><li>管理50+人跨部门团队，协调研发、业务、IT等多方资源</li><li>建立敏捷项目管理体系，交付周期缩短30%</li><li>严格风险管理和质量控制，项目成功率95%</li></ul>',
               },
               style: {},
               children: [],
@@ -109,7 +110,7 @@ export const projectManagerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通项目管理方法论（PMP、PMBOK、敏捷、Scrum）</li><li>掌握项目计划、执行、监控和收尾全流程</li><li>熟练使用项目管理工具（Jira、MS Project、禅道）</li><li>具备风险管理和质量管理能力</li><li>擅长跨部门协作和沟通</li><li>了解软件开发流程和技术架构</li></ul>',
+                  '<ul><li><strong>核心能力：</strong>7年+项目管理经验，成功交付20+大型项目，擅长敏捷管理和风险控制</li><li><strong>方法论：</strong>精通PMP/PMBOK/Scrum/敏捷，掌握项目全生命周期管理</li><li><strong>管理工具：</strong>熟练使用Jira、MS Project、禅道等</li><li><strong>软技能：</strong>优秀的跨部门协作、沟通和推动能力</li></ul>',
               },
               style: {},
               children: [],

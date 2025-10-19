@@ -60,7 +60,7 @@ export const qaEngineerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '5年+测试开发经验，精通自动化测试和性能测试。熟悉测试框架搭建和CI/CD流程，有丰富的缺陷分析和质量保障经验。',
+                  '5年+测试经验，擅长自动化测试体系搭建和性能测试，有成功的质量效能提升项目经验。',
               },
               style: {},
               children: [],
@@ -87,7 +87,8 @@ export const qaEngineerExample: ExampleResume = {
                 startDate: '2020.07',
                 endDate: '至今',
                 location: '上海',
-                description: '<ul><li>搭建自动化测试框架，接口自动化覆盖率达85%，UI自动化覆盖率70%</li><li>主导性能测试和压测工作，发现并解决多个性能瓶颈，系统吞吐量提升50%</li><li>建立质量度量体系，通过数据分析驱动质量改进</li><li>组织代码评审和质量培训，团队整体缺陷率下降40%</li></ul>',
+                description:
+                  '<ul><li>搭建自动化测试框架，接口覆盖率85%，UI覆盖率70%，测试效率提升60%</li><li>主导性能测试，发现并解决关键性能瓶颈，系统吞吐量提升50%</li><li>建立质量度量体系，通过数据驱动质量改进，缺陷率下降40%</li><li>组织质量培训和代码评审，提升团队整体质量意识</li></ul>',
               },
               style: {
                 marginBottom: '20px',
@@ -103,7 +104,8 @@ export const qaEngineerExample: ExampleResume = {
                 startDate: '2018.06',
                 endDate: '2020.06',
                 location: '上海',
-                description: '<ul><li>负责Web和移动端应用的功能测试，发现并跟踪缺陷500+个</li><li>编写自动化测试脚本，减少重复性工作，提升测试效率30%</li><li>参与需求评审和测试用例设计，保证测试覆盖率</li></ul>',
+                description:
+                  '<ul><li>负责Web和移动端功能测试，发现并跟踪500+缺陷</li><li>编写自动化测试脚本，测试效率提升30%</li><li>参与需求评审和用例设计，保证测试覆盖率</li></ul>',
               },
               style: {},
               children: [],
@@ -126,7 +128,7 @@ export const qaEngineerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通 Selenium、Appium 等自动化测试框架</li><li>熟练使用 Postman、JMeter、Locust 进行接口和性能测试</li><li>掌握 Python、Java 编程语言，能独立开发测试工具</li><li>熟悉 Jenkins、GitLab CI 等持续集成工具</li><li>了解 Docker、Kubernetes 容器化技术</li><li>具备良好的缺陷分析和定位能力</li></ul>',
+                  '<ul><li><strong>核心能力：</strong>5年+测试经验，擅长自动化测试框架搭建、性能测试、质量体系建设</li><li><strong>技术栈：</strong>Selenium/Appium、JMeter、Python/Java、Jenkins/GitLab CI</li><li><strong>测试方法：</strong>熟练掌握功能测试、接口测试、性能测试、自动化测试</li><li><strong>质量保障：</strong>具备缺陷分析、质量度量、流程优化能力</li></ul>',
               },
               style: {},
               children: [],
@@ -153,7 +155,8 @@ export const qaEngineerExample: ExampleResume = {
                 startDate: '2021.03',
                 endDate: '2023.06',
                 techStack: 'Python, Selenium, Jenkins, Allure',
-                description: '<ul><li>从0到1搭建公司级自动化测试平台，支持多项目多环境测试</li><li>实现用例编排、定时执行、结果统计等核心功能</li><li>接入CI/CD流程，实现每日自动化回归测试</li><li>平台使用后，团队测试效率提升60%，发现缺陷数量增加35%</li></ul>',
+                description:
+                  '<ul><li>【业务痛点】手工测试效率低、回归测试耗时长，影响快速迭代</li><li>【解决方案】从0到1搭建自动化测试平台，支持多项目多环境，实现用例编排和定时执行</li><li>【持续集成】接入CI/CD流程，实现每日自动化回归测试</li><li>【业务价值】测试效率提升60%，发现缺陷数量增加35%，保障产品质量</li></ul>',
               },
               style: {},
               children: [],
@@ -182,7 +185,8 @@ export const qaEngineerExample: ExampleResume = {
                 endDate: '2018.06',
                 gpa: '3.5',
                 gpaScale: '4.0',
-                achievements: '<ul><li>获得校级优秀学生奖学金</li><li>参与软件测试课程设计并获优秀</li></ul>',
+                achievements:
+                  '<ul><li>获得校级优秀学生奖学金</li><li>参与软件测试课程设计并获优秀</li></ul>',
               },
               style: {},
               children: [],
@@ -202,7 +206,8 @@ export const qaEngineerExample: ExampleResume = {
               id: nanoid(),
               type: 'SkillList',
               props: {
-                content: '<ul><li>ISTQB 国际软件测试工程师认证</li><li>2023年度优秀员工</li><li>公司技术创新奖</li></ul>',
+                content:
+                  '<ul><li>ISTQB 国际软件测试工程师认证</li><li>2023年度优秀员工</li><li>公司技术创新奖</li></ul>',
               },
               style: {},
               children: [],

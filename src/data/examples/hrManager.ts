@@ -59,7 +59,7 @@ export const hrManagerExample: ExampleResume = {
               type: 'TextBlock',
               props: {
                 content:
-                  '8年+人力资源管理经验，熟悉招聘、培训、绩效、薪酬等全模块。成功搭建过多家公司的人才体系，擅长组织发展和人才梯队建设。持有一级人力资源管理师证书。',
+                  '8年+人力资源管理经验（一级人力资源管理师），熟悉六大模块，擅长人才体系搭建和组织发展。',
               },
               style: {},
               children: [],
@@ -86,7 +86,8 @@ export const hrManagerExample: ExampleResume = {
                 startDate: '2019.05',
                 endDate: '至今',
                 location: '北京',
-                description: '<ul><li>搭建完整的招聘体系，年招聘200+优秀人才，离职率控制在8%以内</li><li>设计并实施OKR绩效管理体系，员工满意度提升40%</li><li>建立人才发展计划，培养储备干部30+人</li><li>优化薪酬福利体系，具有行业竞争力，保留核心人才</li></ul>',
+                description:
+                  '<ul><li>搭建完整招聘体系，年招聘200+人才，离职率控制在8%</li><li>设计实施OKR绩效体系，员工满意度提升40%</li><li>建立人才发展计划，培养储备干部30+人</li><li>优化薪酬福利体系，保留核心人才，具备行业竞争力</li></ul>',
               },
               style: {},
               children: [],
@@ -109,7 +110,7 @@ export const hrManagerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li>精通招聘管理和人才选拔</li><li>掌握培训体系搭建和人才发展</li><li>熟练进行绩效管理和考核体系设计</li><li>了解薪酬福利设计和激励机制</li><li>具备员工关系管理和劳动法实务经验</li><li>拥有 HRBP 业务伙伴思维和实践</li></ul>',
+                  '<ul><li><strong>核心能力：</strong>8年+HR经验，熟悉六大模块，擅长人才体系搭建和组织发展</li><li><strong>招聘培训：</strong>精通招聘管理、人才选拔、培训体系搭建</li><li><strong>绩效薪酬：</strong>掌握绩效考核、薪酬设计、激励机制</li><li><strong>综合能力：</strong>具备HRBP思维、员工关系管理、劳动法实务经验</li></ul>',
               },
               style: {},
               children: [],

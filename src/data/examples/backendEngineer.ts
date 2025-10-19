@@ -62,7 +62,7 @@ export const backendEngineerExample: ExampleResume = {
               type: 'SkillList',
               props: {
                 content:
-                  '<ul><li><strong>编程语言：</strong>精通 Java（JVM 原理、并发编程、性能调优），熟悉 Kotlin、Go</li><li><strong>开发框架：</strong>Spring Boot、Spring Cloud、Spring Cloud Alibaba、MyBatis、MyBatis-Plus、JPA</li><li><strong>微服务：</strong>Nacos、Dubbo、Sentinel、Seata、Gateway、Feign</li><li><strong>数据库：</strong>MySQL（索引优化、SQL 调优、主从复制、分库分表）、PostgreSQL、MongoDB</li><li><strong>缓存：</strong>Redis（数据结构、持久化、集群、缓存设计模式）、Caffeine、Guava Cache</li><li><strong>消息队列：</strong>RocketMQ、Kafka、RabbitMQ，熟悉消息可靠性保证、削峰填谷</li><li><strong>搜索引擎：</strong>Elasticsearch（索引设计、查询优化、聚合分析）</li><li><strong>中间件：</strong>Nginx、Tomcat、Netty、ZooKeeper</li><li><strong>DevOps：</strong>Docker、Kubernetes、Jenkins、GitLab CI/CD、Prometheus、Grafana、ELK</li><li><strong>架构能力：</strong>微服务架构、分布式系统设计、高并发系统优化、系统稳定性保障</li></ul>',
+                  '<ul><li><strong>核心能力：</strong>6年+后端开发经验，擅长高并发系统设计、微服务架构、性能优化与稳定性保障</li><li><strong>技术栈：</strong>Java/Spring生态、微服务架构、MySQL/Redis、消息队列、Elasticsearch</li><li><strong>业务领域：</strong>电商交易、秒杀系统、数据中台等高并发场景</li><li><strong>架构能力：</strong>有大型系统架构设计和重构经验，熟悉分布式系统设计模式</li></ul>',
               },
               style: {},
               children: [],
@@ -91,7 +91,7 @@ export const backendEngineerExample: ExampleResume = {
                 endDate: '至今',
                 location: '杭州',
                 description:
-                  '<ul><li>【架构重构】主导交易系统微服务拆分，将 50w+ 行代码的单体应用按 DDD 领域拆分为订单、支付、库存等 15 个微服务。采用 Spring Cloud Alibaba 技术栈，系统可用性从 99.5% 提升至 99.95%，部署效率提升 5 倍</li><li>【性能优化】负责订单服务性能调优专项：(1)引入 Redis 多级缓存，缓存命中率 95%；(2)订单表按用户ID分256张表，解决单表2亿数据瓶颈；(3)异步化改造下单流程，QPS 从 5000 提升至 20000，P99 延迟从 800ms 降至 320ms</li><li>【技术攻坚】设计分布式事务解决方案，基于 Seata AT 模式实现订单-库存-支付的最终一致性，TPS 达到 5000+，事务成功率 99.9%，解决了跨服务数据一致性难题</li><li>【稳定性建设】搭建完整的监控告警体系：使用 Prometheus 采集 JVM、接口、数据库等 50+ 核心指标，Grafana 可视化大盘，Alertmanager 分级告警。MTTR（平均故障恢复时间）从 2 小时降至 15 分钟</li><li>【大促保障】连续 2 年参与双11/618 大促保障，负责系统容量规划、全链路压测（模拟 50w QPS）、应急预案制定。成功支撑双11当天 2000w+ 订单洪峰，0故障</li><li>【团队协作】指导 3 名初中级工程师成长，每周进行代码 Review，主导技术分享 15+ 次，帮助团队提升技术水平</li></ul>',
+                  '<ul><li>主导交易系统微服务拆分（50万行代码→15个微服务），系统可用性从99.5%提升至99.95%，部署效率提升5倍</li><li>负责订单服务性能优化，通过缓存、分库分表、异步化改造，QPS从5000提升至20000，延迟从800ms降至320ms</li><li>解决分布式事务一致性难题，设计订单-库存-支付最终一致性方案，事务成功率99.9%</li><li>搭建监控告警体系，故障恢复时间从2小时降至15分钟</li><li>连续2年参与双11/618大促保障，成功支撑2000万+订单洪峰，0故障</li><li>指导3名工程师成长，主导15+次技术分享</li></ul>',
               },
               style: {
                 marginBottom: '20px',
@@ -108,7 +108,7 @@ export const backendEngineerExample: ExampleResume = {
                 endDate: '2021.03',
                 location: '杭州',
                 description:
-                  '<ul><li>【商品中心】使用 Spring Boot + MyBatis-Plus + Redis 开发商品中心服务，支持 SPU/SKU 多级管理。引入 Elasticsearch 实现商品搜索（分词、过滤、排序），查询 RT &lt; 100ms，支持亿级 SKU 数据</li><li>【秒杀系统】负责库存扣减核心服务开发，使用 Redis + Lua 脚本实现原子性扣减，结合令牌桶限流和消息队列削峰，支持秒杀场景 50w QPS，超卖率 0%</li><li>【促销引擎】设计可配置化促销规则引擎，支持满减、折扣、买赠、优惠券等 10+ 种促销玩法。采用责任链模式 + Groovy 脚本实现规则热更新，促销活动配置时间从 2 小时降至 10 分钟</li><li>【性能优化】针对商品详情页进行全面优化：(1)添加联合索引，SQL 执行时间从 300ms 降至 30ms；(2)引入 Caffeine 本地缓存 + Redis 二级缓存；(3)接口响应时间从 300ms 降至 50ms，QPS 提升 4 倍</li></ul>',
+                  '<ul><li>开发商品中心服务，支持亿级SKU数据，商品搜索响应时间<100ms</li><li>负责秒杀系统核心服务开发，支持50万QPS，超卖率0%</li><li>设计可配置化促销引擎，支持10+种促销玩法，配置时间从2小时降至10分钟</li><li>优化商品详情页性能，接口响应从300ms降至50ms，QPS提升4倍</li></ul>',
               },
               style: {
                 marginBottom: '20px',
@@ -125,7 +125,7 @@ export const backendEngineerExample: ExampleResume = {
                 endDate: '2019.06',
                 location: '北京',
                 description:
-                  '<ul><li>【商家后台】参与商家管理系统开发，使用 Spring MVC + MyBatis 实现商家入驻审核、店铺信息管理、菜品上下架等核心功能，服务 10w+ 商家</li><li>【订单查询】开发订单查询服务，将历史订单数据同步到 Elasticsearch（使用 Canal 监听 MySQL binlog），支持订单号、用户ID、商家ID、时间范围等多维度组合查询，查询速度从 10s 降至 0.5s，提升 20 倍</li><li>【微服务改造】参与系统从单体到微服务的重构，负责用户服务拆分，使用 Dubbo 实现 RPC 调用，配置 Nacos 服务注册发现，提升了系统的可维护性和扩展性</li></ul>',
+                  '<ul><li>参与商家管理系统开发，实现商家入驻、店铺管理等核心功能，服务10万+商家</li><li>开发订单查询服务，引入Elasticsearch实现多维度查询，查询速度从10s降至0.5s，提升20倍</li><li>参与系统微服务化改造，负责用户服务拆分，提升系统可维护性</li></ul>',
               },
               style: {},
               children: [],
@@ -153,7 +153,7 @@ export const backendEngineerExample: ExampleResume = {
                 endDate: '2023.06',
                 techStack: 'Spring Cloud Alibaba, Nacos, Sentinel, Seata, RocketMQ',
                 description:
-                  '<ul><li>【背景痛点】原交易系统单体应用代码量 50w+ 行，200+ 个接口耦合在一起，每次发布需要停机 2 小时，研发效率低下。日均订单量从 100w 增长到 500w，系统频繁告警，P99 延迟达 3s</li><li>【架构设计】采用 DDD 领域驱动设计，识别出订单域、支付域、库存域、促销域等核心领域，拆分为 15 个独立微服务。每个服务独立数据库，通过 API Gateway 统一对外</li><li>【技术选型】Spring Cloud Alibaba 全家桶：Nacos（服务注册发现+配置中心）、Sentinel（限流降级熔断，QPS阈值3000）、Seata（分布式事务，TCC+AT模式）、Gateway（网关路由+鉴权）</li><li>【数据层设计】订单表按用户ID哈希分256张表（ShardingSphere），单表数据控制在 500w 内。主从复制+读写分离，读库 3 个，写压力降低 70%。历史订单归档到 HBase，在线数据保留 6 个月</li><li>【缓存架构】三级缓存：Caffeine 本地缓存（热点数据，1000 条）+ Redis（用户维度，TTL 1h）+ MySQL。缓存穿透用布隆过滤器，缓存击穿用互斥锁，缓存命中率 95%</li><li>【异步化改造】下单流程引入 RocketMQ，同步扣库存+异步创单+异步扣优惠券。消息堆积监控，消费延迟 &lt; 100ms。保证最终一致性，补偿任务兜底</li><li>【项目成果】系统 QPS 从 5000 提升至 20000，可用性从 99.5% 提升至 99.95%，P99延迟从 3s 降至 0.8s。服务独立部署，迭代周期从 2 周缩短至 3 天。成功支撑 2 次双11大促，0 故障</li></ul>',
+                  '<ul><li>【业务痛点】日均订单从100万增长至500万，单体系统频繁告警，延迟达3s，每次发布需停机2小时，严重影响业务</li><li>【解决方案】主导架构重构，按DDD领域拆分为15个微服务，实现独立开发和部署</li><li>【技术攻坚】解决分库分表、分布式事务、缓存架构等技术难题，设计三级缓存方案，缓存命中率95%</li><li>【业务成果】QPS从5000提升至20000，延迟从3s降至0.8s，可用性从99.5%提升至99.95%，成功支撑2次双11大促（0故障）</li><li>【效率提升】迭代周期从2周缩短至3天，研发效率显著提升</li></ul>',
               },
               style: {
                 marginBottom: '20px',
@@ -170,7 +170,7 @@ export const backendEngineerExample: ExampleResume = {
                 endDate: '2020.12',
                 techStack: 'Redis, Lua, RocketMQ, Sentinel',
                 description:
-                  '<ul><li>【业务场景】设计高并发秒杀系统，支持 iPhone、茅台等爆款商品抢购。预计峰值 100w 在线用户，瞬时 QPS 50w+，库存仅 1000 件</li><li>【流量控制】四层防护：(1)前端按钮 3s 防重；(2)CDN 静态资源加速；(3)Nginx + OpenResty 网关层限流（令牌桶算法，QPS 10w）；(4)后端 Sentinel 服务级限流降级（QPS 5w，快速失败）</li><li>【库存方案】Redis 预扣库存方案：提前将库存加载到 Redis，使用 Lua 脚本保证原子性扣减。库存分段（100份×10库存），减少锁竞争。内存超卖保护，DB 兜底扣减。扣减成功率 99.9%，RT &lt; 10ms</li><li>【异步下单】秒杀成功返回抢购凭证，投递 RocketMQ 消息队列异步创建订单。消息削峰填谷，QPS 从 50w 降至 5w，保护下游订单服务。订单创建失败自动回滚库存</li><li>【缓存预热】秒杀前 10 分钟预热：商品信息、库存、用户信息批量加载到 Redis。使用分布式锁防止缓存击穿，布隆过滤器防止缓存穿透</li><li>【压测验证】使用 JMeter 全链路压测，模拟 50w QPS，持续 10 分钟。系统稳定无异常，CPU 60%，内存 70%，RT &lt; 100ms</li><li>【项目成果】上线后稳定支撑 5 次秒杀活动（iPhone14、茅台、飞天等），峰值 QPS 15w，抢购成功率 99.2%，用户投诉率 &lt; 0.1%。0 超卖，0 故障</li></ul>',
+                  '<ul><li>【业务场景】支持爆款商品抢购（iPhone、茅台等），峰值100万在线用户，瞬时QPS 50万+，库存仅1000件</li><li>【核心挑战】在高并发流量下保证库存准确性，避免超卖，同时保护下游系统</li><li>【技术方案】设计四层流量防护+Redis预扣库存+异步下单方案，实现削峰填谷和最终一致性</li><li>【业务成果】稳定支撑5次秒杀活动，峰值QPS 15万，抢购成功率99.2%，0超卖、0故障，用户投诉率<0.1%</li><li>【压测验证】全链路压测模拟50万QPS，系统稳定运行，响应时间<100ms</li></ul>',
               },
               style: {},
               children: [],

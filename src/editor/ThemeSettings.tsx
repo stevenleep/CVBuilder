@@ -12,18 +12,92 @@ export const ThemeSettings: React.FC = () => {
   const { theme, setTheme, updateTheme } = useTheme()
   const [activeTab, setActiveTab] = useState<'presets' | 'fonts' | 'styles'>('presets')
 
-  // 系统字体列表
+  // 系统字体列表 - 专业简历字体精选
   const systemFonts = [
     {
       label: '系统默认',
       value: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     },
-    { label: '黑体', value: '"PingFang SC", "Microsoft YaHei", "Heiti SC", sans-serif' },
-    { label: '宋体', value: '"SimSun", "STSong", serif' },
-    { label: '楷体', value: '"KaiTi", "STKaiti", serif' },
-    { label: 'Times New Roman', value: '"Times New Roman", Times, serif' },
-    { label: 'Arial', value: 'Arial, sans-serif' },
-    { label: 'Georgia', value: 'Georgia, serif' },
+    // --- 西文非衬线字体（推荐用于简历） ---
+    {
+      label: 'Helvetica Neue（经典商务）',
+      value: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+    },
+    {
+      label: 'Arial（通用标准）',
+      value: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+    },
+    {
+      label: 'Segoe UI（微软优雅）',
+      value: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+    },
+    {
+      label: 'Roboto（Google 现代）',
+      value: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+    },
+    {
+      label: 'San Francisco（Apple 现代）',
+      value: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif',
+    },
+    {
+      label: 'Calibri（Office 专业）',
+      value: 'Calibri, Candara, "Segoe UI", Optima, Arial, sans-serif',
+    },
+    {
+      label: 'Verdana（清晰易读）',
+      value: 'Verdana, Geneva, Tahoma, sans-serif',
+    },
+    {
+      label: 'Trebuchet MS（人文气息）',
+      value: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", sans-serif',
+    },
+    // --- 中文非衬线字体 ---
+    {
+      label: '苹方（PingFang SC）',
+      value: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
+    },
+    {
+      label: '微软雅黑',
+      value: '"Microsoft YaHei", "微软雅黑", "PingFang SC", sans-serif',
+    },
+    {
+      label: '思源黑体',
+      value: '"Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", sans-serif',
+    },
+    {
+      label: '黑体（传统）',
+      value: '"Heiti SC", "黑体", "SimHei", sans-serif',
+    },
+    // --- 中英混排优化字体 ---
+    {
+      label: '苹方 + Helvetica（推荐）',
+      value: '"Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif',
+    },
+    {
+      label: 'Segoe UI + 微软雅黑',
+      value: '"Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif',
+    },
+    {
+      label: 'Arial + 苹方',
+      value: 'Arial, "PingFang SC", "Microsoft YaHei", sans-serif',
+    },
+    // --- 衬线字体（传统/学术风格） ---
+    {
+      label: 'Times New Roman（学术）',
+      value: '"Times New Roman", Times, Georgia, serif',
+    },
+    {
+      label: 'Georgia（优雅衬线）',
+      value: 'Georgia, "Times New Roman", serif',
+    },
+    {
+      label: '宋体（传统）',
+      value: '"SimSun", "STSong", "宋体", serif',
+    },
+    {
+      label: '楷体（书法）',
+      value: '"KaiTi", "STKaiti", "楷体", serif',
+    },
   ]
 
   return (
