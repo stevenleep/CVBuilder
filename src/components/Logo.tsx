@@ -5,6 +5,7 @@
  */
 
 import React from 'react'
+import { classNames } from '@/styles/styleUtils'
 
 interface LogoProps {
   size?: number
@@ -26,25 +27,16 @@ export const Logo: React.FC<LogoProps> = ({
   if (showText) {
     return (
       <div
-        className={className}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          cursor: onClick ? 'pointer' : 'default',
-          ...style,
-        }}
+        className={classNames(
+          'cvkit-logo-container',
+          onClick && 'cvkit-logo-container-clickable',
+          className
+        )}
+        style={style}
         onClick={onClick}
       >
         <LogoIcon size={size} />
-        <div
-          style={{
-            fontSize: `${textSize}px`,
-            fontWeight: '700',
-            color: '#2d2d2d',
-            letterSpacing: '0.3px',
-          }}
-        >
+        <div className="cvkit-logo-text" style={{ fontSize: `${textSize}px` }}>
           CVKit
         </div>
       </div>
@@ -68,11 +60,8 @@ export const LogoIcon: React.FC<LogoIconProps> = ({ size = 40, className, style,
       height={size}
       viewBox="0 0 64 64"
       fill="none"
-      className={className}
-      style={{
-        cursor: onClick ? 'pointer' : 'default',
-        ...style,
-      }}
+      className={classNames('cvkit-logo-icon', onClick && 'cvkit-logo-icon-clickable', className)}
+      style={style}
       onClick={onClick}
     >
       {/* 背景圆形 */}

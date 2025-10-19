@@ -80,84 +80,25 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   }
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        overflow: 'hidden',
-        ...style,
-      }}
-      className={className}
-    >
+    <div className={`cvkit-lazy-image-container ${className || ''}`} style={style}>
       <img
         ref={imgRef}
         src={imageSrc}
         alt={alt}
         onLoad={handleLoad}
         onError={handleError}
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          transition: 'opacity 0.3s ease',
-          opacity: isLoading ? 0 : 1,
-        }}
+        className={`cvkit-lazy-image ${isLoading ? 'cvkit-lazy-image-loading' : 'cvkit-lazy-image-loaded'}`}
       />
 
       {/* 加载中占位符 */}
       {isLoading && !hasError && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: '#f5f5f5',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <div
-            style={{
-              width: '24px',
-              height: '24px',
-              border: '2px solid #e0e0e0',
-              borderTopColor: '#999',
-              borderRadius: '50%',
-              animation: 'spin 0.8s linear infinite',
-            }}
-          />
+        <div className="cvkit-lazy-image-placeholder">
+          <div className="cvkit-spinner cvkit-spinner-sm" />
         </div>
       )}
 
       {/* 加载失败提示 */}
-      {hasError && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: '#f5f5f5',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '12px',
-            color: '#999',
-          }}
-        >
-          加载失败
-        </div>
-      )}
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+      {hasError && <div className="cvkit-lazy-image-error">加载失败</div>}
     </div>
   )
 }

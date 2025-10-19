@@ -249,29 +249,10 @@ export const AutoSaveIndicator: React.FC = () => {
   return (
     <div
       onClick={handleClick}
-      style={{
-        width: '26px',
-        height: '26px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: '5px',
-        backgroundColor: status === 'error' ? '#fee2e2' : 'transparent',
-        color: getStatusColor(),
-        cursor: status === 'error' ? 'pointer' : 'default',
-        transition: 'all 0.2s',
-      }}
+      className={`cvkit-autosave-indicator cvkit-autosave-indicator-${status}`}
       title={getStatusText()}
     >
       {getStatusIcon()}
-      <style>
-        {`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `}
-      </style>
     </div>
   )
 }

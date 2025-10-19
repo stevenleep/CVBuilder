@@ -138,45 +138,10 @@ export const QuickExportButton: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        bottom: '32px',
-        right: '32px',
-        zIndex: 999,
-      }}
-    >
+    <div className="cvkit-quick-export-container">
       {/* 导出菜单 */}
       {showMenu && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '72px',
-            right: 0,
-            width: '200px',
-            backgroundColor: '#fff',
-            borderRadius: '12px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08)',
-            border: '1px solid #e0e0e0',
-            overflow: 'hidden',
-            animation: 'menuSlideIn 0.2s ease-out',
-          }}
-        >
-          <style>
-            {`
-              @keyframes menuSlideIn {
-                from {
-                  opacity: 0;
-                  transform: translateY(8px);
-                }
-                to {
-                  opacity: 1;
-                  transform: translateY(0);
-                }
-              }
-            `}
-          </style>
-
+        <div className="cvkit-quick-export-menu">
           <MenuItem
             icon={<FileDown size={18} />}
             label="导出 PDF"
@@ -184,7 +149,7 @@ export const QuickExportButton: React.FC = () => {
             onClick={handleExportPDF}
           />
 
-          <div style={{ height: '1px', backgroundColor: '#f0f0f0', margin: '0 12px' }} />
+          <div className="cvkit-menu-divider" />
 
           <MenuItem
             icon={<FileJson size={18} />}
@@ -201,25 +166,7 @@ export const QuickExportButton: React.FC = () => {
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         disabled={isExporting}
-        style={{
-          width: '64px',
-          height: '64px',
-          borderRadius: '50%',
-          border: 'none',
-          backgroundColor: isExporting ? '#9ca3af' : '#2d2d2d',
-          color: '#fff',
-          cursor: isExporting ? 'not-allowed' : 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow:
-            hover && !isExporting
-              ? '0 12px 32px rgba(45, 45, 45, 0.4), 0 4px 12px rgba(45, 45, 45, 0.3)'
-              : '0 8px 24px rgba(45, 45, 45, 0.3), 0 2px 8px rgba(45, 45, 45, 0.2)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          transform: hover && !isExporting ? 'scale(1.05) translateY(-2px)' : 'scale(1)',
-          animation: isExporting ? 'pulse 1.5s ease-in-out infinite' : 'none',
-        }}
+        className="cvkit-quick-export-button"
         title="快速导出"
       >
         <Download size={28} strokeWidth={2.5} />
@@ -227,61 +174,11 @@ export const QuickExportButton: React.FC = () => {
 
       {/* 标签提示 */}
       {hover && !showMenu && !isExporting && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '76px',
-            right: '8px',
-            padding: '8px 12px',
-            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-            color: '#fff',
-            fontSize: '13px',
-            fontWeight: '600',
-            borderRadius: '8px',
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            animation: 'fadeIn 0.2s ease-out',
-          }}
-        >
+        <div className="cvkit-quick-export-tooltip">
           导出简历
-          <div
-            style={{
-              position: 'absolute',
-              top: '100%',
-              right: '24px',
-              width: 0,
-              height: 0,
-              borderLeft: '6px solid transparent',
-              borderRight: '6px solid transparent',
-              borderTop: '6px solid rgba(0, 0, 0, 0.85)',
-            }}
-          />
+          <div className="cvkit-quick-export-tooltip-arrow" />
         </div>
       )}
-
-      <style>
-        {`
-          @keyframes pulse {
-            0%, 100% {
-              opacity: 1;
-            }
-            50% {
-              opacity: 0.6;
-            }
-          }
-
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-              transform: translateY(4px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}
-      </style>
 
       {/* 点击外部关闭菜单 */}
       {showMenu && (
@@ -308,62 +205,13 @@ const MenuItem: React.FC<{
   description: string
   onClick: () => void
 }> = ({ icon, label, description, onClick }) => {
-  const [hover, setHover] = useState(false)
-
   return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        width: '100%',
-        padding: '14px 16px',
-        border: 'none',
-        backgroundColor: hover ? '#f8f9fa' : 'transparent',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        transition: 'all 0.2s',
-        textAlign: 'left',
-      }}
-    >
-      <div
-        style={{
-          width: '36px',
-          height: '36px',
-          borderRadius: '8px',
-          backgroundColor: hover ? '#2d2d2d' : '#f0f0f0',
-          color: hover ? '#fff' : '#666',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-          transition: 'all 0.2s',
-        }}
-      >
-        {icon}
-      </div>
+    <button onClick={onClick} className="cvkit-menu-item">
+      <div className="cvkit-menu-item-icon">{icon}</div>
 
-      <div style={{ flex: 1 }}>
-        <div
-          style={{
-            fontSize: '14px',
-            fontWeight: '600',
-            color: '#2d2d2d',
-            marginBottom: '2px',
-          }}
-        >
-          {label}
-        </div>
-        <div
-          style={{
-            fontSize: '12px',
-            color: '#999',
-          }}
-        >
-          {description}
-        </div>
+      <div className="cvkit-menu-item-content">
+        <div className="cvkit-menu-item-label">{label}</div>
+        <div className="cvkit-menu-item-description">{description}</div>
       </div>
     </button>
   )

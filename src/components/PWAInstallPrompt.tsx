@@ -108,131 +108,18 @@ export function PWAInstallPrompt() {
   }
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: ds.spacing.xl,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        backgroundColor: ds.colors.background.card,
-        padding: `${ds.spacing.lg} ${ds.spacing.xl}`,
-        borderRadius: ds.borderRadius.xxl,
-        boxShadow: ds.shadows.floating,
-        display: 'flex',
-        alignItems: 'center',
-        gap: ds.spacing.lg,
-        zIndex: ds.zIndex.notification,
-        maxWidth: '90vw',
-        width: '420px',
-        animation: 'slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        border: `1px solid ${ds.colors.border.light}`,
-      }}
-    >
-      <style>
-        {`
-          @keyframes slideUp {
-            from {
-              opacity: 0;
-              transform: translateX(-50%) translateY(20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(-50%) translateY(0);
-            }
-          }
-        `}
-      </style>
-
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: ds.spacing.xs,
-        }}
-      >
-        <div
-          style={{
-            fontSize: ds.typography.fontSize.md,
-            fontWeight: ds.typography.fontWeight.semibold,
-            color: ds.colors.text.primary,
-            lineHeight: ds.typography.lineHeight.tight,
-          }}
-        >
-          安装 CVKit 应用
-        </div>
-        <div
-          style={{
-            fontSize: ds.typography.fontSize.sm,
-            color: ds.colors.text.secondary,
-            lineHeight: ds.typography.lineHeight.normal,
-          }}
-        >
-          快速访问，离线使用，体验更佳
-        </div>
+    <div className="cvkit-pwa-install-prompt">
+      <div className="cvkit-pwa-install-content">
+        <div className="cvkit-pwa-install-title">安装 CVKit 应用</div>
+        <div className="cvkit-pwa-install-description">快速访问，离线使用，体验更佳</div>
       </div>
 
-      <button
-        onClick={handleInstall}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: ds.spacing.sm,
-          height: '40px',
-          padding: `0 ${ds.spacing.xl}`,
-          backgroundColor: ds.colors.primary.base,
-          color: ds.colors.neutral.white,
-          border: 'none',
-          borderRadius: ds.borderRadius.lg,
-          fontSize: ds.typography.fontSize.sm,
-          fontWeight: ds.typography.fontWeight.semibold,
-          cursor: 'pointer',
-          whiteSpace: 'nowrap',
-          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = ds.colors.primary.dark
-          e.currentTarget.style.transform = 'translateY(-1px)'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.backgroundColor = ds.colors.primary.base
-          e.currentTarget.style.transform = 'translateY(0)'
-        }}
-      >
+      <button onClick={handleInstall} className="cvkit-pwa-install-button">
         <Download size={16} />
         立即安装
       </button>
 
-      <button
-        onClick={handleClose}
-        style={{
-          padding: ds.spacing.sm,
-          backgroundColor: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          color: ds.colors.text.tertiary,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: ds.borderRadius.md,
-          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-          width: '32px',
-          height: '32px',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = ds.colors.neutral.gray100
-          e.currentTarget.style.color = ds.colors.text.primary
-          e.currentTarget.style.transform = 'scale(1.1)'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.backgroundColor = 'transparent'
-          e.currentTarget.style.color = ds.colors.text.tertiary
-          e.currentTarget.style.transform = 'scale(1)'
-        }}
-        aria-label="关闭"
-      >
+      <button onClick={handleClose} className="cvkit-pwa-close-button" aria-label="关闭">
         <X size={16} />
       </button>
     </div>
