@@ -4,7 +4,7 @@
  * 核心编辑区域，负责渲染页面和处理交互
  */
 
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Renderer } from '@engine/Renderer'
 import { useEditorStore } from '@store/editorStore'
 import { useViewport } from '@/core/context/ViewportContext'
@@ -57,6 +57,51 @@ export const Canvas: React.FC = () => {
   } | null>(null)
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false)
   const [templateNodeId, setTemplateNodeId] = useState<string | null>(null)
+  const prevSelectedNodeIdsRef = useRef<string[]>([])
+
+  // 自动滚动到新添加或选中的节点
+  useEffect(() => {
+    if (mode !== 'edit' || selectedNodeIds.length === 0) {
+      prevSelectedNodeIdsRef.current = selectedNodeIds
+      return
+    }
+
+    // 检测是否有新选中的节点
+    const newlySelectedId = selectedNodeIds.find(id => !prevSelectedNodeIdsRef.current.includes(id))
+
+    if (newlySelectedId && containerRef.current) {
+      // 使用 setTimeout 确保 DOM 已更新
+      setTimeout(() => {
+        const nodeElement = document.querySelector(`[data-node-id="${newlySelectedId}"]`)
+        if (nodeElement && containerRef.current) {
+          const containerRect = containerRef.current.getBoundingClientRect()
+          const nodeRect = nodeElement.getBoundingClientRect()
+
+          // 检查节点是否在可视区域内
+          const isVisible =
+            nodeRect.top >= containerRect.top &&
+            nodeRect.bottom <= containerRect.bottom &&
+            nodeRect.left >= containerRect.left &&
+            nodeRect.right <= containerRect.right
+
+          if (!isVisible) {
+            // 计算需要滚动的距离
+            const scrollTop = containerRef.current.scrollTop
+            const containerTop = containerRect.top
+            const nodeTop = nodeRect.top
+            const offset = nodeTop - containerTop - 100 // 100px 的顶部边距
+
+            containerRef.current.scrollTo({
+              top: scrollTop + offset,
+              behavior: 'smooth',
+            })
+          }
+        }
+      }, 100)
+    }
+
+    prevSelectedNodeIdsRef.current = selectedNodeIds
+  }, [selectedNodeIds, mode])
 
   const handleNodeClick = (nodeId: string, event: React.MouseEvent) => {
     event.stopPropagation()
