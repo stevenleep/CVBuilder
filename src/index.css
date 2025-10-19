@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 导入全局样式 */
+@import './styles/animations.css';
+@import './styles/components.css';
+@import './styles/editor.css';
+
 * {
   margin: 0;
   padding: 0;
