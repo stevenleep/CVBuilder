@@ -4,7 +4,6 @@
 
 import { useEffect, useState } from 'react'
 import { X, Download } from 'lucide-react'
-import { ds } from '@/styles/designSystem'
 import { notification } from '@/utils/notification'
 
 interface BeforeInstallPromptEvent extends Event {

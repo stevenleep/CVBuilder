@@ -225,19 +225,6 @@ export const AutoSaveIndicator: React.FC = () => {
     }
   }
 
-  const getStatusColor = () => {
-    switch (status) {
-      case 'saved':
-        return '#10b981'
-      case 'saving':
-        return '#f59e0b'
-      case 'unsaved':
-        return '#999'
-      case 'error':
-        return '#ef4444'
-    }
-  }
-
   // 点击错误状态时手动重试
   const handleClick = () => {
     if (status === 'error') {
