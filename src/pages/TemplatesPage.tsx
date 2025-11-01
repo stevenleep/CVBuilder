@@ -8,7 +8,8 @@ import { ArrowLeft, FileText, Eye, Check, Settings, Trash2 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { resumeTemplateManager } from '@/core/services/ResumeTemplateManager'
 import { notification } from '@/utils/notification'
-import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { STORES } from '@/utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
 import { nanoid } from 'nanoid'
 
 export const TemplatesPage: React.FC = () => {
@@ -33,7 +34,7 @@ export const TemplatesPage: React.FC = () => {
     }
 
     try {
-      await indexedDBService.setItem(STORES.RESUMES, resumeData.id, resumeData)
+      await encryptedStorageService.setItem(STORES.RESUMES, resumeData.id, resumeData)
       notification.success('已创建新简历！')
       navigate(`/editor/${resumeData.id}`)
     } catch (error) {

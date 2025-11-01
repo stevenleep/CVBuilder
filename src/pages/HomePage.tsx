@@ -31,7 +31,7 @@ import {
 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
-import { STORES } from '@/utils/indexedDB'
+import { STORES, indexedDBService } from '@/utils/indexedDB'
 import { exampleResumes } from '@/data/examples'
 import { nanoid } from 'nanoid'
 import { notification } from '@/utils/notification'
@@ -118,6 +118,7 @@ export const HomePage: React.FC = () => {
   const loadRecentResumes = async () => {
     try {
       const allKeys = await encryptedStorageService.getAllKeys(STORES.RESUMES)
+      console.log('[加载] 所有简历 keys:', allKeys)
       const loaded: RecentResume[] = []
 
       for (const key of allKeys) {
@@ -126,11 +127,13 @@ export const HomePage: React.FC = () => {
           String(key)
         )
         if (resume) {
+          console.log('[加载] 找到简历:', resume.id, resume.name)
           loaded.push(resume)
         }
       }
 
       loaded.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      console.log('[加载] 排序后的简历列表:', loaded.map(r => ({ id: r.id, name: r.name })))
       setRecentResumes(loaded.slice(0, 6))
     } catch (error) {
       console.error('Failed to load resumes:', error)
@@ -150,12 +153,49 @@ export const HomePage: React.FC = () => {
     }
 
     try {
+      console.log('[删除] 开始删除简历:', resumeId)
+      
+      // 如果这个简历正在编辑器中打开，通知编辑器清除ID
+      const { currentResumeId, setCurrentResumeId } = await import('@/store/editorStore').then(m => m.useEditorStore.getState())
+      if (currentResumeId === resumeId) {
+        console.log('[删除] 清除编辑器中的 currentResumeId')
+        setCurrentResumeId(null)
+      }
+      
+      // 先从本地状态中移除（乐观更新）
+      setRecentResumes(prev => prev.filter(r => r.id !== resumeId))
+      
+      // 然后删除数据库中的数据
       await encryptedStorageService.removeItem(STORES.RESUMES, resumeId)
-      notification.success('简历已删除')
-      await loadRecentResumes()
+      console.log('[删除] 已从 RESUMES store 删除:', resumeId)
+      
+      // 删除对应的缩略图（如果存在）
+      try {
+        await indexedDBService.removeItem(STORES.THUMBNAILS, `resume-${resumeId}`)
+        console.log('[删除] 已删除缩略图:', `resume-${resumeId}`)
+      } catch (e) {
+        // 缩略图可能不存在，忽略错误
+        console.log('[删除] 缩略图不存在，跳过')
+      }
+      
+      // 验证删除是否成功（延迟一下，确保异步操作完成）
+      await new Promise(resolve => setTimeout(resolve, 100))
+      const checkDeleted = await encryptedStorageService.getItem(STORES.RESUMES, resumeId)
+      if (checkDeleted) {
+        console.error('[删除] 警告：删除后数据仍然存在!', checkDeleted)
+        notification.error('删除可能失败，请刷新页面确认')
+      } else {
+        console.log('[删除] 验证成功：数据已被删除')
+        notification.success('简历已删除')
+        
+        // 触发简历列表更新事件
+        window.dispatchEvent(new CustomEvent('cvkit-resume-deleted', { detail: { resumeId } }))
+      }
     } catch (error) {
       notification.error('删除失败')
       console.error('Delete resume error:', error)
+      // 如果删除失败，重新加载以恢复状态
+      await loadRecentResumes()
     }
   }
 

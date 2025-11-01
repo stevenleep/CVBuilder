@@ -8,7 +8,8 @@ import { ArrowLeft, Check } from 'lucide-react'
 import { resumeTemplateManager } from '@/core/services/ResumeTemplateManager'
 import { useEditorStore } from '@/store/editorStore'
 import { EditorLayout } from '@/editor/EditorLayout'
-import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { STORES } from '@/utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
 import { nanoid } from 'nanoid'
 import { notification } from '@/utils/notification'
 
@@ -43,7 +44,7 @@ export const TemplatePreviewPage: React.FC = () => {
     }
 
     try {
-      await indexedDBService.setItem(STORES.RESUMES, resumeData.id, resumeData)
+      await encryptedStorageService.setItem(STORES.RESUMES, resumeData.id, resumeData)
       notification.success('已创建新简历！')
       // 跳转到编辑器编辑新简历
       navigate(`/editor/${resumeData.id}`)

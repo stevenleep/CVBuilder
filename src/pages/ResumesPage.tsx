@@ -96,9 +96,51 @@ export const ResumesPage: React.FC = () => {
       type: 'warning',
     })
     if (confirmed) {
-      await encryptedStorageService.removeItem(STORES.RESUMES, resume.id)
-      notification.success('简历已删除')
-      loadResumes()
+      try {
+        console.log('[ResumesPage] 开始删除简历:', resume.id)
+        
+        // 如果这个简历正在编辑器中打开，通知编辑器清除ID
+        const { currentResumeId, setCurrentResumeId } = await import('@/store/editorStore').then(m => m.useEditorStore.getState())
+        if (currentResumeId === resume.id) {
+          console.log('[ResumesPage] 清除编辑器中的 currentResumeId')
+          setCurrentResumeId(null)
+        }
+        
+        // 先从本地状态中移除（乐观更新）
+        setResumes(prev => prev.filter(r => r.id !== resume.id))
+        
+        // 然后删除数据库中的数据
+        await encryptedStorageService.removeItem(STORES.RESUMES, resume.id)
+        console.log('[ResumesPage] 已从数据库删除:', resume.id)
+        
+        // 删除对应的缩略图（如果存在）
+        try {
+          await indexedDBService.removeItem(STORES.THUMBNAILS, `resume-${resume.id}`)
+          console.log('[ResumesPage] 已删除缩略图')
+        } catch (e) {
+          // 缩略图可能不存在，忽略错误
+          console.log('[ResumesPage] 缩略图不存在，跳过')
+        }
+        
+        // 验证删除是否成功
+        await new Promise(resolve => setTimeout(resolve, 100))
+        const checkDeleted = await encryptedStorageService.getItem(STORES.RESUMES, resume.id)
+        if (checkDeleted) {
+          console.error('[ResumesPage] 警告：删除后数据仍然存在!', checkDeleted)
+          notification.error('删除可能失败，请刷新页面确认')
+          await loadResumes()
+        } else {
+          console.log('[ResumesPage] 验证成功：数据已被删除')
+          notification.success('简历已删除')
+          // 触发简历列表更新事件
+          window.dispatchEvent(new CustomEvent('cvkit-resume-deleted', { detail: { resumeId: resume.id } }))
+        }
+      } catch (error) {
+        notification.error('删除失败')
+        console.error('Delete resume error:', error)
+        // 如果删除失败，重新加载以恢复状态
+        await loadResumes()
+      }
     }
   }
 

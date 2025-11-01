@@ -7,7 +7,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getExampleById } from '@/data/examples'
 import { useEditorStore } from '@/store/editorStore'
 import { EditorLayout } from '@/editor/EditorLayout'
-import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { STORES } from '@/utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
 import { nanoid } from 'nanoid'
 import { notification } from '@/utils/notification'
 
@@ -50,7 +51,7 @@ export const ExamplePreviewPage: React.FC = () => {
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
               }
-              indexedDBService.setItem(STORES.RESUMES, newId, resumeData).then(() => {
+              encryptedStorageService.setItem(STORES.RESUMES, newId, resumeData).then(() => {
                 setCurrentResumeId(newId)
                 setPreviewExampleInfo(null)
                 navigate(`/editor/${newId}`)
@@ -79,7 +80,7 @@ export const ExamplePreviewPage: React.FC = () => {
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
               }
-              await indexedDBService.setItem(STORES.RESUMES, newId, resumeData)
+              await encryptedStorageService.setItem(STORES.RESUMES, newId, resumeData)
               setCurrentResumeId(newId)
               setMode('edit')
               setPreviewExampleInfo(null)

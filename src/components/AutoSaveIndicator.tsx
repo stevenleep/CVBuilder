@@ -8,7 +8,8 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Check, Cloud, Loader2, AlertCircle } from 'lucide-react'
 import { useEditorStore } from '@/store/editorStore'
-import { indexedDBService, STORES } from '@/utils/indexedDB'
+import { STORES } from '@/utils/indexedDB'
+import { encryptedStorageService } from '@/core/services/EncryptedStorageService'
 
 // 自动保存配置
 const AUTO_SAVE_DELAY = 800 // 防抖延迟（毫秒）- 缩短延迟以减少数据丢失风险
@@ -34,14 +35,14 @@ export const AutoSaveIndicator: React.FC = () => {
 
       // 2. 如果有简历 ID，保存到简历库
       if (currentResumeId) {
-        const existing = await indexedDBService.getItem(STORES.RESUMES, currentResumeId)
+        const existing = await encryptedStorageService.getItem(STORES.RESUMES, currentResumeId)
         if (existing) {
           const updated = {
             ...existing,
             schema: pageSchema,
             updatedAt: new Date().toISOString(),
           }
-          await indexedDBService.setItem(STORES.RESUMES, currentResumeId, updated)
+          await encryptedStorageService.setItem(STORES.RESUMES, currentResumeId, updated)
 
           // 触发简历列表刷新事件
           window.dispatchEvent(new CustomEvent('cvkit-resume-updated'))
@@ -150,7 +151,7 @@ export const AutoSaveIndicator: React.FC = () => {
 
       // 4. 如果有简历 ID，也保存简历数据
       if (state.currentResumeId) {
-        indexedDBService
+        encryptedStorageService
           .getItem(STORES.RESUMES, state.currentResumeId)
           .then(existing => {
             if (existing) {
@@ -159,7 +160,7 @@ export const AutoSaveIndicator: React.FC = () => {
                 schema: state.pageSchema,
                 updatedAt: new Date().toISOString(),
               }
-              indexedDBService.setItem(STORES.RESUMES, state.currentResumeId!, updated)
+              encryptedStorageService.setItem(STORES.RESUMES, state.currentResumeId!, updated)
             }
           })
           .catch(() => {
