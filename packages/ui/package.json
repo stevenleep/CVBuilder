@@ -1,0 +1,48 @@
+{
+  "name": "@lcedit/ui",
+  "version": "1.0.0",
+  "description": "LCEdit UI Component Library",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles": "./src/styles/index.css"
+  },
+  "files": [
+    "dist",
+    "src/styles"
+  ],
+  "scripts": {
+    "build": "tsc && npm run build:css",
+    "build:css": "echo 'CSS build placeholder'",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lcedit/core": "workspace:*",
+    "@lcedit/react": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "lcedit",
+    "ui",
+    "components",
+    "react",
+    "low-code"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+

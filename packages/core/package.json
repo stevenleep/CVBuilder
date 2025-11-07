@@ -1,0 +1,76 @@
+{
+  "name": "@lcedit/core",
+  "version": "1.0.0",
+  "description": "LCEdit 低代码平台的核心协议层",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./protocols": {
+      "types": "./dist/protocols/index.d.ts",
+      "import": "./dist/protocols/index.js"
+    },
+    "./protocols/*": {
+      "types": "./dist/protocols/*/index.d.ts",
+      "import": "./dist/protocols/*/index.js"
+    },
+    "./schemas/*": "./schemas/*"
+  },
+  "files": [
+    "dist",
+    "protocols",
+    "schemas",
+    "index.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
+  },
+  "keywords": [
+    "low-code",
+    "no-code",
+    "visual-builder",
+    "protocol",
+    "framework-agnostic"
+  ],
+  "author": "LCEdit Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/json-schema": "^7.0.15",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  },
+  "dependencies": {
+    "json-schema": "^0.4.0"
+  },
+  "peerDependencies": {
+    "json-schema": "^0.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lcedit/lcedit",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/lcedit/lcedit/issues"
+  },
+  "homepage": "https://lcedit.dev"
+}
+

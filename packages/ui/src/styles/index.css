@@ -1,0 +1,237 @@
+/**
+ * @lcedit/ui - 样式文件
+ * 
+ * LCEdit UI 组件库的基础样式
+ */
+
+/* ==================== 变量定义 ==================== */
+:root {
+  /* 颜色 */
+  --lcedit-primary-color: #1890ff;
+  --lcedit-success-color: #52c41a;
+  --lcedit-warning-color: #faad14;
+  --lcedit-danger-color: #ff4d4f;
+  --lcedit-bg-color: #ffffff;
+  --lcedit-border-color: #d9d9d9;
+  --lcedit-text-color: #000000d9;
+  --lcedit-text-secondary: #00000073;
+  
+  /* 间距 */
+  --lcedit-spacing-xs: 4px;
+  --lcedit-spacing-sm: 8px;
+  --lcedit-spacing-md: 16px;
+  --lcedit-spacing-lg: 24px;
+  --lcedit-spacing-xl: 32px;
+  
+  /* 圆角 */
+  --lcedit-border-radius: 4px;
+  
+  /* 阴影 */
+  --lcedit-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --lcedit-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --lcedit-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+/* ==================== Button 组件 ==================== */
+.lcedit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lcedit-spacing-xs);
+  padding: var(--lcedit-spacing-sm) var(--lcedit-spacing-md);
+  border: 1px solid var(--lcedit-border-color);
+  border-radius: var(--lcedit-border-radius);
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--lcedit-bg-color);
+  color: var(--lcedit-text-color);
+}
+
+.lcedit-button:hover:not(.lcedit-button--disabled) {
+  border-color: var(--lcedit-primary-color);
+  color: var(--lcedit-primary-color);
+}
+
+.lcedit-button--primary {
+  background: var(--lcedit-primary-color);
+  border-color: var(--lcedit-primary-color);
+  color: #fff;
+}
+
+.lcedit-button--primary:hover:not(.lcedit-button--disabled) {
+  background: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.lcedit-button--danger {
+  background: var(--lcedit-danger-color);
+  border-color: var(--lcedit-danger-color);
+  color: #fff;
+}
+
+.lcedit-button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lcedit-button--small {
+  padding: var(--lcedit-spacing-xs) var(--lcedit-spacing-sm);
+  font-size: 12px;
+}
+
+.lcedit-button--large {
+  padding: var(--lcedit-spacing-md) var(--lcedit-spacing-lg);
+  font-size: 16px;
+}
+
+/* ==================== Panel 组件 ==================== */
+.lcedit-panel {
+  background: var(--lcedit-bg-color);
+  border: 1px solid var(--lcedit-border-color);
+  border-radius: var(--lcedit-border-radius);
+  overflow: hidden;
+}
+
+.lcedit-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--lcedit-spacing-md);
+  border-bottom: 1px solid var(--lcedit-border-color);
+  background: #fafafa;
+}
+
+.lcedit-panel__title {
+  display: flex;
+  align-items: center;
+  gap: var(--lcedit-spacing-sm);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.lcedit-panel__collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.lcedit-panel__body {
+  padding: var(--lcedit-spacing-md);
+}
+
+/* ==================== Toolbar 组件 ==================== */
+.lcedit-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--lcedit-spacing-sm);
+  padding: var(--lcedit-spacing-sm);
+  background: var(--lcedit-bg-color);
+  border-bottom: 1px solid var(--lcedit-border-color);
+}
+
+.lcedit-toolbar--align-left {
+  justify-content: flex-start;
+}
+
+.lcedit-toolbar--align-center {
+  justify-content: center;
+}
+
+.lcedit-toolbar--align-right {
+  justify-content: flex-end;
+}
+
+.lcedit-toolbar--align-space-between {
+  justify-content: space-between;
+}
+
+.lcedit-toolbar--compact {
+  padding: var(--lcedit-spacing-xs);
+}
+
+.lcedit-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: var(--lcedit-spacing-xs);
+}
+
+.lcedit-toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--lcedit-border-color);
+}
+
+/* ==================== PropertyPanel 组件 ==================== */
+.lcedit-property-panel__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lcedit-spacing-md);
+}
+
+.lcedit-property-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lcedit-spacing-sm);
+}
+
+.lcedit-property-panel__section-title {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--lcedit-text-secondary);
+  padding-bottom: var(--lcedit-spacing-xs);
+  border-bottom: 1px solid var(--lcedit-border-color);
+}
+
+.lcedit-property-panel__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lcedit-spacing-xs);
+}
+
+.lcedit-property-panel__field-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--lcedit-spacing-sm);
+}
+
+.lcedit-property-panel__label {
+  font-size: 12px;
+  color: var(--lcedit-text-secondary);
+}
+
+.lcedit-property-panel__input {
+  padding: var(--lcedit-spacing-xs) var(--lcedit-spacing-sm);
+  border: 1px solid var(--lcedit-border-color);
+  border-radius: var(--lcedit-border-radius);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.lcedit-property-panel__input:focus {
+  outline: none;
+  border-color: var(--lcedit-primary-color);
+}
+
+.lcedit-property-panel__input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.lcedit-property-panel__empty,
+.lcedit-property-panel__multi,
+.lcedit-property-panel__empty-props {
+  padding: var(--lcedit-spacing-lg);
+  text-align: center;
+  color: var(--lcedit-text-secondary);
+  font-size: 14px;
+}
+

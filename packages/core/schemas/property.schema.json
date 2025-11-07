@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lcedit.dev/schemas/property-schema/v1",
+  "title": "LCEdit Property Schema",
+  "description": "Schema for defining material properties",
+  "type": "object",
+  "required": ["type", "properties"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "property-schema",
+      "description": "Schema type identifier"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "default": "1.0.0",
+      "description": "Schema version"
+    },
+    "properties": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_.]*$": {
+          "$ref": "#/definitions/PropertyField"
+        }
+      },
+      "description": "Property definitions"
+    },
+    "required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Required property names"
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PropertyGroup"
+      },
+      "description": "Property groups for UI organization"
+    }
+  },
+  "definitions": {
+    "PropertyField": {
+      "type": "object",
+      "required": ["type", "title"],
+      "properties": {
+        "type": {
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            }
+          ],
+          "description": "Field type(s)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Field display title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Field description"
+        },
+        "default": {
+          "description": "Default value"
+        },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Allowed values"
+        },
+        "group": {
+          "type": "string",
+          "description": "Group ID"
+        },
+        "order": {
+          "type": "number",
+          "description": "Display order"
+        },
+        "editor": {
+          "$ref": "#/definitions/EditorConfig"
+        },
+        "validation": {
+          "$ref": "#/definitions/Validation"
+        },
+        "visible": {
+          "$ref": "#/definitions/VisibilityRule"
+        }
+      }
+    },
+    "EditorConfig": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Editor/renderer type"
+        },
+        "options": {
+          "type": "object",
+          "description": "Editor-specific options"
+        },
+        "placeholder": {
+          "type": "string",
+          "description": "Placeholder text"
+        }
+      }
+    },
+    "Validation": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "minLength": {
+          "type": "number"
+        },
+        "maxLength": {
+          "type": "number"
+        },
+        "pattern": {
+          "type": "string"
+        }
+      }
+    },
+    "VisibilityRule": {
+      "type": "object",
+      "required": ["when"],
+      "properties": {
+        "when": {
+          "type": "object",
+          "required": ["field", "is"],
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "is": {}
+          }
+        }
+      }
+    },
+    "PropertyGroup": {
+      "type": "object",
+      "required": ["id", "title"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "order": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
+

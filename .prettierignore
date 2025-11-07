@@ -1,42 +1,16 @@
-# 依赖
+# Dependencies
 node_modules
 pnpm-lock.yaml
-package-lock.json
-yarn.lock
 
-# 构建产物
+# Build
 dist
 build
-.next
 out
+*.tsbuildinfo
 
-# 缓存
-.cache
-.turbo
-.eslintcache
+# Coverage
+coverage
 
-# 日志
-*.log
-logs
-
-# 其他
+# Misc
 .DS_Store
-*.local
-.env
-.env.*
-!.env.example
-
-# Git
-.git
-.gitignore
-
-# IDE
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
-.idea
-
-# 配置文件
-tsconfig.json
-vite.config.ts
-
+*.log
